@@ -6,12 +6,13 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
-import { ListeningComponent } from '../../listening/listening.component';
-import { MultipleChoicesComponent } from '../../multiple-choices/multiple-choices.component';
-import { ShortAnswerComponent } from '../../short-answer/short-answer.component';
+import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Result } from '../../../common/models/result.model';
-import { TestService } from '../../test/test.service';
+import { ListeningComponent } from '../../listening/listening.component';
+import { MultipleChoicesComponent } from '../../multiple-choices/multiple-choices.component';
+import { ReadingComponent } from '../../reading/reading.component';
+import { ShortAnswerComponent } from '../../short-answer/short-answer.component';
 import { ResultService } from '../result.service';
 
 @Component({
@@ -27,6 +28,8 @@ import { ResultService } from '../result.service';
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
+    MatTabsModule,
+    ReadingComponent,
     ListeningComponent,
   ],
 
@@ -40,6 +43,7 @@ export class ResultDetailComponent {
     timeout: null,
     studentName: '',
     listeningParts: [],
+    readingParagraph: [],
     correctPoint: 0,
     totalPoint: 0,
     testDate: '',

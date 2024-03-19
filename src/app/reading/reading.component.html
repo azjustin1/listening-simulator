@@ -1,130 +1,129 @@
-<div class="container">
-  <div class="form-group">
-    <mat-form-field>
-      <mat-label>Quiz Name</mat-label>
-      <input
-        matInput
-        name="quizName"
-        type="text"
-        class="form-control"
-        id="quizName"
-        [(ngModel)]="currentQuiz.name"
-        required
-      />
-    </mat-form-field>
-  </div>
-  <div class="form-group">
-    <mat-form-field>
-      <mat-label>Time</mat-label>
-      <input
-        placeholder="Minute"
-        matInput
-        name="timeout"
-        type="number"
-        class="form-control"
-        id="timeout"
-        [(ngModel)]="currentQuiz.timeout"
-        required
-      />
-    </mat-form-field>
-  </div>
-
-  <div
-    class="test-container"
-    *ngFor="let paragraph of currentQuiz.paragraphs; let paragraphIndex = index"
-  >
-    <div class="question-group">
-      <mat-accordion>
-        <mat-expansion-panel
-          *ngFor="
-            let question of paragraph.questions;
-            let questionIndex = index
-          "
-        >
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              {{ question.name }}
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <div class="form-group question-name">
-            <mat-form-field>
-              <mat-label>Question Name</mat-label>
-              <input
-                matInput
-                name="questionName"
-                class="form-control"
-                id="questionName"
-                [(ngModel)]="question.name"
-                required
-              />
-            </mat-form-field>
-            <button
-              mat-icon-button
-              color="warn"
-              type="button"
-              class="btn btn-danger"
-              (click)="removeQuestion(paragraphIndex, questionIndex)"
-            >
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
-
-          @switch (question.type) { @case (1) {
-          <div class="question">
-            <app-short-answer
-              [question]="question"
-              [isEditting]="true"
-            ></app-short-answer>
-          </div>
-          } @case (2) {
-          <div class="question">
-            <app-multiple-choices
-              [question]="question"
-              [isEditting]="true"
-            ></app-multiple-choices>
-          </div>
-          } }
-        </mat-expansion-panel>
-      </mat-accordion>
-      <div class="question-type-container">
-        <mat-card class="card" (click)="addQuestion(paragraphIndex, 2)">
-          <mat-card-content class="question-type-item">
-            Dropdown choices
-          </mat-card-content>
-        </mat-card>
-        <mat-card class="card" (click)="addQuestion(paragraphIndex, 1)">
-          <mat-card-content class="question-type-item">
-            Short Answer
-          </mat-card-content>
-        </mat-card>
-      </div>
-    </div>
-    <div class="input-reading">
-      @if (isEditting) {
-      <angular-editor
-        name="questionContent"
-        [id]="paragraph.id"
-        [config]="config"
-        [(ngModel)]="paragraph.content"
-      ></angular-editor>
-      <button
-        mat-icon-button
-        color="warn"
-        type="button"
-        class="btn btn-danger"
-        (click)="removeParagraph(paragraphIndex)"
+<div class="test-container">
+  <div class="question-group">
+    <mat-accordion>
+      <mat-expansion-panel
+        *ngFor="let question of data.questions; let questionIndex = index"
       >
-        <mat-icon>delete</mat-icon>
-      </button>
-      } @else {
-      <span [innerHTML]="paragraph.content"></span>
-      }
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{ question.name }}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="form-group question-name">
+          @if (isEditting) {
+          <mat-form-field>
+            <mat-label>Question Name</mat-label>
+            <input
+              matInput
+              name="questionName"
+              class="form-control"
+              id="questionName"
+              [(ngModel)]="question.name"
+              required
+            />
+          </mat-form-field>
+          <button
+            mat-icon-button
+            color="warn"
+            type="button"
+            class="btn btn-danger"
+            (click)="removeQuestion(questionIndex)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+          }
+        </div>
+
+        @switch (question.type) { @case (1) {
+        <div class="question">
+          <app-short-answer
+            [question]="question"
+            [isReadOnly]="isReadOnly"
+            [isEditting]="isEditting"
+            [isTesting]="isTesting"
+            [hasIndex]="false"
+          ></app-short-answer>
+        </div>
+        } @case (2) {
+        <div class="question">
+          @if (isTesting) {
+          <div class="form-group">
+            <div [innerHTML]="question.content"></div>
+            <mat-form-field class="dropdown-answer">
+              <mat-label>Answer</mat-label>
+              <mat-select [(value)]="question.answer">
+                @for (choice of question.choices; track choice.id) {
+                <mat-option [value]="choice.id">{{
+                  choice.content
+                }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+          } @if (isReadOnly) {
+          <span [innerHTML]="question.content"></span>
+          <div class="answer-container">
+            <div
+              class="answer"
+              [ngClass]="{
+                correct: question.answer === question.correctAnswer,
+                incorrect: question.answer !== question.correctAnswer
+              }"
+            >
+              @for (choice of question.choices; track $index) { @if (choice.id
+              === question.answer) {
+              {{ choice.content }}
+              } }
+            </div>
+
+            @if (!question.answer || question.answer === '') {
+            <div class="answer">❌</div>
+            } @if (question.answer !== question.correctAnswer) {
+            <div class="correct-answer">
+              @for (choice of question.choices; track $index) { @if (choice.id
+              === question.correctAnswer) {
+              {{ choice.content }}
+              } }
+            </div>
+            }
+          </div>
+          } @if(isEditting) {
+          <app-multiple-choices
+            [question]="question"
+            [isReadOnly]="isReadOnly"
+            [isEditting]="isEditting"
+            [isTesting]="isTesting"
+          ></app-multiple-choices>
+          }
+        </div>
+        } }
+      </mat-expansion-panel>
+    </mat-accordion>
+    @if (isEditting) {
+    <div class="question-type-container">
+      <mat-card class="card" (click)="addQuestion(2)">
+        <mat-card-content class="question-type-item">
+          Dropdown choices
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="card" (click)="addQuestion(1)">
+        <mat-card-content class="question-type-item">
+          Short Answer
+        </mat-card-content>
+      </mat-card>
     </div>
+    }
   </div>
-  <div class="actions">
-    <button mat-raised-button (click)="addParagraph()">New paragraph</button>
-    <button mat-raised-button color="primary" (click)="onSaveClick()">
-      Save and Quit
-    </button>
+  <div class="input-reading">
+    @if (isEditting) {
+    <angular-editor
+      name="questionContent"
+      [id]="data.id"
+      [config]="config"
+      [(ngModel)]="data.content"
+    ></angular-editor>
+    } @else {
+    <span [innerHTML]="data.content"></span>
+    }
   </div>
 </div>

@@ -1,20 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { HttpResponse } from '@angular/common/http';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import {
-  AngularEditorConfig,
-  AngularEditorModule,
-  UploadResponse,
+  AngularEditorModule
 } from '@wfpena/angular-wysiwyg';
-import { FileService } from '../file.service';
-import { map } from 'rxjs';
-import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
 import { AbstractQuestionComponent } from '../../common/abstract-question.component';
+import { FileService } from '../file.service';
 
 @Component({
   selector: 'app-short-answer',
@@ -33,4 +29,6 @@ import { AbstractQuestionComponent } from '../../common/abstract-question.compon
   templateUrl: './short-answer.component.html',
   styleUrl: './short-answer.component.css',
 })
-export class ShortAnswerComponent extends AbstractQuestionComponent {}
+export class ShortAnswerComponent extends AbstractQuestionComponent {
+  @Input() hasIndex: boolean = true;
+}

@@ -9,10 +9,27 @@
       <h4><b>Test date:</b> {{ result!.testDate }}</h4>
     </div>
 
-    <div class="question-group">
-      @for (part of result.listeningParts; track $index) {
-      <app-listening [data]="part" [isReadOnly]="true"></app-listening>
-      }
+    <div class="question-container">
+      <mat-tab-group>
+        <mat-tab label="Listening">
+          <ng-template matTabContent>
+            <div class="question-group">
+              @for (part of result.listeningParts; track $index) {
+              <app-listening [data]="part" [isReadOnly]="true"></app-listening>
+              }
+            </div>
+          </ng-template>
+        </mat-tab>
+        <mat-tab label="Reading">
+          <ng-template matTabContent>
+            <div class="question-group">
+              @for (paragraph of result.readingParagraph; track $index) {
+              <app-reading [data]="paragraph" [isReadOnly]="true"></app-reading>
+              }
+            </div>
+          </ng-template>
+        </mat-tab>
+      </mat-tab-group>
     </div>
   </div>
 </section>

@@ -4,7 +4,7 @@ import {
   ElementRef,
   QueryList,
   ViewChild,
-  ViewChildren
+  ViewChildren,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -25,6 +25,8 @@ import { MultipleChoicesComponent } from '../multiple-choices/multiple-choices.c
 import { QuizService } from '../quizzes/quizzes.service';
 import { ShortAnswerComponent } from '../short-answer/short-answer.component';
 import { TestService } from './test.service';
+import { MatTabsModule } from '@angular/material/tabs';
+import { ReadingComponent } from '../reading/reading.component';
 
 @Component({
   selector: 'app-test',
@@ -39,7 +41,9 @@ import { TestService } from './test.service';
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
+    MatTabsModule,
     ListeningComponent,
+    ReadingComponent,
   ],
   providers: [QuizService, TestService],
   templateUrl: './test.component.html',
@@ -61,12 +65,14 @@ export class TestComponent {
     testDate: '',
     quizId: '',
     listeningParts: [],
+    readingParagraph: [],
   };
   quiz: Quiz = {
     id: '',
     name: '',
     timeout: null,
     listeningParts: [],
+    readingParagraph: [],
   };
   subscriptions: Subscription[] = [];
 
@@ -113,6 +119,7 @@ export class TestComponent {
     this.result.name = this.quiz.name;
     this.result.quizId = this.quiz.id!;
     this.result.listeningParts = this.quiz.listeningParts;
+    this.result.readingParagraph = this.quiz.readingParagraph;
     this.calculatePoint();
     this.testService.submitTest(this.result).subscribe(() => {
       this.router.navigate(['']);
@@ -168,6 +175,28 @@ export class TestComponent {
       each(part.questions, (question) => {
         if (question.type === 0) {
           // Multiple choices
+          totalPoint++;
+          if (question.answer === question.correctAnswer) {
+            correctPoint++;
+          }
+        }
+
+        if (question.type === 1) {
+          // Short answer
+          each(question.choices, (choice) => {
+            totalPoint++;
+            if (choice.answer === choice.content) {
+              correctPoint++;
+            }
+          });
+        }
+      });
+    });
+
+    each(this.result.readingParagraph, (paragraph) => {
+      each(paragraph.questions, (question) => {
+        if (question.type === 2) {
+          // Dropdown choices
           totalPoint++;
           if (question.answer === question.correctAnswer) {
             correctPoint++;

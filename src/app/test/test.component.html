@@ -19,11 +19,35 @@
     <h2>{{ minutes }}:{{ seconds | number : "2.0" }}</h2>
   </div>
 
-  @if (isReady) { @for (part of quiz.listeningParts; track $index) {
-  <div class="question-group">
-    <app-listening [data]="part" [isTesting]="true"></app-listening>
-  </div>
-  }
+  @if (isReady) {
+
+  <mat-tab-group>
+    <mat-tab label="Listening">
+      <ng-template matTabContent>
+        @for (part of quiz.listeningParts; track $index) {
+        <mat-card class="question-group" appearance="outlined">
+          <mat-card-content>
+            <div class="question-group">
+              <app-listening [data]="part" [isTesting]="true"></app-listening>
+            </div>
+          </mat-card-content>
+        </mat-card>
+        }</ng-template
+      >
+    </mat-tab>
+    <mat-tab label="Reading">
+      <ng-template matTabContent>
+        @for (paragraph of quiz.readingParagraph; track $index) {
+        <mat-card class="question-group" appearance="outlined">
+          <mat-card-content>
+            <app-reading [data]="paragraph" [isTesting]="true"></app-reading
+          ></mat-card-content>
+        </mat-card>
+        }
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+
   <button
     mat-raised-button
     color="primary"

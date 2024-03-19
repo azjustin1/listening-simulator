@@ -1,8 +1,3 @@
-.container {
-  max-height: 500px;
-  max-height: 500px;
-}
-
 .test-container {
   display: flex;
   margin-top: 20px;
@@ -17,7 +12,7 @@
   display: flex;
   justify-content: space-evenly;
   width: 100%;
-  height: 200px;
+  min-height: fit-content;
   margin-left: 20px;
 }
 
@@ -26,8 +21,42 @@
   justify-content: space-between;
 }
 
+.dropdown-answer {
+  margin: 10px 0 0 0;
+}
+
 .question-type-container {
   display: flex;
   justify-content: space-evenly;
   margin-top: 20px;
+  cursor: pointer;
+}
+
+.answer-container {
+  display: flex;
+  width: 100%;
+  height: 64px;
+  line-height: 64px;
+  margin-left: 40px;
+}
+
+.answer {
+  display: flex;
+  width: max-content;
+  font-weight: bold;
+}
+
+.answer.correct {
+  color: var(--success-color);
+}
+
+.answer.incorrect {
+  color: var(--danger-color);
+}
+
+.correct-answer {
+  color: var(--success-color);
+  font-weight: bold;
+  margin-left: 16px;
+  text-decoration: none;
 }

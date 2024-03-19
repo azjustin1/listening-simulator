@@ -70,11 +70,13 @@ export class QuizzesComponent implements OnDestroy {
     this.router.navigate(['add-quiz']);
   }
 
-  edit(url: string, id: string) {
-    this.router.navigate([`${url}`, id]);
+  edit(id: string) {
+    this.router.navigate(['edit-quiz', id]);
   }
 
   onDeleteClick(quiz: Quiz) {
+    console
+    .log(quiz)
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       hasBackdrop: true,
     });
@@ -83,13 +85,13 @@ export class QuizzesComponent implements OnDestroy {
     dialogRef.componentInstance.message = 'Confirm to delete this?';
     dialogRef.afterClosed().subscribe((isConfirm) => {
       if (isConfirm) {
-        this.deleteQuiz(quiz.id);
+        this.deleteQuiz(quiz);
       }
     });
   }
 
-  deleteQuiz(deleteQuiz: any) {
-    this.quizService.delete(deleteQuiz.id).subscribe(() => {
+  deleteQuiz(deleteQuiz: Quiz) {
+    this.quizService.delete(deleteQuiz.id!).subscribe(() => {
       this.quizzes = filter(this.quizzes, (quiz) => deleteQuiz.id !== quiz.id);
     });
   }

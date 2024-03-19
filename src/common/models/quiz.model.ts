@@ -1,9 +1,10 @@
 import { Listening } from './listening.model';
-import { Question } from './question.model';
+import { Reading } from './reading.model';
 
 export interface Quiz {
   id: string;
   name: string;
   timeout: number | null;
   listeningParts: Listening[];
+  readingParagraph: Reading[];
 }

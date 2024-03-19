@@ -7,3 +7,11 @@
 .save-button {
   margin: 16px 0;
 }
+
+.add-button {
+  height: 64px;
+}
+
+.question-group {
+  margin: 16px 0;
+}

@@ -8,16 +8,18 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
+import { MatSelectModule } from '@angular/material/select';
 import {
   AngularEditorConfig,
   AngularEditorModule,
 } from '@wfpena/angular-wysiwyg';
+import { Subscription } from 'rxjs';
+import { Choice } from '../../common/models/choice.model';
+import { Reading } from '../../common/models/reading.model';
 import { CommonUtils } from '../../utils/common-utils';
 import { MultipleChoicesComponent } from '../multiple-choices/multiple-choices.component';
 import { ShortAnswerComponent } from '../short-answer/short-answer.component';
 import { ReadingService } from './reading.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-reading',
@@ -35,13 +37,22 @@ import { Subscription } from 'rxjs';
     MatIconModule,
     MatExpansionModule,
     AngularEditorModule,
+    MatSelectModule,
   ],
   providers: [ReadingService],
   templateUrl: './reading.component.html',
   styleUrl: './reading.component.css',
 })
 export class ReadingComponent {
-  @Input() isEditting: boolean = true;
+  count = 0;
+  @Input() data: Reading = {
+    id: '',
+    content: '',
+    questions: [],
+  };
+  @Input() isTesting: boolean = false;
+  @Input() isEditting: boolean = false;
+  @Input() isReadOnly: boolean = false;
 
   currentParagraph: any = {
     id: '',
@@ -70,33 +81,9 @@ export class ReadingComponent {
     editable: true,
   };
 
-  constructor(
-    private readingService: ReadingService,
-    private route: ActivatedRoute,
-    private router: Router
-  ) {
-    this.route.paramMap.subscribe((paramMap: any) => {
-      const quizId = paramMap.get('quizId');
-      if (quizId) {
-        this.readingService.getById(quizId).subscribe((quiz: any) => {
-          this.currentQuiz = quiz;
-          console.log(this.currentQuiz);
-        });
-      }
-    });
-  }
+  constructor() {}
 
-  addParagraph() {
-    const newParagraph = {
-      id: CommonUtils.generateRandomId(),
-      name: '',
-      questions: [],
-    };
-    this.currentQuiz.paragraphs.push({ ...this.currentParagraph });
-    this.currentQuiz = { ...this.currentQuiz };
-  }
-
-  addQuestion(paragraphIndex: number, questionType: number) {
+  addQuestion(questionType: number) {
     switch (questionType) {
       case 1:
         this.currentQuestion = {
@@ -117,30 +104,13 @@ export class ReadingComponent {
       default:
         break;
     }
-    this.currentQuiz.paragraphs[paragraphIndex].questions.push({
+    this.data.questions.push({
       ...this.currentQuestion,
     });
   }
 
-  removeQuestion(paragraphIndex: number, questionIdex: number) {
-    this.currentQuiz.paragraphs[paragraphIndex].questions.splice(
-      questionIdex,
-      1
-    );
-  }
-
-  removeParagraph(paragraphIndex: number) {
-    this.currentQuiz.paragraphs[paragraphIndex].questions.splice(
-      paragraphIndex,
-      1
-    );
-  }
-
-  saveReadingTest() {
-    this.currentQuiz.id = CommonUtils.generateRandomId();
-    this.readingService.createReadingTest(this.currentQuiz).subscribe(() => {
-      this.router.navigate(['/']);
-    });
+  removeQuestion(questionIdex: number) {
+    this.data.questions.splice(questionIdex, 1);
   }
 
   defaultMultipleChoices() {
@@ -168,29 +138,7 @@ export class ReadingComponent {
     return choices;
   }
 
-  saveQuestion() {
-    this.currentQuestion = {
-      name: '',
-      time: null,
-      choices: [],
-    };
-  }
-
-  onSaveClick() {
-    this.saveOrEditQuiz(this.currentQuiz);
-  }
-
-  saveOrEditQuiz(quiz: any) {
-    let observer;
-    if (quiz.id) {
-      observer = this.readingService.editReadingTest(quiz);
-    } else {
-      quiz.id = CommonUtils.generateRandomId();
-      observer = this.readingService.createReadingTest(quiz);
-    }
-    const sub = observer.subscribe(() => {
-      this.router.navigate(['/']);
-    });
-    this.subscription.push(sub);
+  getChoiceById(id: string, choices: Choice[]) {
+    return choices.find((choice) => choice.id === id);
   }
 }

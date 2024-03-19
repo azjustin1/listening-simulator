@@ -17,6 +17,9 @@ import { ConfirmDialogComponent } from '../../dialog/confirm-dialog/confirm-dial
 import { FileService } from '../../file.service';
 import { ListeningComponent } from '../../listening/listening.component';
 import { QuizService } from '../quizzes.service';
+import { MatTabsModule } from '@angular/material/tabs';
+import { ReadingComponent } from '../../reading/reading.component';
+import { Reading } from '../../../common/models/reading.model';
 
 @Component({
   selector: 'app-add-or-edit-quiz',
@@ -29,8 +32,10 @@ import { QuizService } from '../quizzes.service';
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    ListeningComponent,
     MatIconModule,
+    MatTabsModule,
+    ListeningComponent,
+    ReadingComponent,
   ],
   providers: [QuizService, FileService],
   templateUrl: './add-or-edit-quiz.component.html',
@@ -42,6 +47,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
     name: '',
     timeout: null,
     listeningParts: [],
+    readingParagraph: [],
   };
 
   subscription: Subscription[] = [];
@@ -73,8 +79,21 @@ export class AddOrEditQuizComponent implements OnDestroy {
     this.currentQuiz.listeningParts.push(newListeningPart);
   }
 
+  onAddReadingParagraph() {
+    const newReadingParagraph: Reading = {
+      id: CommonUtils.generateRandomId(),
+      content: '',
+      questions: [],
+    };
+    this.currentQuiz.readingParagraph.push(newReadingParagraph);
+  }
+
   removePart(index: number) {
     this.currentQuiz.listeningParts.splice(index, 1);
+  }
+
+  removeParagraph(index: number) {
+    this.currentQuiz.readingParagraph.splice(index, 1);
   }
 
   onSaveClick() {

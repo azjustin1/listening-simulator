@@ -16,7 +16,7 @@
     <div class="choice-group">
       @for (choice of question.choices; track $index) {
       <div class="form-group">
-        @if (isEditting) {
+        @if (isEditting) { @if (hasIndex) {
         <mat-form-field class="choice-index">
           <mat-label>No.</mat-label>
           <input
@@ -27,6 +27,7 @@
             [(ngModel)]="choice.index"
           />
         </mat-form-field>
+        }
         <mat-form-field>
           <mat-label>Answer</mat-label>
           <input
@@ -38,8 +39,10 @@
           />
         </mat-form-field>
         } @else {
-        <p class="mat-display 2 question-text">
-          <b>{{ choice.index }}.&nbsp;</b>
+        <p class="question-text">
+          @if (hasIndex) {
+          <b>{{ choice.index }}&nbsp;</b>
+          }
         </p>
         @if (isTesting) {
         <mat-form-field>
@@ -52,25 +55,27 @@
             [(ngModel)]="choice.answer"
           />
         </mat-form-field>
-        } @else { @if (isReadOnly) {
+        } @if (isReadOnly) {
         <div class="answer-container">
           <div
             class="answer"
             [ngClass]="{
-              correct: choice.answer === choice.content,
-              incorrect: choice.answer !== choice.content
+              correct: question.answer === choice.content,
+              incorrect: question.answer !== choice.content
             }"
           >
             {{ choice.answer }}
           </div>
 
-          @if (choice.answer !== choice.content) {
+          @if (!question.answer || question.answer === '') {
+          <div class="answer">❌</div>
+          } @if (question.answer !== choice.content) {
           <div class="correct-answer">
             {{ choice.content }}
           </div>
           }
         </div>
-        } } }
+        } }
         <button
           *ngIf="isEditting"
           mat-icon-button

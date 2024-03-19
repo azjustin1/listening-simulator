@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { Quiz } from '../../common/models/quiz.model';
 
 @Injectable()
 export class QuizService {
@@ -20,15 +21,15 @@ export class QuizService {
     return this.httpClient.get(`${this.baseUrl}/quizzes/${id}`);
   }
 
-  create(quiz: any): Observable<any> {
+  create(quiz: Quiz): Observable<any> {
     return this.httpClient.post(`${this.baseUrl}/quizzes`, quiz);
   }
 
-  edit(quiz: any): Observable<any> {
+  edit(quiz: Quiz): Observable<any> {
     return this.httpClient.put(`${this.baseUrl}/quizzes/${quiz.id}`, quiz);
   }
 
-  delete(quizId: number): Observable<any> {
+  delete(quizId: string): Observable<any> {
     return this.httpClient.delete(`${this.baseUrl}/quizzes/${quizId}`);
   }
 }

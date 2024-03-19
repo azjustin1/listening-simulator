@@ -74,7 +74,6 @@ export class ListeningComponent implements AfterViewInit, OnDestroy {
   constructor(private fileService: FileService) {}
 
   ngAfterViewInit(): void {
-    console.log('After view init', this.audioPlayer);
     this.getAudioFile(this.data.audioName);
   }
 
@@ -85,12 +84,14 @@ export class ListeningComponent implements AfterViewInit, OnDestroy {
   }
 
   getAudioFile(fileName: string) {
-    this.fileService.getFile(fileName).subscribe((audioFile: Blob) => {
-      const fileURL = URL.createObjectURL(audioFile);
-      const audioElement: HTMLAudioElement = this.audioPlayer.nativeElement;
-      this.audioUrl = fileURL;
-      audioElement.load();
-    });
+    if (fileName !== '') {
+      this.fileService.getFile(fileName).subscribe((audioFile: Blob) => {
+        const fileURL = URL.createObjectURL(audioFile);
+        const audioElement: HTMLAudioElement = this.audioPlayer.nativeElement;
+        this.audioUrl = fileURL;
+        audioElement.load();
+      });
+    }
   }
 
   addQuestion(questionType: number) {

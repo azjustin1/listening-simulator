@@ -40,10 +40,8 @@
   margin: 16px 0;
 }
 
-.search {
-  display: flex;
-  flex-direction: row-reverse;
-  margin-top: 16px;
+.question-group {
+  margin: 32px 0 0 0;
 }
 
 .card-content {
