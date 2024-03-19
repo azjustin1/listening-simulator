@@ -2,14 +2,13 @@ const express = require("express");
 const jsonServer = require("json-server");
 const cors = require("cors");
 const server = express();
-const multipart = require("connect-multiparty");
 const path = require("path");
 const multer = require("multer");
 const fs = require("fs");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    var uploadDir = `${__dirname}/upload`;
+    let uploadDir = `${__dirname}/upload`;
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
@@ -25,7 +24,7 @@ const storage = multer.diskStorage({
 // Create an instance of Multer with the storage configuration
 const upload = multer({ storage: storage });
 
-server.use(express.static(`${__dirname}/dist`));
+server.use(express.static(`${__dirname}/dist/browser`));
 server.use(cors({ origin: "http://localhost:4200" }));
 server.use(express.json());
 

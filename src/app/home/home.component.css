@@ -3,7 +3,7 @@
   width: 100%;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: 64px;
+  grid-template-rows: repeat(10000, 64px);
   grid-gap: 16px; /* Optional: Add gap between grid items */
 }
 
@@ -12,7 +12,7 @@
   width: 100%;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: 120px;
+  grid-template-rows: repeat(10000, 120px);
   grid-gap: 16px; /* Optional: Add gap between grid items */
 }
 
@@ -36,6 +36,7 @@
   display: flex;
   margin: 0 0 0 10px;
   line-height: 24px;
+  margin-left: 10px;
   cursor: pointer;
   justify-content: space-between;
   align-items: center;

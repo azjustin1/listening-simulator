@@ -14,6 +14,7 @@ import { FileService } from '../file.service';
 import { map } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import { AbstractQuestionComponent } from '../../common/abstract-question.component';
 
 @Component({
   selector: 'app-short-answer',
@@ -32,60 +33,4 @@ import { MatCardModule } from '@angular/material/card';
   templateUrl: './short-answer.component.html',
   styleUrl: './short-answer.component.css',
 })
-export class ShortAnswerComponent implements OnInit {
-  @Input() question: any;
-  @Input() isEditting: boolean = false;
-  @Input() isReadOnly: boolean = false;
-  @Input() isTesting: boolean = false;
-
-  questionTitle: string = '';
-
-  constructor(private fileService: FileService) {}
-  ngOnInit(): void {
-    if (this.question.imageName) {
-      this.getImage(this.question.imageName);
-    }
-  }
-
-  config: AngularEditorConfig = {
-    editable: true,
-    rawPaste: true,
-    uploadUrl: 'http://localhost:3000/file',
-    upload: (file) => {
-      return this.fileService.uploadAudioFile(file).pipe(
-        map((response) => {
-          const imageName = response.fileName;
-          this.question.imageName = imageName;
-          this.getImage(imageName);
-          console.log(this.question.content);
-          return {
-            ...response,
-            body: { imageUrl: imageName },
-          } as HttpResponse<UploadResponse>;
-        })
-      );
-    },
-  };
-
-  getImage(fileName: string) {
-    this.fileService.getFile(fileName).subscribe((audioFile: Blob) => {
-      const fileURL = URL.createObjectURL(audioFile);
-      const regex = /<img[^>]+src="([^">]+)"/g;
-      const match = regex.exec(this.question.content);
-      if (match) {
-        this.question.content = this.question.content.replace(
-          match[1],
-          fileURL
-        );
-      }
-    });
-  }
-
-  addChoice() {
-    this.question.choices.push({ index: '', content: '' });
-  }
-
-  removeChoice(index: number) {
-    this.question.choices.splice(index, 1);
-  }
-}
+export class ShortAnswerComponent extends AbstractQuestionComponent {}

@@ -29,8 +29,7 @@
 
 .actions {
   display: flex;
-  flex-direction: row-reverse;
-  margin-top: 16px;
+  flex-direction: column;
 }
 
 .question {
@@ -44,6 +43,11 @@
   margin: 0 0 16px 0;
 }
 
-.listening-part-container {
-  flex: 0 0 100%;
+.backdrop {
+  position: relative;
+  top: -60px;
+  left: 45px;
+  width: 180px;
+  height: 54px;
+  z-index: 100;
 }

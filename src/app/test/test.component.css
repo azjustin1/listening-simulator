@@ -2,10 +2,6 @@
   margin-top: 30px;
 }
 
-.backdrop {
-  width: 300px;
-  height: 55px;
-  top: 220px;
-  position: absolute;
-  z-index: 100;
+.question-group {
+  margin: 16px 0;
 }

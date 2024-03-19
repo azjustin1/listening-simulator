@@ -1,6 +1,5 @@
 Download [NodeJS](https://nodejs.org/en/download) and setup
 
-Run file run-server.bat
-Run file run-web.bat
+Run file run.bat
 
-Open the browser and type localhost:4200 in the URL bar
+Open the browser and type localhost:3000 in the URL bar

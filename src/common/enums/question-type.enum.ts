@@ -1,0 +1,3 @@
+export enum questionType {
+  MULTIPLE_CHOICE, SHORT_ANSWER, DROPDOWN_ANSWER
+}

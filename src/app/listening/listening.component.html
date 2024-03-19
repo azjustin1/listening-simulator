@@ -1,0 +1,120 @@
+<mat-card>
+  <mat-card-content>
+    <div class="form-group">
+      @if (isTesting || isReadOnly) {
+      <h2>{{ data.name }}</h2>
+      } @else {
+      <mat-form-field>
+        <mat-label>Part</mat-label>
+        <input
+          matInput
+          name="part"
+          type="text"
+          class="form-control"
+          id="part"
+          [(ngModel)]="data.name"
+          required
+        />
+      </mat-form-field>
+      }
+    </div>
+
+    @if (isEditting) {
+    <div class="form-group">
+      <div class="upload-file">
+        <button
+          type="button"
+          mat-raised-button
+          (click)="fileInput.click()"
+          style="margin-right: 16px"
+        >
+          Audio File
+        </button>
+        <input
+          hidden
+          (change)="onFileSelected($event)"
+          #fileInput
+          type="file"
+          id="file"
+        />
+        <span class="file-name">{{
+          selectedFile ? selectedFile.name : this.data.audioName
+        }}</span>
+      </div>
+    </div>
+    } @if (isTesting) {
+    <div class="form-group">
+      <div class="audio">
+        <audio [id]="data.id" #audioPlayer controls>
+          <source [src]="audioUrl" type="audio/mp3" />
+        </audio>
+      </div>
+      <div class="backdrop"></div>
+    </div>
+    }
+
+    <div class="question-group">
+      @for (question of data.questions; track question.id) { @switch
+      (question.type) { @case(0) {
+
+      <div class="question">
+        <app-multiple-choices
+          [question]="question"
+          [isReadOnly]="isReadOnly"
+          [isEditting]="isEditting"
+          [isTesting]="isTesting"
+        ></app-multiple-choices>
+        @if (isEditting) {
+        <div class="actions">
+          <button
+            mat-icon-button
+            color="warn"
+            type="button"
+            class="btn btn-danger"
+            (click)="removeQuestion($index)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+        }
+      </div>
+
+      } @case(1) {
+      <div class="question">
+        <app-short-answer
+          [question]="question"
+          [isReadOnly]="isReadOnly"
+          [isEditting]="isEditting"
+          [isTesting]="isTesting"
+        ></app-short-answer>
+        @if (isEditting) {
+        <button
+          mat-icon-button
+          color="warn"
+          type="button"
+          class="btn btn-danger"
+          (click)="removeQuestion($index)"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+        }
+      </div>
+      } } }
+    </div>
+
+    @if (isEditting) {
+    <div class="question-type-container">
+      <mat-card class="card" (click)="addQuestion(0)">
+        <mat-card-content class="question-type-item">
+          Multiple Choices
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="card" (click)="addQuestion(1)">
+        <mat-card-content class="question-type-item">
+          Short Answer
+        </mat-card-content>
+      </mat-card>
+    </div>
+    }
+  </mat-card-content>
+</mat-card>

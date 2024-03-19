@@ -3,41 +3,56 @@
     <div class="form-group">
       @if (isEditting) {
       <angular-editor
-        [name]="question.id"
-        [id]="question.id"
+        [name]="question.id!"
+        [id]="question.id!"
         [config]="config"
         [(ngModel)]="question.content"
       ></angular-editor>
       } @else {
-      <mat-card appearance="outlined">
-        <mat-card-content>
-          <span [innerHTML]="question.content"></span>
-        </mat-card-content>
-      </mat-card>
+      <span [innerHTML]="question.content"></span>
       }
     </div>
 
-    <div
-      class="choice-group"
-      *ngFor="let choice of question.choices; let i = index"
-    >
+    <div class="choice-group">
+      @for (choice of question.choices; track $index) {
       <div class="form-group">
         @if (isEditting) {
         <mat-form-field class="choice-index">
           <mat-label>No.</mat-label>
           <input
             matInput
-            [name]="i.toString()"
+            [name]="$index.toString()"
             type="text"
             class="form-control"
             [(ngModel)]="choice.index"
+          />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Answer</mat-label>
+          <input
+            matInput
+            [name]="choice.id!"
+            type="text"
+            class="form-control"
+            [(ngModel)]="choice.content"
           />
         </mat-form-field>
         } @else {
         <p class="mat-display 2 question-text">
           <b>{{ choice.index }}.&nbsp;</b>
         </p>
-        } @if (isReadOnly) {
+        @if (isTesting) {
+        <mat-form-field>
+          <mat-label>Answer</mat-label>
+          <input
+            matInput
+            [name]="choice.id!"
+            type="text"
+            class="form-control"
+            [(ngModel)]="choice.answer"
+          />
+        </mat-form-field>
+        } @else { @if (isReadOnly) {
         <div class="answer-container">
           <div
             class="answer"
@@ -55,40 +70,19 @@
           </div>
           }
         </div>
-        } @else { @if (isTesting) {
-        <mat-form-field>
-          <mat-label>Answer</mat-label>
-          <input
-            matInput
-            [name]="choice + i"
-            type="text"
-            class="form-control"
-            [(ngModel)]="choice.answer"
-          />
-        </mat-form-field>
-        } @else {
-        <mat-form-field>
-          <mat-label>Answer</mat-label>
-          <input
-            matInput
-            [name]="choice + i"
-            type="text"
-            class="form-control"
-            [(ngModel)]="choice.content"
-          />
-        </mat-form-field>
-        } }
+        } } }
         <button
           *ngIf="isEditting"
           mat-icon-button
           color="warn"
           type="button"
           class="btn btn-danger"
-          (click)="removeChoice(i)"
+          (click)="removeChoice($index)"
         >
           <mat-icon>delete</mat-icon>
         </button>
       </div>
+      }
     </div>
 
     <button

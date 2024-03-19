@@ -4,35 +4,15 @@
       <h1>
         <b>{{ result.name }}</b>
       </h1>
-      <h4><b>Name:</b> {{ result.studentName }}</h4>
-      <h4><b>Point:</b> {{ result.correctPoint }}/{{ result.totalPoint }}</h4>
-      <h4><b>Test date:</b> {{ result.testDate }}</h4>
+      <h4><b>Name:</b> {{ result!.studentName }}</h4>
+      <h4><b>Point:</b> {{ result!.correctPoint }}/{{ result.totalPoint }}</h4>
+      <h4><b>Test date:</b> {{ result!.testDate }}</h4>
     </div>
 
     <div class="question-group">
-      <div
-        class="question"
-        *ngFor="let question of result.questions; let i = index"
-      >
-        <mat-card>
-          <mat-card-content>
-            @switch (question.type) { @case(0) {
-            <div class="question">
-              <app-multiple-choices
-                [question]="question"
-                [isReadOnly]="true"
-              ></app-multiple-choices>
-              <div class="actions"></div>
-            </div>
-            } @case(1) {
-            <app-short-answer
-              [question]="question"
-              [isReadOnly]="true"
-            ></app-short-answer>
-            } }
-          </mat-card-content>
-        </mat-card>
-      </div>
+      @for (part of result.listeningParts; track $index) {
+      <app-listening [data]="part" [isReadOnly]="true"></app-listening>
+      }
     </div>
   </div>
 </section>

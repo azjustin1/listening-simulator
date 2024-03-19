@@ -19,40 +19,11 @@
     <h2>{{ minutes }}:{{ seconds | number : "2.0" }}</h2>
   </div>
 
-  <div class="form-group">
-    <div class="audio">
-      <audio controls #audioPlayer>
-        <source [src]="audioUrl" type="audio/mp3" />
-      </audio>
-    </div>
-    <div class="backdrop"></div>
-  </div>
-
-  @if (isReady) {
+  @if (isReady) { @for (part of quiz.listeningParts; track $index) {
   <div class="question-group">
-    <div
-      class="question"
-      *ngFor="let question of quiz.questions; let i = index"
-    >
-      @switch (question.type) { @case(0) {
-
-      <div class="question">
-        <app-multiple-choices
-          [question]="question"
-          [isTesting]="true"
-          (onValuChange)="onMultipleChoiceSelect($event, question.id)"
-        ></app-multiple-choices>
-        <div class="actions"></div>
-      </div>
-
-      } @case(1) {
-      <app-short-answer
-        [question]="question"
-        [isTesting]="true"
-      ></app-short-answer>
-      } }
-    </div>
+    <app-listening [data]="part" [isTesting]="true"></app-listening>
   </div>
+  }
   <button
     mat-raised-button
     color="primary"

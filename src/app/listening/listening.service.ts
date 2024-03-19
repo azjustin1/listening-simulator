@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 @Injectable()
-export class QuizService {
+export class ListeningService {
   baseUrl: string = 'http://localhost:3000';
 
   constructor(private httpClient: HttpClient) {}

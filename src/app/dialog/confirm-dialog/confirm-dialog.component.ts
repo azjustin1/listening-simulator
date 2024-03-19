@@ -27,6 +27,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 export class ConfirmDialogComponent {
   @Input() title: string = '';
   @Input() message: string = '';
+  @Input() isWarning: boolean = false;
 
   constructor(
     public dialogRef: MatDialogRef<ConfirmDialogComponent>,

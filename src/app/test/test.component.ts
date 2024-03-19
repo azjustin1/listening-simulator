@@ -1,20 +1,30 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  QueryList,
+  ViewChild,
+  ViewChildren
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { ActivatedRoute, Router } from '@angular/router';
-import { each, toArray } from 'lodash-es';
-import { FileService } from '../file.service';
+import { each } from 'lodash-es';
+import { Subscription, interval } from 'rxjs';
+import { Quiz } from '../../common/models/quiz.model';
+import { Result } from '../../common/models/result.model';
+import { CommonUtils } from '../../utils/common-utils';
+import { ConfirmDialogComponent } from '../dialog/confirm-dialog/confirm-dialog.component';
+import { ListeningComponent } from '../listening/listening.component';
 import { MultipleChoicesComponent } from '../multiple-choices/multiple-choices.component';
 import { QuizService } from '../quizzes/quizzes.service';
 import { ShortAnswerComponent } from '../short-answer/short-answer.component';
 import { TestService } from './test.service';
-import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialogComponent } from '../dialog/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-test',
@@ -29,6 +39,7 @@ import { ConfirmDialogComponent } from '../dialog/confirm-dialog/confirm-dialog.
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
+    ListeningComponent,
   ],
   providers: [QuizService, TestService],
   templateUrl: './test.component.html',
@@ -36,27 +47,39 @@ import { ConfirmDialogComponent } from '../dialog/confirm-dialog/confirm-dialog.
 })
 export class TestComponent {
   @ViewChild('audioPlayer') audioPlayer!: ElementRef;
+  @ViewChildren('audioElement') audioElements!: QueryList<
+    ElementRef<HTMLAudioElement>
+  >;
   audioUrl: string = '';
-  result: any = {
+  result: Result = {
+    id: '',
     name: '',
     timeout: null,
-    questions: [],
-    studentName: null,
+    studentName: '',
+    correctPoint: 0,
+    totalPoint: 0,
+    testDate: '',
+    quizId: '',
+    listeningParts: [],
   };
-  quiz: any;
-  mapQuestionById: Record<string, any> = {};
+  quiz: Quiz = {
+    id: '',
+    name: '',
+    timeout: null,
+    listeningParts: [],
+  };
+  subscriptions: Subscription[] = [];
 
   minutes: number = 0;
   seconds: number = 0;
   totalSeconds: number = 0;
-  interval: any;
+  interval = {};
   isReady: boolean = false;
 
   constructor(
     private quizService: QuizService,
     private route: ActivatedRoute,
     private testService: TestService,
-    private fileService: FileService,
     private router: Router,
     private dialog: MatDialog
   ) {
@@ -68,25 +91,8 @@ export class TestComponent {
           this.totalSeconds = quiz.timeout * 60;
           this.minutes = Math.floor(this.totalSeconds / 60);
           this.seconds = this.totalSeconds % 60;
-          this.generateMapQuestion(quiz.questions);
-          this.getAudioFile(quiz.audioName);
         });
       }
-    });
-  }
-
-  generateMapQuestion(questions: any[]) {
-    questions.forEach((question) => {
-      this.mapQuestionById[question.id] = question;
-    });
-  }
-
-  getAudioFile(fileName: string) {
-    this.fileService.getFile(fileName).subscribe((audioFile: Blob) => {
-      const fileURL = URL.createObjectURL(audioFile);
-      const audioElement: HTMLAudioElement = this.audioPlayer.nativeElement;
-      this.audioUrl = fileURL;
-      audioElement.load();
     });
   }
 
@@ -102,10 +108,11 @@ export class TestComponent {
   }
 
   submit() {
-    this.result.questions = toArray(this.mapQuestionById);
+    this.result.id = CommonUtils.generateRandomId();
     this.result.testDate = this.getCurrentDate();
-    this.result.quizId = this.quiz.id;
     this.result.name = this.quiz.name;
+    this.result.quizId = this.quiz.id!;
+    this.result.listeningParts = this.quiz.listeningParts;
     this.calculatePoint();
     this.testService.submitTest(this.result).subscribe(() => {
       this.router.navigate(['']);
@@ -114,29 +121,32 @@ export class TestComponent {
 
   onStartTest() {
     this.isReady = true;
-    this.audioPlayer.nativeElement.play();
     this.startTimer();
     setTimeout(() => {
-      this.submit();
+      const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+        hasBackdrop: true,
+      });
+      dialogRef.componentInstance.title = 'Information';
+      dialogRef.componentInstance.message = "Time's up";
+      dialogRef.componentInstance.isWarning = true;
+      dialogRef.afterClosed().subscribe((isConfirm) => {
+        if (isConfirm) {
+          this.submit();
+        }
+      });
     }, this.totalSeconds * 1000);
   }
 
   startTimer() {
-    this.interval = setInterval(() => {
+    const sub = interval(1000).subscribe(() => {
       if (this.seconds === 0) {
         this.minutes--;
         this.seconds = 59;
       } else {
         this.seconds--;
       }
-    }, 1000);
-  }
-
-  onMultipleChoiceSelect(choiceId: string, questionId: string) {
-    this.mapQuestionById[questionId] = {
-      ...this.mapQuestionById[questionId],
-      answer: choiceId,
-    };
+    });
+    this.subscriptions.push(sub);
   }
 
   private getCurrentDate() {
@@ -154,30 +164,34 @@ export class TestComponent {
   private calculatePoint() {
     let totalPoint = 0;
     let correctPoint = 0;
-    each(this.result.questions, (question) => {
-      if (question.type === 0) {
-        // Multiple choices
-        totalPoint++;
-        if (question.answer === question.correctAnswer) {
-          correctPoint++;
-        }
-      }
-
-      if (question.type === 1) {
-        // Short answer
-        each(question.choices, (choice) => {
+    each(this.result.listeningParts, (part) => {
+      each(part.questions, (question) => {
+        if (question.type === 0) {
+          // Multiple choices
           totalPoint++;
-          if (choice.answer === choice.content) {
+          if (question.answer === question.correctAnswer) {
             correctPoint++;
           }
-        });
-      }
+        }
+
+        if (question.type === 1) {
+          // Short answer
+          each(question.choices, (choice) => {
+            totalPoint++;
+            if (choice.answer === choice.content) {
+              correctPoint++;
+            }
+          });
+        }
+      });
     });
     this.result.totalPoint = totalPoint;
     this.result.correctPoint = correctPoint;
   }
 
   ngOnDestroy() {
-    clearInterval(this.interval);
+    each(this.subscriptions, (sub) => {
+      sub.unsubscribe();
+    });
   }
 }

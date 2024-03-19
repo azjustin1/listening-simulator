@@ -115,8 +115,8 @@
         <div class="quizzes">
           <mat-card class="result-card">
             <mat-card-title class="card-result-title"
-              ><h1 class="mat-display-2" (click)="view(result.id, 'results')">
-                {{ result.studentName }}
+              ><h1 class="mat-display-2" (click)="viewResult(result.id)">
+                &nbsp;{{ result.studentName }}
               </h1>
               <mat-card-actions>
                 <button mat-icon-button [matMenuTriggerFor]="menu">
