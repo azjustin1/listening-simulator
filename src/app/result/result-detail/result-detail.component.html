@@ -1,0 +1,26 @@
+<section>
+  <div class="container">
+    <div class="form-group">
+      <h1>
+        <b>{{ result.name }}</b>
+      </h1>
+      <h4><b>Name:</b> {{ result!.studentName }}</h4>
+      <h4><b>Point:</b> {{ result!.correctPoint }}/{{ result.totalPoint }}</h4>
+      <h4><b>Test date:</b> {{ result!.testDate }}</h4>
+    </div>
+
+    <div class="question-group">
+      @for (part of result.listeningParts; track $index) {
+      <app-listening [data]="part" [isReadOnly]="true"></app-listening>
+      }
+    </div>
+  </div>
+</section>
+<button
+  mat-raised-button
+  color="primary"
+  (click)="back()"
+  style="margin-top: 16px"
+>
+  Back
+</button>

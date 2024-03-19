@@ -1,0 +1,9 @@
+.actions {
+  display: flex;
+  flex-direction: row-reverse;
+  margin: 16px 0;
+}
+
+.save-button {
+  margin: 16px 0;
+}

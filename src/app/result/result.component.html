@@ -1,26 +1,45 @@
-<section>
-  <div class="container">
-    <div class="form-group">
-      <h1>
-        <b>{{ result.name }}</b>
-      </h1>
-      <h4><b>Name:</b> {{ result!.studentName }}</h4>
-      <h4><b>Point:</b> {{ result!.correctPoint }}/{{ result.totalPoint }}</h4>
-      <h4><b>Test date:</b> {{ result!.testDate }}</h4>
-    </div>
-
-    <div class="question-group">
-      @for (part of result.listeningParts; track $index) {
-      <app-listening [data]="part" [isReadOnly]="true"></app-listening>
-      }
-    </div>
+<div class="actions">
+  <div class="search">
+    <mat-form-field>
+      <input
+        placeholder="Search"
+        matInput
+        name="searchResult"
+        type="search"
+        class="form-control"
+        id="searchResult"
+        [(ngModel)]="searchString"
+        (ngModelChange)="onSearchChange()"
+      />
+      <mat-icon matPrefix class="my-icon">search</mat-icon>
+    </mat-form-field>
   </div>
-</section>
-<button
-  mat-raised-button
-  color="primary"
-  (click)="back()"
-  style="margin-top: 16px"
->
-  Back
-</button>
+</div>
+<div class="container">
+  @for (result of results; track $index) {
+  <div class="quizzes">
+    <mat-card class="card">
+      <mat-card-title class="card-title"
+        ><h1 class="mat-display-2" (click)="view(result.id)">
+          &nbsp;{{ result.studentName }}
+        </h1>
+        <mat-card-actions>
+          <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="view(result.id)">View</button>
+            <button mat-menu-item (click)="onDeleteResultClick(result.id)">
+              Delete
+            </button>
+          </mat-menu>
+        </mat-card-actions>
+      </mat-card-title>
+      <mat-card-content class="card-content" (click)="view(result.id)">
+        Point: {{ result.correctPoint }}/{{ result.totalPoint }} <br />
+        Test date: {{ result.testDate }}
+      </mat-card-content>
+    </mat-card>
+  </div>
+  }
+</div>

@@ -1,0 +1,64 @@
+<div class="container">
+  <h1>Create Quiz</h1>
+  <div class="form-group">
+    <mat-form-field>
+      <mat-label>Quiz Name</mat-label>
+      <input
+        matInput
+        name="quizName"
+        type="text"
+        class="form-control"
+        id="quizName"
+        [(ngModel)]="currentQuiz.name"
+        required
+      />
+    </mat-form-field>
+  </div>
+
+  <div class="form-group">
+    <mat-form-field>
+      <mat-label>Time</mat-label>
+      <input
+        placeholder="Minute"
+        matInput
+        name="timeout"
+        type="number"
+        class="form-control"
+        id="timeout"
+        [(ngModel)]="currentQuiz.timeout"
+        required
+      />
+    </mat-form-field>
+
+    @for (listeningPart of currentQuiz.listeningParts; track listeningPart.id) {
+    <div class="listening-part-container">
+      <div class="actions">
+        <button
+          mat-icon-button
+          color="warn"
+          type="button"
+          class="btn btn-danger"
+          (click)="removePart($index)"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+      <app-listening [data]="listeningPart" [isEditting]="true"></app-listening>
+    </div>
+    }
+  </div>
+  <button
+    mat-button
+    color="primary"
+    (click)="onAddListeningPart()"
+    style="margin-top: 16px"
+  >
+    <mat-icon>add</mat-icon> Add listening part
+  </button>
+</div>
+
+<div class="save-button">
+  <button mat-raised-button color="primary" (click)="onSaveClick()">
+    Save and Quit
+  </button>
+</div>

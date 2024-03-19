@@ -1,59 +1,39 @@
-<div class="container">
-  <h1>Create Quiz</h1>
-  <div class="form-group">
-    <mat-form-field>
-      <mat-label>Quiz Name</mat-label>
-      <input
-        matInput
-        name="quizName"
-        type="text"
-        class="form-control"
-        id="quizName"
-        [(ngModel)]="currentQuiz.name"
-        required
-      />
-    </mat-form-field>
-  </div>
-
-  <div class="form-group">
-    <mat-form-field>
-      <mat-label>Time</mat-label>
-      <input
-        placeholder="Minute"
-        matInput
-        name="timeout"
-        type="number"
-        class="form-control"
-        id="timeout"
-        [(ngModel)]="currentQuiz.timeout"
-        required
-      />
-    </mat-form-field>
-
-    @for (listeningPart of currentQuiz.listeningParts; track listeningPart.id) {
-    <div class="listening-part-container">
-      <div class="actions">
-        <button
-          mat-icon-button
-          color="warn"
-          type="button"
-          class="btn btn-danger"
-          (click)="removePart($index)"
-        >
-          <mat-icon>delete</mat-icon>
-        </button>
-      </div>
-      <app-listening [data]="listeningPart" [isEditting]="true"></app-listening>
-    </div>
-    }
-  </div>
-  <button mat-button color="primary" (click)="onAddListeningPart()" style="margin-top: 16px;">
-    <mat-icon>add</mat-icon> Add listening part
-  </button>
-</div>
-
 <div class="actions">
-  <button mat-raised-button color="primary" (click)="onSaveClick()">
-    Save and Quit
+  <button mat-raised-button color="primary" (click)="addNewQuiz()">
+    Add New Test
   </button>
+  <mat-form-field>
+    <input
+      placeholder="Search"
+      matInput
+      name="searchQuiz"
+      type="search"
+      class="form-control"
+      id="searchQuiz"
+      [(ngModel)]="searchString"
+      (ngModelChange)="onSearch()"
+    />
+    <mat-icon matPrefix class="my-icon">search</mat-icon>
+  </mat-form-field>
+</div>
+<div class="container">
+  @for (quiz of quizzes; track $index) {
+  <mat-card class="card">
+    <mat-card-content class="card-content">
+      <h2 class="mat-display-2 card-content-text">
+        {{ quiz.name }}
+      </h2></mat-card-content
+    >
+    <mat-card-actions>
+      <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="test(quiz.id)">Test</button>
+        <button mat-menu-item (click)="edit('edit-quiz', quiz.id)">Edit</button>
+        <button mat-menu-item (click)="onDeleteClick(quiz)">Delete</button>
+      </mat-menu>
+    </mat-card-actions>
+  </mat-card>
+  }
 </div>

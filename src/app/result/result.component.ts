@@ -3,17 +3,21 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
 import { ActivatedRoute, Router } from '@angular/router';
-import { each } from 'lodash-es';
+import { debounce, filter } from 'lodash-es';
 import { Result } from '../../common/models/result.model';
+import { ConfirmDialogComponent } from '../dialog/confirm-dialog/confirm-dialog.component';
+import { ListeningComponent } from '../listening/listening.component';
 import { MultipleChoicesComponent } from '../multiple-choices/multiple-choices.component';
 import { QuizService } from '../quizzes/quizzes.service';
 import { ShortAnswerComponent } from '../short-answer/short-answer.component';
-import { TestService } from '../test/test.service';
-import { ListeningComponent } from '../listening/listening.component';
+import { ResultService } from './result.service';
 
 @Component({
   selector: 'app-result',
@@ -29,41 +33,59 @@ import { ListeningComponent } from '../listening/listening.component';
     MatFormFieldModule,
     MatInputModule,
     ListeningComponent,
+    MatMenuModule,
+    MatIcon,
   ],
-  providers: [QuizService, TestService],
+  providers: [QuizService, ResultService],
   templateUrl: './result.component.html',
   styleUrl: './result.component.css',
 })
 export class ResultComponent {
-  result: Result = {
-    id: '',
-    name: '',
-    timeout: null,
-    studentName: '',
-    listeningParts: [],
-    correctPoint: 0,
-    totalPoint: 0,
-    testDate: '',
-    quizId: '',
-  };
+  results: Result[] = [];
+  searchString: string = '';
+  onSearchChange = debounce(() => this.search(), 500);
 
   constructor(
     private route: ActivatedRoute,
-    private testService: TestService,
-    private router: Router
+    private resultService: ResultService,
+    private router: Router,
+    private dialog: MatDialog
   ) {
-    this.route.paramMap.subscribe((paramMap: any) => {
-      const resultId = paramMap.get('resultId');
-      if (resultId) {
-        this.testService.getResultById(resultId).subscribe((result) => {
-          this.result = result;
-        });
+    this.resultService.getAll().subscribe((results) => {
+      this.results = results;
+    });
+  }
+
+  search() {
+    this.resultService
+      .getByStudentName(this.searchString)
+      .subscribe((results) => {
+        this.results = results;
+      });
+  }
+
+  view(id: string) {
+    this.router.navigate([`result-detail`, id]);
+  }
+
+  onDeleteResultClick(resultId: string) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      hasBackdrop: true,
+    });
+
+    dialogRef.componentInstance.title = 'Warning';
+    dialogRef.componentInstance.message = 'Confirm to delete this?';
+    dialogRef.afterClosed().subscribe((isConfirm: boolean) => {
+      if (isConfirm) {
+        this.deleteResult(resultId);
       }
     });
   }
 
-  printPage() {
-    window.print();
+  deleteResult(resultId: string) {
+    this.resultService.deleteById(resultId).subscribe(() => {
+      this.results = filter(this.results, (result) => result.id !== resultId);
+    });
   }
 
   back() {

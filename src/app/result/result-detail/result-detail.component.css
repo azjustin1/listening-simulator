@@ -1,0 +1,62 @@
+.result-container {
+  height: 100vh;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(10000, 120px);
+  grid-gap: 16px; /* Optional: Add gap between grid items */
+}
+
+.card {
+  height: 120px;
+  margin: 16px 0;
+  width: 400px;
+  align-items: stretch;
+}
+
+.search {
+  display: flex;
+  flex-direction: row-reverse;
+  margin-top: 16px;
+}
+
+.card-result-title {
+  display: flex;
+  margin: 0 0 0 10px;
+  line-height: 24px;
+  margin-left: 10px;
+  cursor: pointer;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-result-content {
+  cursor: pointer;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin: 16px 0;
+}
+
+.search {
+  display: flex;
+  flex-direction: row-reverse;
+  margin-top: 16px;
+}
+
+.card-content {
+  width: 100%;
+  height: 100%;
+}
+
+.card-content-text {
+  line-height: 32px;
+  height: 64px;
+}
+
+.result {
+  text-align: left;
+  cursor: pointer;
+}

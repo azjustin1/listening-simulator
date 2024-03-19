@@ -1,49 +1,33 @@
-.quiz {
-  height: 50px;
-  width: 100px;
-  text-align: center;
-  line-height: 50px;
-  border: 1px solid black;
-  border-radius: 5px;
-}
-
-.question-type-container {
-  display: flex;
-  margin-top: 16px;
-}
-
-.question-group {
-  height: fit-content;
+.container {
+  height: 100vh;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(10000, 64px);
+  grid-gap: 16px; /* Optional: Add gap between grid items */
 }
 
 .card {
-  margin: 0 16px 16px 0;
-  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  height: 64px;
+  margin: 16px 0;
+  width: 400px;
+  text-overflow: ellipsis;
 }
 
-.question-type-item {
-  width: 120px;
-  text-align: center;
-  margin: 16px 0;
+.card-content {
+  width: 100%;
+  height: 100%;
+}
+
+.card-content-text {
+  line-height: 32px;
+  height: 64px;
 }
 
 .actions {
   display: flex;
-  flex-direction: row-reverse;
-  margin-top: 16px;
-}
-
-.question {
-  display: flex;
-  padding: 16px;
+  justify-content: space-between;
   margin: 16px 0;
-  height: fit-content;
-}
-
-.upload-file {
-  margin: 0 0 16px 0;
-}
-
-.listening-part-container {
-  flex: 0 0 100%;
 }

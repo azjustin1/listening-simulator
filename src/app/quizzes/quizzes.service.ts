@@ -8,11 +8,11 @@ export class QuizService {
 
   constructor(private httpClient: HttpClient) {}
 
-  getAllQuiz(): Observable<any> {
+  getAll(): Observable<any> {
     return this.httpClient.get(`${this.baseUrl}/quizzes`);
   }
 
-  searchQuizByName(name: string): Observable<any> {
+  searchByName(name: string): Observable<any> {
     return this.httpClient.get(`${this.baseUrl}/quizzes?name_like=${name}`);
   }
 
@@ -20,15 +20,15 @@ export class QuizService {
     return this.httpClient.get(`${this.baseUrl}/quizzes/${id}`);
   }
 
-  createQuiz(quiz: any): Observable<any> {
+  create(quiz: any): Observable<any> {
     return this.httpClient.post(`${this.baseUrl}/quizzes`, quiz);
   }
 
-  editQuiz(quiz: any): Observable<any> {
+  edit(quiz: any): Observable<any> {
     return this.httpClient.put(`${this.baseUrl}/quizzes/${quiz.id}`, quiz);
   }
 
-  deleteQuiz(quizId: number): Observable<any> {
+  delete(quizId: number): Observable<any> {
     return this.httpClient.delete(`${this.baseUrl}/quizzes/${quizId}`);
   }
 }
