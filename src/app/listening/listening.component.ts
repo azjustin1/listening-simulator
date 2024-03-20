@@ -16,7 +16,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
-import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Listening } from '../../common/models/listening.model';
 import { CommonUtils } from '../../utils/common-utils';
@@ -24,6 +23,8 @@ import { FileService } from '../file.service';
 import { MultipleChoicesComponent } from '../multiple-choices/multiple-choices.component';
 import { ShortAnswerComponent } from '../short-answer/short-answer.component';
 import { ListeningService } from './listening.service';
+import { Question } from '../../common/models/question.model';
+import { each } from 'lodash-es';
 
 @Component({
   selector: 'app-listening',
@@ -43,7 +44,7 @@ import { ListeningService } from './listening.service';
   templateUrl: './listening.component.html',
   styleUrl: './listening.component.css',
 })
-export class ListeningComponent implements AfterViewInit, OnDestroy {
+export class ListeningComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() data: Listening = {
     name: '',
     questions: [],
@@ -52,26 +53,29 @@ export class ListeningComponent implements AfterViewInit, OnDestroy {
   @Input() isTesting: boolean = false;
   @Input() isEditting: boolean = false;
   @Input() isReadOnly: boolean = false;
+  @Input() isSaved: boolean = false;
   @ViewChild('audioPlayer') audioPlayer!: ElementRef;
 
+  mapQuestionEditting: Record<string, boolean> = {};
   audioUrl: string = '';
-
   selectedFile!: File;
-  currentQuiz: any = {
-    name: '',
-    timeout: null,
-    questions: [],
-  };
-  currentQuestion: any = {
+  currentQuestion: Question = {
     content: '',
-    description: '',
     type: null,
     choices: [],
+    answer: '',
+    correctAnswer: '',
   };
 
   subscription: Subscription[] = [];
 
   constructor(private fileService: FileService) {}
+
+  ngOnInit(): void {
+    each(this.data.questions, (question) => {
+      this.mapQuestionEditting[question.id!] = false;
+    });
+  }
 
   ngAfterViewInit(): void {
     this.getAudioFile(this.data.audioName);
@@ -95,21 +99,26 @@ export class ListeningComponent implements AfterViewInit, OnDestroy {
   }
 
   addQuestion(questionType: number) {
+    const id = CommonUtils.generateRandomId();
     switch (questionType) {
       case 0:
         this.currentQuestion = {
-          id: CommonUtils.generateRandomId(),
+          id: id,
           content: '',
           type: questionType,
           choices: this.defaultMultipleChoices(),
+          answer: '',
+          correctAnswer: '',
         };
         break;
       case 1:
         this.currentQuestion = {
-          id: CommonUtils.generateRandomId(),
+          id: id,
           content: '',
           type: questionType,
           choices: [],
+          answer: '',
+          correctAnswer: '',
         };
         break;
       default:
@@ -117,6 +126,7 @@ export class ListeningComponent implements AfterViewInit, OnDestroy {
     }
     this.data.questions.push({ ...this.currentQuestion });
     this.data = { ...this.data };
+    this.mapQuestionEditting[id] = true;
   }
 
   defaultMultipleChoices() {
@@ -142,6 +152,14 @@ export class ListeningComponent implements AfterViewInit, OnDestroy {
       choices.push(choice);
     }
     return choices;
+  }
+
+  onSaveQuestion(id: string) {
+    this.mapQuestionEditting[id] = false;
+  }
+
+  onEditQuestion(id: string) {
+    this.mapQuestionEditting[id] = true;
   }
 
   removeQuestion(index: number) {

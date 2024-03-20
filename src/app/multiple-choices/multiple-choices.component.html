@@ -2,62 +2,64 @@
   <div class="question-group">
     <div class="form-group">
       @if (isEditting) {
-      <angular-editor
-        name="questionContent"
-        [id]="question.id!"
-        [config]="config"
-        [(ngModel)]="question.content"
-      ></angular-editor>
+        @if (isExpand) {
+          <angular-editor
+            name="questionContent"
+            [id]="question.id!"
+            [config]="config"
+            [(ngModel)]="question.content"
+          ></angular-editor>
+        }
       } @else {
-      <span [innerHTML]="question.content"></span>
+        <span [innerHTML]="question.content"></span>
       }
     </div>
 
     <div class="choice-group">
       @for (choice of question.choices; track $index) {
-      <div class="choice">
-        <div
-          class="choice-index"
-          [ngClass]="{
-            selected: isTesting
-              ? question.answer === choice.id
-              : question.correctAnswer === choice.id,
-            isWrong:
-              isReadOnly &&
-              question.answer === choice.id &&
-              question.answer !== question.correctAnswer,
-            readonly: isReadOnly
-          }"
-          (click)="onSelectChoice($index)"
-        >
-          <p>{{ CHOICE_INDEX[$index] }}</p>
-        </div>
-        <div class="form-group">
-          @if (isEditting) {
-          <mat-form-field>
-            <input
-              [disabled]="isReadOnly"
-              matInput
-              [name]="choice.id!"
-              type="text"
-              class="form-control"
-              [(ngModel)]="choice.content"
-            />
-          </mat-form-field>
-          <button
-            mat-icon-button
-            color="warn"
-            type="button"
-            class="btn btn-danger"
-            (click)="removeChoice($index)"
+        <div class="choice">
+          <div
+            class="choice-index"
+            [ngClass]="{
+              selected: isTesting
+                ? question.answer === choice.id
+                : question.correctAnswer === choice.id,
+              isWrong:
+                isReadOnly &&
+                question.answer === choice.id &&
+                question.answer !== question.correctAnswer,
+              readonly: isReadOnly
+            }"
+            (click)="onSelectChoice($index)"
           >
-            <mat-icon>delete</mat-icon>
-          </button>
-          } @else {
-          <p class="question-text">{{ choice.content }}</p>
-          }
+            <p>{{ CHOICE_INDEX[$index] }}</p>
+          </div>
+          <div class="form-group">
+            @if (isEditting) {
+              <mat-form-field>
+                <input
+                  [disabled]="isReadOnly"
+                  matInput
+                  [name]="choice.id!"
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="choice.content"
+                />
+              </mat-form-field>
+              <button
+                mat-button
+                color="warn"
+                type="button"
+                class="btn btn-danger"
+                (click)="removeChoice($index)"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            } @else {
+              <p class="question-text">{{ choice.content }}</p>
+            }
+          </div>
         </div>
-      </div>
       }
     </div>
 

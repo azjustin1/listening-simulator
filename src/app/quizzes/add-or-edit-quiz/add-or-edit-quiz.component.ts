@@ -20,6 +20,8 @@ import { QuizService } from '../quizzes.service';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ReadingComponent } from '../../reading/reading.component';
 import { Reading } from '../../../common/models/reading.model';
+import { each } from 'lodash-es';
+import { Question } from '../../../common/models/question.model';
 
 @Component({
   selector: 'app-add-or-edit-quiz',
@@ -47,8 +49,12 @@ export class AddOrEditQuizComponent implements OnDestroy {
     name: '',
     timeout: null,
     listeningParts: [],
-    readingParagraph: [],
+    readingParts: [],
   };
+
+  mapSavedPart: Record<string, boolean> = {};
+
+  mapQuestionEditting: Record<string, boolean> = {};
 
   subscription: Subscription[] = [];
 
@@ -56,16 +62,32 @@ export class AddOrEditQuizComponent implements OnDestroy {
     private quizService: QuizService,
     private route: ActivatedRoute,
     private router: Router,
-    private dialog: MatDialog
+    private dialog: MatDialog,
   ) {
     this.route.paramMap.subscribe((paramMap: any) => {
       const quizId = paramMap.get('quizId');
       if (quizId) {
         const sub = this.quizService.getById(quizId).subscribe((quiz: any) => {
           this.currentQuiz = quiz;
+          this.generateListeningEdittingPartMap(
+            this.currentQuiz.listeningParts,
+          );
         });
         this.subscription.push(sub);
       }
+    });
+  }
+
+  generateListeningEdittingPartMap(listeningParts: Listening[]) {
+    each(listeningParts, (part) => {
+      this.mapSavedPart[part.id!] = true;
+      this.generateQuestionEdittingMap(part.questions);
+    });
+  }
+
+  generateQuestionEdittingMap(questions: Question[]) {
+    each(questions, (question) => {
+      this.mapQuestionEditting[question.id!] = false;
     });
   }
 
@@ -85,7 +107,19 @@ export class AddOrEditQuizComponent implements OnDestroy {
       content: '',
       questions: [],
     };
-    this.currentQuiz.readingParagraph.push(newReadingParagraph);
+    this.currentQuiz.readingParts.push(newReadingParagraph);
+  }
+
+  onSavePart(id: string) {
+    if (this.mapSavedPart[id] !== undefined) {
+      this.mapSavedPart[id] = true;
+    }
+  }
+
+  onEditClick(id: string) {
+    if (this.mapSavedPart[id] !== undefined) {
+      this.mapSavedPart[id] = false;
+    }
   }
 
   removePart(index: number) {
@@ -93,7 +127,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
   }
 
   removeParagraph(index: number) {
-    this.currentQuiz.readingParagraph.splice(index, 1);
+    this.currentQuiz.readingParts.splice(index, 1);
   }
 
   onSaveClick() {

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -20,6 +20,8 @@ import { CommonUtils } from '../../utils/common-utils';
 import { MultipleChoicesComponent } from '../multiple-choices/multiple-choices.component';
 import { ShortAnswerComponent } from '../short-answer/short-answer.component';
 import { ReadingService } from './reading.service';
+import { Question } from '../../common/models/question.model';
+import { each, isUndefined } from 'lodash-es';
 
 @Component({
   selector: 'app-reading',
@@ -43,7 +45,7 @@ import { ReadingService } from './reading.service';
   templateUrl: './reading.component.html',
   styleUrl: './reading.component.css',
 })
-export class ReadingComponent {
+export class ReadingComponent implements OnInit {
   count = 0;
   @Input() data: Reading = {
     id: '',
@@ -54,28 +56,9 @@ export class ReadingComponent {
   @Input() isEditting: boolean = false;
   @Input() isReadOnly: boolean = false;
 
-  currentParagraph: any = {
-    id: '',
-    content: '',
-    questions: [],
-  };
-
-  panelOpenState = false;
-
-  currentQuiz: any = {
-    name: '',
-    timeout: null,
-    paragraphs: [],
-  };
-
-  currentQuestion: any = {
-    content: '',
-    description: '',
-    type: null,
-    choices: [],
-  };
-
   subscription: Subscription[] = [];
+
+  mapQuestionCollapse: Record<string, boolean> = {};
 
   config: AngularEditorConfig = {
     editable: true,
@@ -83,29 +66,46 @@ export class ReadingComponent {
 
   constructor() {}
 
+  ngOnInit(): void {
+    each(this.data.questions, (question) => {
+      this.mapQuestionCollapse[question.id!] = false;
+    });
+  }
+
   addQuestion(questionType: number) {
+    let newQuestion: Question = {
+      content: '',
+      type: null,
+      choices: [],
+      answer: '',
+      correctAnswer: '',
+    };
     switch (questionType) {
       case 1:
-        this.currentQuestion = {
+        newQuestion = {
           id: CommonUtils.generateRandomId(),
           content: '',
           type: questionType,
           choices: [],
+          answer: '',
+          correctAnswer: '',
         };
         break;
       case 2:
-        this.currentQuestion = {
+        newQuestion = {
           id: CommonUtils.generateRandomId(),
           content: '',
           type: questionType,
           choices: this.defaultMultipleChoices(),
+          answer: '',
+          correctAnswer: '',
         };
         break;
       default:
         break;
     }
     this.data.questions.push({
-      ...this.currentQuestion,
+      ...newQuestion,
     });
   }
 
@@ -140,5 +140,17 @@ export class ReadingComponent {
 
   getChoiceById(id: string, choices: Choice[]) {
     return choices.find((choice) => choice.id === id);
+  }
+
+  afterExpand(id: string) {
+    if (!isUndefined(this.mapQuestionCollapse[id])) {
+      this.mapQuestionCollapse[id] = true;
+    }
+  }
+
+  afterCollapse(id: string) {
+    if (!isUndefined(this.mapQuestionCollapse[id])) {
+      this.mapQuestionCollapse[id] = false;
+    }
   }
 }

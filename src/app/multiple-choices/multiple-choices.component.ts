@@ -7,8 +7,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
-import { FileService } from '../file.service';
 import { AbstractQuestionComponent } from '../../common/abstract-question.component';
+import { FileService } from '../file.service';
 @Component({
   selector: 'app-multiple-choices',
   standalone: true,
@@ -26,10 +26,7 @@ import { AbstractQuestionComponent } from '../../common/abstract-question.compon
   templateUrl: './multiple-choices.component.html',
   styleUrl: './multiple-choices.component.css',
 })
-export class MultipleChoicesComponent
-  extends AbstractQuestionComponent
-  implements OnInit
-{
+export class MultipleChoicesComponent extends AbstractQuestionComponent {
   @Output() onValuChange = new EventEmitter();
   selectedAnswer: string = '';
 
@@ -62,6 +59,10 @@ export class MultipleChoicesComponent
     'Z',
   ];
 
+  override ngOnInit(): void {
+    console.log(this.isEditting);
+  }
+
   onSelectChoice(index: number) {
     if (this.isReadOnly) {
       return;
@@ -71,9 +72,9 @@ export class MultipleChoicesComponent
 
     if (this.isEditting) {
       this.question.correctAnswer = this.selectedAnswer;
-    } 
-    
-    if (this.isTesting){
+    }
+
+    if (this.isTesting) {
       this.question.answer = this.selectedAnswer;
     }
     this.onValuChange.emit(this.question.choices[index].id);

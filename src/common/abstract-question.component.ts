@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FileService } from '../app/file.service';
 import { AngularEditorConfig, UploadResponse } from '@wfpena/angular-wysiwyg';
 import { map } from 'rxjs';
@@ -14,6 +14,9 @@ export abstract class AbstractQuestionComponent implements OnInit {
   @Input() isEditting: boolean = false;
   @Input() isReadOnly: boolean = false;
   @Input() isTesting: boolean = false;
+  @Input() isExpand: boolean = true;
+
+  @Output() onEdit = new EventEmitter();
 
   constructor(private fileService: FileService) {}
 
@@ -30,7 +33,7 @@ export abstract class AbstractQuestionComponent implements OnInit {
             ...response,
             body: { imageUrl: imageName },
           } as HttpResponse<UploadResponse>;
-        })
+        }),
       );
     },
   };
@@ -49,7 +52,7 @@ export abstract class AbstractQuestionComponent implements OnInit {
       if (match) {
         this.question.content = this.question.content!.replace(
           match[1],
-          fileURL
+          fileURL,
         );
       }
     });
