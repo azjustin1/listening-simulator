@@ -22,6 +22,7 @@ import { ShortAnswerComponent } from '../short-answer/short-answer.component';
 import { ReadingService } from './reading.service';
 import { Question } from '../../common/models/question.model';
 import { each, isUndefined } from 'lodash-es';
+import { AbstractQuizPartComponent } from '../../common/abstract-quiz-part.component';
 
 @Component({
   selector: 'app-reading',
@@ -45,16 +46,16 @@ import { each, isUndefined } from 'lodash-es';
   templateUrl: './reading.component.html',
   styleUrl: './reading.component.css',
 })
-export class ReadingComponent implements OnInit {
+export class ReadingComponent
+  extends AbstractQuizPartComponent
+  implements OnInit
+{
   count = 0;
   @Input() data: Reading = {
     id: '',
     content: '',
     questions: [],
   };
-  @Input() isTesting: boolean = false;
-  @Input() isEditting: boolean = false;
-  @Input() isReadOnly: boolean = false;
 
   subscription: Subscription[] = [];
 
@@ -63,8 +64,6 @@ export class ReadingComponent implements OnInit {
   config: AngularEditorConfig = {
     editable: true,
   };
-
-  constructor() {}
 
   ngOnInit(): void {
     each(this.data.questions, (question) => {
@@ -111,31 +110,6 @@ export class ReadingComponent implements OnInit {
 
   removeQuestion(questionIdex: number) {
     this.data.questions.splice(questionIdex, 1);
-  }
-
-  defaultMultipleChoices() {
-    const choices = [];
-    for (let i = 0; i < 4; i++) {
-      const choice = {
-        id: CommonUtils.generateRandomId(),
-        content: '',
-      };
-      choices.push(choice);
-    }
-    return choices;
-  }
-
-  defaultShortAnswerChoices() {
-    const choices = [];
-    for (let i = 0; i < 4; i++) {
-      const choice = {
-        id: CommonUtils.generateRandomId(),
-        content: '',
-        index: '',
-      };
-      choices.push(choice);
-    }
-    return choices;
   }
 
   getChoiceById(id: string, choices: Choice[]) {

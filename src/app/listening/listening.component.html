@@ -1,5 +1,5 @@
 <div class="form-group">
-  @if (isSaved) {
+  @if (isSaved || isTesting) {
     <h2>{{ data.name }}</h2>
   } @else {
     <mat-form-field>
@@ -17,7 +17,7 @@
   }
 </div>
 
-@if (isEditting) {
+@if (!isSaved) {
   <div class="form-group">
     <div class="upload-file">
       <button
@@ -40,6 +40,11 @@
       }}</span>
     </div>
   </div>
+} @else {
+  <span class="file-name"
+    >Audio file:
+    {{ selectedFile ? selectedFile.name : this.data.audioName }}</span
+  >
 }
 @if (isTesting) {
   <div class="form-group">
@@ -64,36 +69,38 @@
             [isTesting]="isTesting"
           ></app-multiple-choices>
           <div class="actions">
-            @if (mapQuestionEditting[question.id!]) {
+            @if (!isSaved) {
+              @if (mapQuestionEditting[question.id!]) {
+                <button
+                  mat-button
+                  color="primary"
+                  type="button"
+                  class="btn btn-danger"
+                  (click)="onSaveQuestion(question.id!)"
+                >
+                  <mat-icon>save</mat-icon>
+                </button>
+              } @else {
+                <button
+                  mat-button
+                  color="primary"
+                  type="button"
+                  class="btn btn-danger"
+                  (click)="onEditQuestion(question.id!)"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+              }
               <button
                 mat-button
-                color="primary"
+                color="warn"
                 type="button"
                 class="btn btn-danger"
-                (click)="onSaveQuestion(question.id!)"
+                (click)="removeQuestion($index)"
               >
-                <mat-icon>save</mat-icon>
-              </button>
-            } @else {
-              <button
-                mat-button
-                color="primary"
-                type="button"
-                class="btn btn-danger"
-                (click)="onEditQuestion(question.id!)"
-              >
-                <mat-icon>edit</mat-icon>
+                <mat-icon>delete</mat-icon>
               </button>
             }
-            <button
-              mat-button
-              color="warn"
-              type="button"
-              class="btn btn-danger"
-              (click)="removeQuestion($index)"
-            >
-              <mat-icon>delete</mat-icon>
-            </button>
           </div>
         </div>
       }
@@ -106,36 +113,38 @@
             [isTesting]="isTesting"
           ></app-short-answer>
           <div class="actions">
-            @if (mapQuestionEditting[question.id!]) {
+            @if (!isSaved) {
+              @if (mapQuestionEditting[question.id!]) {
+                <button
+                  mat-button
+                  color="primary"
+                  type="button"
+                  class="btn btn-danger"
+                  (click)="onSaveQuestion(question.id!)"
+                >
+                  <mat-icon>save</mat-icon>
+                </button>
+              } @else {
+                <button
+                  mat-button
+                  color="primary"
+                  type="button"
+                  class="btn btn-danger"
+                  (click)="onEditQuestion(question.id!)"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+              }
               <button
                 mat-button
-                color="primary"
+                color="warn"
                 type="button"
                 class="btn btn-danger"
-                (click)="onSaveQuestion(question.id!)"
+                (click)="removeQuestion($index)"
               >
-                <mat-icon>save</mat-icon>
-              </button>
-            } @else {
-              <button
-                mat-button
-                color="primary"
-                type="button"
-                class="btn btn-danger"
-                (click)="onEditQuestion(question.id!)"
-              >
-                <mat-icon>edit</mat-icon>
+                <mat-icon>delete</mat-icon>
               </button>
             }
-            <button
-              mat-button
-              color="warn"
-              type="button"
-              class="btn btn-danger"
-              (click)="removeQuestion($index)"
-            >
-              <mat-icon>delete</mat-icon>
-            </button>
           </div>
         </div>
       }
@@ -143,7 +152,7 @@
   }
 </div>
 
-@if (!isSaved) {
+@if (!isSaved && !isTesting) {
   <div class="question-type-container">
     <mat-card class="card" (click)="addQuestion(0)">
       <mat-card-content class="question-type-item">

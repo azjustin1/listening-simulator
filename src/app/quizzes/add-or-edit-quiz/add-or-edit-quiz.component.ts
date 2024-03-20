@@ -54,8 +54,6 @@ export class AddOrEditQuizComponent implements OnDestroy {
 
   mapSavedPart: Record<string, boolean> = {};
 
-  mapQuestionEditting: Record<string, boolean> = {};
-
   subscription: Subscription[] = [];
 
   constructor(
@@ -72,6 +70,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
           this.generateListeningEdittingPartMap(
             this.currentQuiz.listeningParts,
           );
+          this.generateReadingEdittingPartMap(this.currentQuiz.readingParts);
         });
         this.subscription.push(sub);
       }
@@ -81,23 +80,24 @@ export class AddOrEditQuizComponent implements OnDestroy {
   generateListeningEdittingPartMap(listeningParts: Listening[]) {
     each(listeningParts, (part) => {
       this.mapSavedPart[part.id!] = true;
-      this.generateQuestionEdittingMap(part.questions);
     });
   }
 
-  generateQuestionEdittingMap(questions: Question[]) {
-    each(questions, (question) => {
-      this.mapQuestionEditting[question.id!] = false;
+  generateReadingEdittingPartMap(readingParts: Reading[]) {
+    each(readingParts, (part) => {
+      this.mapSavedPart[part.id!] = true;
     });
   }
 
   onAddListeningPart() {
+    const id = CommonUtils.generateRandomId();
     const newListeningPart: Listening = {
       id: CommonUtils.generateRandomId(),
-      name: '',
+      name: id,
       questions: [],
       audioName: '',
     };
+    this.mapSavedPart[id] = false;
     this.currentQuiz.listeningParts.push(newListeningPart);
   }
 
@@ -118,7 +118,14 @@ export class AddOrEditQuizComponent implements OnDestroy {
 
   onEditClick(id: string) {
     if (this.mapSavedPart[id] !== undefined) {
+      this.saveOthersEditting();
       this.mapSavedPart[id] = false;
+    }
+  }
+
+  saveOthersEditting() {
+    for (const key in this.mapSavedPart) {
+      this.mapSavedPart[key] = true;
     }
   }
 

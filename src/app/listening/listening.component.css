@@ -13,6 +13,8 @@
 }
 
 .question-group {
+  justify-content: center;
+  width: 80%;
   height: fit-content;
 }
 

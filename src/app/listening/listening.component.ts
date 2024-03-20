@@ -25,6 +25,7 @@ import { ShortAnswerComponent } from '../short-answer/short-answer.component';
 import { ListeningService } from './listening.service';
 import { Question } from '../../common/models/question.model';
 import { each } from 'lodash-es';
+import { AbstractQuizPartComponent } from '../../common/abstract-quiz-part.component';
 
 @Component({
   selector: 'app-listening',
@@ -44,32 +45,22 @@ import { each } from 'lodash-es';
   templateUrl: './listening.component.html',
   styleUrl: './listening.component.css',
 })
-export class ListeningComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ListeningComponent
+  extends AbstractQuizPartComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   @Input() data: Listening = {
     name: '',
     questions: [],
     audioName: '',
   };
-  @Input() isTesting: boolean = false;
-  @Input() isEditting: boolean = false;
-  @Input() isReadOnly: boolean = false;
-  @Input() isSaved: boolean = false;
+
   @ViewChild('audioPlayer') audioPlayer!: ElementRef;
 
-  mapQuestionEditting: Record<string, boolean> = {};
   audioUrl: string = '';
   selectedFile!: File;
-  currentQuestion: Question = {
-    content: '',
-    type: null,
-    choices: [],
-    answer: '',
-    correctAnswer: '',
-  };
 
   subscription: Subscription[] = [];
-
-  constructor(private fileService: FileService) {}
 
   ngOnInit(): void {
     each(this.data.questions, (question) => {
@@ -129,37 +120,19 @@ export class ListeningComponent implements OnInit, AfterViewInit, OnDestroy {
     this.mapQuestionEditting[id] = true;
   }
 
-  defaultMultipleChoices() {
-    const choices = [];
-    for (let i = 0; i < 4; i++) {
-      const choice = {
-        id: CommonUtils.generateRandomId(),
-        content: '',
-      };
-      choices.push(choice);
-    }
-    return choices;
-  }
-
-  defaultShortAnswerChoices() {
-    const choices = [];
-    for (let i = 0; i < 4; i++) {
-      const choice = {
-        id: CommonUtils.generateRandomId(),
-        content: '',
-        index: '',
-      };
-      choices.push(choice);
-    }
-    return choices;
-  }
-
   onSaveQuestion(id: string) {
     this.mapQuestionEditting[id] = false;
   }
 
   onEditQuestion(id: string) {
+    this.saveOthersEditting();
     this.mapQuestionEditting[id] = true;
+  }
+
+  saveOthersEditting() {
+    for (const key in this.mapQuestionEditting) {
+      this.mapQuestionEditting[key] = false;
+    }
   }
 
   removeQuestion(index: number) {

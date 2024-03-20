@@ -41,8 +41,8 @@
               <div class="question">
                 <app-short-answer
                   [question]="question"
-                  [isReadOnly]="isReadOnly || mapQuestionCollapse[question.id!]"
-                  [isEditting]="isEditting"
+                  [isReadOnly]="isReadOnly"
+                  [isEditting]="mapQuestionEditting[question.id!]"
                   [isTesting]="isTesting"
                   [isExpand]="mapQuestionCollapse[question.id!]"
                   [hasIndex]="false"
@@ -112,11 +112,11 @@
         </mat-expansion-panel>
       }
     </mat-accordion>
-    @if (isEditting) {
+    @if (!isSaved && !isTesting) {
       <div class="question-type-container">
-        <mat-card class="card" (click)="addQuestion(2)">
+        <mat-card class="card" (click)="addQuestion(0)">
           <mat-card-content class="question-type-item">
-            Dropdown choices
+            Multiple Choices
           </mat-card-content>
         </mat-card>
         <mat-card class="card" (click)="addQuestion(1)">
@@ -128,7 +128,7 @@
     }
   </div>
   <div class="input-reading">
-    @if (isEditting) {
+    @if (!isSaved) {
       <angular-editor
         name="questionContent"
         [id]="data.id"
