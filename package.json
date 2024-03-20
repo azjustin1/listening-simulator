@@ -39,7 +39,6 @@
     "@angular/cli": "^17.0.0",
     "@angular/compiler-cli": "^17.0.0",
     "@types/jasmine": "~5.1.0",
-    "@types/lodash": "^4.17.0",
     "@types/node": "^20.11.27",
     "jasmine-core": "~5.1.0",
     "json-server": "^0.17.0",
