@@ -47,4 +47,19 @@ export abstract class AbstractQuizPartComponent {
     }
     return choices;
   }
+
+  onSaveQuestion(id: string) {
+    this.mapQuestionEditting[id] = false;
+  }
+
+  onEditQuestion(id: string) {
+    this.saveOthersEditting();
+    this.mapQuestionEditting[id] = true;
+  }
+
+  saveOthersEditting() {
+    for (const key in this.mapQuestionEditting) {
+      this.mapQuestionEditting[key] = false;
+    }
+  }
 }

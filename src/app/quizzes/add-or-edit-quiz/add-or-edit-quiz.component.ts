@@ -67,6 +67,8 @@ export class AddOrEditQuizComponent implements OnDestroy {
       if (quizId) {
         const sub = this.quizService.getById(quizId).subscribe((quiz: any) => {
           this.currentQuiz = quiz;
+          console
+          .log(this.currentQuiz)
           this.generateListeningEdittingPartMap(
             this.currentQuiz.listeningParts,
           );

@@ -38,6 +38,7 @@
             @if (isEditting) {
               <mat-form-field>
                 <input
+                  autocomplete="off"
                   [disabled]="isReadOnly"
                   matInput
                   [name]="choice.id!"

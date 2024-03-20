@@ -79,7 +79,7 @@ export class ListeningComponent
   }
 
   getAudioFile(fileName: string) {
-    if (fileName !== '') {
+    if (fileName !== '' && !this.isReadOnly) {
       this.fileService.getFile(fileName).subscribe((audioFile: Blob) => {
         const fileURL = URL.createObjectURL(audioFile);
         const audioElement: HTMLAudioElement = this.audioPlayer.nativeElement;
@@ -118,21 +118,6 @@ export class ListeningComponent
     this.data.questions.push({ ...this.currentQuestion });
     this.data = { ...this.data };
     this.mapQuestionEditting[id] = true;
-  }
-
-  onSaveQuestion(id: string) {
-    this.mapQuestionEditting[id] = false;
-  }
-
-  onEditQuestion(id: string) {
-    this.saveOthersEditting();
-    this.mapQuestionEditting[id] = true;
-  }
-
-  saveOthersEditting() {
-    for (const key in this.mapQuestionEditting) {
-      this.mapQuestionEditting[key] = false;
-    }
   }
 
   removeQuestion(index: number) {

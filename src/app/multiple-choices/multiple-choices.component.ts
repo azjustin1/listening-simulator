@@ -59,10 +59,6 @@ export class MultipleChoicesComponent extends AbstractQuestionComponent {
     'Z',
   ];
 
-  override ngOnInit(): void {
-    console.log(this.isEditting);
-  }
-
   onSelectChoice(index: number) {
     if (this.isReadOnly) {
       return;

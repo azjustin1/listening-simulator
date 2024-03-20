@@ -62,7 +62,9 @@ export abstract class AbstractQuestionComponent implements OnInit {
     this.question.choices.push({
       id: CommonUtils.generateRandomId(),
       content: '',
+      index: '',
     });
+    console.log(this.question)
   }
 
   removeChoice(index: number) {
