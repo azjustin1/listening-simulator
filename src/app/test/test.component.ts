@@ -137,6 +137,7 @@ export class TestComponent {
     setTimeout(() => {
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
         hasBackdrop: true,
+        disableClose: true,
       });
       dialogRef.componentInstance.title = 'Information';
       dialogRef.componentInstance.message = "Time's up";

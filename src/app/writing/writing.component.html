@@ -1,14 +1,14 @@
 <div class="container">
   <div class="question-group">
-    @if (isSaved || isReadOnly) {
-      <span [innerHTML]="data.content"></span>
-    } @else {
+    @if (!isSaved && !isReadOnly && !isTesting) {
       <angular-editor
         name="reading-question"
         [id]="data.id"
         [config]="config"
         [(ngModel)]="data.content"
       ></angular-editor>
+    } @else {
+      <span [innerHTML]="data.content"></span>
     }
   </div>
   @if (isTesting) {

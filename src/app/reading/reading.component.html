@@ -151,7 +151,7 @@
     }
   </div>
   <div class="input-reading">
-    @if (!isSaved && !isReadOnly) {
+    @if (!isSaved && !isReadOnly && !isTesting) {
       <angular-editor
         name="questionContent"
         [id]="data.id"
