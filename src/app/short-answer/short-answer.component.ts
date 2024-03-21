@@ -6,11 +6,9 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
+import { AngularEditorModule } from '@kolkov/angular-editor';
 import { AbstractQuestionComponent } from '../../common/abstract-question.component';
 import { FileService } from '../file.service';
-import { Choice } from '../../common/models/choice.model';
-import { Question } from '../../common/models/question.model';
 
 @Component({
   selector: 'app-short-answer',

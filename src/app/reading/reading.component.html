@@ -12,11 +12,12 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
           <div class="form-group question-name">
-            @if (!isSaved) {
+            @if (!isSaved && !isReadOnly && !isTesting) {
               @if (mapQuestionEditting[question.id!]) {
                 <mat-form-field>
                   <mat-label>Question Name</mat-label>
-                  <input   autocomplete="off"
+                  <input
+                    autocomplete="off"
                     matInput
                     name="questionName"
                     class="form-control"
@@ -92,6 +93,13 @@
                       </mat-select>
                     </mat-form-field>
                   </div>
+                } @else {
+                  <app-multiple-choices
+                    [question]="question"
+                    [isReadOnly]="isReadOnly"
+                    [isEditting]="mapQuestionEditting[question.id!]"
+                    [isTesting]="isTesting"
+                  ></app-multiple-choices>
                 }
                 @if (isReadOnly) {
                   <span [innerHTML]="question.content"></span>
@@ -124,14 +132,6 @@
                     }
                   </div>
                 }
-                @if (mapQuestionEditting[question.id!]) {
-                  <app-multiple-choices
-                    [question]="question"
-                    [isReadOnly]="isReadOnly"
-                    [isEditting]="mapQuestionEditting[question.id!]"
-                    [isTesting]="isTesting"
-                  ></app-multiple-choices>
-                }
               </div>
             }
           }
@@ -140,7 +140,7 @@
     </mat-accordion>
     @if (!isSaved && !isTesting && !isReadOnly) {
       <div class="question-type-container">
-        <mat-card class="card" (click)="addQuestion(0)">
+        <mat-card class="card" (click)="addQuestion(2)">
           <mat-card-content class="question-type-item">
             Multiple Choices
           </mat-card-content>
@@ -154,11 +154,10 @@
     }
   </div>
   <div class="input-reading">
-    @if (!isSaved) {
+    @if (!isSaved && !isReadOnly) {
       <angular-editor
         name="questionContent"
         [id]="data.id"
-        [config]="config"
         [(ngModel)]="data.content"
       ></angular-editor>
     } @else {

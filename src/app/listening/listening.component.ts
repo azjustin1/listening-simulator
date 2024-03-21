@@ -79,7 +79,7 @@ export class ListeningComponent
   }
 
   getAudioFile(fileName: string) {
-    if (fileName !== '' && !this.isReadOnly) {
+    if (fileName !== '' && this.isTesting) {
       this.fileService.getFile(fileName).subscribe((audioFile: Blob) => {
         const fileURL = URL.createObjectURL(audioFile);
         const audioElement: HTMLAudioElement = this.audioPlayer.nativeElement;

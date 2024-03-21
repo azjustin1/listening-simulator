@@ -9,10 +9,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
-import {
-  AngularEditorConfig,
-  AngularEditorModule,
-} from '@wfpena/angular-wysiwyg';
 import { Subscription } from 'rxjs';
 import { Choice } from '../../common/models/choice.model';
 import { Reading } from '../../common/models/reading.model';
@@ -23,6 +19,10 @@ import { ReadingService } from './reading.service';
 import { Question } from '../../common/models/question.model';
 import { each, isUndefined } from 'lodash-es';
 import { AbstractQuizPartComponent } from '../../common/abstract-quiz-part.component';
+import {
+  AngularEditorConfig,
+  AngularEditorModule,
+} from '@kolkov/angular-editor';
 
 @Component({
   selector: 'app-reading',
@@ -72,6 +72,7 @@ export class ReadingComponent
   }
 
   addQuestion(questionType: number) {
+    const id = CommonUtils.generateRandomId();
     let newQuestion: Question = {
       content: '',
       type: null,
@@ -82,7 +83,7 @@ export class ReadingComponent
     switch (questionType) {
       case 1:
         newQuestion = {
-          id: CommonUtils.generateRandomId(),
+          id: id,
           content: '',
           type: questionType,
           choices: [],
@@ -92,7 +93,7 @@ export class ReadingComponent
         break;
       case 2:
         newQuestion = {
-          id: CommonUtils.generateRandomId(),
+          id: id,
           content: '',
           type: questionType,
           choices: this.defaultMultipleChoices(),
@@ -106,6 +107,7 @@ export class ReadingComponent
     this.data.questions.push({
       ...newQuestion,
     });
+    this.mapQuestionEditting[id] = true;
   }
 
   removeQuestion(questionIdex: number) {

@@ -67,8 +67,6 @@ export class AddOrEditQuizComponent implements OnDestroy {
       if (quizId) {
         const sub = this.quizService.getById(quizId).subscribe((quiz: any) => {
           this.currentQuiz = quiz;
-          console
-          .log(this.currentQuiz)
           this.generateListeningEdittingPartMap(
             this.currentQuiz.listeningParts,
           );
@@ -104,11 +102,13 @@ export class AddOrEditQuizComponent implements OnDestroy {
   }
 
   onAddReadingParagraph() {
+    const id = CommonUtils.generateRandomId();
     const newReadingParagraph: Reading = {
-      id: CommonUtils.generateRandomId(),
+      id: id,
       content: '',
       questions: [],
     };
+    this.mapSavedPart[id] = false;
     this.currentQuiz.readingParts.push(newReadingParagraph);
   }
 

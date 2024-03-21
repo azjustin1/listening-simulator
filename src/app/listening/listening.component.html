@@ -4,7 +4,8 @@
   } @else {
     <mat-form-field>
       <mat-label>Part</mat-label>
-      <input   autocomplete="off"
+      <input
+        autocomplete="off"
         matInput
         name="part"
         type="text"
@@ -28,7 +29,8 @@
       >
         Audio File <mat-icon>upload</mat-icon>
       </button>
-      <input   autocomplete="off"
+      <input
+        autocomplete="off"
         hidden
         (change)="onFileSelected($event)"
         #fileInput
@@ -71,7 +73,7 @@
             [isTesting]="isTesting"
           ></app-multiple-choices>
           <div class="actions">
-            @if (!isSaved && !isReadOnly && !isTesting) {
+            @if (!isSaved && !isTesting && !isReadOnly) {
               @if (mapQuestionEditting[question.id!]) {
                 <button
                   mat-button
@@ -103,6 +105,9 @@
                 <mat-icon>delete</mat-icon>
               </button>
             }
+
+            @if (isTesting) {}
+            @if (isReadOnly) {}
           </div>
         </div>
       }
