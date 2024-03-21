@@ -1,7 +1,3 @@
-import { Question } from './question.model';
+import { AbstractPart } from './abstract-part.model';
 
-export interface Reading {
-  id: string;
-  content: string;
-  questions: Question[];
-}
+export interface Reading extends AbstractPart {}

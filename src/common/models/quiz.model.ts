@@ -1,5 +1,6 @@
 import { Listening } from './listening.model';
 import { Reading } from './reading.model';
+import { Writing } from './writing.model';
 
 export interface Quiz {
   id: string;
@@ -7,4 +8,5 @@ export interface Quiz {
   timeout: number | null;
   listeningParts: Listening[];
   readingParts: Reading[];
+  writingParts: Writing[]
 }

@@ -27,6 +27,7 @@ import { ShortAnswerComponent } from '../short-answer/short-answer.component';
 import { TestService } from './test.service';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ReadingComponent } from '../reading/reading.component';
+import { WritingComponent } from '../writing/writing.component';
 
 @Component({
   selector: 'app-test',
@@ -44,6 +45,7 @@ import { ReadingComponent } from '../reading/reading.component';
     MatTabsModule,
     ListeningComponent,
     ReadingComponent,
+    WritingComponent,
   ],
   providers: [QuizService, TestService],
   templateUrl: './test.component.html',
@@ -66,6 +68,7 @@ export class TestComponent {
     quizId: '',
     listeningParts: [],
     readingParts: [],
+    writingParts: [],
   };
   quiz: Quiz = {
     id: '',
@@ -73,6 +76,7 @@ export class TestComponent {
     timeout: null,
     listeningParts: [],
     readingParts: [],
+    writingParts: [],
   };
   subscriptions: Subscription[] = [];
 
@@ -87,7 +91,7 @@ export class TestComponent {
     private route: ActivatedRoute,
     private testService: TestService,
     private router: Router,
-    private dialog: MatDialog
+    private dialog: MatDialog,
   ) {
     this.route.paramMap.subscribe((paramMap: any) => {
       const quizId = paramMap.get('quizId');
@@ -120,6 +124,7 @@ export class TestComponent {
     this.result.quizId = this.quiz.id!;
     this.result.listeningParts = this.quiz.listeningParts;
     this.result.readingParts = this.quiz.readingParts;
+    this.result.writingParts = this.quiz.writingParts;
     this.calculatePoint();
     this.testService.submitTest(this.result).subscribe(() => {
       this.router.navigate(['']);

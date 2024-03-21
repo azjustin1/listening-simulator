@@ -4,7 +4,8 @@ import { map } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
 import { Question } from '../common/models/question.model';
 import { CommonUtils } from '../utils/common-utils';
-import { AngularEditorConfig, UploadResponse } from '@kolkov/angular-editor';
+import { AngularEditorConfig, UploadResponse } from '@wfpena/angular-wysiwyg';
+import { each } from 'lodash-es';
 
 @Component({
   template: '',
@@ -56,11 +57,18 @@ export abstract class AbstractQuestionComponent implements OnInit {
         tag: 'h1',
       },
     ],
-    uploadUrl: 'v1/image',
     uploadWithCredentials: false,
     sanitize: true,
     toolbarPosition: 'top',
-    toolbarHiddenButtons: [['bold', 'italic'], ['fontSize']],
+    toolbarHiddenButtons: [
+      [
+        'backgroundColor',
+        'customClasses',
+        'link',
+        'unlink',
+        'insertHorizontalRule',
+      ],
+    ],
     upload: (file: File) => {
       return this.fileService.uploadAudioFile(file).pipe(
         map((response) => {

@@ -22,7 +22,12 @@
     >
   </mat-card>
 
-  @if (isReady) {
+  @if (
+    isReady &&
+    result.studentName &&
+    result.studentName !== null &&
+    result.studentName !== ""
+  ) {
     <mat-tab-group>
       <mat-tab label="Listening">
         <ng-template matTabContent>
@@ -46,6 +51,17 @@
             <mat-card class="question-group" appearance="outlined">
               <mat-card-content>
                 <app-reading [data]="part" [isTesting]="true"></app-reading
+              ></mat-card-content>
+            </mat-card>
+          }
+        </ng-template>
+      </mat-tab>
+      <mat-tab label="Reading">
+        <ng-template matTabContent>
+          @for (part of quiz.writingParts; track $index) {
+            <mat-card class="question-group" appearance="outlined">
+              <mat-card-content>
+                <app-writing [data]="part" [isTesting]="true"></app-writing
               ></mat-card-content>
             </mat-card>
           }

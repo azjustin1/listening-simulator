@@ -8,10 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { AbstractQuestionComponent } from '../../common/abstract-question.component';
 import { FileService } from '../file.service';
-import {
-  AngularEditorConfig,
-  AngularEditorModule,
-} from '@kolkov/angular-editor';
+import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 @Component({
   selector: 'app-multiple-choices',
   standalone: true,

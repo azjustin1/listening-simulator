@@ -46,15 +46,9 @@ import { AbstractQuizPartComponent } from '../../common/abstract-quiz-part.compo
   styleUrl: './listening.component.css',
 })
 export class ListeningComponent
-  extends AbstractQuizPartComponent
+  extends AbstractQuizPartComponent<Listening>
   implements OnInit, AfterViewInit, OnDestroy
 {
-  @Input() data: Listening = {
-    name: '',
-    questions: [],
-    audioName: '',
-  };
-
   @ViewChild('audioPlayer') audioPlayer!: ElementRef;
 
   audioUrl: string = '';
@@ -62,14 +56,8 @@ export class ListeningComponent
 
   subscription: Subscription[] = [];
 
-  ngOnInit(): void {
-    each(this.data.questions, (question) => {
-      this.mapQuestionEditting[question.id!] = false;
-    });
-  }
-
   ngAfterViewInit(): void {
-    this.getAudioFile(this.data.audioName);
+    this.getAudioFile(this.data.audioName!);
   }
 
   ngOnDestroy(): void {
@@ -126,16 +114,14 @@ export class ListeningComponent
 
   onFileSelected(event: any) {
     if (this.data.audioName || this.data.audioName !== '') {
-      this.deleteFile();
+      this.deleteFile(this.data.audioName!);
     }
     this.selectedFile = event.target.files[0] ?? null;
     this.uploadFile();
   }
 
-  deleteFile() {
-    const deleteSub = this.fileService
-      .deleteFile(this.data.audioName)
-      .subscribe();
+  deleteFile(fileName: string) {
+    const deleteSub = this.fileService.deleteFile(fileName).subscribe();
     this.subscription.push(deleteSub);
   }
 

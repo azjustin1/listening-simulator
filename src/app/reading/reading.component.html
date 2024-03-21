@@ -2,10 +2,7 @@
   <div class="question-group">
     <mat-accordion>
       @for (question of data.questions; track $index) {
-        <mat-expansion-panel
-          (afterCollapse)="afterCollapse(question.id!)"
-          (afterExpand)="afterExpand(question.id!)"
-        >
+        <mat-expansion-panel>
           <mat-expansion-panel-header>
             <mat-panel-title>
               {{ question.name }}

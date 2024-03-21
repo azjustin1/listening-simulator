@@ -14,6 +14,7 @@ import { MultipleChoicesComponent } from '../../multiple-choices/multiple-choice
 import { ReadingComponent } from '../../reading/reading.component';
 import { ShortAnswerComponent } from '../../short-answer/short-answer.component';
 import { ResultService } from '../result.service';
+import { WritingComponent } from '../../writing/writing.component';
 
 @Component({
   selector: 'app-result-detail',
@@ -31,6 +32,7 @@ import { ResultService } from '../result.service';
     MatTabsModule,
     ReadingComponent,
     ListeningComponent,
+    WritingComponent,
   ],
 
   templateUrl: './result-detail.component.html',
@@ -44,6 +46,7 @@ export class ResultDetailComponent {
     studentName: '',
     listeningParts: [],
     readingParts: [],
+    writingParts: [],
     correctPoint: 0,
     totalPoint: 0,
     testDate: '',
@@ -53,7 +56,7 @@ export class ResultDetailComponent {
   constructor(
     private route: ActivatedRoute,
     private resultService: ResultService,
-    private router: Router
+    private router: Router,
   ) {
     this.route.paramMap.subscribe((paramMap: any) => {
       const resultId = paramMap.get('resultId');
