@@ -6,9 +6,12 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { AbstractQuestionComponent } from '../../common/abstract-question.component';
 import { FileService } from '../file.service';
+import {
+  AngularEditorConfig,
+  AngularEditorModule,
+} from '@kolkov/angular-editor';
 @Component({
   selector: 'app-multiple-choices',
   standalone: true,
@@ -58,10 +61,6 @@ export class MultipleChoicesComponent extends AbstractQuestionComponent {
     'Y',
     'Z',
   ];
-
-  override ngOnInit(): void {
-    console.log(this.isEditting);
-  }
 
   onSelectChoice(index: number) {
     if (this.isReadOnly) {

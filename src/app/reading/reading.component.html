@@ -12,27 +12,57 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
           <div class="form-group question-name">
-            @if (isEditting) {
-              <mat-form-field>
-                <mat-label>Question Name</mat-label>
-                <input
-                  matInput
-                  name="questionName"
-                  class="form-control"
-                  id="questionName"
-                  [(ngModel)]="question.name"
-                  required
-                />
-              </mat-form-field>
-              <button
-                mat-icon-button
-                color="warn"
-                type="button"
-                class="btn btn-danger"
-                (click)="removeQuestion($index)"
-              >
-                <mat-icon>delete</mat-icon>
-              </button>
+            @if (!isSaved && !isReadOnly && !isTesting) {
+              @if (mapQuestionEditting[question.id!]) {
+                <mat-form-field>
+                  <mat-label>Question Name</mat-label>
+                  <input
+                    autocomplete="off"
+                    matInput
+                    name="questionName"
+                    class="form-control"
+                    id="questionName"
+                    [(ngModel)]="question.name"
+                    required
+                  />
+                </mat-form-field>
+              } @else {
+                <h3>{{ question.name }}</h3>
+              }
+              @if (!isSaved && !isReadOnly && !isTesting) {
+                <div class="actions">
+                  @if (mapQuestionEditting[question.id!]) {
+                    <button
+                      mat-button
+                      color="primary"
+                      type="button"
+                      class="btn btn-danger"
+                      (click)="onSaveQuestion(question.id!)"
+                    >
+                      <mat-icon>save</mat-icon>
+                    </button>
+                  } @else {
+                    <button
+                      mat-button
+                      color="primary"
+                      type="button"
+                      class="btn btn-danger"
+                      (click)="onEditQuestion(question.id!)"
+                    >
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                  }
+                  <button
+                    mat-button
+                    color="warn"
+                    type="button"
+                    class="btn btn-danger"
+                    (click)="removeQuestion($index)"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              }
             }
           </div>
 
@@ -44,8 +74,6 @@
                   [isReadOnly]="isReadOnly"
                   [isEditting]="mapQuestionEditting[question.id!]"
                   [isTesting]="isTesting"
-                  [isExpand]="mapQuestionCollapse[question.id!]"
-                  [hasIndex]="false"
                 ></app-short-answer>
               </div>
             }
@@ -65,6 +93,13 @@
                       </mat-select>
                     </mat-form-field>
                   </div>
+                } @else {
+                  <app-multiple-choices
+                    [question]="question"
+                    [isReadOnly]="isReadOnly"
+                    [isEditting]="mapQuestionEditting[question.id!]"
+                    [isTesting]="isTesting"
+                  ></app-multiple-choices>
                 }
                 @if (isReadOnly) {
                   <span [innerHTML]="question.content"></span>
@@ -97,24 +132,15 @@
                     }
                   </div>
                 }
-                @if (isEditting) {
-                  <app-multiple-choices
-                    [question]="question"
-                    [isReadOnly]="isReadOnly"
-                    [isEditting]="isEditting"
-                    [isTesting]="isTesting"
-                    [isExpand]="mapQuestionCollapse[question.id!]"
-                  ></app-multiple-choices>
-                }
               </div>
             }
           }
         </mat-expansion-panel>
       }
     </mat-accordion>
-    @if (!isSaved && !isTesting) {
+    @if (!isSaved && !isTesting && !isReadOnly) {
       <div class="question-type-container">
-        <mat-card class="card" (click)="addQuestion(0)">
+        <mat-card class="card" (click)="addQuestion(2)">
           <mat-card-content class="question-type-item">
             Multiple Choices
           </mat-card-content>
@@ -128,11 +154,10 @@
     }
   </div>
   <div class="input-reading">
-    @if (!isSaved) {
+    @if (!isSaved && !isReadOnly) {
       <angular-editor
         name="questionContent"
         [id]="data.id"
-        [config]="config"
         [(ngModel)]="data.content"
       ></angular-editor>
     } @else {

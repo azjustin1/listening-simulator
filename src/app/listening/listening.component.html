@@ -1,10 +1,11 @@
 <div class="form-group">
-  @if (isSaved || isTesting) {
+  @if (isSaved || isTesting || isReadOnly) {
     <h2>{{ data.name }}</h2>
   } @else {
     <mat-form-field>
       <mat-label>Part</mat-label>
       <input
+        autocomplete="off"
         matInput
         name="part"
         type="text"
@@ -17,7 +18,7 @@
   }
 </div>
 
-@if (!isSaved) {
+@if (!isSaved && !isReadOnly && !isTesting) {
   <div class="form-group">
     <div class="upload-file">
       <button
@@ -29,6 +30,7 @@
         Audio File <mat-icon>upload</mat-icon>
       </button>
       <input
+        autocomplete="off"
         hidden
         (change)="onFileSelected($event)"
         #fileInput
@@ -41,10 +43,12 @@
     </div>
   </div>
 } @else {
-  <span class="file-name"
-    >Audio file:
-    {{ selectedFile ? selectedFile.name : this.data.audioName }}</span
-  >
+  @if (!isReadOnly && !isTesting) {
+    <span class="file-name"
+      >Audio file:
+      {{ selectedFile ? selectedFile.name : this.data.audioName }}</span
+    >
+  }
 }
 @if (isTesting) {
   <div class="form-group">
@@ -69,7 +73,7 @@
             [isTesting]="isTesting"
           ></app-multiple-choices>
           <div class="actions">
-            @if (!isSaved) {
+            @if (!isSaved && !isTesting && !isReadOnly) {
               @if (mapQuestionEditting[question.id!]) {
                 <button
                   mat-button
@@ -101,6 +105,9 @@
                 <mat-icon>delete</mat-icon>
               </button>
             }
+
+            @if (isTesting) {}
+            @if (isReadOnly) {}
           </div>
         </div>
       }
@@ -113,7 +120,7 @@
             [isTesting]="isTesting"
           ></app-short-answer>
           <div class="actions">
-            @if (!isSaved) {
+            @if (!isSaved && !isReadOnly && !isTesting) {
               @if (mapQuestionEditting[question.id!]) {
                 <button
                   mat-button
@@ -152,7 +159,7 @@
   }
 </div>
 
-@if (!isSaved && !isTesting) {
+@if (!isSaved && !isTesting && !isReadOnly) {
   <div class="question-type-container">
     <mat-card class="card" (click)="addQuestion(0)">
       <mat-card-content class="question-type-item">

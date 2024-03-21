@@ -4,6 +4,7 @@
     <mat-form-field>
       <mat-label>Name</mat-label>
       <input
+        autocomplete="off"
         matInput
         name="quizName"
         type="text"
@@ -15,9 +16,11 @@
     </mat-form-field>
   </div>
 
-  <div class="form-group">
-    <h2>{{ minutes }}:{{ seconds | number: "2.0" }}</h2>
-  </div>
+  <mat-card class="timer">
+    <mat-card-content>
+      <h2>{{ minutes }}:{{ seconds | number: "2.0" }}</h2></mat-card-content
+    >
+  </mat-card>
 
   @if (isReady) {
     <mat-tab-group>

@@ -93,7 +93,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
     const id = CommonUtils.generateRandomId();
     const newListeningPart: Listening = {
       id: CommonUtils.generateRandomId(),
-      name: id,
+      name: '',
       questions: [],
       audioName: '',
     };
@@ -102,11 +102,13 @@ export class AddOrEditQuizComponent implements OnDestroy {
   }
 
   onAddReadingParagraph() {
+    const id = CommonUtils.generateRandomId();
     const newReadingParagraph: Reading = {
-      id: CommonUtils.generateRandomId(),
+      id: id,
       content: '',
       questions: [],
     };
+    this.mapSavedPart[id] = false;
     this.currentQuiz.readingParts.push(newReadingParagraph);
   }
 
