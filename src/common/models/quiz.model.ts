@@ -6,5 +6,5 @@ export interface Quiz {
   name: string;
   timeout: number | null;
   listeningParts: Listening[];
-  readingParagraph: Reading[];
+  readingParts: Reading[];
 }

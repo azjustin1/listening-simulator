@@ -13,4 +13,12 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 })
 export class AppComponent {
   title = 'listening-simulator';
+
+  constructor() {
+    window.addEventListener("keydown",function (e) {
+      if (e.keyCode === 114 || (e.ctrlKey && e.keyCode === 70)) { 
+          e.preventDefault();
+      }
+  })
+  }
 }

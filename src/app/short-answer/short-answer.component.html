@@ -1,106 +1,120 @@
 <form>
-  <div class="question-group">
-    <div class="form-group">
-      @if (isEditting) {
-      <angular-editor
-        [name]="question.id!"
-        [id]="question.id!"
-        [config]="config"
-        [(ngModel)]="question.content"
-      ></angular-editor>
-      } @else {
-      <span [innerHTML]="question.content"></span>
-      }
-    </div>
-
+  @if (isReadOnly) {
     <div class="choice-group">
       @for (choice of question.choices; track $index) {
-      <div class="form-group">
-        @if (isEditting) { @if (hasIndex) {
-        <mat-form-field class="choice-index">
-          <mat-label>No.</mat-label>
-          <input
-            matInput
-            [name]="$index.toString()"
-            type="text"
-            class="form-control"
-            [(ngModel)]="choice.index"
-          />
-        </mat-form-field>
-        }
-        <mat-form-field>
-          <mat-label>Answer</mat-label>
-          <input
-            matInput
-            [name]="choice.id!"
-            type="text"
-            class="form-control"
-            [(ngModel)]="choice.content"
-          />
-        </mat-form-field>
-        } @else {
-        <p class="question-text">
-          @if (hasIndex) {
-          <b>{{ choice.index }}&nbsp;</b>
-          }
-        </p>
-        @if (isTesting) {
-        <mat-form-field>
-          <mat-label>Answer</mat-label>
-          <input
-            matInput
-            [name]="choice.id!"
-            type="text"
-            class="form-control"
-            [(ngModel)]="choice.answer"
-          />
-        </mat-form-field>
-        } @if (isReadOnly) {
-        <div class="answer-container">
-          <div
-            class="answer"
-            [ngClass]="{
-              correct: question.answer === choice.content,
-              incorrect: question.answer !== choice.content
-            }"
-          >
+        @if (choice.answer === choice.correctAnswer) {
+          <p class="question-text">
+            <b>{{ choice.index }}&nbsp;</b>
+          </p>
+          <div class="answer correct">
             {{ choice.answer }}
           </div>
-
-          @if (!question.answer || question.answer === '') {
-          <div class="answer">❌</div>
-          } @if (question.answer !== choice.content) {
-          <div class="correct-answer">
-            {{ choice.content }}
+        } @else {
+          <div class="answer">
+            <span class="question-text">
+              <b>{{ choice.index }}&nbsp;</b>
+            </span>
+            <span class="answer incorrect">{{
+              !choice.answer || choice.answer === "" ? "❌" : choice.answer
+            }}</span>
+            <span class="answer correct" style="margin-left: 30px">
+              {{ choice.correctAnswer }}
+            </span>
           </div>
-          }
-        </div>
-        } }
-        <button
-          *ngIf="isEditting"
-          mat-icon-button
-          color="warn"
-          type="button"
-          class="btn btn-danger"
-          (click)="removeChoice($index)"
-        >
-          <mat-icon>delete</mat-icon>
-        </button>
-      </div>
+        }
       }
     </div>
+  } @else {
+    <div class="question-group">
+      <div class="form-group">
+        @if (isEditting) {
+          <angular-editor
+            [name]="question.id!"
+            [config]="config"
+            [(ngModel)]="question.content"
+          ></angular-editor>
+        } @else {
+          <span [innerHTML]="question.content"></span>
+        }
+      </div>
 
-    <button
-      *ngIf="isEditting"
-      mat-button
-      color="primary"
-      type="button"
-      class="btn btn-primary"
-      style="margin-top: 16px"
-      (click)="addChoice()"
-    >
-      <mat-icon>add</mat-icon>
-      More option
-    </button>
-  </div>
+      <div class="choice-group">
+        @for (choice of question.choices; track $index) {
+          <div class="form-group">
+            @if (isEditting) {
+              <mat-form-field class="choice-index">
+                <mat-label>No.</mat-label>
+                <input
+                  autocomplete="off"
+                  matInput
+                  [name]="$index.toString()"
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="choice.index"
+                />
+              </mat-form-field>
+              <mat-form-field>
+                <mat-label>Answer</mat-label>
+                <input
+                  autocomplete="off"
+                  matInput
+                  [name]="choice.id!"
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="choice.correctAnswer"
+                />
+              </mat-form-field>
+            } @else {
+              @if (isTesting) {
+                <p class="question-text">
+                  <b>{{ choice.index }}&nbsp;</b>
+                </p>
+                <mat-form-field>
+                  <mat-label>Answer</mat-label>
+                  <input
+                    autocomplete="off"
+                    matInput
+                    [name]="choice.id!"
+                    type="text"
+                    class="form-control"
+                    [(ngModel)]="choice.answer"
+                  />
+                </mat-form-field>
+              } @else {
+                <p class="question-text">
+                  <b>{{ choice.index }}&nbsp;</b>
+                </p>
+                <div class="answer correct">
+                  {{ choice.correctAnswer }}
+                </div>
+              }
+            }
+            <button
+              *ngIf="isEditting"
+              mat-button
+              color="warn"
+              type="button"
+              class="btn btn-danger"
+              (click)="removeChoice($index)"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        }
+      </div>
+
+      <button
+        *ngIf="isEditting"
+        mat-button
+        color="primary"
+        type="button"
+        class="btn btn-primary"
+        style="margin-top: 16px"
+        (click)="addChoice()"
+      >
+        <mat-icon>add</mat-icon>
+        More option
+      </button>
+    </div>
+  }
 </form>

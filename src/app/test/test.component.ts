@@ -65,14 +65,14 @@ export class TestComponent {
     testDate: '',
     quizId: '',
     listeningParts: [],
-    readingParagraph: [],
+    readingParts: [],
   };
   quiz: Quiz = {
     id: '',
     name: '',
     timeout: null,
     listeningParts: [],
-    readingParagraph: [],
+    readingParts: [],
   };
   subscriptions: Subscription[] = [];
 
@@ -119,7 +119,7 @@ export class TestComponent {
     this.result.name = this.quiz.name;
     this.result.quizId = this.quiz.id!;
     this.result.listeningParts = this.quiz.listeningParts;
-    this.result.readingParagraph = this.quiz.readingParagraph;
+    this.result.readingParts = this.quiz.readingParts;
     this.calculatePoint();
     this.testService.submitTest(this.result).subscribe(() => {
       this.router.navigate(['']);
@@ -193,7 +193,7 @@ export class TestComponent {
       });
     });
 
-    each(this.result.readingParagraph, (paragraph) => {
+    each(this.result.readingParts, (paragraph) => {
       each(paragraph.questions, (question) => {
         if (question.type === 2) {
           // Dropdown choices

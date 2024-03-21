@@ -15,7 +15,10 @@
           <ng-template matTabContent>
             <div class="question-group">
               @for (part of result.listeningParts; track $index) {
-              <app-listening [data]="part" [isReadOnly]="true"></app-listening>
+                <app-listening
+                  [data]="part"
+                  [isReadOnly]="true"
+                ></app-listening>
               }
             </div>
           </ng-template>
@@ -23,8 +26,8 @@
         <mat-tab label="Reading">
           <ng-template matTabContent>
             <div class="question-group">
-              @for (paragraph of result.readingParagraph; track $index) {
-              <app-reading [data]="paragraph" [isReadOnly]="true"></app-reading>
+              @for (part of result.readingParts; track $index) {
+                <app-reading [data]="part" [isReadOnly]="true"></app-reading>
               }
             </div>
           </ng-template>

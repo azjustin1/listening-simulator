@@ -1,10 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FileService } from '../app/file.service';
-import { AngularEditorConfig, UploadResponse } from '@wfpena/angular-wysiwyg';
 import { map } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
 import { Question } from '../common/models/question.model';
 import { CommonUtils } from '../utils/common-utils';
+import { AngularEditorConfig, UploadResponse } from '@kolkov/angular-editor';
 
 @Component({
   template: '',
@@ -14,13 +14,54 @@ export abstract class AbstractQuestionComponent implements OnInit {
   @Input() isEditting: boolean = false;
   @Input() isReadOnly: boolean = false;
   @Input() isTesting: boolean = false;
+  @Input() isExpand: boolean = true;
+
+  @Output() onEdit = new EventEmitter();
 
   constructor(private fileService: FileService) {}
 
   config: AngularEditorConfig = {
     editable: true,
-    uploadUrl: 'http://localhost:3000/file',
-    upload: (file) => {
+    spellcheck: true,
+    height: 'auto',
+    minHeight: '0',
+    maxHeight: 'auto',
+    width: 'auto',
+    minWidth: '0',
+    translate: 'yes',
+    enableToolbar: true,
+    showToolbar: true,
+    placeholder: 'Enter text here...',
+    defaultParagraphSeparator: '',
+    defaultFontName: '',
+    defaultFontSize: '',
+    fonts: [
+      { class: 'arial', name: 'Arial' },
+      { class: 'times-new-roman', name: 'Times New Roman' },
+      { class: 'calibri', name: 'Calibri' },
+      { class: 'comic-sans-ms', name: 'Comic Sans MS' },
+    ],
+    customClasses: [
+      {
+        name: 'quote',
+        class: 'quote',
+      },
+      {
+        name: 'redText',
+        class: 'redText',
+      },
+      {
+        name: 'titleText',
+        class: 'titleText',
+        tag: 'h1',
+      },
+    ],
+    uploadUrl: 'v1/image',
+    uploadWithCredentials: false,
+    sanitize: true,
+    toolbarPosition: 'top',
+    toolbarHiddenButtons: [['bold', 'italic'], ['fontSize']],
+    upload: (file: File) => {
       return this.fileService.uploadAudioFile(file).pipe(
         map((response) => {
           const imageName = response.fileName;
@@ -30,7 +71,7 @@ export abstract class AbstractQuestionComponent implements OnInit {
             ...response,
             body: { imageUrl: imageName },
           } as HttpResponse<UploadResponse>;
-        })
+        }),
       );
     },
   };
@@ -49,7 +90,7 @@ export abstract class AbstractQuestionComponent implements OnInit {
       if (match) {
         this.question.content = this.question.content!.replace(
           match[1],
-          fileURL
+          fileURL,
         );
       }
     });
@@ -59,7 +100,9 @@ export abstract class AbstractQuestionComponent implements OnInit {
     this.question.choices.push({
       id: CommonUtils.generateRandomId(),
       content: '',
+      index: '',
     });
+    console.log(this.question);
   }
 
   removeChoice(index: number) {

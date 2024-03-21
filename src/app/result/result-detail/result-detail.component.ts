@@ -43,7 +43,7 @@ export class ResultDetailComponent {
     timeout: null,
     studentName: '',
     listeningParts: [],
-    readingParagraph: [],
+    readingParts: [],
     correctPoint: 0,
     totalPoint: 0,
     testDate: '',

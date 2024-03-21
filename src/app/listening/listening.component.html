@@ -1,116 +1,175 @@
 <div class="form-group">
-  @if (isTesting || isReadOnly) {
-  <h2>{{ data.name }}</h2>
+  @if (isSaved || isTesting || isReadOnly) {
+    <h2>{{ data.name }}</h2>
   } @else {
-  <mat-form-field>
-    <mat-label>Part</mat-label>
-    <input
-      matInput
-      name="part"
-      type="text"
-      class="form-control"
-      id="part"
-      [(ngModel)]="data.name"
-      required
-    />
-  </mat-form-field>
+    <mat-form-field>
+      <mat-label>Part</mat-label>
+      <input
+        autocomplete="off"
+        matInput
+        name="part"
+        type="text"
+        class="form-control"
+        id="part"
+        [(ngModel)]="data.name"
+        required
+      />
+    </mat-form-field>
   }
 </div>
 
-@if (isEditting) {
-<div class="form-group">
-  <div class="upload-file">
-    <button
-      type="button"
-      mat-raised-button
-      (click)="fileInput.click()"
-      style="margin-right: 16px"
+@if (!isSaved && !isReadOnly && !isTesting) {
+  <div class="form-group">
+    <div class="upload-file">
+      <button
+        type="button"
+        mat-raised-button
+        (click)="fileInput.click()"
+        style="margin-right: 16px"
+      >
+        Audio File <mat-icon>upload</mat-icon>
+      </button>
+      <input
+        autocomplete="off"
+        hidden
+        (change)="onFileSelected($event)"
+        #fileInput
+        type="file"
+        id="file"
+      />
+      <span class="file-name">{{
+        selectedFile ? selectedFile.name : this.data.audioName
+      }}</span>
+    </div>
+  </div>
+} @else {
+  @if (!isReadOnly && !isTesting) {
+    <span class="file-name"
+      >Audio file:
+      {{ selectedFile ? selectedFile.name : this.data.audioName }}</span
     >
-      Audio File <mat-icon>upload</mat-icon>
-    </button>
-    <input
-      hidden
-      (change)="onFileSelected($event)"
-      #fileInput
-      type="file"
-      id="file"
-    />
-    <span class="file-name">{{
-      selectedFile ? selectedFile.name : this.data.audioName
-    }}</span>
+  }
+}
+@if (isTesting) {
+  <div class="form-group">
+    <div class="audio">
+      <audio [id]="data.id" #audioPlayer controls>
+        <source [src]="audioUrl" type="audio/mp3" />
+      </audio>
+    </div>
+    <div class="backdrop"></div>
   </div>
-</div>
-} @if (isTesting) {
-<div class="form-group">
-  <div class="audio">
-    <audio [id]="data.id" #audioPlayer controls>
-      <source [src]="audioUrl" type="audio/mp3" />
-    </audio>
-  </div>
-  <div class="backdrop"></div>
-</div>
 }
 
 <div class="question-group">
-  @for (question of data.questions; track question.id) { @switch (question.type)
-  { @case(0) {
+  @for (question of data.questions; track question.id) {
+    @switch (question.type) {
+      @case (0) {
+        <div class="question">
+          <app-multiple-choices
+            [question]="question"
+            [isReadOnly]="isReadOnly"
+            [isEditting]="mapQuestionEditting[question.id!]"
+            [isTesting]="isTesting"
+          ></app-multiple-choices>
+          <div class="actions">
+            @if (!isSaved && !isTesting && !isReadOnly) {
+              @if (mapQuestionEditting[question.id!]) {
+                <button
+                  mat-button
+                  color="primary"
+                  type="button"
+                  class="btn btn-danger"
+                  (click)="onSaveQuestion(question.id!)"
+                >
+                  <mat-icon>save</mat-icon>
+                </button>
+              } @else {
+                <button
+                  mat-button
+                  color="primary"
+                  type="button"
+                  class="btn btn-danger"
+                  (click)="onEditQuestion(question.id!)"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+              }
+              <button
+                mat-button
+                color="warn"
+                type="button"
+                class="btn btn-danger"
+                (click)="removeQuestion($index)"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            }
 
-  <div class="question">
-    <app-multiple-choices
-      [question]="question"
-      [isReadOnly]="isReadOnly"
-      [isEditting]="isEditting"
-      [isTesting]="isTesting"
-    ></app-multiple-choices>
-    @if (isEditting) {
-    <div class="actions">
-      <button
-        mat-icon-button
-        color="warn"
-        type="button"
-        class="btn btn-danger"
-        (click)="removeQuestion($index)"
-      >
-        <mat-icon>delete</mat-icon>
-      </button>
-    </div>
+            @if (isTesting) {}
+            @if (isReadOnly) {}
+          </div>
+        </div>
+      }
+      @case (1) {
+        <div class="question">
+          <app-short-answer
+            [question]="question"
+            [isReadOnly]="isReadOnly"
+            [isEditting]="mapQuestionEditting[question.id!]"
+            [isTesting]="isTesting"
+          ></app-short-answer>
+          <div class="actions">
+            @if (!isSaved && !isReadOnly && !isTesting) {
+              @if (mapQuestionEditting[question.id!]) {
+                <button
+                  mat-button
+                  color="primary"
+                  type="button"
+                  class="btn btn-danger"
+                  (click)="onSaveQuestion(question.id!)"
+                >
+                  <mat-icon>save</mat-icon>
+                </button>
+              } @else {
+                <button
+                  mat-button
+                  color="primary"
+                  type="button"
+                  class="btn btn-danger"
+                  (click)="onEditQuestion(question.id!)"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+              }
+              <button
+                mat-button
+                color="warn"
+                type="button"
+                class="btn btn-danger"
+                (click)="removeQuestion($index)"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            }
+          </div>
+        </div>
+      }
     }
-  </div>
-
-  } @case(1) {
-  <div class="question">
-    <app-short-answer
-      [question]="question"
-      [isReadOnly]="isReadOnly"
-      [isEditting]="isEditting"
-      [isTesting]="isTesting"
-    ></app-short-answer>
-    @if (isEditting) {
-    <button
-      mat-icon-button
-      color="warn"
-      type="button"
-      class="btn btn-danger"
-      (click)="removeQuestion($index)"
-    >
-      <mat-icon>delete</mat-icon>
-    </button>
-    }
-  </div>
-  } } }
+  }
 </div>
 
-@if (isEditting) {
-<div class="question-type-container">
-  <mat-card class="card" (click)="addQuestion(0)">
-    <mat-card-content class="question-type-item">
-      Multiple Choices
-    </mat-card-content>
-  </mat-card>
-  <mat-card class="card" (click)="addQuestion(1)">
-    <mat-card-content class="question-type-item">
-      Short Answer
-    </mat-card-content>
-  </mat-card>
-</div>
+@if (!isSaved && !isTesting && !isReadOnly) {
+  <div class="question-type-container">
+    <mat-card class="card" (click)="addQuestion(0)">
+      <mat-card-content class="question-type-item">
+        Multiple Choices
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="card" (click)="addQuestion(1)">
+      <mat-card-content class="question-type-item">
+        Short Answer
+      </mat-card-content>
+    </mat-card>
+  </div>
 }

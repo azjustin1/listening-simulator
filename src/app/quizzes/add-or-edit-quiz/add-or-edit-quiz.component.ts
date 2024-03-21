@@ -20,6 +20,8 @@ import { QuizService } from '../quizzes.service';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ReadingComponent } from '../../reading/reading.component';
 import { Reading } from '../../../common/models/reading.model';
+import { each } from 'lodash-es';
+import { Question } from '../../../common/models/question.model';
 
 @Component({
   selector: 'app-add-or-edit-quiz',
@@ -47,8 +49,10 @@ export class AddOrEditQuizComponent implements OnDestroy {
     name: '',
     timeout: null,
     listeningParts: [],
-    readingParagraph: [],
+    readingParts: [],
   };
+
+  mapSavedPart: Record<string, boolean> = {};
 
   subscription: Subscription[] = [];
 
@@ -56,36 +60,75 @@ export class AddOrEditQuizComponent implements OnDestroy {
     private quizService: QuizService,
     private route: ActivatedRoute,
     private router: Router,
-    private dialog: MatDialog
+    private dialog: MatDialog,
   ) {
     this.route.paramMap.subscribe((paramMap: any) => {
       const quizId = paramMap.get('quizId');
       if (quizId) {
         const sub = this.quizService.getById(quizId).subscribe((quiz: any) => {
           this.currentQuiz = quiz;
+          this.generateListeningEdittingPartMap(
+            this.currentQuiz.listeningParts,
+          );
+          this.generateReadingEdittingPartMap(this.currentQuiz.readingParts);
         });
         this.subscription.push(sub);
       }
     });
   }
 
+  generateListeningEdittingPartMap(listeningParts: Listening[]) {
+    each(listeningParts, (part) => {
+      this.mapSavedPart[part.id!] = true;
+    });
+  }
+
+  generateReadingEdittingPartMap(readingParts: Reading[]) {
+    each(readingParts, (part) => {
+      this.mapSavedPart[part.id!] = true;
+    });
+  }
+
   onAddListeningPart() {
+    const id = CommonUtils.generateRandomId();
     const newListeningPart: Listening = {
       id: CommonUtils.generateRandomId(),
       name: '',
       questions: [],
       audioName: '',
     };
+    this.mapSavedPart[id] = false;
     this.currentQuiz.listeningParts.push(newListeningPart);
   }
 
   onAddReadingParagraph() {
+    const id = CommonUtils.generateRandomId();
     const newReadingParagraph: Reading = {
-      id: CommonUtils.generateRandomId(),
+      id: id,
       content: '',
       questions: [],
     };
-    this.currentQuiz.readingParagraph.push(newReadingParagraph);
+    this.mapSavedPart[id] = false;
+    this.currentQuiz.readingParts.push(newReadingParagraph);
+  }
+
+  onSavePart(id: string) {
+    if (this.mapSavedPart[id] !== undefined) {
+      this.mapSavedPart[id] = true;
+    }
+  }
+
+  onEditClick(id: string) {
+    if (this.mapSavedPart[id] !== undefined) {
+      this.saveOthersEditting();
+      this.mapSavedPart[id] = false;
+    }
+  }
+
+  saveOthersEditting() {
+    for (const key in this.mapSavedPart) {
+      this.mapSavedPart[key] = true;
+    }
   }
 
   removePart(index: number) {
@@ -93,7 +136,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
   }
 
   removeParagraph(index: number) {
-    this.currentQuiz.readingParagraph.splice(index, 1);
+    this.currentQuiz.readingParts.splice(index, 1);
   }
 
   onSaveClick() {
