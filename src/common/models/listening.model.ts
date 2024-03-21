@@ -1,8 +1,6 @@
-import { Question } from './question.model';
+import { AbstractPart } from './abstract-part.model';
 
-export interface Listening {
-  id?: string;
+export interface Listening extends AbstractPart {
   name: string;
-  audioName: string;
-  questions: Question[];
+  audioName?: string;
 }

@@ -8,20 +8,21 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
+import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
+import { each } from 'lodash-es';
 import { Subscription } from 'rxjs';
 import { Listening } from '../../../common/models/listening.model';
 import { Quiz } from '../../../common/models/quiz.model';
+import { Reading } from '../../../common/models/reading.model';
 import { CommonUtils } from '../../../utils/common-utils';
 import { ConfirmDialogComponent } from '../../dialog/confirm-dialog/confirm-dialog.component';
 import { FileService } from '../../file.service';
 import { ListeningComponent } from '../../listening/listening.component';
-import { QuizService } from '../quizzes.service';
-import { MatTabsModule } from '@angular/material/tabs';
 import { ReadingComponent } from '../../reading/reading.component';
-import { Reading } from '../../../common/models/reading.model';
-import { each } from 'lodash-es';
-import { Question } from '../../../common/models/question.model';
+import { WritingComponent } from '../../writing/writing.component';
+import { QuizService } from '../quizzes.service';
+import { Writing } from '../../../common/models/writing.model';
 
 @Component({
   selector: 'app-add-or-edit-quiz',
@@ -38,6 +39,7 @@ import { Question } from '../../../common/models/question.model';
     MatTabsModule,
     ListeningComponent,
     ReadingComponent,
+    WritingComponent,
   ],
   providers: [QuizService, FileService],
   templateUrl: './add-or-edit-quiz.component.html',
@@ -50,6 +52,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
     timeout: null,
     listeningParts: [],
     readingParts: [],
+    writingParts: [],
   };
 
   mapSavedPart: Record<string, boolean> = {};
@@ -71,6 +74,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
             this.currentQuiz.listeningParts,
           );
           this.generateReadingEdittingPartMap(this.currentQuiz.readingParts);
+          this.generateWritingEdittingPartMap(this.currentQuiz.writingParts);
         });
         this.subscription.push(sub);
       }
@@ -89,11 +93,18 @@ export class AddOrEditQuizComponent implements OnDestroy {
     });
   }
 
+  generateWritingEdittingPartMap(writingParts: Writing[]) {
+    each(writingParts, (part) => {
+      this.mapSavedPart[part.id!] = true;
+    });
+  }
+
   onAddListeningPart() {
     const id = CommonUtils.generateRandomId();
     const newListeningPart: Listening = {
       id: CommonUtils.generateRandomId(),
       name: '',
+      content: '',
       questions: [],
       audioName: '',
     };
@@ -107,9 +118,24 @@ export class AddOrEditQuizComponent implements OnDestroy {
       id: id,
       content: '',
       questions: [],
+      imageName: '',
     };
     this.mapSavedPart[id] = false;
     this.currentQuiz.readingParts.push(newReadingParagraph);
+  }
+
+  onAddWritingParagraph() {
+    const id = CommonUtils.generateRandomId();
+    const newWritingParagraph: Writing = {
+      id: id,
+      content: '',
+      questions: [],
+      imageName: '',
+      answer: '',
+    };
+    this.mapSavedPart[id] = false;
+    console.log(this.currentQuiz.writingParts);
+    this.currentQuiz.writingParts.push(newWritingParagraph);
   }
 
   onSavePart(id: string) {
@@ -131,12 +157,16 @@ export class AddOrEditQuizComponent implements OnDestroy {
     }
   }
 
-  removePart(index: number) {
+  removeListeningPart(index: number) {
     this.currentQuiz.listeningParts.splice(index, 1);
   }
 
-  removeParagraph(index: number) {
+  removeReadingPart(index: number) {
     this.currentQuiz.readingParts.splice(index, 1);
+  }
+
+  remoteWritingPart(index: number) {
+    this.currentQuiz.writingParts.splice(index, 1);
   }
 
   onSaveClick() {

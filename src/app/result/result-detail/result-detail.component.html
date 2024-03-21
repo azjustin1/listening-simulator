@@ -32,6 +32,15 @@
             </div>
           </ng-template>
         </mat-tab>
+        <mat-tab label="Reading">
+          <ng-template matTabContent>
+            <div class="question-group">
+              @for (part of result.writingParts; track $index) {
+                <app-writing [data]="part" [isReadOnly]="true"></app-writing>
+              }
+            </div>
+          </ng-template>
+        </mat-tab>
       </mat-tab-group>
     </div>
   </div>

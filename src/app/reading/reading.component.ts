@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -9,20 +9,17 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
+import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
+import { each, isUndefined } from 'lodash-es';
 import { Subscription } from 'rxjs';
+import { AbstractQuizPartComponent } from '../../common/abstract-quiz-part.component';
 import { Choice } from '../../common/models/choice.model';
+import { Question } from '../../common/models/question.model';
 import { Reading } from '../../common/models/reading.model';
 import { CommonUtils } from '../../utils/common-utils';
 import { MultipleChoicesComponent } from '../multiple-choices/multiple-choices.component';
 import { ShortAnswerComponent } from '../short-answer/short-answer.component';
 import { ReadingService } from './reading.service';
-import { Question } from '../../common/models/question.model';
-import { each, isUndefined } from 'lodash-es';
-import { AbstractQuizPartComponent } from '../../common/abstract-quiz-part.component';
-import {
-  AngularEditorConfig,
-  AngularEditorModule,
-} from '@kolkov/angular-editor';
 
 @Component({
   selector: 'app-reading',
@@ -47,29 +44,12 @@ import {
   styleUrl: './reading.component.css',
 })
 export class ReadingComponent
-  extends AbstractQuizPartComponent
+  extends AbstractQuizPartComponent<Reading>
   implements OnInit
 {
   count = 0;
-  @Input() data: Reading = {
-    id: '',
-    content: '',
-    questions: [],
-  };
 
   subscription: Subscription[] = [];
-
-  mapQuestionCollapse: Record<string, boolean> = {};
-
-  config: AngularEditorConfig = {
-    editable: true,
-  };
-
-  ngOnInit(): void {
-    each(this.data.questions, (question) => {
-      this.mapQuestionCollapse[question.id!] = false;
-    });
-  }
 
   addQuestion(questionType: number) {
     const id = CommonUtils.generateRandomId();
@@ -116,17 +96,5 @@ export class ReadingComponent
 
   getChoiceById(id: string, choices: Choice[]) {
     return choices.find((choice) => choice.id === id);
-  }
-
-  afterExpand(id: string) {
-    if (!isUndefined(this.mapQuestionCollapse[id])) {
-      this.mapQuestionCollapse[id] = true;
-    }
-  }
-
-  afterCollapse(id: string) {
-    if (!isUndefined(this.mapQuestionCollapse[id])) {
-      this.mapQuestionCollapse[id] = false;
-    }
   }
 }
