@@ -93,7 +93,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
     const id = CommonUtils.generateRandomId();
     const newListeningPart: Listening = {
       id: CommonUtils.generateRandomId(),
-      name: id,
+      name: '',
       questions: [],
       audioName: '',
     };
