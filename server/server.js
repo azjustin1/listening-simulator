@@ -6,6 +6,8 @@ const path = require("path");
 const multer = require("multer");
 const fs = require("fs");
 
+const port = process.env.PORT || 3000;
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     let uploadDir = `${__dirname}/upload`;
@@ -79,6 +81,6 @@ server.delete("/file/:filename", (req, res) => {
 
 server.use("/", jsonServer.router("db.json"));
 
-server.listen(3000, () => {
-  console.log("Server is running at port 3000");
+server.listen(port, () => {
+  console.log(`Server is running at port ${port}`);
 });
