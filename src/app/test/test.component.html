@@ -21,13 +21,17 @@
       <h2>{{ minutes }}:{{ seconds | number: "2.0" }}</h2></mat-card-content
     >
   </mat-card>
-
   @if (
     isReady &&
     result.studentName &&
     result.studentName !== null &&
     result.studentName !== ""
   ) {
+    <div class="form-group" class="start-part-button">
+      <button type="button" mat-raised-button (click)="onStartPart()">
+        Start
+      </button>
+    </div>
     <mat-tab-group
       (selectedIndexChange)="onChangeTab($event)"
       [(selectedIndex)]="currentTab"
@@ -42,6 +46,7 @@
                   <app-listening
                     [data]="part"
                     [isTesting]="true"
+                    (onStartChange)="startTimer()"
                   ></app-listening>
                   <button
                     mat-button
@@ -60,45 +65,60 @@
       </mat-tab>
       <mat-tab label="Reading" [disabled]="mapDisablePart[1]">
         <ng-template matTabContent>
-          @for (part of quiz.readingParts; track $index) {
-            <mat-card class="question-group" appearance="outlined">
-              <mat-card-content>
-                <app-reading [data]="part" [isTesting]="true"></app-reading
-              ></mat-card-content>
-            </mat-card>
+          @if (isStart) {
+            @for (part of quiz.readingParts; track $index) {
+              <mat-card class="question-group" appearance="outlined">
+                <mat-card-content>
+                  <app-reading
+                    [data]="part"
+                    [isTesting]="true"
+                    [isReadOnly]="!isStart"
+                  ></app-reading
+                ></mat-card-content>
+              </mat-card>
+            }
+
+            <button
+              mat-button
+              color="primary"
+              type="button"
+              class="btn btn-danger"
+              (click)="onSubmitPartClick(currentTab)"
+            >
+              Submit
+            </button>
           }
-          <button
-            mat-button
-            color="primary"
-            type="button"
-            class="btn btn-danger"
-            (click)="onSubmitPartClick(currentTab)"
-          >
-            Submit
-          </button>
         </ng-template>
       </mat-tab>
       <mat-tab label="Wriing" [disabled]="mapDisablePart[2]">
         <ng-template matTabContent>
-          @for (part of quiz.writingParts; track $index) {
-            <mat-card class="question-group" appearance="outlined">
-              <mat-card-content>
-                <app-writing [data]="part" [isTesting]="true"></app-writing
-              ></mat-card-content>
-            </mat-card>
+          @if (isStart) {
+            @for (part of quiz.writingParts; track $index) {
+              <mat-card class="question-group" appearance="outlined">
+                <mat-card-content>
+                  <app-writing
+                    [data]="part"
+                    [isTesting]="true"
+                    [isReadOnly]="!isStart"
+                  ></app-writing
+                ></mat-card-content>
+              </mat-card>
+            }
           }
         </ng-template>
       </mat-tab>
     </mat-tab-group>
 
-    <button
-      mat-raised-button
-      color="primary"
-      (click)="onSubmitClick()"
-      style="margin-top: 16px"
-    >
-      Submit
-    </button>
+    @if (currentTab === 2) {
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="onSubmitClick()"
+        style="margin-top: 16px"
+      >
+        Submit
+      </button>
+    }
   } @else {
     <button
       [disabled]="
@@ -111,7 +131,7 @@
       (click)="onStartTest()"
       style="margin-top: 16px"
     >
-      Start
+      Test
     </button>
   }
 </div>

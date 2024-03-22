@@ -2,9 +2,11 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  EventEmitter,
   Input,
   OnDestroy,
   OnInit,
+  Output,
   QueryList,
   ViewChild,
   ViewChildren,
@@ -26,11 +28,13 @@ import { ListeningService } from './listening.service';
 import { Question } from '../../common/models/question.model';
 import { each } from 'lodash-es';
 import { AbstractQuizPartComponent } from '../../common/abstract-quiz-part.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-listening',
   standalone: true,
   imports: [
+    CommonModule,
     FormsModule,
     MatListModule,
     MatCardModule,
@@ -50,20 +54,16 @@ export class ListeningComponent
   implements OnInit, AfterViewInit, OnDestroy
 {
   @ViewChild('audioPlayer') audioPlayer!: ElementRef;
+  @Output() onStartChange = new EventEmitter();
 
   audioUrl: string = '';
   selectedFile!: File;
+  isDisableStartButton = false;
 
   subscription: Subscription[] = [];
 
   ngAfterViewInit(): void {
     this.getAudioFile(this.data.audioName!);
-  }
-
-  ngOnDestroy(): void {
-    this.subscription.forEach((sub) => {
-      sub.unsubscribe();
-    });
   }
 
   getAudioFile(fileName: string) {
@@ -75,6 +75,13 @@ export class ListeningComponent
         audioElement.load();
       });
     }
+  }
+
+  override onStart() {
+    super.onStart();
+    this.isDisableStartButton = true;
+    this.onStartChange.emit();
+    // this.audioPlayer.nativeElement.play();
   }
 
   addQuestion(questionType: number) {

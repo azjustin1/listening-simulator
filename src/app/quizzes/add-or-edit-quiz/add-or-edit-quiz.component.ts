@@ -51,7 +51,6 @@ export class AddOrEditQuizComponent implements OnDestroy {
   currentQuiz: Quiz = {
     id: '',
     name: '',
-    timeout: null,
     listeningParts: [
       {
         id: CommonUtils.generateRandomId(),

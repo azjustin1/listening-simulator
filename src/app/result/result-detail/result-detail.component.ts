@@ -42,7 +42,6 @@ export class ResultDetailComponent {
   result: Result = {
     id: '',
     name: '',
-    timeout: null,
     studentName: '',
     listeningParts: [],
     readingParts: [],

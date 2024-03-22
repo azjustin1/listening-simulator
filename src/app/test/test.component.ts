@@ -15,7 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { ActivatedRoute, Router } from '@angular/router';
 import { each } from 'lodash-es';
-import { Subscription, interval } from 'rxjs';
+import { Subscription, interval, timer } from 'rxjs';
 import { Quiz } from '../../common/models/quiz.model';
 import { Result } from '../../common/models/result.model';
 import { CommonUtils } from '../../utils/common-utils';
@@ -60,7 +60,6 @@ export class TestComponent {
   result: Result = {
     id: '',
     name: '',
-    timeout: null,
     studentName: '',
     correctPoint: 0,
     totalPoint: 0,
@@ -73,18 +72,21 @@ export class TestComponent {
   quiz: Quiz = {
     id: '',
     name: '',
-    timeout: null,
     listeningParts: [],
     readingParts: [],
     writingParts: [],
   };
-  subscriptions: Subscription[] = [];
 
   minutes: number = 0;
   seconds: number = 0;
   totalSeconds: number = 0;
-  interval = {};
+  timeoutInterval!: Subscription;
+  timeoutTimer!: Subscription;
+
+  subscriptions: Subscription[] = [];
+
   isReady: boolean = false;
+  isStart: boolean = false;
 
   currentTab = 0;
 
@@ -106,9 +108,8 @@ export class TestComponent {
       if (quizId) {
         this.quizService.getById(quizId).subscribe((quiz: any) => {
           this.quiz = quiz;
-          this.totalSeconds = quiz.timeout * 60;
-          this.minutes = Math.floor(this.totalSeconds / 60);
-          this.seconds = this.totalSeconds % 60;
+          this.totalSeconds = this.quiz.listeningTimeout! * 60;
+          this.getTimeout();
         });
       }
     });
@@ -116,6 +117,21 @@ export class TestComponent {
 
   onChangeTab(tab: number) {
     this.currentTab = tab;
+    this.getTimeout();
+  }
+
+  getTimeout() {
+    if (this.currentTab === 0) {
+      this.totalSeconds = this.quiz.listeningTimeout! * 60;
+    }
+    if (this.currentTab === 1) {
+      this.totalSeconds = this.quiz.readingTimeout! * 60;
+    }
+    if (this.currentTab === 2) {
+      this.totalSeconds = this.quiz.writingTimeout! * 60;
+    }
+    this.minutes = Math.floor(this.totalSeconds / 60);
+    this.seconds = this.totalSeconds % 60;
   }
 
   onSubmitClick() {
@@ -145,8 +161,25 @@ export class TestComponent {
 
   onStartTest() {
     this.isReady = true;
+  }
+
+  onStartPart() {
+    this.timeoutInterval = interval(1000).subscribe(() => {
+      if (this.seconds === 0) {
+        this.minutes--;
+        this.seconds = 59;
+      } else {
+        this.seconds--;
+      }
+    });
+    this.isStart = true;
     this.startTimer();
-    setTimeout(() => {
+  }
+
+  startTimer() {
+    this.timeoutTimer = timer(this.totalSeconds * 1000).subscribe(() => {
+      this.timeoutInterval.unsubscribe();
+      this.isStart = false;
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
         hasBackdrop: true,
         disableClose: true,
@@ -156,22 +189,14 @@ export class TestComponent {
       dialogRef.componentInstance.isWarning = true;
       dialogRef.afterClosed().subscribe((isConfirm) => {
         if (isConfirm) {
-          this.submit();
+          this.onSubmitPartClick(this.currentTab);
+          if (this.currentTab > 2) {
+            this.submit();
+          }
         }
       });
-    }, this.totalSeconds * 1000);
-  }
-
-  startTimer() {
-    const sub = interval(1000).subscribe(() => {
-      if (this.seconds === 0) {
-        this.minutes--;
-        this.seconds = 59;
-      } else {
-        this.seconds--;
-      }
     });
-    this.subscriptions.push(sub);
+    this.subscriptions.push(this.timeoutInterval, this.timeoutTimer);
   }
 
   private getCurrentDate() {
@@ -188,10 +213,11 @@ export class TestComponent {
 
   onSubmitPartClick(tab: number) {
     this.mapDisablePart[tab] = true;
-    if (tab + 1 < 3) {
-      this.mapDisablePart[tab + 1] = false;
-      this.currentTab = tab + 1;
-    }
+    this.mapDisablePart[tab + 1] = false;
+    this.currentTab = tab + 1;
+    this.timeoutInterval.unsubscribe();
+    this.timeoutTimer.unsubscribe();
+    this.isStart = false;
   }
 
   private calculatePoint() {

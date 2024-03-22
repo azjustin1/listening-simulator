@@ -18,27 +18,6 @@
   }
 </div>
 
-<div class="form-group">
-  @if (isSaved || isTesting || isReadOnly) {
-    <h2>{{ data.timeout }}</h2>
-  } @else {
-    <mat-form-field>
-      <mat-label>Time</mat-label>
-      <input
-        autocomplete="off"
-        placeholder="Minute"
-        matInput
-        name="timeout"
-        type="number"
-        class="form-control"
-        id="timeout"
-        [(ngModel)]="data.timeout"
-        required
-      />
-    </mat-form-field>
-  }
-</div>
-
 @if (!isSaved && !isReadOnly && !isTesting) {
   <div class="form-group">
     <div class="upload-file">

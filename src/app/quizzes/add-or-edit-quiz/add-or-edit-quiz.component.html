@@ -20,65 +20,92 @@
     <mat-tab-group animationDuration="0ms">
       <mat-tab label="Listening">
         <ng-template matTabContent>
-          <mat-tab-group
-            mat-align-tabs="center"
-            animationDuration="0ms"
-            headerPosition="below"
-            [(selectedIndex)]="selectedWritingPart"
-            (selectedTabChange)="onTabChange('reading', $event)"
-          >
-            @for (part of currentQuiz.listeningParts; track $index) {
-              <mat-tab>
-                <ng-template matTabLabel="">{{ $index + 1 }}</ng-template>
-                <mat-card style="margin-top: 16px" appearance="outlined">
-                  <mat-card-content>
-                    <div>
-                      <app-listening
-                        [data]="part"
-                        [isSaved]="mapSavedPart['listening'][$index]!"
-                      ></app-listening>
-                    </div>
-                    <div class="actions">
-                      @if (mapSavedPart["listening"][$index]) {
-                        <button
-                          mat-button
-                          color="primary"
-                          type="button"
-                          class="btn btn-danger"
-                          (click)="onEditClick('listening', $index)"
-                        >
-                          <mat-icon>edit</mat-icon> Edit part
-                        </button>
-                      } @else {
-                        <button
-                          mat-button
-                          color="primary"
-                          type="button"
-                          class="btn btn-danger"
-                          (click)="onSavePart('listening', $index)"
-                        >
-                          <mat-icon>save</mat-icon> Save
-                        </button>
-                      }
-                      <button
-                        mat-button
-                        color="warn"
-                        type="button"
-                        class="btn btn-danger"
-                        (click)="removeListeningPart($index)"
-                      >
-                        <mat-icon>delete</mat-icon> Remove part
-                      </button>
-                    </div>
-                  </mat-card-content>
-                </mat-card>
-              </mat-tab>
+          <div class="timeout">
+            @if (mapSavedPart["listening"]) {
+              <mat-form-field>
+                <mat-label>Time</mat-label>
+                <input
+                  autocomplete="off"
+                  placeholder="Minute"
+                  matInput
+                  name="timeout"
+                  type="number"
+                  class="form-control"
+                  id="timeout"
+                  [(ngModel)]="currentQuiz.listeningTimeout"
+                  required
+                />
+              </mat-form-field>
+            } @else {
+              <h2>Time: {{ currentQuiz.listeningTimeout }} minutes</h2>
             }
-          </mat-tab-group>
+          </div>
+          @for (part of currentQuiz.listeningParts; track $index) {
+            <mat-card style="margin-top: 16px" appearance="outlined">
+              <mat-card-content>
+                <div>
+                  <app-listening
+                    [data]="part"
+                    [isSaved]="mapSavedPart['listening'][$index]!"
+                  ></app-listening>
+                </div>
+                <div class="actions">
+                  @if (mapSavedPart["listening"][$index]) {
+                    <button
+                      mat-button
+                      color="primary"
+                      type="button"
+                      class="btn btn-danger"
+                      (click)="onEditClick('listening', $index)"
+                    >
+                      <mat-icon>edit</mat-icon> Edit part
+                    </button>
+                  } @else {
+                    <button
+                      mat-button
+                      color="primary"
+                      type="button"
+                      class="btn btn-danger"
+                      (click)="onSavePart('listening', $index)"
+                    >
+                      <mat-icon>save</mat-icon> Save
+                    </button>
+                  }
+                  <button
+                    mat-button
+                    color="warn"
+                    type="button"
+                    class="btn btn-danger"
+                    (click)="removeListeningPart($index)"
+                  >
+                    <mat-icon>delete</mat-icon> Remove part
+                  </button>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          }
         </ng-template>
       </mat-tab>
       <mat-tab label="Reading">
         <ng-template matTabContent>
+          <div class="timeout">
+            @if (mapSavedPart["listening"]) {
+              <mat-form-field>
+                <mat-label>Time</mat-label>
+                <input
+                  autocomplete="off"
+                  placeholder="Minute"
+                  matInput
+                  name="timeout"
+                  type="number"
+                  class="form-control"
+                  id="timeout"
+                  [(ngModel)]="currentQuiz.readingTimeout"
+                  required
+                />
+              </mat-form-field>
+            }
+          </div>
           <mat-tab-group
             mat-align-tabs="center"
             animationDuration="0ms"
@@ -148,6 +175,24 @@
       </mat-tab>
       <mat-tab label="Writing">
         <ng-template matTabContent>
+          <div class="timeout">
+            @if (mapSavedPart["listening"]) {
+              <mat-form-field>
+                <mat-label>Time</mat-label>
+                <input
+                  autocomplete="off"
+                  placeholder="Minute"
+                  matInput
+                  name="timeout"
+                  type="number"
+                  class="form-control"
+                  id="timeout"
+                  [(ngModel)]="currentQuiz.writingTimeout"
+                  required
+                />
+              </mat-form-field>
+            }
+          </div>
           <mat-tab-group
             mat-align-tabs="center"
             animationDuration="0ms"

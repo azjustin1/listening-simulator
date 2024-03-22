@@ -14,7 +14,7 @@
   @if (isTesting) {
     <div class="input-writing">
       <mat-form-field>
-        <mat-label>{{ data.answer.length }}</mat-label>
+        <mat-label>Word count: {{ data.answer.length }}</mat-label>
         <textarea
           matInput
           name="reading-question"
@@ -27,7 +27,7 @@
   @if (isReadOnly) {
     <div class="result-container">
       <mat-form-field>
-        <mat-label>{{ data.answer.length }}</mat-label>
+        <mat-label>Word count: {{ data.answer.length }}</mat-label>
         <textarea
           matInput
           disabled="true"

@@ -1,23 +1,33 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FileService } from '../app/file.service';
-import { Question } from './models/question.model';
-import { CommonUtils } from '../utils/common-utils';
-import { map, Observable } from 'rxjs';
-import { HttpEvent, HttpResponse } from '@angular/common/http';
-import { AbstractPart } from './models/abstract-part.model';
+import { HttpResponse } from '@angular/common/http';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { AngularEditorConfig, UploadResponse } from '@wfpena/angular-wysiwyg';
+import { each } from 'lodash-es';
+import { map, Subscription } from 'rxjs';
+import { FileService } from '../app/file.service';
+import { CommonUtils } from '../utils/common-utils';
+import { AbstractPart } from './models/abstract-part.model';
+import { Question } from './models/question.model';
 
 @Component({
   template: '',
 })
 export abstract class AbstractQuizPartComponent<T extends AbstractPart>
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   @Input() data!: T;
   @Input() isTesting: boolean = false;
   @Input() isEditting: boolean = false;
   @Input() isReadOnly: boolean = false;
   @Input() isSaved: boolean = false;
+  @Output() onTimeout = new EventEmitter();
 
   currentQuestion: Question = {
     content: '',
@@ -27,6 +37,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     correctAnswer: '',
   };
   mapQuestionEditting: Record<string, boolean> = {};
+  subscriptions: Subscription[] = [];
 
   config: AngularEditorConfig = {
     editable: true,
@@ -90,7 +101,10 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     },
   };
 
-  constructor(protected fileService: FileService) {}
+  constructor(
+    protected fileService: FileService,
+    private dialog: MatDialog,
+  ) {}
 
   ngOnInit(): void {
     if (this.data.imageName) {
@@ -98,16 +112,24 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     }
   }
 
+  ngOnDestroy(): void {
+    each(this.subscriptions, (sub) => {
+      sub.unsubscribe();
+    });
+  }
+
   getImage(fileName: string) {
     this.fileService.getFile(fileName).subscribe((audioFile: Blob) => {
       const fileURL = URL.createObjectURL(audioFile);
       const regex = /<img[^>]+src="([^">]+)"/g;
-      const match = regex.exec(this.data.content!);
+      const match = regex.exec(this.data.content);
       if (match) {
-        this.data.content = this.data.content!.replace(match[1], fileURL);
+        this.data.content = this.data.content.replace(match[1], fileURL);
       }
     });
   }
+
+  onStart() {}
 
   defaultMultipleChoices() {
     const choices = [];
