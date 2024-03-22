@@ -86,6 +86,14 @@ export class TestComponent {
   interval = {};
   isReady: boolean = false;
 
+  currentTab = 0;
+
+  mapDisablePart: Record<number, boolean> = {
+    0: false,
+    1: true,
+    2: true,
+  };
+
   constructor(
     private quizService: QuizService,
     private route: ActivatedRoute,
@@ -104,6 +112,10 @@ export class TestComponent {
         });
       }
     });
+  }
+
+  onChangeTab(tab: number) {
+    this.currentTab = tab;
   }
 
   onSubmitClick() {
@@ -172,6 +184,14 @@ export class TestComponent {
     const formattedDate = `${day}/${month}/${year}`;
 
     return formattedDate;
+  }
+
+  onSubmitPartClick(tab: number) {
+    this.mapDisablePart[tab] = true;
+    if (tab + 1 < 3) {
+      this.mapDisablePart[tab + 1] = false;
+      this.currentTab = tab + 1;
+    }
   }
 
   private calculatePoint() {

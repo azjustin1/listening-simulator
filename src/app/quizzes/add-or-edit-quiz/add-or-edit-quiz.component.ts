@@ -8,13 +8,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
-import { MatTabsModule } from '@angular/material/tabs';
+import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { each } from 'lodash-es';
+import { each, size, toArray } from 'lodash-es';
 import { Subscription } from 'rxjs';
 import { Listening } from '../../../common/models/listening.model';
 import { Quiz } from '../../../common/models/quiz.model';
 import { Reading } from '../../../common/models/reading.model';
+import { Writing } from '../../../common/models/writing.model';
 import { CommonUtils } from '../../../utils/common-utils';
 import { ConfirmDialogComponent } from '../../dialog/confirm-dialog/confirm-dialog.component';
 import { FileService } from '../../file.service';
@@ -22,7 +23,7 @@ import { ListeningComponent } from '../../listening/listening.component';
 import { ReadingComponent } from '../../reading/reading.component';
 import { WritingComponent } from '../../writing/writing.component';
 import { QuizService } from '../quizzes.service';
-import { Writing } from '../../../common/models/writing.model';
+import { MatStepperModule } from '@angular/material/stepper';
 
 @Component({
   selector: 'app-add-or-edit-quiz',
@@ -37,6 +38,7 @@ import { Writing } from '../../../common/models/writing.model';
     MatInputModule,
     MatIconModule,
     MatTabsModule,
+    MatStepperModule,
     ListeningComponent,
     ReadingComponent,
     WritingComponent,
@@ -50,12 +52,29 @@ export class AddOrEditQuizComponent implements OnDestroy {
     id: '',
     name: '',
     timeout: null,
-    listeningParts: [],
+    listeningParts: [
+      {
+        id: CommonUtils.generateRandomId(),
+        name: '',
+        content: '',
+        timeout: undefined,
+        audioName: '',
+        questions: [],
+      },
+    ],
     readingParts: [],
     writingParts: [],
   };
 
-  mapSavedPart: Record<string, boolean> = {};
+  mapSavedPart: Record<string, Record<number, boolean>> = {
+    listening: {},
+    reading: {},
+    writing: {},
+  };
+
+  selectedListeningPart = 0;
+  selectedReadingPart = 0;
+  selectedWritingPart = 0;
 
   subscription: Subscription[] = [];
 
@@ -82,20 +101,29 @@ export class AddOrEditQuizComponent implements OnDestroy {
   }
 
   generateListeningEdittingPartMap(listeningParts: Listening[]) {
-    each(listeningParts, (part) => {
-      this.mapSavedPart[part.id!] = true;
+    if (listeningParts.length === 0) {
+      this.mapSavedPart['listening'][0] = true;
+    }
+    each(listeningParts, (part, index: number) => {
+      this.mapSavedPart['listening'][index] = true;
     });
   }
 
   generateReadingEdittingPartMap(readingParts: Reading[]) {
-    each(readingParts, (part) => {
-      this.mapSavedPart[part.id!] = true;
+    if (readingParts.length === 0) {
+      this.mapSavedPart['reading'][0] = true;
+    }
+    each(readingParts, (part, index: number) => {
+      this.mapSavedPart['reading'][index] = true;
     });
   }
 
   generateWritingEdittingPartMap(writingParts: Writing[]) {
-    each(writingParts, (part) => {
-      this.mapSavedPart[part.id!] = true;
+    if (writingParts.length === 0) {
+      this.mapSavedPart['writing'][0] = true;
+    }
+    each(writingParts, (part, index: number) => {
+      this.mapSavedPart['writing'][index] = true;
     });
   }
 
@@ -104,11 +132,13 @@ export class AddOrEditQuizComponent implements OnDestroy {
     const newListeningPart: Listening = {
       id: CommonUtils.generateRandomId(),
       name: '',
+      timeout: undefined,
       content: '',
       questions: [],
       audioName: '',
     };
-    this.mapSavedPart[id] = false;
+    this.mapSavedPart['listening'][size(this.mapSavedPart['listening'])] =
+      false;
     this.currentQuiz.listeningParts.push(newListeningPart);
   }
 
@@ -117,10 +147,11 @@ export class AddOrEditQuizComponent implements OnDestroy {
     const newReadingParagraph: Reading = {
       id: id,
       content: '',
+      timeout: undefined,
       questions: [],
       imageName: '',
     };
-    this.mapSavedPart[id] = false;
+    this.mapSavedPart['reading'][size(this.mapSavedPart['reading'])] = false;
     this.currentQuiz.readingParts.push(newReadingParagraph);
   }
 
@@ -129,31 +160,40 @@ export class AddOrEditQuizComponent implements OnDestroy {
     const newWritingParagraph: Writing = {
       id: id,
       content: '',
+      timeout: undefined,
       questions: [],
       imageName: '',
       answer: '',
     };
-    this.mapSavedPart[id] = false;
-    console.log(this.currentQuiz.writingParts);
+    this.mapSavedPart['writing'][size(this.mapSavedPart['writing'])] = false;
+    if (!this.currentQuiz.writingParts) {
+      this.currentQuiz = { ...this.currentQuiz, writingParts: [] };
+    }
     this.currentQuiz.writingParts.push(newWritingParagraph);
+    this.selectedWritingPart++;
   }
 
-  onSavePart(id: string) {
-    if (this.mapSavedPart[id] !== undefined) {
-      this.mapSavedPart[id] = true;
+  onTabChange(key: string, event: MatTabChangeEvent) {
+    this.mapSavedPart[key][event.index] = true;
+  }
+
+  onSavePart(key: string, index: number) {
+    this.saveAllEdittingPart(key);
+    if (this.mapSavedPart[key] !== undefined) {
+      this.mapSavedPart[key][index] = true;
     }
   }
 
-  onEditClick(id: string) {
-    if (this.mapSavedPart[id] !== undefined) {
-      this.saveOthersEditting();
-      this.mapSavedPart[id] = false;
+  onEditClick(key: string, index: number) {
+    if (this.mapSavedPart[key] !== undefined) {
+      this.saveAllEdittingPart(key);
+      this.mapSavedPart[key][index] = false;
     }
   }
 
-  saveOthersEditting() {
-    for (const key in this.mapSavedPart) {
-      this.mapSavedPart[key] = true;
+  saveAllEdittingPart(key: string) {
+    for (const index in this.mapSavedPart[key]) {
+      this.mapSavedPart[key][index] = true;
     }
   }
 
@@ -170,7 +210,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
   }
 
   onSaveClick() {
-    if (this.currentQuiz.name == '' || this.currentQuiz.timeout === null) {
+    if (this.currentQuiz.name == '') {
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
         hasBackdrop: true,
       });

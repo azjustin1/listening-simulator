@@ -9,4 +9,5 @@ export interface Question {
   answer: string;
   correctAnswer?: string;
   imageName?: string;
+  subQuestions?: Question[];
 }

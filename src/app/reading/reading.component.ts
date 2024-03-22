@@ -20,6 +20,8 @@ import { CommonUtils } from '../../utils/common-utils';
 import { MultipleChoicesComponent } from '../multiple-choices/multiple-choices.component';
 import { ShortAnswerComponent } from '../short-answer/short-answer.component';
 import { ReadingService } from './reading.service';
+import { DropdownChoiceComponent } from '../dropdown-choice/dropdown-choice.component';
+import { MultipleQuestionComponent } from '../multiple-question/multiple-question.component';
 
 @Component({
   selector: 'app-reading',
@@ -34,6 +36,7 @@ import { ReadingService } from './reading.service';
     MatInputModule,
     MultipleChoicesComponent,
     ShortAnswerComponent,
+    MultipleQuestionComponent,
     MatIconModule,
     MatExpansionModule,
     AngularEditorModule,
@@ -51,42 +54,23 @@ export class ReadingComponent
 
   subscription: Subscription[] = [];
 
-  addQuestion(questionType: number) {
+  addQuestion(index: number, isAddSubQuestion: boolean) {
     const id = CommonUtils.generateRandomId();
     let newQuestion: Question = {
       content: '',
-      type: null,
-      choices: [],
+      type: 0,
+      choices: this.defaultMultipleChoices(),
       answer: '',
       correctAnswer: '',
     };
-    switch (questionType) {
-      case 1:
-        newQuestion = {
-          id: id,
-          content: '',
-          type: questionType,
-          choices: [],
-          answer: '',
-          correctAnswer: '',
-        };
-        break;
-      case 2:
-        newQuestion = {
-          id: id,
-          content: '',
-          type: questionType,
-          choices: this.defaultMultipleChoices(),
-          answer: '',
-          correctAnswer: '',
-        };
-        break;
-      default:
-        break;
+    if (isAddSubQuestion) {
+      this.data.questions[index].subQuestions?.push(newQuestion);
+    } else {
+      this.data.questions.push({
+        ...newQuestion,
+      });
     }
-    this.data.questions.push({
-      ...newQuestion,
-    });
+    console.log(this.data.questions)
     this.mapQuestionEditting[id] = true;
   }
 

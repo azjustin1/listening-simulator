@@ -59,18 +59,19 @@
             }
           </div>
         </div>
-        <button
-          *ngIf=""
-          mat-button
-          color="primary"
-          type="button"
-          class="btn btn-primary"
-          (click)="addChoice()"
-        >
-          <mat-icon>add</mat-icon>
-          More option
-        </button>
       }
     </div>
+    @if (isEditting) {
+      <button
+        mat-button
+        color="primary"
+        type="button"
+        class="btn btn-primary"
+        (click)="addChoice()"
+      >
+        <mat-icon>add</mat-icon>
+        More option
+      </button>
+    }
   </div>
 </form>

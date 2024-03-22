@@ -28,8 +28,12 @@
     result.studentName !== null &&
     result.studentName !== ""
   ) {
-    <mat-tab-group>
-      <mat-tab label="Listening">
+    <mat-tab-group
+      (selectedIndexChange)="onChangeTab($event)"
+      [(selectedIndex)]="currentTab"
+      animationDuration="0ms"
+    >
+      <mat-tab label="Listening" [disabled]="mapDisablePart[0]">
         <ng-template matTabContent>
           @for (part of quiz.listeningParts; track $index) {
             <mat-card class="question-group" appearance="outlined">
@@ -39,13 +43,22 @@
                     [data]="part"
                     [isTesting]="true"
                   ></app-listening>
+                  <button
+                    mat-button
+                    color="primary"
+                    type="button"
+                    class="btn btn-danger"
+                    (click)="onSubmitPartClick(currentTab)"
+                  >
+                    Submit
+                  </button>
                 </div>
               </mat-card-content>
             </mat-card>
           }
         </ng-template>
       </mat-tab>
-      <mat-tab label="Reading">
+      <mat-tab label="Reading" [disabled]="mapDisablePart[1]">
         <ng-template matTabContent>
           @for (part of quiz.readingParts; track $index) {
             <mat-card class="question-group" appearance="outlined">
@@ -54,9 +67,18 @@
               ></mat-card-content>
             </mat-card>
           }
+          <button
+            mat-button
+            color="primary"
+            type="button"
+            class="btn btn-danger"
+            (click)="onSubmitPartClick(currentTab)"
+          >
+            Submit
+          </button>
         </ng-template>
       </mat-tab>
-      <mat-tab label="Reading">
+      <mat-tab label="Wriing" [disabled]="mapDisablePart[2]">
         <ng-template matTabContent>
           @for (part of quiz.writingParts; track $index) {
             <mat-card class="question-group" appearance="outlined">

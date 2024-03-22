@@ -13,35 +13,29 @@
   </div>
   @if (isTesting) {
     <div class="input-writing">
-      <angular-editor
-        name="reading-question"
-        [id]="data.id"
-        [config]="config"
-        [(ngModel)]="data.answer"
-      ></angular-editor>
-      <div class="word-count">
-        @if (!data.answer || data.answer === "") {
-          <h2>Words count: 0</h2>
-        } @else {
-          <h2>Words count: {{ data.answer.length }}</h2>
-        }
-      </div>
+      <mat-form-field>
+        <mat-label>{{ data.answer.length }}</mat-label>
+        <textarea
+          matInput
+          name="reading-question"
+          [(ngModel)]="data.answer"
+          rows="5"
+        ></textarea>
+      </mat-form-field>
     </div>
   }
   @if (isReadOnly) {
     <div class="result-container">
-      <mat-card class="result">
-        <mat-card-content>
-          <span [innerHTML]="data.answer"></span>
-        </mat-card-content>
-      </mat-card>
-      <div>
-        @if (!data.answer || data.answer === "") {
-          <h2>Word count: 0</h2>
-        } @else {
-          <h2>Word count: {{ data.answer.length }}</h2>
-        }
-      </div>
+      <mat-form-field>
+        <mat-label>{{ data.answer.length }}</mat-label>
+        <textarea
+          matInput
+          disabled="true"
+          name="reading-question"
+          [(ngModel)]="data.answer"
+          [rows]="5"
+        ></textarea>
+      </mat-form-field>
     </div>
   }
 </div>

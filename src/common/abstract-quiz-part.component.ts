@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FileService } from '../app/file.service';
 import { Question } from './models/question.model';
 import { CommonUtils } from '../utils/common-utils';

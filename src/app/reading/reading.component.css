@@ -25,11 +25,8 @@
   margin: 10px 0 0 0;
 }
 
-.question-type-container {
-  display: flex;
-  justify-content: space-evenly;
+.add-question {
   margin-top: 20px;
-  cursor: pointer;
 }
 
 .answer-container {
