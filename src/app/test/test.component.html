@@ -66,18 +66,28 @@
       <mat-tab label="Reading" [disabled]="mapDisablePart[1]">
         <ng-template matTabContent>
           @if (isStart) {
-            @for (part of quiz.readingParts; track $index) {
-              <mat-card class="question-group" appearance="outlined">
-                <mat-card-content>
-                  <app-reading
-                    [data]="part"
-                    [isTesting]="true"
-                    [isReadOnly]="!isStart"
-                  ></app-reading
-                ></mat-card-content>
-              </mat-card>
-            }
-
+            <mat-tab-group
+              mat-align-tabs="center"
+              animationDuration="0ms"
+              headerPosition="below"
+              [(selectedIndex)]="selectedWritingPart"
+              (selectedTabChange)="onTabChange('reading', $event)"
+            >
+              @for (part of quiz.readingParts; track $index) {
+                <mat-tab>
+                  <ng-template matTabLabel="">{{ $index + 1 }}</ng-template>
+                  <mat-card class="question-group" appearance="outlined">
+                    <mat-card-content>
+                      <app-reading
+                        [data]="part"
+                        [isTesting]="true"
+                        [isReadOnly]="!isStart"
+                      ></app-reading
+                    ></mat-card-content>
+                  </mat-card>
+                </mat-tab>
+              }
+            </mat-tab-group>
             <button
               mat-button
               color="primary"
@@ -93,17 +103,28 @@
       <mat-tab label="Wriing" [disabled]="mapDisablePart[2]">
         <ng-template matTabContent>
           @if (isStart) {
-            @for (part of quiz.writingParts; track $index) {
-              <mat-card class="question-group" appearance="outlined">
-                <mat-card-content>
-                  <app-writing
-                    [data]="part"
-                    [isTesting]="true"
-                    [isReadOnly]="!isStart"
-                  ></app-writing
-                ></mat-card-content>
-              </mat-card>
-            }
+            <mat-tab-group
+              mat-align-tabs="center"
+              animationDuration="0ms"
+              headerPosition="below"
+              [(selectedIndex)]="selectedWritingPart"
+              (selectedTabChange)="onTabChange('reading', $event)"
+            >
+              @for (part of quiz.writingParts; track $index) {
+                <mat-tab>
+                  <ng-template matTabLabel="">{{ $index + 1 }}</ng-template>
+                  <mat-card class="question-group" appearance="outlined">
+                    <mat-card-content>
+                      <app-writing
+                        [data]="part"
+                        [isTesting]="true"
+                        [isReadOnly]="!isStart"
+                      ></app-writing
+                    ></mat-card-content>
+                  </mat-card>
+                </mat-tab>
+              }
+            </mat-tab-group>
           }
         </ng-template>
       </mat-tab>

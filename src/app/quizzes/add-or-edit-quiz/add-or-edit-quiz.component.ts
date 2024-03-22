@@ -78,10 +78,10 @@ export class AddOrEditQuizComponent implements OnDestroy {
   subscription: Subscription[] = [];
 
   constructor(
-    private quizService: QuizService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private dialog: MatDialog,
+    protected quizService: QuizService,
+    protected route: ActivatedRoute,
+    protected router: Router,
+    protected dialog: MatDialog,
   ) {
     this.route.paramMap.subscribe((paramMap: any) => {
       const quizId = paramMap.get('quizId');

@@ -13,6 +13,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
+import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { each } from 'lodash-es';
 import { Subscription, interval, timer } from 'rxjs';
@@ -22,12 +23,12 @@ import { CommonUtils } from '../../utils/common-utils';
 import { ConfirmDialogComponent } from '../dialog/confirm-dialog/confirm-dialog.component';
 import { ListeningComponent } from '../listening/listening.component';
 import { MultipleChoicesComponent } from '../multiple-choices/multiple-choices.component';
+import { AddOrEditQuizComponent } from '../quizzes/add-or-edit-quiz/add-or-edit-quiz.component';
 import { QuizService } from '../quizzes/quizzes.service';
-import { ShortAnswerComponent } from '../short-answer/short-answer.component';
-import { TestService } from './test.service';
-import { MatTabsModule } from '@angular/material/tabs';
 import { ReadingComponent } from '../reading/reading.component';
+import { ShortAnswerComponent } from '../short-answer/short-answer.component';
 import { WritingComponent } from '../writing/writing.component';
+import { TestService } from './test.service';
 
 @Component({
   selector: 'app-test',
@@ -51,7 +52,7 @@ import { WritingComponent } from '../writing/writing.component';
   templateUrl: './test.component.html',
   styleUrl: './test.component.css',
 })
-export class TestComponent {
+export class TestComponent extends AddOrEditQuizComponent {
   @ViewChild('audioPlayer') audioPlayer!: ElementRef;
   @ViewChildren('audioElement') audioElements!: QueryList<
     ElementRef<HTMLAudioElement>
@@ -97,12 +98,13 @@ export class TestComponent {
   };
 
   constructor(
-    private quizService: QuizService,
-    private route: ActivatedRoute,
-    private testService: TestService,
-    private router: Router,
-    private dialog: MatDialog,
+    protected override quizService: QuizService,
+    protected override route: ActivatedRoute,
+    protected override router: Router,
+    protected override dialog: MatDialog,
+    protected testService: TestService,
   ) {
+    super(quizService, route, router, dialog);
     this.route.paramMap.subscribe((paramMap: any) => {
       const quizId = paramMap.get('quizId');
       if (quizId) {
@@ -117,6 +119,7 @@ export class TestComponent {
 
   onChangeTab(tab: number) {
     this.currentTab = tab;
+    this.isStart = false;
     this.getTimeout();
   }
 
@@ -199,6 +202,18 @@ export class TestComponent {
     this.subscriptions.push(this.timeoutInterval, this.timeoutTimer);
   }
 
+  onSubmitPartClick(tab: number) {
+    this.mapDisablePart[tab + 1] = false;
+    this.currentTab = tab + 1;
+    if (this.timeoutInterval) {
+      this.timeoutInterval.unsubscribe();
+    }
+
+    if (this.timeoutTimer) {
+      this.timeoutTimer.unsubscribe();
+    }
+  }
+
   private getCurrentDate() {
     const currentDate = new Date();
 
@@ -209,15 +224,6 @@ export class TestComponent {
     const formattedDate = `${day}/${month}/${year}`;
 
     return formattedDate;
-  }
-
-  onSubmitPartClick(tab: number) {
-    this.mapDisablePart[tab] = true;
-    this.mapDisablePart[tab + 1] = false;
-    this.currentTab = tab + 1;
-    this.timeoutInterval.unsubscribe();
-    this.timeoutTimer.unsubscribe();
-    this.isStart = false;
   }
 
   private calculatePoint() {
@@ -268,11 +274,5 @@ export class TestComponent {
     });
     this.result.totalPoint = totalPoint;
     this.result.correctPoint = correctPoint;
-  }
-
-  ngOnDestroy() {
-    each(this.subscriptions, (sub) => {
-      sub.unsubscribe();
-    });
   }
 }
