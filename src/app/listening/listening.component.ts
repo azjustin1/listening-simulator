@@ -1,15 +1,13 @@
+import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
   Component,
   ElementRef,
   EventEmitter,
-  Input,
   OnDestroy,
   OnInit,
   Output,
-  QueryList,
-  ViewChild,
-  ViewChildren,
+  ViewChild
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -19,16 +17,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { Subscription } from 'rxjs';
+import { AbstractQuizPartComponent } from '../../common/abstract-quiz-part.component';
 import { Listening } from '../../common/models/listening.model';
-import { CommonUtils } from '../../utils/common-utils';
 import { FileService } from '../file.service';
 import { MultipleChoicesComponent } from '../multiple-choices/multiple-choices.component';
 import { ShortAnswerComponent } from '../short-answer/short-answer.component';
 import { ListeningService } from './listening.service';
-import { Question } from '../../common/models/question.model';
-import { each } from 'lodash-es';
-import { AbstractQuizPartComponent } from '../../common/abstract-quiz-part.component';
-import { CommonModule } from '@angular/common';
+import { QuestionComponent } from '../question/question.component';
 
 @Component({
   selector: 'app-listening',
@@ -41,8 +36,7 @@ import { CommonModule } from '@angular/common';
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    MultipleChoicesComponent,
-    ShortAnswerComponent,
+    QuestionComponent,
     MatIconModule,
   ],
   providers: [ListeningService, FileService],
@@ -82,41 +76,6 @@ export class ListeningComponent
     this.isDisableStartButton = true;
     this.onStartChange.emit();
     // this.audioPlayer.nativeElement.play();
-  }
-
-  addQuestion(questionType: number) {
-    const id = CommonUtils.generateRandomId();
-    switch (questionType) {
-      case 0:
-        this.currentQuestion = {
-          id: id,
-          content: '',
-          type: questionType,
-          choices: this.defaultMultipleChoices(),
-          answer: '',
-          correctAnswer: '',
-        };
-        break;
-      case 1:
-        this.currentQuestion = {
-          id: id,
-          content: '',
-          type: questionType,
-          choices: [],
-          answer: '',
-          correctAnswer: '',
-        };
-        break;
-      default:
-        break;
-    }
-    this.data.questions.push({ ...this.currentQuestion });
-    this.data = { ...this.data };
-    this.mapQuestionEditting[id] = true;
-  }
-
-  removeQuestion(index: number) {
-    this.data.questions.splice(index, 1);
   }
 
   onFileSelected(event: any) {

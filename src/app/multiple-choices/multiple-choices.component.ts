@@ -27,7 +27,6 @@ import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
   styleUrl: './multiple-choices.component.css',
 })
 export class MultipleChoicesComponent extends AbstractQuestionComponent {
-  @Output() onValuChange = new EventEmitter();
   selectedAnswer: string = '';
 
   CHOICE_INDEX = [
@@ -73,6 +72,5 @@ export class MultipleChoicesComponent extends AbstractQuestionComponent {
     if (this.isTesting) {
       this.question.answer = this.selectedAnswer;
     }
-    this.onValuChange.emit(this.question.choices[index].id);
   }
 }

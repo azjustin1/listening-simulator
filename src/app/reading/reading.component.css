@@ -4,8 +4,18 @@
 }
 
 .question-group {
-  width: 50%;
+  width: 100%;
   height: 100%;
+}
+
+.question {
+  display: flex;
+  justify-content: space-between;
+  margin: 32px 0;
+}
+
+.actions {
+  display: flex;
 }
 
 .input-reading {
@@ -27,6 +37,15 @@
 
 .add-question {
   margin-top: 20px;
+}
+
+.question-type-container {
+  display: flex;
+}
+
+.card {
+  margin: 0 16px 16px 0;
+  cursor: pointer;
 }
 
 .answer-container {

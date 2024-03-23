@@ -3,13 +3,15 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnChanges,
   OnDestroy,
   OnInit,
   Output,
+  SimpleChanges,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AngularEditorConfig, UploadResponse } from '@wfpena/angular-wysiwyg';
-import { each } from 'lodash-es';
+import { each, mapValues } from 'lodash-es';
 import { map, Subscription } from 'rxjs';
 import { FileService } from '../app/file.service';
 import { CommonUtils } from '../utils/common-utils';
@@ -20,7 +22,7 @@ import { Question } from './models/question.model';
   template: '',
 })
 export abstract class AbstractQuizPartComponent<T extends AbstractPart>
-  implements OnInit, OnDestroy
+  implements OnInit, OnChanges, OnDestroy
 {
   @Input() data!: T;
   @Input() isTesting: boolean = false;
@@ -112,6 +114,12 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     }
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['isSaved']?.currentValue) {
+      mapValues(this.mapQuestionEditting, () => false);
+    }
+  }
+
   ngOnDestroy(): void {
     each(this.subscriptions, (sub) => {
       sub.unsubscribe();
@@ -156,6 +164,48 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     return choices;
   }
 
+  addQuestion(questionType: number) {
+    const id = CommonUtils.generateRandomId();
+    switch (questionType) {
+      case 0:
+        this.currentQuestion = {
+          id: id,
+          content: '',
+          type: questionType,
+          choices: this.defaultMultipleChoices(),
+          answer: '',
+          correctAnswer: '',
+        };
+        break;
+      case 1:
+        this.currentQuestion = {
+          id: id,
+          content: '',
+          type: questionType,
+          choices: [],
+          answer: '',
+          correctAnswer: '',
+        };
+        break;
+      case 2:
+        this.currentQuestion = {
+          id: id,
+          content: '',
+          type: questionType,
+          choices: [],
+          answer: '',
+          correctAnswer: '',
+          subQuestions: [],
+        };
+        break;
+      default:
+        break;
+    }
+    this.data.questions.push({ ...this.currentQuestion });
+    this.data = { ...this.data };
+    this.mapQuestionEditting[id] = true;
+  }
+
   onSaveQuestion(id: string) {
     this.mapQuestionEditting[id] = false;
   }
@@ -163,6 +213,10 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
   onEditQuestion(id: string) {
     this.saveOthersEditting();
     this.mapQuestionEditting[id] = true;
+  }
+
+  removeQuestion(questionIdex: number) {
+    this.data.questions.splice(questionIdex, 1);
   }
 
   saveOthersEditting() {

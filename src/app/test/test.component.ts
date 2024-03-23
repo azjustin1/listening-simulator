@@ -203,6 +203,7 @@ export class TestComponent extends AddOrEditQuizComponent {
   }
 
   onSubmitPartClick(tab: number) {
+    this.mapDisablePart[tab] = true;
     this.mapDisablePart[tab + 1] = false;
     this.currentTab = tab + 1;
     if (this.timeoutInterval) {

@@ -9,6 +9,10 @@
   margin: 16px 10px 0 0;
 }
 
+.choice-group {
+  margin: 16px 0 0 0;
+}
+
 .question-text {
   width: 100%;
   height: 30px;
@@ -21,10 +25,6 @@
 
 .choice-index.isWrong {
   background: #f81212;
-}
-
-.choice-group {
-  margin-top: 16px;
 }
 
 .choice {

@@ -21,7 +21,9 @@
       <mat-tab label="Listening">
         <ng-template matTabContent>
           <div class="timeout">
-            @if (mapSavedPart["listening"]) {
+            @if (mapSavedPart["listening"][0]) {
+              <h2>Time: {{ currentQuiz.listeningTimeout }} minutes</h2>
+            } @else {
               <mat-form-field>
                 <mat-label>Time</mat-label>
                 <input
@@ -36,8 +38,6 @@
                   required
                 />
               </mat-form-field>
-            } @else {
-              <h2>Time: {{ currentQuiz.listeningTimeout }} minutes</h2>
             }
           </div>
           @for (part of currentQuiz.listeningParts; track $index) {
@@ -89,7 +89,7 @@
       <mat-tab label="Reading">
         <ng-template matTabContent>
           <div class="timeout">
-            @if (mapSavedPart["listening"]) {
+            @if (mapSavedPart["reading"]) {
               <mat-form-field>
                 <mat-label>Time</mat-label>
                 <input

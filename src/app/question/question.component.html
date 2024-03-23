@@ -1,0 +1,22 @@
+@switch (question.type) {
+  @case (0) {
+    <div class="question">
+      <app-multiple-choices
+        [question]="question"
+        [isReadOnly]="isReadOnly"
+        [isEditting]="isEditting"
+        [isTesting]="isTesting"
+      ></app-multiple-choices>
+    </div>
+  }
+  @case (1) {
+    <div class="question">
+      <app-short-answer
+        [question]="question"
+        [isReadOnly]="isReadOnly"
+        [isEditting]="isEditting"
+        [isTesting]="isTesting"
+      ></app-short-answer>
+    </div>
+  }
+}

@@ -1,23 +1,25 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FileService } from '../app/file.service';
-import { map } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AngularEditorConfig, UploadResponse } from '@wfpena/angular-wysiwyg';
+import { map } from 'rxjs';
+import { FileService } from '../app/file.service';
 import { Question } from '../common/models/question.model';
 import { CommonUtils } from '../utils/common-utils';
-import { AngularEditorConfig, UploadResponse } from '@wfpena/angular-wysiwyg';
-import { each } from 'lodash-es';
 
 @Component({
   template: '',
 })
 export abstract class AbstractQuestionComponent implements OnInit {
   @Input() question!: Question;
+  @Input() isSaved: boolean = false;
   @Input() isEditting: boolean = false;
   @Input() isReadOnly: boolean = false;
   @Input() isTesting: boolean = false;
   @Input() isExpand: boolean = true;
 
+  @Output() onSave = new EventEmitter();
   @Output() onEdit = new EventEmitter();
+  @Output() onRemove = new EventEmitter();
 
   constructor(private fileService: FileService) {}
 
@@ -104,13 +106,22 @@ export abstract class AbstractQuestionComponent implements OnInit {
     });
   }
 
+  onSaveQuestion() {
+    this.onSave.emit();
+  }
+  onEditQuestion() {
+    this.onEdit.emit();
+  }
+  removeQuestion() {
+    this.onRemove.emit();
+  }
+
   addChoice() {
     this.question.choices.push({
       id: CommonUtils.generateRandomId(),
       content: '',
       index: '',
     });
-    console.log(this.question);
   }
 
   removeChoice(index: number) {

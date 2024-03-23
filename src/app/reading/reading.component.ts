@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -10,33 +9,29 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
-import { each, isUndefined } from 'lodash-es';
 import { Subscription } from 'rxjs';
 import { AbstractQuizPartComponent } from '../../common/abstract-quiz-part.component';
 import { Choice } from '../../common/models/choice.model';
 import { Question } from '../../common/models/question.model';
 import { Reading } from '../../common/models/reading.model';
 import { CommonUtils } from '../../utils/common-utils';
-import { MultipleChoicesComponent } from '../multiple-choices/multiple-choices.component';
-import { ShortAnswerComponent } from '../short-answer/short-answer.component';
-import { ReadingService } from './reading.service';
-import { DropdownChoiceComponent } from '../dropdown-choice/dropdown-choice.component';
 import { MultipleQuestionComponent } from '../multiple-question/multiple-question.component';
+import { QuestionComponent } from '../question/question.component';
+import { ReadingService } from './reading.service';
+import { each } from 'lodash-es';
 
 @Component({
   selector: 'app-reading',
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     MatListModule,
     MatCardModule,
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    MultipleChoicesComponent,
-    ShortAnswerComponent,
     MultipleQuestionComponent,
+    QuestionComponent,
     MatIconModule,
     MatExpansionModule,
     AngularEditorModule,
@@ -50,35 +45,73 @@ export class ReadingComponent
   extends AbstractQuizPartComponent<Reading>
   implements OnInit
 {
-  count = 0;
+  mapSavedQuestion: Record<string, boolean> = {};
 
   subscription: Subscription[] = [];
 
-  addQuestion(index: number, isAddSubQuestion: boolean) {
-    const id = CommonUtils.generateRandomId();
-    let newQuestion: Question = {
-      content: '',
-      type: 0,
-      choices: this.defaultMultipleChoices(),
-      answer: '',
-      correctAnswer: '',
-    };
-    if (isAddSubQuestion) {
-      this.data.questions[index].subQuestions?.push(newQuestion);
-    } else {
-      this.data.questions.push({
-        ...newQuestion,
-      });
-    }
-    console.log(this.data.questions)
-    this.mapQuestionEditting[id] = true;
-  }
-
-  removeQuestion(questionIdex: number) {
-    this.data.questions.splice(questionIdex, 1);
+  override ngOnInit(): void {
+    super.ngOnInit();
+    each(this.data.questions, (question) => {
+      this.mapSavedQuestion[question.id!] = true;
+    });
   }
 
   getChoiceById(id: string, choices: Choice[]) {
     return choices.find((choice) => choice.id === id);
+  }
+
+  addSubQuestion(index: number, questionType: number) {
+    let newQuestion: Question = {
+      content: '',
+      type: null,
+      choices: [],
+      answer: '',
+      correctAnswer: '',
+    };
+    const id = CommonUtils.generateRandomId();
+    switch (questionType) {
+      case 0:
+        newQuestion = {
+          id: id,
+          content: '',
+          type: questionType,
+          choices: this.defaultMultipleChoices(),
+          answer: '',
+          correctAnswer: '',
+        };
+        break;
+      case 1:
+        newQuestion = {
+          id: id,
+          content: '',
+          type: questionType,
+          choices: [],
+          answer: '',
+          correctAnswer: '',
+        };
+        break;
+      default:
+        break;
+    }
+    this.data.questions[index].subQuestions!.push(newQuestion);
+    this.mapQuestionEditting[newQuestion.id!] = true;
+    this.mapSavedQuestion[newQuestion.id!] = true;
+  }
+
+  override onSaveQuestion(id: string): void {
+    super.onSaveQuestion(id);
+    this.mapSavedQuestion[id] = true;
+  }
+
+  override onEditQuestion(id: string): void {
+    super.onEditQuestion(id);
+    this.mapSavedQuestion[id] = false;
+  }
+
+  removeSubQuesiton(questionIndex: number, subQuestionIndex: number) {
+    this.data.questions[questionIndex].subQuestions!.splice(
+      subQuestionIndex,
+      1,
+    );
   }
 }
