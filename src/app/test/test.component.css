@@ -12,3 +12,7 @@
 .start-part-button {
   display: flex;
 }
+
+.submit-button {
+  margin: 16px 0;
+}

@@ -119,6 +119,16 @@ export class TestComponent extends AddOrEditQuizComponent {
     });
   }
 
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.timeoutInterval) {
+      this.timeoutInterval.unsubscribe();
+    }
+    if (this.timeoutTimer) {
+      this.timeoutTimer.unsubscribe();
+    }
+  }
+
   onChangeTab(tab: number) {
     this.currentTab = tab;
     this.isStart = false;
@@ -159,12 +169,6 @@ export class TestComponent extends AddOrEditQuizComponent {
     this.result.readingParts = this.quiz.readingParts;
     this.result.writingParts = this.quiz.writingParts;
     this.calculatePoint();
-    if (this.timeoutInterval) {
-      this.timeoutInterval.unsubscribe();
-    }
-    if (this.timeoutTimer) {
-      this.timeoutTimer.unsubscribe();
-    }
     this.testService.submitTest(this.result).subscribe(() => {
       this.router.navigate(['']);
     });
@@ -182,28 +186,30 @@ export class TestComponent extends AddOrEditQuizComponent {
       } else {
         this.seconds--;
       }
+      if (this.minutes === 0 && this.seconds === 0) {
+        this.timeoutInterval.unsubscribe();
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+          hasBackdrop: true,
+          disableClose: true,
+        });
+        dialogRef.componentInstance.title = 'Information';
+        dialogRef.componentInstance.message = "Time's up";
+        dialogRef.componentInstance.isWarning = true;
+        dialogRef.afterClosed().subscribe((isConfirm) => {
+          if (isConfirm) {
+            this.onSubmitPartClick(this.currentTab);
+            if (this.currentTab > 2) {
+              this.submit();
+            }
+          }
+        });
+      }
     });
-    this.startTimer();
   }
 
   startTimer() {
     this.timeoutTimer = timer(this.totalSeconds * 1000).subscribe(() => {
       this.timeoutInterval.unsubscribe();
-      const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-        hasBackdrop: true,
-        disableClose: true,
-      });
-      dialogRef.componentInstance.title = 'Information';
-      dialogRef.componentInstance.message = "Time's up";
-      dialogRef.componentInstance.isWarning = true;
-      dialogRef.afterClosed().subscribe((isConfirm) => {
-        if (isConfirm) {
-          this.onSubmitPartClick(this.currentTab);
-          if (this.currentTab > 2) {
-            this.submit();
-          }
-        }
-      });
     });
     this.subscriptions.push(this.timeoutInterval, this.timeoutTimer);
   }

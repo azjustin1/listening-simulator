@@ -34,7 +34,7 @@
   </div>
 }
 
-<div class="question-group">
+<div class="question-group" [ngClass]="{ unclickable: isTesting && !isStart }">
   @for (question of data.questions; track question.id) {
     <div class="question">
       <app-question

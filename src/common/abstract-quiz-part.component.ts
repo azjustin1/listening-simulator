@@ -140,6 +140,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
   }
 
   onStart() {
+    this.isStart = true;
     this.onStartChange.emit();
   }
 

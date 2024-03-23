@@ -18,6 +18,10 @@
   height: fit-content;
 }
 
+.question-group.unclickable {
+  pointer-events: none;
+}
+
 .card {
   margin: 0 16px 16px 0;
   cursor: pointer;
