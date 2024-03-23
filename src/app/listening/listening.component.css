@@ -55,3 +55,7 @@
 .timer {
   position: fixed;
 }
+
+.start-button {
+  margin-bottom: 16px;
+}

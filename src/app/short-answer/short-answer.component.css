@@ -40,6 +40,10 @@
   display: flex;
 }
 
+.choice-group {
+  margin: 16px 0 0 0;
+}
+
 .choice-index {
   width: 50px;
   margin-right: 16px;

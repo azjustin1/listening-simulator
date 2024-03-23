@@ -9,6 +9,7 @@
 
 .add-button {
   height: 64px;
+  margin-top: 16px;
 }
 
 .question-group {
@@ -16,5 +17,13 @@
 }
 
 .timeout {
+  margin-top: 16px;
+}
+
+.upload-file {
+  margin: 0 0 16px 0;
+}
+
+.part-card {
   margin-top: 16px;
 }

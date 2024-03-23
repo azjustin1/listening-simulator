@@ -29,6 +29,7 @@ import { ReadingComponent } from '../reading/reading.component';
 import { ShortAnswerComponent } from '../short-answer/short-answer.component';
 import { WritingComponent } from '../writing/writing.component';
 import { TestService } from './test.service';
+import { FileService } from '../file.service';
 
 @Component({
   selector: 'app-test',
@@ -102,9 +103,10 @@ export class TestComponent extends AddOrEditQuizComponent {
     protected override route: ActivatedRoute,
     protected override router: Router,
     protected override dialog: MatDialog,
+    protected override fileService: FileService,
     protected testService: TestService,
   ) {
-    super(quizService, route, router, dialog);
+    super(quizService, fileService, route, router, dialog);
     this.route.paramMap.subscribe((paramMap: any) => {
       const quizId = paramMap.get('quizId');
       if (quizId) {
@@ -157,6 +159,12 @@ export class TestComponent extends AddOrEditQuizComponent {
     this.result.readingParts = this.quiz.readingParts;
     this.result.writingParts = this.quiz.writingParts;
     this.calculatePoint();
+    if (this.timeoutInterval) {
+      this.timeoutInterval.unsubscribe();
+    }
+    if (this.timeoutTimer) {
+      this.timeoutTimer.unsubscribe();
+    }
     this.testService.submitTest(this.result).subscribe(() => {
       this.router.navigate(['']);
     });
@@ -175,14 +183,12 @@ export class TestComponent extends AddOrEditQuizComponent {
         this.seconds--;
       }
     });
-    this.isStart = true;
     this.startTimer();
   }
 
   startTimer() {
     this.timeoutTimer = timer(this.totalSeconds * 1000).subscribe(() => {
       this.timeoutInterval.unsubscribe();
-      this.isStart = false;
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
         hasBackdrop: true,
         disableClose: true,

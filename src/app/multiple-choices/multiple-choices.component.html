@@ -19,9 +19,12 @@
           <div
             class="choice-index"
             [ngClass]="{
-              selected: isTesting
-                ? question.answer === choice.id
-                : question.correctAnswer === choice.id,
+              selected:
+                question.answer !== ''
+                  ? isTesting
+                    ? question.answer === choice.id
+                    : question.correctAnswer === choice.id
+                  : false,
               isWrong:
                 isReadOnly &&
                 question.answer === choice.id &&

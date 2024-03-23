@@ -1,3 +1,8 @@
+@if (isTesting) {
+  <button mat-raised-button (click)="onStart()" class="start-button">
+    Start
+  </button>
+}
 <div class="container">
   <div class="question-group">
     @if (!isSaved && !isReadOnly && !isTesting) {
@@ -17,9 +22,10 @@
         <mat-label>Word count: {{ data.answer.length }}</mat-label>
         <textarea
           matInput
-          name="reading-question"
-          [(ngModel)]="data.answer"
           rows="5"
+          name="reading-question"
+          [disabled]="isStart && !isReadOnly"
+          [(ngModel)]="data.answer"
         ></textarea>
       </mat-form-field>
     </div>

@@ -3,11 +3,10 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  EventEmitter,
+  Input,
   OnDestroy,
   OnInit,
-  Output,
-  ViewChild
+  ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,10 +19,8 @@ import { Subscription } from 'rxjs';
 import { AbstractQuizPartComponent } from '../../common/abstract-quiz-part.component';
 import { Listening } from '../../common/models/listening.model';
 import { FileService } from '../file.service';
-import { MultipleChoicesComponent } from '../multiple-choices/multiple-choices.component';
-import { ShortAnswerComponent } from '../short-answer/short-answer.component';
-import { ListeningService } from './listening.service';
 import { QuestionComponent } from '../question/question.component';
+import { ListeningService } from './listening.service';
 
 @Component({
   selector: 'app-listening',
@@ -43,21 +40,18 @@ import { QuestionComponent } from '../question/question.component';
   templateUrl: './listening.component.html',
   styleUrl: './listening.component.css',
 })
-export class ListeningComponent
-  extends AbstractQuizPartComponent<Listening>
-  implements OnInit, AfterViewInit, OnDestroy
-{
+export class ListeningComponent extends AbstractQuizPartComponent<Listening> {
   @ViewChild('audioPlayer') audioPlayer!: ElementRef;
-  @Output() onStartChange = new EventEmitter();
+  @Input() audioName: string = '';
 
   audioUrl: string = '';
-  selectedFile!: File;
   isDisableStartButton = false;
 
   subscription: Subscription[] = [];
 
-  ngAfterViewInit(): void {
-    this.getAudioFile(this.data.audioName!);
+  override ngOnInit(): void {
+    super.ngOnInit();
+    this.getAudioFile(this.audioName);
   }
 
   getAudioFile(fileName: string) {
@@ -72,34 +66,7 @@ export class ListeningComponent
   }
 
   override onStart() {
+    this.audioPlayer.nativeElement.play();
     super.onStart();
-    this.isDisableStartButton = true;
-    this.onStartChange.emit();
-    // this.audioPlayer.nativeElement.play();
-  }
-
-  onFileSelected(event: any) {
-    if (this.data.audioName || this.data.audioName !== '') {
-      this.deleteFile(this.data.audioName!);
-    }
-    this.selectedFile = event.target.files[0] ?? null;
-    this.uploadFile();
-  }
-
-  deleteFile(fileName: string) {
-    const deleteSub = this.fileService.deleteFile(fileName).subscribe();
-    this.subscription.push(deleteSub);
-  }
-
-  uploadFile() {
-    const uploadSub = this.fileService
-      .uploadAudioFile(this.selectedFile)
-      .subscribe((res) => {
-        this.subscription.push(uploadSub);
-        if (res) {
-          this.data.audioName = res.fileName;
-        }
-      });
-    this.subscription.push(uploadSub);
   }
 }

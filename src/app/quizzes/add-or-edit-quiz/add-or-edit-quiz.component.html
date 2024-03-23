@@ -21,9 +21,7 @@
       <mat-tab label="Listening">
         <ng-template matTabContent>
           <div class="timeout">
-            @if (mapSavedPart["listening"][0]) {
-              <h2>Time: {{ currentQuiz.listeningTimeout }} minutes</h2>
-            } @else {
+            @if (mapSavedPart["listening"]) {
               <mat-form-field>
                 <mat-label>Time</mat-label>
                 <input
@@ -39,51 +37,96 @@
                 />
               </mat-form-field>
             }
+
+            <div class="form-group">
+              <div class="upload-file">
+                <button
+                  type="button"
+                  mat-raised-button
+                  (click)="fileInput.click()"
+                  style="margin-right: 16px"
+                >
+                  Audio File <mat-icon>upload</mat-icon>
+                </button>
+                <input
+                  autocomplete="off"
+                  hidden
+                  (change)="onFileSelected($event)"
+                  #fileInput
+                  type="file"
+                  id="file"
+                />
+                <span class="file-name">{{
+                  selectedFile ? selectedFile.name : this.currentQuiz.audioName
+                }}</span>
+              </div>
+            </div>
           </div>
-          @for (part of currentQuiz.listeningParts; track $index) {
-            <mat-card style="margin-top: 16px" appearance="outlined">
-              <mat-card-content>
-                <div>
-                  <app-listening
-                    [data]="part"
-                    [isSaved]="mapSavedPart['listening'][$index]!"
-                  ></app-listening>
-                </div>
-                <div class="actions">
-                  @if (mapSavedPart["listening"][$index]) {
-                    <button
-                      mat-button
-                      color="primary"
-                      type="button"
-                      class="btn btn-danger"
-                      (click)="onEditClick('listening', $index)"
-                    >
-                      <mat-icon>edit</mat-icon> Edit part
-                    </button>
-                  } @else {
-                    <button
-                      mat-button
-                      color="primary"
-                      type="button"
-                      class="btn btn-danger"
-                      (click)="onSavePart('listening', $index)"
-                    >
-                      <mat-icon>save</mat-icon> Save
-                    </button>
-                  }
-                  <button
-                    mat-button
-                    color="warn"
-                    type="button"
-                    class="btn btn-danger"
-                    (click)="removeListeningPart($index)"
-                  >
-                    <mat-icon>delete</mat-icon> Remove part
-                  </button>
-                </div>
-              </mat-card-content>
-            </mat-card>
-          }
+          <mat-tab-group
+            mat-align-tabs="center"
+            animationDuration="0ms"
+            headerPosition="below"
+            style="width: 50%"
+            [(selectedIndex)]="selectedWritingPart"
+            (selectedTabChange)="onTabChange('writing', $event)"
+          >
+            @for (part of currentQuiz.listeningParts; track $index) {
+              <mat-tab>
+                <ng-template matTabLabel="">{{ $index + 1 }}</ng-template>
+                <mat-card class="part-card" appearance="outlined">
+                  <mat-card-content>
+                    <div>
+                      <app-listening
+                        [data]="part"
+                        [isSaved]="mapSavedPart['listening'][$index]!"
+                      ></app-listening>
+                    </div>
+                    <div class="actions">
+                      @if (mapSavedPart["listening"][$index]) {
+                        <button
+                          mat-button
+                          color="primary"
+                          type="button"
+                          class="btn btn-danger"
+                          (click)="onEditClick('listening', $index)"
+                        >
+                          <mat-icon>edit</mat-icon> Edit part
+                        </button>
+                      } @else {
+                        <button
+                          mat-button
+                          color="primary"
+                          type="button"
+                          class="btn btn-danger"
+                          (click)="onSavePart('listening', $index)"
+                        >
+                          <mat-icon>save</mat-icon> Save
+                        </button>
+                      }
+                      <button
+                        mat-button
+                        color="warn"
+                        type="button"
+                        class="btn btn-danger"
+                        (click)="removeListeningPart($index)"
+                      >
+                        <mat-icon>delete</mat-icon> Remove part
+                      </button>
+                    </div>
+                  </mat-card-content>
+                </mat-card>
+              </mat-tab>
+            }
+          </mat-tab-group>
+          <div class="add-button">
+            <button
+              mat-button
+              color="primary"
+              (click)="onAddListeningPart()"
+            >
+              <mat-icon>add</mat-icon> Add part
+            </button>
+          </div>
         </ng-template>
       </mat-tab>
       <mat-tab label="Reading">
@@ -116,7 +159,7 @@
             @for (part of currentQuiz.readingParts; track $index) {
               <mat-tab>
                 <ng-template matTabLabel="">{{ $index + 1 }}</ng-template>
-                <mat-card style="margin-top: 16px" appearance="outlined">
+                <mat-card class="part-card" appearance="outlined">
                   <mat-card-content>
                     <div class="reading-container">
                       <app-reading
@@ -166,7 +209,6 @@
               mat-button
               color="primary"
               (click)="onAddReadingParagraph()"
-              style="margin-top: 16px"
             >
               <mat-icon>add</mat-icon> Add part
             </button>
@@ -252,7 +294,6 @@
               mat-button
               color="primary"
               (click)="onAddWritingParagraph()"
-              style="margin-top: 16px"
             >
               <mat-icon>add</mat-icon> Add part
             </button>

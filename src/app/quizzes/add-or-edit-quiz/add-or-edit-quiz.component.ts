@@ -48,19 +48,11 @@ import { MatStepperModule } from '@angular/material/stepper';
   styleUrl: './add-or-edit-quiz.component.css',
 })
 export class AddOrEditQuizComponent implements OnDestroy {
+  selectedFile!: File;
   currentQuiz: Quiz = {
     id: '',
     name: '',
-    listeningParts: [
-      {
-        id: CommonUtils.generateRandomId(),
-        name: '',
-        content: '',
-        timeout: undefined,
-        audioName: '',
-        questions: [],
-      },
-    ],
+    listeningParts: [],
     readingParts: [],
     writingParts: [],
   };
@@ -79,6 +71,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
 
   constructor(
     protected quizService: QuizService,
+    protected fileService: FileService,
     protected route: ActivatedRoute,
     protected router: Router,
     protected dialog: MatDialog,
@@ -97,6 +90,31 @@ export class AddOrEditQuizComponent implements OnDestroy {
         this.subscription.push(sub);
       }
     });
+  }
+
+  onFileSelected(event: any) {
+    if (this.currentQuiz.audioName || this.currentQuiz.audioName !== '') {
+      this.deleteFile(this.currentQuiz.audioName!);
+    }
+    this.selectedFile = event.target.files[0] ?? null;
+    this.uploadFile();
+  }
+
+  deleteFile(fileName: string) {
+    const deleteSub = this.fileService.deleteFile(fileName).subscribe();
+    this.subscription.push(deleteSub);
+  }
+
+  uploadFile() {
+    const uploadSub = this.fileService
+      .uploadAudioFile(this.selectedFile)
+      .subscribe((res) => {
+        this.subscription.push(uploadSub);
+        if (res) {
+          this.currentQuiz.audioName = res.fileName;
+        }
+      });
+    this.subscription.push(uploadSub);
   }
 
   generateListeningEdittingPartMap(listeningParts: Listening[]) {
@@ -129,7 +147,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
   onAddListeningPart() {
     const id = CommonUtils.generateRandomId();
     const newListeningPart: Listening = {
-      id: CommonUtils.generateRandomId(),
+      id: id,
       name: '',
       timeout: undefined,
       content: '',

@@ -25,20 +25,48 @@
         </mat-tab>
         <mat-tab label="Reading">
           <ng-template matTabContent>
-            <div class="question-group">
+            <mat-tab-group
+              mat-align-tabs="center"
+              animationDuration="0ms"
+              headerPosition="below"
+            >
               @for (part of result.readingParts; track $index) {
-                <app-reading [data]="part" [isReadOnly]="true"></app-reading>
+                <mat-tab>
+                  <ng-template matTabLabel="">{{ $index + 1 }}</ng-template>
+                  <mat-card class="question-group" appearance="outlined">
+                    <mat-card-content>
+                      <app-reading
+                        [data]="part"
+                        [isReadOnly]="true"
+                      ></app-reading>
+                    </mat-card-content>
+                  </mat-card>
+                </mat-tab>
               }
-            </div>
+            </mat-tab-group>
           </ng-template>
         </mat-tab>
         <mat-tab label="Reading">
           <ng-template matTabContent>
-            <div class="question-group">
+            <mat-tab-group
+              mat-align-tabs="center"
+              animationDuration="0ms"
+              headerPosition="below"
+            >
               @for (part of result.writingParts; track $index) {
-                <app-writing [data]="part" [isReadOnly]="true"></app-writing>
+                <mat-tab>
+                  <ng-template matTabLabel="">{{ $index + 1 }}</ng-template>
+                  <mat-card class="question-group" appearance="outlined">
+                    <mat-card-content>
+                      <app-writing
+                        [data]="part"
+                        [isReadOnly]="true"
+                      ></app-writing>
+                    </mat-card-content>
+                  </mat-card>
+                </mat-tab>
               }
-            </div>
+            </mat-tab-group>
           </ng-template>
         </mat-tab>
       </mat-tab-group>
