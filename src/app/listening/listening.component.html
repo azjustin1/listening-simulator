@@ -1,8 +1,3 @@
-@if (isTesting) {
-  <button mat-raised-button (click)="onStart()" class="start-button">
-    Start
-  </button>
-}
 <div class="form-group">
   @if (isSaved || isTesting || isReadOnly) {
     <h2>{{ data.name }}</h2>
@@ -22,17 +17,6 @@
     </mat-form-field>
   }
 </div>
-
-@if (isTesting) {
-  <div class="form-group">
-    <div class="audio">
-      <audio [id]="data.id" #audioPlayer controls>
-        <source [src]="audioUrl" type="audio/mp3" />
-      </audio>
-    </div>
-    <div class="backdrop"></div>
-  </div>
-}
 
 <div class="question-group" [ngClass]="{ unclickable: isTesting && !isStart }">
   @for (question of data.questions; track question.id) {

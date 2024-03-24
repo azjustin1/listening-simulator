@@ -11,16 +11,26 @@
 
     <div class="question-container">
       <mat-tab-group animationDuration="0ms">
-        <mat-tab label="Listening">
+        <mat-tab label="Listening" style="margin-top: 16px;">
           <ng-template matTabContent>
-            <div class="question-group">
-              @for (part of result.listeningParts; track $index) {
-                <app-listening
-                  [data]="part"
-                  [isReadOnly]="true"
-                ></app-listening>
-              }
-            </div>
+            <mat-tab-group
+              animationDuration="0ms"
+              mat-align-tabs="center"
+              animationDuration="0ms"
+              headerPosition="below"
+            >
+              <div class="question-group">
+                @for (part of result.listeningParts; track $index) {
+                  <mat-tab>
+                    <ng-template matTabLabel="">{{ $index + 1 }}</ng-template>
+                    <app-listening
+                      [data]="part"
+                      [isReadOnly]="true"
+                    ></app-listening>
+                  </mat-tab>
+                }
+              </div>
+            </mat-tab-group>
           </ng-template>
         </mat-tab>
         <mat-tab label="Reading">
@@ -47,7 +57,7 @@
             </mat-tab-group>
           </ng-template>
         </mat-tab>
-        <mat-tab label="Reading">
+        <mat-tab label="Writing">
           <ng-template matTabContent>
             <mat-tab-group
               animationDuration="0ms"

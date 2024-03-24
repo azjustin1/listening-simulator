@@ -13,8 +13,8 @@ import { ListeningComponent } from '../../listening/listening.component';
 import { MultipleChoicesComponent } from '../../multiple-choices/multiple-choices.component';
 import { ReadingComponent } from '../../reading/reading.component';
 import { ShortAnswerComponent } from '../../short-answer/short-answer.component';
-import { ResultService } from '../result.service';
 import { WritingComponent } from '../../writing/writing.component';
+import { ResultService } from '../result.service';
 
 @Component({
   selector: 'app-result-detail',

@@ -41,32 +41,15 @@ import { ListeningService } from './listening.service';
   styleUrl: './listening.component.css',
 })
 export class ListeningComponent extends AbstractQuizPartComponent<Listening> {
-  @ViewChild('audioPlayer') audioPlayer!: ElementRef;
-  @Input() audioName: string = '';
-
-  audioUrl: string = '';
   isDisableStartButton = false;
 
   subscription: Subscription[] = [];
 
   override ngOnInit(): void {
     super.ngOnInit();
-    this.getAudioFile(this.audioName);
-  }
-
-  getAudioFile(fileName: string) {
-    if (fileName !== '' && this.isTesting) {
-      this.fileService.getFile(fileName).subscribe((audioFile: Blob) => {
-        const fileURL = URL.createObjectURL(audioFile);
-        const audioElement: HTMLAudioElement = this.audioPlayer.nativeElement;
-        this.audioUrl = fileURL;
-        audioElement.load();
-      });
-    }
   }
 
   override onStart() {
-    this.audioPlayer.nativeElement.play();
     super.onStart();
   }
 }

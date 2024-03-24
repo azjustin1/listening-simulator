@@ -30,6 +30,7 @@ import { ShortAnswerComponent } from '../short-answer/short-answer.component';
 import { WritingComponent } from '../writing/writing.component';
 import { TestService } from './test.service';
 import { FileService } from '../file.service';
+import { Question } from '../../common/models/question.model';
 
 @Component({
   selector: 'app-test',
@@ -55,9 +56,6 @@ import { FileService } from '../file.service';
 })
 export class TestComponent extends AddOrEditQuizComponent {
   @ViewChild('audioPlayer') audioPlayer!: ElementRef;
-  @ViewChildren('audioElement') audioElements!: QueryList<
-    ElementRef<HTMLAudioElement>
-  >;
   audioUrl: string = '';
   result: Result = {
     id: '',
@@ -83,7 +81,6 @@ export class TestComponent extends AddOrEditQuizComponent {
   seconds: number = 0;
   totalSeconds: number = 0;
   timeoutInterval!: Subscription;
-  timeoutTimer!: Subscription;
 
   subscriptions: Subscription[] = [];
 
@@ -97,6 +94,9 @@ export class TestComponent extends AddOrEditQuizComponent {
     1: true,
     2: true,
   };
+
+  correctPoints: number = 0;
+  totalPoints: number = 0;
 
   constructor(
     protected override quizService: QuizService,
@@ -114,6 +114,7 @@ export class TestComponent extends AddOrEditQuizComponent {
           this.quiz = quiz;
           this.totalSeconds = this.quiz.listeningTimeout! * 60;
           this.getTimeout();
+          this.getAudioFile(quiz.audioName);
         });
       }
     });
@@ -124,8 +125,16 @@ export class TestComponent extends AddOrEditQuizComponent {
     if (this.timeoutInterval) {
       this.timeoutInterval.unsubscribe();
     }
-    if (this.timeoutTimer) {
-      this.timeoutTimer.unsubscribe();
+  }
+
+  getAudioFile(fileName: string) {
+    if (fileName !== '') {
+      this.fileService.getFile(fileName).subscribe((audioFile: Blob) => {
+        const fileURL = URL.createObjectURL(audioFile);
+        const audioElement: HTMLAudioElement = this.audioPlayer.nativeElement;
+        this.audioUrl = fileURL;
+        audioElement.load();
+      });
     }
   }
 
@@ -161,6 +170,7 @@ export class TestComponent extends AddOrEditQuizComponent {
   }
 
   submit() {
+    this.audioPlayer.nativeElement.pause();
     this.result.id = CommonUtils.generateRandomId();
     this.result.testDate = this.getCurrentDate();
     this.result.name = this.quiz.name;
@@ -178,7 +188,16 @@ export class TestComponent extends AddOrEditQuizComponent {
     this.isReady = true;
   }
 
+  onListeningStart() {
+    this.audioPlayer.nativeElement.play();
+    this.onStartPart();
+  }
+
   onStartPart() {
+    if (this.currentTab === 0) {
+      this.audioPlayer.nativeElement.play();
+    }
+    this.isStart = true;
     this.timeoutInterval = interval(1000).subscribe(() => {
       if (this.seconds === 0) {
         this.minutes--;
@@ -187,6 +206,9 @@ export class TestComponent extends AddOrEditQuizComponent {
         this.seconds--;
       }
       if (this.minutes === 0 && this.seconds === 0) {
+        if (this.currentTab === 0) {
+          this.audioPlayer.nativeElement.pause();
+        }
         this.timeoutInterval.unsubscribe();
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
           hasBackdrop: true,
@@ -207,23 +229,15 @@ export class TestComponent extends AddOrEditQuizComponent {
     });
   }
 
-  startTimer() {
-    this.timeoutTimer = timer(this.totalSeconds * 1000).subscribe(() => {
-      this.timeoutInterval.unsubscribe();
-    });
-    this.subscriptions.push(this.timeoutInterval, this.timeoutTimer);
-  }
-
   onSubmitPartClick(tab: number) {
+    if (tab === 0) {
+      this.audioPlayer.nativeElement.pause();
+    }
     this.mapDisablePart[tab] = true;
     this.mapDisablePart[tab + 1] = false;
     this.currentTab = tab + 1;
     if (this.timeoutInterval) {
       this.timeoutInterval.unsubscribe();
-    }
-
-    if (this.timeoutTimer) {
-      this.timeoutTimer.unsubscribe();
     }
   }
 
@@ -240,52 +254,44 @@ export class TestComponent extends AddOrEditQuizComponent {
   }
 
   private calculatePoint() {
-    let totalPoint = 0;
-    let correctPoint = 0;
     each(this.result.listeningParts, (part) => {
-      each(part.questions, (question) => {
-        if (question.type === 0) {
+      this.calculateQuestionPoints(part.questions);
+    });
+
+    each(this.result.readingParts, (part) => {
+      this.calculateQuestionPoints(part.questions);
+    });
+    this.result.totalPoint = this.totalPoints;
+    this.result.correctPoint = this.correctPoints;
+  }
+
+  calculateQuestionPoints(questions: Question[]) {
+    each(questions, (question) => {
+      switch (question.type) {
+        case 0:
           // Multiple choices
-          totalPoint++;
+          this.totalPoints++;
           if (question.answer === question.correctAnswer) {
-            correctPoint++;
+            console.log(question)
+            this.correctPoints++;
           }
-        }
-
-        if (question.type === 1) {
+          break;
+        case 1:
           // Short answer
           each(question.choices, (choice) => {
-            totalPoint++;
-            if (choice.answer === choice.content) {
-              correctPoint++;
+            this.totalPoints++;
+            if (choice.answer === choice.correctAnswer) {
+              console.log(question)
+              this.correctPoints++;
             }
           });
-        }
-      });
+          break;
+        case 2:
+          this.calculateQuestionPoints(question.subQuestions!);
+          break;
+        default:
+          break;
+      }
     });
-
-    each(this.result.readingParts, (paragraph) => {
-      each(paragraph.questions, (question) => {
-        if (question.type === 2) {
-          // Dropdown choices
-          totalPoint++;
-          if (question.answer === question.correctAnswer) {
-            correctPoint++;
-          }
-        }
-
-        if (question.type === 1) {
-          // Short answer
-          each(question.choices, (choice) => {
-            totalPoint++;
-            if (choice.answer === choice.content) {
-              correctPoint++;
-            }
-          });
-        }
-      });
-    });
-    this.result.totalPoint = totalPoint;
-    this.result.correctPoint = correctPoint;
   }
 }

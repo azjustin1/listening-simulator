@@ -29,6 +29,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
   @Input() isEditting: boolean = false;
   @Input() isReadOnly: boolean = false;
   @Input() isSaved: boolean = false;
+  @Input() isStart: boolean = false;
   @Output() onStartChange = new EventEmitter();
   @Output() onTimeout = new EventEmitter();
 
@@ -40,7 +41,6 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     correctAnswer: '',
   };
   mapQuestionEditting: Record<string, boolean> = {};
-  isStart: boolean = false;
   subscriptions: Subscription[] = [];
 
   config: AngularEditorConfig = {
