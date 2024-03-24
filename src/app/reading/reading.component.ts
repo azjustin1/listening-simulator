@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
+import { each } from 'lodash-es';
 import { Subscription } from 'rxjs';
 import { AbstractQuizPartComponent } from '../../common/abstract-quiz-part.component';
 import { Choice } from '../../common/models/choice.model';
@@ -18,7 +19,6 @@ import { CommonUtils } from '../../utils/common-utils';
 import { MultipleQuestionComponent } from '../multiple-question/multiple-question.component';
 import { QuestionComponent } from '../question/question.component';
 import { ReadingService } from './reading.service';
-import { each } from 'lodash-es';
 
 @Component({
   selector: 'app-reading',

@@ -1,16 +1,15 @@
 import { Component, OnChanges, SimpleChanges } from '@angular/core';
-import { AbstractQuestionComponent } from '../../common/abstract-question.component';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatExpansionModule } from '@angular/material/expansion';
 import { FormsModule } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
-import { QuestionComponent } from '../question/question.component';
 import { MatCardModule } from '@angular/material/card';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { CommonUtils } from '../../utils/common-utils';
-import { Question } from '../../common/models/question.model';
 import { each, mapValues } from 'lodash-es';
+import { AbstractQuestionComponent } from '../../common/abstract-question.component';
+import { Question } from '../../common/models/question.model';
+import { CommonUtils } from '../../utils/common-utils';
+import { QuestionComponent } from '../question/question.component';
 
 @Component({
   selector: 'app-multiple-question',
@@ -22,7 +21,6 @@ import { each, mapValues } from 'lodash-es';
     MatIconModule,
     MatCardModule,
     MatInputModule,
-    MatButtonModule,
     QuestionComponent,
   ],
   templateUrl: './multiple-question.component.html',

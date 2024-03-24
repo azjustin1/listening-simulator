@@ -2,9 +2,7 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   ElementRef,
-  QueryList,
-  ViewChild,
-  ViewChildren,
+  ViewChild
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,11 +14,13 @@ import { MatListModule } from '@angular/material/list';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { each } from 'lodash-es';
-import { Subscription, interval, timer } from 'rxjs';
+import { Subscription, interval } from 'rxjs';
+import { Question } from '../../common/models/question.model';
 import { Quiz } from '../../common/models/quiz.model';
 import { Result } from '../../common/models/result.model';
 import { CommonUtils } from '../../utils/common-utils';
 import { ConfirmDialogComponent } from '../dialog/confirm-dialog/confirm-dialog.component';
+import { FileService } from '../file.service';
 import { ListeningComponent } from '../listening/listening.component';
 import { MultipleChoicesComponent } from '../multiple-choices/multiple-choices.component';
 import { AddOrEditQuizComponent } from '../quizzes/add-or-edit-quiz/add-or-edit-quiz.component';
@@ -29,8 +29,6 @@ import { ReadingComponent } from '../reading/reading.component';
 import { ShortAnswerComponent } from '../short-answer/short-answer.component';
 import { WritingComponent } from '../writing/writing.component';
 import { TestService } from './test.service';
-import { FileService } from '../file.service';
-import { Question } from '../../common/models/question.model';
 
 @Component({
   selector: 'app-test',

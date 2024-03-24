@@ -8,9 +8,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
+import { MatStepperModule } from '@angular/material/stepper';
 import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { each, size, toArray } from 'lodash-es';
+import { each, size } from 'lodash-es';
 import { Subscription } from 'rxjs';
 import { Listening } from '../../../common/models/listening.model';
 import { Quiz } from '../../../common/models/quiz.model';
@@ -23,7 +24,6 @@ import { ListeningComponent } from '../../listening/listening.component';
 import { ReadingComponent } from '../../reading/reading.component';
 import { WritingComponent } from '../../writing/writing.component';
 import { QuizService } from '../quizzes.service';
-import { MatStepperModule } from '@angular/material/stepper';
 
 @Component({
   selector: 'app-add-or-edit-quiz',

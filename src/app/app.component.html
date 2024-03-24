@@ -1,5 +1,9 @@
-<mat-toolbar color="#1A6F34">
-  <img src="/assets/logo.jpg" width="60px" height="60px" alt="Logo" />
+<mat-toolbar [color]="'primary'">
+  <img
+    src="/assets/logo.jpg"
+    alt="Logo"
+    style="display: flex; justify-content: flex-start"
+  />
 </mat-toolbar>
 <div class="container">
   <router-outlet />
