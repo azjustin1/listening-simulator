@@ -1,152 +1,66 @@
 <div class="test-container">
   <div class="question-group">
     <mat-accordion>
-      @for (question of data.questions; track $index) {
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              {{ question.name }}
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <div class="form-group question-name">
-            @if (!isSaved && !isReadOnly && !isTesting) {
-              @if (mapQuestionEditting[question.id!]) {
-                <mat-form-field>
-                  <mat-label>Question Name</mat-label>
-                  <input
-                    autocomplete="off"
-                    matInput
-                    name="questionName"
-                    class="form-control"
-                    id="questionName"
-                    [(ngModel)]="question.name"
-                    required
-                  />
-                </mat-form-field>
-              } @else {
-                <h3>{{ question.name }}</h3>
-              }
-              @if (!isSaved && !isReadOnly && !isTesting) {
-                <div class="actions">
-                  @if (mapQuestionEditting[question.id!]) {
-                    <button
-                      mat-button
-                      color="primary"
-                      type="button"
-                      class="btn btn-danger"
-                      (click)="onSaveQuestion(question.id!)"
-                    >
-                      <mat-icon>save</mat-icon>
-                    </button>
-                  } @else {
-                    <button
-                      mat-button
-                      color="primary"
-                      type="button"
-                      class="btn btn-danger"
-                      (click)="onEditQuestion(question.id!)"
-                    >
-                      <mat-icon>edit</mat-icon>
-                    </button>
-                  }
-                  <button
-                    mat-button
-                    color="warn"
-                    type="button"
-                    class="btn btn-danger"
-                    (click)="removeQuestion($index)"
-                  >
-                    <mat-icon>delete</mat-icon>
-                  </button>
-                </div>
-              }
+      @for (
+        question of data.questions;
+        track question.id;
+        let questionIndex = $index
+      ) {
+        <app-multiple-question
+          [question]="question"
+          [isEditting]="mapQuestionEditting[question.id!]"
+          [isReadOnly]="isReadOnly"
+          [isTesting]="isTesting"
+          [isSaved]="mapSavedQuestion[question.id!]"
+          (onSave)="onSaveQuestion(question.id!)"
+          (onEdit)="onEditQuestion(question.id!)"
+        ></app-multiple-question>
+        @if (!isSaved && !isTesting && !isReadOnly) {
+          <div class="actions">
+            @if (mapQuestionEditting[question.id!]) {
+              <button
+                mat-button
+                color="primary"
+                type="button"
+                class="btn btn-danger"
+                (click)="onSaveQuestion(question.id!)"
+              >
+                <mat-icon>save</mat-icon>
+              </button>
+            } @else {
+              <button
+                mat-button
+                color="primary"
+                type="button"
+                class="btn btn-danger"
+                (click)="onEditQuestion(question.id!)"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
             }
+            <button
+              mat-button
+              color="warn"
+              type="button"
+              class="btn btn-danger"
+              (click)="removeQuestion(questionIndex)"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
           </div>
-
-          @switch (question.type) {
-            @case (1) {
-              <div class="question">
-                <app-short-answer
-                  [question]="question"
-                  [isReadOnly]="isReadOnly"
-                  [isEditting]="mapQuestionEditting[question.id!]"
-                  [isTesting]="isTesting"
-                ></app-short-answer>
-              </div>
-            }
-            @case (2) {
-              <div class="question">
-                @if (isTesting) {
-                  <div class="form-group">
-                    <div [innerHTML]="question.content"></div>
-                    <mat-form-field class="dropdown-answer">
-                      <mat-label>Answer</mat-label>
-                      <mat-select [(value)]="question.answer">
-                        @for (choice of question.choices; track choice.id) {
-                          <mat-option [value]="choice.id">{{
-                            choice.content
-                          }}</mat-option>
-                        }
-                      </mat-select>
-                    </mat-form-field>
-                  </div>
-                } @else {
-                  <app-multiple-choices
-                    [question]="question"
-                    [isReadOnly]="isReadOnly"
-                    [isEditting]="mapQuestionEditting[question.id!]"
-                    [isTesting]="isTesting"
-                  ></app-multiple-choices>
-                }
-                @if (isReadOnly) {
-                  <span [innerHTML]="question.content"></span>
-                  <div class="answer-container">
-                    <div
-                      class="answer"
-                      [ngClass]="{
-                        correct: question.answer === question.correctAnswer,
-                        incorrect: question.answer !== question.correctAnswer
-                      }"
-                    >
-                      @for (choice of question.choices; track $index) {
-                        @if (choice.id === question.answer) {
-                          {{ choice.content }}
-                        }
-                      }
-                    </div>
-
-                    @if (!question.answer || question.answer === "") {
-                      <div class="answer">❌</div>
-                    }
-                    @if (question.answer !== question.correctAnswer) {
-                      <div class="correct-answer">
-                        @for (choice of question.choices; track $index) {
-                          @if (choice.id === question.correctAnswer) {
-                            {{ choice.content }}
-                          }
-                        }
-                      </div>
-                    }
-                  </div>
-                }
-              </div>
-            }
-          }
-        </mat-expansion-panel>
+        }
       }
     </mat-accordion>
     @if (!isSaved && !isTesting && !isReadOnly) {
-      <div class="question-type-container">
-        <mat-card class="card" (click)="addQuestion(2)">
-          <mat-card-content class="question-type-item">
-            Multiple Choices
-          </mat-card-content>
-        </mat-card>
-        <mat-card class="card" (click)="addQuestion(1)">
-          <mat-card-content class="question-type-item">
-            Short Answer
-          </mat-card-content>
-        </mat-card>
+      <div class="add-question">
+        <button
+          mat-button
+          type="button"
+          class="btn btn-danger"
+          (click)="addQuestion(2)"
+        >
+          <mat-icon>add</mat-icon> Add question
+        </button>
       </div>
     }
   </div>
@@ -156,6 +70,7 @@
         name="questionContent"
         [id]="data.id"
         [(ngModel)]="data.content"
+        (ngModelChange)="onPaste($event)"
       ></angular-editor>
     } @else {
       <span [innerHTML]="data.content"></span>

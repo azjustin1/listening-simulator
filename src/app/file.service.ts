@@ -14,7 +14,7 @@ export class FileService {
     });
   }
 
-  uploadAudioFile(file: File): Observable<any> {
+  uploadFile(file: File): Observable<any> {
     const formData: FormData = new FormData();
 
     formData.append('file', file);

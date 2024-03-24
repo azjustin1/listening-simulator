@@ -2,9 +2,7 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   ElementRef,
-  QueryList,
-  ViewChild,
-  ViewChildren,
+  ViewChild
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,21 +11,24 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
+import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { each } from 'lodash-es';
 import { Subscription, interval } from 'rxjs';
+import { Question } from '../../common/models/question.model';
 import { Quiz } from '../../common/models/quiz.model';
 import { Result } from '../../common/models/result.model';
 import { CommonUtils } from '../../utils/common-utils';
 import { ConfirmDialogComponent } from '../dialog/confirm-dialog/confirm-dialog.component';
+import { FileService } from '../file.service';
 import { ListeningComponent } from '../listening/listening.component';
 import { MultipleChoicesComponent } from '../multiple-choices/multiple-choices.component';
+import { AddOrEditQuizComponent } from '../quizzes/add-or-edit-quiz/add-or-edit-quiz.component';
 import { QuizService } from '../quizzes/quizzes.service';
-import { ShortAnswerComponent } from '../short-answer/short-answer.component';
-import { TestService } from './test.service';
-import { MatTabsModule } from '@angular/material/tabs';
 import { ReadingComponent } from '../reading/reading.component';
+import { ShortAnswerComponent } from '../short-answer/short-answer.component';
 import { WritingComponent } from '../writing/writing.component';
+import { TestService } from './test.service';
 
 @Component({
   selector: 'app-test',
@@ -51,16 +52,12 @@ import { WritingComponent } from '../writing/writing.component';
   templateUrl: './test.component.html',
   styleUrl: './test.component.css',
 })
-export class TestComponent {
+export class TestComponent extends AddOrEditQuizComponent {
   @ViewChild('audioPlayer') audioPlayer!: ElementRef;
-  @ViewChildren('audioElement') audioElements!: QueryList<
-    ElementRef<HTMLAudioElement>
-  >;
   audioUrl: string = '';
   result: Result = {
     id: '',
     name: '',
-    timeout: null,
     studentName: '',
     correctPoint: 0,
     totalPoint: 0,
@@ -73,37 +70,90 @@ export class TestComponent {
   quiz: Quiz = {
     id: '',
     name: '',
-    timeout: null,
     listeningParts: [],
     readingParts: [],
     writingParts: [],
   };
-  subscriptions: Subscription[] = [];
 
   minutes: number = 0;
   seconds: number = 0;
   totalSeconds: number = 0;
-  interval = {};
+  timeoutInterval!: Subscription;
+
+  subscriptions: Subscription[] = [];
+
   isReady: boolean = false;
+  isStart: boolean = false;
+
+  currentTab = 0;
+
+  mapDisablePart: Record<number, boolean> = {
+    0: false,
+    1: true,
+    2: true,
+  };
+
+  correctPoints: number = 0;
+  totalPoints: number = 0;
 
   constructor(
-    private quizService: QuizService,
-    private route: ActivatedRoute,
-    private testService: TestService,
-    private router: Router,
-    private dialog: MatDialog,
+    protected override quizService: QuizService,
+    protected override route: ActivatedRoute,
+    protected override router: Router,
+    protected override dialog: MatDialog,
+    protected override fileService: FileService,
+    protected testService: TestService,
   ) {
+    super(quizService, fileService, route, router, dialog);
     this.route.paramMap.subscribe((paramMap: any) => {
       const quizId = paramMap.get('quizId');
       if (quizId) {
         this.quizService.getById(quizId).subscribe((quiz: any) => {
           this.quiz = quiz;
-          this.totalSeconds = quiz.timeout * 60;
-          this.minutes = Math.floor(this.totalSeconds / 60);
-          this.seconds = this.totalSeconds % 60;
+          this.totalSeconds = this.quiz.listeningTimeout! * 60;
+          this.getTimeout();
+          this.getAudioFile(quiz.audioName);
         });
       }
     });
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.timeoutInterval) {
+      this.timeoutInterval.unsubscribe();
+    }
+  }
+
+  getAudioFile(fileName: string) {
+    if (fileName !== '') {
+      this.fileService.getFile(fileName).subscribe((audioFile: Blob) => {
+        const fileURL = URL.createObjectURL(audioFile);
+        const audioElement: HTMLAudioElement = this.audioPlayer.nativeElement;
+        this.audioUrl = fileURL;
+        audioElement.load();
+      });
+    }
+  }
+
+  onChangeTab(tab: number) {
+    this.currentTab = tab;
+    this.isStart = false;
+    this.getTimeout();
+  }
+
+  getTimeout() {
+    if (this.currentTab === 0) {
+      this.totalSeconds = this.quiz.listeningTimeout! * 60;
+    }
+    if (this.currentTab === 1) {
+      this.totalSeconds = this.quiz.readingTimeout! * 60;
+    }
+    if (this.currentTab === 2) {
+      this.totalSeconds = this.quiz.writingTimeout! * 60;
+    }
+    this.minutes = Math.floor(this.totalSeconds / 60);
+    this.seconds = this.totalSeconds % 60;
   }
 
   onSubmitClick() {
@@ -118,6 +168,7 @@ export class TestComponent {
   }
 
   submit() {
+    this.audioPlayer.nativeElement.pause();
     this.result.id = CommonUtils.generateRandomId();
     this.result.testDate = this.getCurrentDate();
     this.result.name = this.quiz.name;
@@ -133,33 +184,59 @@ export class TestComponent {
 
   onStartTest() {
     this.isReady = true;
-    this.startTimer();
-    setTimeout(() => {
-      const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-        hasBackdrop: true,
-        disableClose: true,
-      });
-      dialogRef.componentInstance.title = 'Information';
-      dialogRef.componentInstance.message = "Time's up";
-      dialogRef.componentInstance.isWarning = true;
-      dialogRef.afterClosed().subscribe((isConfirm) => {
-        if (isConfirm) {
-          this.submit();
-        }
-      });
-    }, this.totalSeconds * 1000);
   }
 
-  startTimer() {
-    const sub = interval(1000).subscribe(() => {
+  onListeningStart() {
+    this.audioPlayer.nativeElement.play();
+    this.onStartPart();
+  }
+
+  onStartPart() {
+    if (this.currentTab === 0) {
+      this.audioPlayer.nativeElement.play();
+    }
+    this.isStart = true;
+    this.timeoutInterval = interval(1000).subscribe(() => {
       if (this.seconds === 0) {
         this.minutes--;
         this.seconds = 59;
       } else {
         this.seconds--;
       }
+      if (this.minutes === 0 && this.seconds === 0) {
+        if (this.currentTab === 0) {
+          this.audioPlayer.nativeElement.pause();
+        }
+        this.timeoutInterval.unsubscribe();
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+          hasBackdrop: true,
+          disableClose: true,
+        });
+        dialogRef.componentInstance.title = 'Information';
+        dialogRef.componentInstance.message = "Time's up";
+        dialogRef.componentInstance.isWarning = true;
+        dialogRef.afterClosed().subscribe((isConfirm) => {
+          if (isConfirm) {
+            this.onSubmitPartClick(this.currentTab);
+            if (this.currentTab > 2) {
+              this.submit();
+            }
+          }
+        });
+      }
     });
-    this.subscriptions.push(sub);
+  }
+
+  onSubmitPartClick(tab: number) {
+    if (tab === 0) {
+      this.audioPlayer.nativeElement.pause();
+    }
+    this.mapDisablePart[tab] = true;
+    this.mapDisablePart[tab + 1] = false;
+    this.currentTab = tab + 1;
+    if (this.timeoutInterval) {
+      this.timeoutInterval.unsubscribe();
+    }
   }
 
   private getCurrentDate() {
@@ -175,58 +252,44 @@ export class TestComponent {
   }
 
   private calculatePoint() {
-    let totalPoint = 0;
-    let correctPoint = 0;
     each(this.result.listeningParts, (part) => {
-      each(part.questions, (question) => {
-        if (question.type === 0) {
-          // Multiple choices
-          totalPoint++;
-          if (question.answer === question.correctAnswer) {
-            correctPoint++;
-          }
-        }
-
-        if (question.type === 1) {
-          // Short answer
-          each(question.choices, (choice) => {
-            totalPoint++;
-            if (choice.answer === choice.content) {
-              correctPoint++;
-            }
-          });
-        }
-      });
+      this.calculateQuestionPoints(part.questions);
     });
 
-    each(this.result.readingParts, (paragraph) => {
-      each(paragraph.questions, (question) => {
-        if (question.type === 2) {
-          // Dropdown choices
-          totalPoint++;
-          if (question.answer === question.correctAnswer) {
-            correctPoint++;
-          }
-        }
-
-        if (question.type === 1) {
-          // Short answer
-          each(question.choices, (choice) => {
-            totalPoint++;
-            if (choice.answer === choice.content) {
-              correctPoint++;
-            }
-          });
-        }
-      });
+    each(this.result.readingParts, (part) => {
+      this.calculateQuestionPoints(part.questions);
     });
-    this.result.totalPoint = totalPoint;
-    this.result.correctPoint = correctPoint;
+    this.result.totalPoint = this.totalPoints;
+    this.result.correctPoint = this.correctPoints;
   }
 
-  ngOnDestroy() {
-    each(this.subscriptions, (sub) => {
-      sub.unsubscribe();
+  calculateQuestionPoints(questions: Question[]) {
+    each(questions, (question) => {
+      switch (question.type) {
+        case 0:
+          // Multiple choices
+          this.totalPoints++;
+          if (question.answer === question.correctAnswer) {
+            console.log(question)
+            this.correctPoints++;
+          }
+          break;
+        case 1:
+          // Short answer
+          each(question.choices, (choice) => {
+            this.totalPoints++;
+            if (choice.answer === choice.correctAnswer) {
+              console.log(question)
+              this.correctPoints++;
+            }
+          });
+          break;
+        case 2:
+          this.calculateQuestionPoints(question.subQuestions!);
+          break;
+        default:
+          break;
+      }
     });
   }
 }

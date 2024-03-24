@@ -1,14 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { AbstractQuestionComponent } from '../../common/abstract-question.component';
 import { FileService } from '../file.service';
-import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 @Component({
   selector: 'app-multiple-choices',
   standalone: true,
@@ -27,7 +27,6 @@ import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
   styleUrl: './multiple-choices.component.css',
 })
 export class MultipleChoicesComponent extends AbstractQuestionComponent {
-  @Output() onValuChange = new EventEmitter();
   selectedAnswer: string = '';
 
   CHOICE_INDEX = [
@@ -73,6 +72,5 @@ export class MultipleChoicesComponent extends AbstractQuestionComponent {
     if (this.isTesting) {
       this.question.answer = this.selectedAnswer;
     }
-    this.onValuChange.emit(this.question.choices[index].id);
   }
 }

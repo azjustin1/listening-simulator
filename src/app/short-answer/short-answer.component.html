@@ -4,20 +4,20 @@
       @for (choice of question.choices; track $index) {
         @if (choice.answer === choice.correctAnswer) {
           <p class="question-text">
-            <b>{{ choice.index }}&nbsp;</b>
+            <b>{{ choice.index }}</b>
+            <span class="answer correct" style="margin-left: 10px">
+              {{ choice.answer }}
+            </span>
           </p>
-          <div class="answer correct">
-            {{ choice.answer }}
-          </div>
         } @else {
           <div class="answer">
             <span class="question-text">
-              <b>{{ choice.index }}&nbsp;</b>
+              <b>{{ choice.index }}</b>
             </span>
-            <span class="answer incorrect">{{
+            <span class="answer incorrect" style="margin-left: 10px">{{
               !choice.answer || choice.answer === "" ? "❌" : choice.answer
             }}</span>
-            <span class="answer correct" style="margin-left: 30px">
+            <span class="answer correct" style="margin-left: 32px">
               {{ choice.correctAnswer }}
             </span>
           </div>
@@ -32,6 +32,7 @@
             [name]="question.id!"
             [config]="config"
             [(ngModel)]="question.content"
+            (ngModelChange)="onPaste($event)"
           ></angular-editor>
         } @else {
           <span [innerHTML]="question.content"></span>
@@ -66,10 +67,10 @@
               </mat-form-field>
             } @else {
               @if (isTesting) {
-                <p class="question-text">
+                <p class="answer-input">
                   <b>{{ choice.index }}&nbsp;</b>
                 </p>
-                <mat-form-field>
+                <mat-form-field style="margin-left: 10px">
                   <mat-label>Answer</mat-label>
                   <input
                     autocomplete="off"
@@ -81,7 +82,7 @@
                   />
                 </mat-form-field>
               } @else {
-                <p class="question-text">
+                <p class="answer-input">
                   <b>{{ choice.index }}&nbsp;</b>
                 </p>
                 <div class="answer correct">

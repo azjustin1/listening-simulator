@@ -5,8 +5,11 @@ import { Writing } from './writing.model';
 export interface Quiz {
   id: string;
   name: string;
-  timeout: number | null;
+  audioName?: string;
+  listeningTimeout?: number;
+  readingTimeout?: number;
+  writingTimeout?: number;
   listeningParts: Listening[];
   readingParts: Reading[];
-  writingParts: Writing[]
+  writingParts: Writing[];
 }

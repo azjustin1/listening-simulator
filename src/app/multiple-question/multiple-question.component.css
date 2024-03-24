@@ -1,0 +1,17 @@
+.question {
+  margin: 32px 0 0 0;
+}
+
+.actions {
+  margin: 16px 0 0 0;
+}
+
+.question-type-container {
+  display: flex;
+  margin: 16px 0 0 0;
+}
+
+.card {
+  margin: 0 16px 16px 0;
+  cursor: pointer;
+}
