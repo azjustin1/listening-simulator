@@ -28,43 +28,6 @@ export abstract class AbstractQuestionComponent implements OnInit {
 
   config: AngularEditorConfig = {
     editable: true,
-    spellcheck: true,
-    height: 'auto',
-    minHeight: '0',
-    maxHeight: 'auto',
-    width: 'auto',
-    minWidth: '0',
-    translate: 'yes',
-    enableToolbar: true,
-    showToolbar: true,
-    placeholder: 'Enter text here...',
-    defaultParagraphSeparator: '',
-    defaultFontName: '',
-    defaultFontSize: '',
-    fonts: [
-      { class: 'arial', name: 'Arial' },
-      { class: 'times-new-roman', name: 'Times New Roman' },
-      { class: 'calibri', name: 'Calibri' },
-      { class: 'comic-sans-ms', name: 'Comic Sans MS' },
-    ],
-    customClasses: [
-      {
-        name: 'quote',
-        class: 'quote',
-      },
-      {
-        name: 'redText',
-        class: 'redText',
-      },
-      {
-        name: 'titleText',
-        class: 'titleText',
-        tag: 'h1',
-      },
-    ],
-    uploadWithCredentials: false,
-    sanitize: true,
-    toolbarPosition: 'top',
     toolbarHiddenButtons: [
       [
         'backgroundColor',
@@ -72,7 +35,14 @@ export abstract class AbstractQuestionComponent implements OnInit {
         'link',
         'unlink',
         'insertHorizontalRule',
+        'insertVideo',
+        'subscript',
+        'superscript',
+        'undo',
+        'redo',
+        'toggleEditorMode',
       ],
+      [],
     ],
     upload: (file: File) => {
       return this.fileService.uploadFile(file).pipe(
@@ -147,7 +117,7 @@ export abstract class AbstractQuestionComponent implements OnInit {
       const imageSrc = base64Image[1];
       const fileName = `${this.question.id}.png`;
       const imageFile: File = CommonUtils.base64ToFile(imageSrc, fileName);
-      this.fileService.uploadFile(imageFile).subscribe(response => {
+      this.fileService.uploadFile(imageFile).subscribe((response) => {
         const imageName = response.fileName;
         this.question.imageName = imageName;
         this.getImage(imageName);
