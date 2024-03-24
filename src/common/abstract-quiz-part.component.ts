@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AngularEditorConfig, UploadResponse } from '@wfpena/angular-wysiwyg';
-import { each, mapValues } from 'lodash-es';
+import { debounce, each, mapValues } from 'lodash-es';
 import { map, Subscription } from 'rxjs';
 import { FileService } from '../app/file.service';
 import { CommonUtils } from '../utils/common-utils';
@@ -42,6 +42,8 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
   };
   mapQuestionEditting: Record<string, boolean> = {};
   subscriptions: Subscription[] = [];
+
+  onPaste = debounce((event) => this.uploadQuestionBase64Images(event), 1000);
 
   config: AngularEditorConfig = {
     editable: true,
@@ -91,7 +93,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
       ],
     ],
     upload: (file: File) => {
-      return this.fileService.uploadAudioFile(file).pipe(
+      return this.fileService.uploadFile(file).pipe(
         map((response) => {
           const imageName = response.fileName;
           this.data.imageName = imageName;
@@ -227,6 +229,30 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
   saveOthersEditting() {
     for (const key in this.mapQuestionEditting) {
       this.mapQuestionEditting[key] = false;
+    }
+  }
+
+  extractBase64Image(content: string) {
+    const regex = /<img[^>]+src="([^">]+)"/g;
+    const match = regex.exec(content);
+    return match;
+  }
+
+  updateQuestionContent(question: any, originalSrc: string, newSrc: string) {
+    return question.content.replace(originalSrc, newSrc);
+  }
+
+  uploadQuestionBase64Images(content: string) {
+    const base64Image = this.extractBase64Image(content);
+    if (base64Image !== null) {
+      const imageSrc = base64Image[1];
+      const fileName = `${this.data.id}.png`;
+      const imageFile: File = CommonUtils.base64ToFile(imageSrc, fileName);
+      this.fileService.uploadFile(imageFile).subscribe((response) => {
+        const imageName = response.fileName;
+        this.data.imageName = imageName;
+        this.getImage(imageName);
+      });
     }
   }
 }

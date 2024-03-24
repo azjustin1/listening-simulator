@@ -1,82 +1,87 @@
-<div class="form-group">
-  @if (isSaved || isTesting || isReadOnly) {
-    <h2>{{ data.name }}</h2>
-  } @else {
-    <mat-form-field>
-      <mat-label>Part</mat-label>
-      <input
-        autocomplete="off"
-        matInput
-        name="part"
-        type="text"
-        class="form-control"
-        id="part"
-        [(ngModel)]="data.name"
-        required
-      />
-    </mat-form-field>
-  }
-</div>
+<div class="container">
+  <div class="form-group">
+    @if (isSaved || isTesting || isReadOnly) {
+      <h2>{{ data.name }}</h2>
+    } @else {
+      <mat-form-field>
+        <mat-label>Part</mat-label>
+        <input
+          autocomplete="off"
+          matInput
+          name="part"
+          type="text"
+          class="form-control"
+          id="part"
+          [(ngModel)]="data.name"
+          required
+        />
+      </mat-form-field>
+    }
+  </div>
 
-<div class="question-group" [ngClass]="{ unclickable: isTesting && !isStart }">
-  @for (question of data.questions; track question.id) {
-    <div class="question">
-      <app-question
-        [question]="question"
-        [isSaved]="isSaved"
-        [isEditting]="mapQuestionEditting[question.id!]"
-        [isReadOnly]="isReadOnly"
-        [isTesting]="isTesting"
-      ></app-question>
-      <div class="actions">
-        @if (!isSaved && !isTesting && !isReadOnly) {
-          @if (mapQuestionEditting[question.id!]) {
+  <div
+    class="question-group"
+    [ngClass]="{ unclickable: isTesting && !isStart }"
+  >
+    @for (question of data.questions; track question.id) {
+      <div class="question">
+        <app-question
+          [question]="question"
+          [isSaved]="isSaved"
+          [isEditting]="mapQuestionEditting[question.id!]"
+          [isReadOnly]="isReadOnly"
+          [isTesting]="isTesting"
+        ></app-question>
+        <div class="actions">
+          @if (!isSaved && !isTesting && !isReadOnly) {
+            @if (mapQuestionEditting[question.id!]) {
+              <button
+                mat-button
+                color="primary"
+                type="button"
+                class="btn btn-danger"
+                (click)="onSaveQuestion(question.id!)"
+              >
+                <mat-icon>save</mat-icon>
+              </button>
+            } @else {
+              <button
+                mat-button
+                color="primary"
+                type="button"
+                class="btn btn-danger"
+                (click)="onEditQuestion(question.id!)"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+            }
             <button
               mat-button
-              color="primary"
+              color="warn"
               type="button"
               class="btn btn-danger"
-              (click)="onSaveQuestion(question.id!)"
+              (click)="removeQuestion($index)"
             >
-              <mat-icon>save</mat-icon>
-            </button>
-          } @else {
-            <button
-              mat-button
-              color="primary"
-              type="button"
-              class="btn btn-danger"
-              (click)="onEditQuestion(question.id!)"
-            >
-              <mat-icon>edit</mat-icon>
+              <mat-icon>delete</mat-icon>
             </button>
           }
-          <button
-            mat-button
-            color="warn"
-            type="button"
-            class="btn btn-danger"
-            (click)="removeQuestion($index)"
-          >
-            <mat-icon>delete</mat-icon>
-          </button>
-        }
+        </div>
       </div>
+    }
+  </div>
+
+  @if (!isSaved && !isTesting && !isReadOnly) {
+    <div class="question-type-container">
+      <mat-card class="card" (click)="addQuestion(0)">
+        <mat-card-content class="question-type-item">
+          Multiple Choices
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="card" (click)="addQuestion(1)">
+        <mat-card-content class="question-type-item">
+          Short Answer
+        </mat-card-content>
+      </mat-card>
     </div>
   }
 </div>
-
-@if (!isSaved && !isTesting && !isReadOnly) {
-  <div class="question-type-container">
-    <mat-card class="card" (click)="addQuestion(0)">
-      <mat-card-content class="question-type-item">
-        Multiple Choices
-      </mat-card-content>
-    </mat-card>
-    <mat-card class="card" (click)="addQuestion(1)">
-      <mat-card-content class="question-type-item">
-        Short Answer
-      </mat-card-content>
-    </mat-card>
-  </div>
-}

@@ -6,6 +6,7 @@
         [id]="data.id"
         [config]="config"
         [(ngModel)]="data.content"
+        (ngModelChange)="onPaste($event)"
       ></angular-editor>
     } @else {
       <span [innerHTML]="data.content"></span>

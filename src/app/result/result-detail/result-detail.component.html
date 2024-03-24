@@ -11,7 +11,7 @@
 
     <div class="question-container">
       <mat-tab-group animationDuration="0ms">
-        <mat-tab label="Listening" style="margin-top: 16px;">
+        <mat-tab label="Listening" style="margin-top: 16px">
           <ng-template matTabContent>
             <mat-tab-group
               animationDuration="0ms"
@@ -40,6 +40,7 @@
               mat-align-tabs="center"
               animationDuration="0ms"
               headerPosition="below"
+              
             >
               @for (part of result.readingParts; track $index) {
                 <mat-tab>

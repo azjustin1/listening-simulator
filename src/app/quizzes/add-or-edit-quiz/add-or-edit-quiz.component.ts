@@ -107,7 +107,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
 
   uploadFile() {
     const uploadSub = this.fileService
-      .uploadAudioFile(this.selectedFile)
+      .uploadFile(this.selectedFile)
       .subscribe((res) => {
         this.subscription.push(uploadSub);
         if (res) {

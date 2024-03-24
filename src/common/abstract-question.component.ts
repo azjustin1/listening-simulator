@@ -5,6 +5,7 @@ import { map } from 'rxjs';
 import { FileService } from '../app/file.service';
 import { Question } from '../common/models/question.model';
 import { CommonUtils } from '../utils/common-utils';
+import { debounce } from 'lodash-es';
 
 @Component({
   template: '',
@@ -20,6 +21,8 @@ export abstract class AbstractQuestionComponent implements OnInit {
   @Output() onSave = new EventEmitter();
   @Output() onEdit = new EventEmitter();
   @Output() onRemove = new EventEmitter();
+
+  onPaste = debounce((event) => this.uploadQuestionBase64Images(event), 1000);
 
   constructor(private fileService: FileService) {}
 
@@ -72,7 +75,7 @@ export abstract class AbstractQuestionComponent implements OnInit {
       ],
     ],
     upload: (file: File) => {
-      return this.fileService.uploadAudioFile(file).pipe(
+      return this.fileService.uploadFile(file).pipe(
         map((response) => {
           const imageName = response.fileName;
           this.question.imageName = imageName;
@@ -126,5 +129,29 @@ export abstract class AbstractQuestionComponent implements OnInit {
 
   removeChoice(index: number) {
     this.question.choices.splice(index, 1);
+  }
+
+  extractBase64Image(content: string) {
+    const regex = /<img[^>]+src="([^">]+)"/g;
+    const match = regex.exec(content);
+    return match;
+  }
+
+  updateQuestionContent(question: any, originalSrc: string, newSrc: string) {
+    return question.content.replace(originalSrc, newSrc);
+  }
+
+  uploadQuestionBase64Images(content: string) {
+    const base64Image = this.extractBase64Image(content);
+    if (base64Image !== null) {
+      const imageSrc = base64Image[1];
+      const fileName = `${this.question.id}.png`;
+      const imageFile: File = CommonUtils.base64ToFile(imageSrc, fileName);
+      this.fileService.uploadFile(imageFile).subscribe(response => {
+        const imageName = response.fileName;
+        this.question.imageName = imageName;
+        this.getImage(imageName);
+      });
+    }
   }
 }

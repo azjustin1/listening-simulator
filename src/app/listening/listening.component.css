@@ -1,10 +1,5 @@
-.quiz {
-  height: 50px;
-  width: 100px;
-  text-align: center;
-  line-height: 50px;
-  border: 1px solid black;
-  border-radius: 5px;
+.container {
+  display: flex;
 }
 
 .question-type-container {
@@ -14,8 +9,12 @@
 
 .question-group {
   justify-content: center;
-  width: 80%;
+  flex: 50%;
   height: fit-content;
+}
+
+.input-group {
+  max-width: calc(100vw / 2);
 }
 
 .question-group.unclickable {

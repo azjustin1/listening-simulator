@@ -32,6 +32,7 @@
             [name]="question.id!"
             [config]="config"
             [(ngModel)]="question.content"
+            (ngModelChange)="onPaste($event)"
           ></angular-editor>
         } @else {
           <span [innerHTML]="question.content"></span>
@@ -69,7 +70,7 @@
                 <p class="answer-input">
                   <b>{{ choice.index }}&nbsp;</b>
                 </p>
-                <mat-form-field style="margin-left: 10px;">
+                <mat-form-field style="margin-left: 10px">
                   <mat-label>Answer</mat-label>
                   <input
                     autocomplete="off"
