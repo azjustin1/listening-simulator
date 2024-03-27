@@ -49,8 +49,7 @@ export class ReadingComponent
 
   subscription: Subscription[] = [];
 
-  override ngOnInit(): void {
-    super.ngOnInit();
+  ngOnInit(): void {
     each(this.data.questions, (question) => {
       this.mapSavedQuestion[question.id!] = true;
     });

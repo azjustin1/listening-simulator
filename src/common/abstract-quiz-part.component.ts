@@ -22,7 +22,7 @@ import { Question } from './models/question.model';
   template: '',
 })
 export abstract class AbstractQuizPartComponent<T extends AbstractPart>
-  implements OnInit, OnChanges, OnDestroy
+  implements OnChanges, OnDestroy
 {
   @Input() data!: T;
   @Input() isTesting: boolean = false;
@@ -68,7 +68,6 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
         map((response) => {
           const imageName = response.fileName;
           this.data.imageName = imageName;
-          this.getImage(imageName);
           return {
             ...response,
             body: { imageUrl: imageName },
@@ -83,12 +82,6 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     private dialog: MatDialog,
   ) {}
 
-  ngOnInit(): void {
-    if (this.data.imageName) {
-      this.getImage(this.data.imageName);
-    }
-  }
-
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isSaved']?.currentValue) {
       mapValues(this.mapQuestionEditting, () => false);
@@ -98,17 +91,6 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
   ngOnDestroy(): void {
     each(this.subscriptions, (sub) => {
       sub.unsubscribe();
-    });
-  }
-
-  getImage(fileName: string) {
-    this.fileService.getFile(fileName).subscribe((audioFile: Blob) => {
-      const fileURL = URL.createObjectURL(audioFile);
-      const regex = /<img[^>]+src="([^">]+)"/g;
-      const match = regex.exec(this.data.content);
-      if (match) {
-        this.data.content = this.data.content.replace(match[1], fileURL);
-      }
     });
   }
 
@@ -222,7 +204,10 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
       this.fileService.uploadFile(imageFile).subscribe((response) => {
         const imageName = response.fileName;
         this.data.imageName = imageName;
-        this.getImage(imageName);
+        this.data.content = this.data.content?.replace(
+          imageSrc,
+          `http://localhost:3000/upload/${response.fileName}`,
+        );
       });
     }
   }

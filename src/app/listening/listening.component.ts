@@ -1,7 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component
-} from '@angular/core';
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -38,12 +36,4 @@ export class ListeningComponent extends AbstractQuizPartComponent<Listening> {
   isDisableStartButton = false;
 
   subscription: Subscription[] = [];
-
-  override ngOnInit(): void {
-    super.ngOnInit();
-  }
-
-  override onStart() {
-    super.onStart();
-  }
 }

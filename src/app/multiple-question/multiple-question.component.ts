@@ -1,4 +1,4 @@
-import { Component, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -28,12 +28,11 @@ import { QuestionComponent } from '../question/question.component';
 })
 export class MultipleQuestionComponent
   extends AbstractQuestionComponent
-  implements OnChanges
+  implements OnInit, OnChanges
 {
   mapEdittingQuestion: Record<string, boolean> = {};
 
-  override ngOnInit(): void {
-    super.ngOnInit();
+  ngOnInit(): void {
     each(this.question.subQuestions, (question) => {
       this.updateEdittingQuestion(false);
     });

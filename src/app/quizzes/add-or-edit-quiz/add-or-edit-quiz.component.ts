@@ -93,8 +93,8 @@ export class AddOrEditQuizComponent implements OnDestroy {
   }
 
   onFileSelected(event: any) {
-    if (this.currentQuiz.audioName || this.currentQuiz.audioName !== '') {
-      this.deleteFile(this.currentQuiz.audioName!);
+    if (this.currentQuiz.audioUrl || this.currentQuiz.audioUrl !== '') {
+      this.deleteFile(this.currentQuiz.audioUrl!);
     }
     this.selectedFile = event.target.files[0] ?? null;
     this.uploadFile();
@@ -111,7 +111,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
       .subscribe((res) => {
         this.subscription.push(uploadSub);
         if (res) {
-          this.currentQuiz.audioName = res.fileName;
+          this.currentQuiz.audioUrl = `http://localhost:3000/upload/${res.fileName}`;
         }
       });
     this.subscription.push(uploadSub);

@@ -8,10 +8,6 @@ export class TestService {
 
   constructor(private httpClient: HttpClient) {}
 
-  getAllResult(): Observable<any> {
-    return this.httpClient.get<any>(`${this.baseUrl}/results`);
-  }
-
   getResultByStudentName(studentName: string): Observable<any> {
     return this.httpClient.get(
       `${this.baseUrl}/results?studentName_like=${studentName}`

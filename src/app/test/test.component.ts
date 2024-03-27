@@ -54,7 +54,6 @@ import { TestService } from './test.service';
 })
 export class TestComponent extends AddOrEditQuizComponent {
   @ViewChild('audioPlayer') audioPlayer!: ElementRef;
-  audioUrl: string = '';
   result: Result = {
     id: '',
     name: '',
@@ -111,8 +110,8 @@ export class TestComponent extends AddOrEditQuizComponent {
         this.quizService.getById(quizId).subscribe((quiz: any) => {
           this.quiz = quiz;
           this.totalSeconds = this.quiz.listeningTimeout! * 60;
+          this.audioPlayer.nativeElement.load();
           this.getTimeout();
-          this.getAudioFile(quiz.audioName);
         });
       }
     });
@@ -122,17 +121,6 @@ export class TestComponent extends AddOrEditQuizComponent {
     super.ngOnDestroy();
     if (this.timeoutInterval) {
       this.timeoutInterval.unsubscribe();
-    }
-  }
-
-  getAudioFile(fileName: string) {
-    if (fileName !== '') {
-      this.fileService.getFile(fileName).subscribe((audioFile: Blob) => {
-        const fileURL = URL.createObjectURL(audioFile);
-        const audioElement: HTMLAudioElement = this.audioPlayer.nativeElement;
-        this.audioUrl = fileURL;
-        audioElement.load();
-      });
     }
   }
 

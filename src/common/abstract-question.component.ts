@@ -10,7 +10,7 @@ import { debounce } from 'lodash-es';
 @Component({
   template: '',
 })
-export abstract class AbstractQuestionComponent implements OnInit {
+export abstract class AbstractQuestionComponent {
   @Input() question!: Question;
   @Input() isSaved: boolean = false;
   @Input() isEditting: boolean = false;
@@ -49,7 +49,6 @@ export abstract class AbstractQuestionComponent implements OnInit {
         map((response) => {
           const imageName = response.fileName;
           this.question.imageName = imageName;
-          this.getImage(imageName);
           return {
             ...response,
             body: { imageUrl: imageName },
@@ -58,26 +57,6 @@ export abstract class AbstractQuestionComponent implements OnInit {
       );
     },
   };
-
-  ngOnInit(): void {
-    if (this.question.imageName) {
-      this.getImage(this.question.imageName);
-    }
-  }
-
-  getImage(fileName: string) {
-    this.fileService.getFile(fileName).subscribe((audioFile: Blob) => {
-      const fileURL = URL.createObjectURL(audioFile);
-      const regex = /<img[^>]+src="([^">]+)"/g;
-      const match = regex.exec(this.question.content!);
-      if (match) {
-        this.question.content = this.question.content!.replace(
-          match[1],
-          fileURL,
-        );
-      }
-    });
-  }
 
   onSaveQuestion() {
     this.onSave.emit();
@@ -108,7 +87,7 @@ export abstract class AbstractQuestionComponent implements OnInit {
   }
 
   updateQuestionContent(question: any, originalSrc: string, newSrc: string) {
-    return question.content.replace(originalSrc, newSrc);
+    question.content.replace(originalSrc, newSrc);
   }
 
   uploadQuestionBase64Images(content: string) {
@@ -118,9 +97,10 @@ export abstract class AbstractQuestionComponent implements OnInit {
       const fileName = `${this.question.id}.png`;
       const imageFile: File = CommonUtils.base64ToFile(imageSrc, fileName);
       this.fileService.uploadFile(imageFile).subscribe((response) => {
-        const imageName = response.fileName;
-        this.question.imageName = imageName;
-        this.getImage(imageName);
+        this.question.content = this.question.content?.replace(
+          imageSrc,
+          `http://localhost:3000/upload/${response.fileName}`,
+        );
       });
     }
   }

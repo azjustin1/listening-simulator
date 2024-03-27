@@ -11,8 +11,4 @@ import { ShortAnswerComponent } from '../short-answer/short-answer.component';
   templateUrl: './question.component.html',
   styleUrl: './question.component.css',
 })
-export class QuestionComponent extends AbstractQuestionComponent {
-  override ngOnInit(): void {
-    super.ngOnInit();
-  }
-}
+export class QuestionComponent extends AbstractQuestionComponent {}
