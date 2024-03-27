@@ -76,6 +76,8 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     },
   };
 
+  wordCount: number = 0;
+
   constructor(
     protected fileService: FileService,
     private dialog: MatDialog,
@@ -96,6 +98,10 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
   onStart() {
     this.isStart = true;
     this.onStartChange.emit();
+  }
+
+  onWritingChange(value: string) {
+    this.data.wordCount = value.trim().split(/\s+/).length;
   }
 
   defaultMultipleChoices() {

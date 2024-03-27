@@ -153,6 +153,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
       content: '',
       questions: [],
       audioName: '',
+      wordCount: 0,
     };
     this.mapSavedPart['listening'][size(this.mapSavedPart['listening'])] =
       false;
@@ -167,6 +168,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
       timeout: undefined,
       questions: [],
       imageName: '',
+      wordCount: 0,
     };
     this.mapSavedPart['reading'][size(this.mapSavedPart['reading'])] = false;
     this.currentQuiz.readingParts.push(newReadingParagraph);
@@ -181,6 +183,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
       questions: [],
       imageName: '',
       answer: '',
+      wordCount: 0,
     };
     this.mapSavedPart['writing'][size(this.mapSavedPart['writing'])] = false;
     if (!this.currentQuiz.writingParts) {

@@ -6,4 +6,5 @@ export interface AbstractPart {
   timeout: number | undefined;
   questions: Question[];
   imageName?: string;
+  wordCount: number
 }

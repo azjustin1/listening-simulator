@@ -15,12 +15,13 @@
   @if (isTesting) {
     <div class="input-writing">
       <mat-form-field>
-        <mat-label>Word count: {{ data.answer.length }}</mat-label>
+        <mat-label>Word count: {{ data.wordCount }}</mat-label>
         <textarea
           matInput
           rows="5"
           name="reading-question"
           [(ngModel)]="data.answer"
+          (ngModelChange)="onWritingChange($event)"
         ></textarea>
       </mat-form-field>
     </div>
@@ -28,7 +29,7 @@
   @if (isReadOnly) {
     <div class="result-container">
       <mat-form-field>
-        <mat-label>Word count: {{ data.answer.length }}</mat-label>
+        <mat-label>Word count: {{ data.wordCount }}</mat-label>
         <textarea
           matInput
           disabled="true"
