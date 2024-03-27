@@ -47,11 +47,10 @@ export abstract class AbstractQuestionComponent {
     upload: (file: File) => {
       return this.fileService.uploadFile(file).pipe(
         map((response) => {
-          const imageName = response.fileName;
-          this.question.imageName = imageName;
+          const imageUrl = `http://localhost:3000/upload/${response.fileName}`;
           return {
             ...response,
-            body: { imageUrl: imageName },
+            body: { imageUrl: imageUrl },
           } as HttpResponse<UploadResponse>;
         }),
       );
@@ -86,13 +85,9 @@ export abstract class AbstractQuestionComponent {
     return match;
   }
 
-  updateQuestionContent(question: any, originalSrc: string, newSrc: string) {
-    question.content.replace(originalSrc, newSrc);
-  }
-
   uploadQuestionBase64Images(content: string) {
     const base64Image = this.extractBase64Image(content);
-    if (base64Image !== null) {
+    if (base64Image !== null && base64Image[1].startsWith('data')) {
       const imageSrc = base64Image[1];
       const fileName = `${this.question.id}.png`;
       const imageFile: File = CommonUtils.base64ToFile(imageSrc, fileName);

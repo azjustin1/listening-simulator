@@ -66,11 +66,10 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     upload: (file: File) => {
       return this.fileService.uploadFile(file).pipe(
         map((response) => {
-          const imageName = response.fileName;
-          this.data.imageName = imageName;
+          const imageUrl = `http://localhost:3000/upload/${response.fileName}`;
           return {
             ...response,
-            body: { imageUrl: imageName },
+            body: { imageUrl: imageUrl },
           } as HttpResponse<UploadResponse>;
         }),
       );
@@ -191,13 +190,19 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     return match;
   }
 
-  updateQuestionContent(question: any, originalSrc: string, newSrc: string) {
-    return question.content.replace(originalSrc, newSrc);
+  updateQuizContent(newSrc: string) {
+    const imageUrl = this.extractBase64Image(this.data.content);
+    if (imageUrl !== null) {
+      const imageSrc = imageUrl[1];
+      this.data.content = this.data.content?.replace(imageSrc, newSrc);
+    } else {
+      this.data.content = `<img src="${newSrc}" />`;
+    }
   }
 
   uploadQuestionBase64Images(content: string) {
     const base64Image = this.extractBase64Image(content);
-    if (base64Image !== null) {
+    if (base64Image !== null && base64Image[1].startsWith('data')) {
       const imageSrc = base64Image[1];
       const fileName = `${this.data.id}.png`;
       const imageFile: File = CommonUtils.base64ToFile(imageSrc, fileName);
