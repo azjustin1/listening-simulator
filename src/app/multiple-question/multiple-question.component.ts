@@ -10,6 +10,7 @@ import { AbstractQuestionComponent } from '../../common/abstract-question.compon
 import { Question } from '../../common/models/question.model';
 import { CommonUtils } from '../../utils/common-utils';
 import { QuestionComponent } from '../question/question.component';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-multiple-question',
@@ -20,6 +21,7 @@ import { QuestionComponent } from '../question/question.component';
     MatExpansionModule,
     MatIconModule,
     MatCardModule,
+    MatButtonModule,
     MatInputModule,
     QuestionComponent,
   ],

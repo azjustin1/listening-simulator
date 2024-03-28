@@ -7,9 +7,9 @@
   <div class="form-group question-name">
     @if (!isSaved && !isReadOnly && !isTesting) {
       @if (isEditting) {
-        <mat-form-field>
+        <mat-form-field style="width: 100%;">
           <mat-label>Question Name</mat-label>
-          <input
+          <textarea
             autocomplete="off"
             matInput
             name="questionName"
@@ -17,7 +17,7 @@
             id="questionName"
             [(ngModel)]="question.name"
             required
-          />
+          ></textarea>
         </mat-form-field>
       } @else {
         <h3>{{ question.name }}</h3>
