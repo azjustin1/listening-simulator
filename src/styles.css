@@ -12,9 +12,3 @@ body {
   --success-color: #2dbb2d;
   --danger-color: #f81212;
 }
-
-img {
-  width: 100%; /* or any custom size */
-  height: 100%;
-  object-fit: contain;
-}
