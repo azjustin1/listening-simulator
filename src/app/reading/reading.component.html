@@ -67,6 +67,7 @@
   <div class="input-reading">
     @if (!isSaved && !isReadOnly && !isTesting) {
       <angular-editor
+        class="editor"
         name="questionContent"
         [id]="data.id"
         [(ngModel)]="data.content"
