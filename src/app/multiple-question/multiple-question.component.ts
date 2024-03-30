@@ -1,16 +1,16 @@
 import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { each, mapValues } from 'lodash-es';
+import { clone, each, mapValues } from 'lodash-es';
 import { AbstractQuestionComponent } from '../../common/abstract-question.component';
 import { Question } from '../../common/models/question.model';
 import { CommonUtils } from '../../utils/common-utils';
 import { QuestionComponent } from '../question/question.component';
-import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-multiple-question',
@@ -88,6 +88,18 @@ export class MultipleQuestionComponent
     this.question.subQuestions!.push({ ...newQuestion });
     this.question = { ...this.question };
     this.mapEdittingQuestion[id] = true;
+  }
+
+  moveQuestionUp(index: number) {
+    const tempQuestion = clone(this.question.subQuestions![index - 1]);
+    this.question.subQuestions![index - 1] = this.question.subQuestions![index];
+    this.question.subQuestions![index] = tempQuestion;
+  }
+
+  moveQuestionDown(index: number) {
+    const tempQuestion = clone(this.question.subQuestions![index + 1]);
+    this.question.subQuestions![index + 1] = this.question.subQuestions![index];
+    this.question.subQuestions![index] = tempQuestion;
   }
 
   onSaveSubQuestion(id: string) {

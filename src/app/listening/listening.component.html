@@ -64,6 +64,26 @@
             >
               <mat-icon>delete</mat-icon>
             </button>
+            @if ($index !== 0) {
+              <button
+                mat-button
+                type="button"
+                class="btn btn-danger"
+                (click)="moveQuestionUp($index)"
+              >
+                <mat-icon>arrow_upward</mat-icon>
+              </button>
+            }
+            @if ($index !== data.questions.length - 1) {
+              <button
+                mat-button
+                type="button"
+                class="btn btn-danger"
+                (click)="moveQuestionDown($index)"
+              >
+                <mat-icon>arrow_downward</mat-icon>
+              </button>
+            }
           }
         </div>
       </div>

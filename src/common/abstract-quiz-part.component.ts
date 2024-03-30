@@ -5,13 +5,12 @@ import {
   Input,
   OnChanges,
   OnDestroy,
-  OnInit,
   Output,
-  SimpleChanges,
+  SimpleChanges
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AngularEditorConfig, UploadResponse } from '@wfpena/angular-wysiwyg';
-import { debounce, each, mapValues } from 'lodash-es';
+import { clone, debounce, each, mapValues } from 'lodash-es';
 import { map, Subscription } from 'rxjs';
 import { FileService } from '../app/file.service';
 import { CommonUtils } from '../utils/common-utils';
@@ -179,6 +178,18 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
   onEditQuestion(id: string) {
     this.saveOthersEditting();
     this.mapQuestionEditting[id] = true;
+  }
+
+  moveQuestionUp(index: number) {
+    const tempQuestion = clone(this.data.questions[index - 1]);
+    this.data.questions[index - 1] = this.data.questions[index];
+    this.data.questions[index] = tempQuestion;
+  }
+
+  moveQuestionDown(index: number) {
+    const tempQuestion = clone(this.data.questions[index + 1]);
+    this.data.questions[index + 1] = this.data.questions[index];
+    this.data.questions[index] = tempQuestion;
   }
 
   removeQuestion(questionIdex: number) {

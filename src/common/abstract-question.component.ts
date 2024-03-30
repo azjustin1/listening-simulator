@@ -1,11 +1,11 @@
 import { HttpResponse } from '@angular/common/http';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AngularEditorConfig, UploadResponse } from '@wfpena/angular-wysiwyg';
+import { debounce } from 'lodash-es';
 import { map } from 'rxjs';
 import { FileService } from '../app/file.service';
 import { Question } from '../common/models/question.model';
 import { CommonUtils } from '../utils/common-utils';
-import { debounce } from 'lodash-es';
 
 @Component({
   template: '',

@@ -7,7 +7,7 @@
   <div class="form-group question-name">
     @if (!isSaved && !isReadOnly && !isTesting) {
       @if (isEditting) {
-        <mat-form-field style="width: 100%;">
+        <mat-form-field style="width: 100%">
           <mat-label>Question Name</mat-label>
           <textarea
             autocomplete="off"
@@ -71,6 +71,26 @@
           >
             <mat-icon>delete</mat-icon>
           </button>
+          @if (subQuestionIndex !== 0) {
+            <button
+              mat-button
+              type="button"
+              class="btn btn-danger"
+              (click)="moveQuestionUp(subQuestionIndex)"
+            >
+              <mat-icon>arrow_upward</mat-icon>
+            </button>
+          }
+          @if (subQuestionIndex !== question.subQuestions!.length - 1) {
+            <button
+              mat-button
+              type="button"
+              class="btn btn-danger"
+              (click)="moveQuestionDown(subQuestionIndex)"
+            >
+              <mat-icon>arrow_downward</mat-icon>
+            </button>
+          }
         </div>
       }
     }

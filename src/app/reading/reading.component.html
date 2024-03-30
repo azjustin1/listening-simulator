@@ -47,6 +47,26 @@
             >
               <mat-icon>delete</mat-icon>
             </button>
+            @if (questionIndex !== 0) {
+              <button
+                mat-button
+                type="button"
+                class="btn btn-danger"
+                (click)="moveQuestionUp(questionIndex)"
+              >
+                <mat-icon>arrow_upward</mat-icon>
+              </button>
+            }
+            @if (questionIndex !== data.questions.length - 1) {
+              <button
+                mat-button
+                type="button"
+                class="btn btn-danger"
+                (click)="moveQuestionDown(questionIndex)"
+              >
+                <mat-icon>arrow_downward</mat-icon>
+              </button>
+            }
           </div>
         }
       }
