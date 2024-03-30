@@ -16,10 +16,10 @@ export class AppComponent {
 
   constructor() {
     window.addEventListener('keydown', function (e) {
-      if (e.keyCode === 114 || (e.ctrlKey && e.keyCode === 70)) {
+      if (e.key === 'F3' || (e.ctrlKey && e.key === 'f')) {
         e.preventDefault();
       }
-      if ((e.ctrlKey && e.keyCode === 83)) {
+      if ((e.ctrlKey && e.key === 's')) {
         e.preventDefault();
       }
     });
