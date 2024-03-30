@@ -12,3 +12,10 @@
   height: 100px;
   margin: 20px 50px;
 }
+
+.author {
+  display: flex;
+  flex-direction: column-reverse;
+  color: rgb(150, 150, 150);
+  font-size: small;
+}

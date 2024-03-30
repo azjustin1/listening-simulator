@@ -6,7 +6,7 @@
 .question-group {
   width: 100%;
   height: 100%;
-  max-width: calc(100vw / 2);
+  max-width: calc(100vw / 2 - 100px);
 }
 
 .question {
@@ -24,6 +24,7 @@
   justify-content: space-evenly;
   width: 100%;
   min-height: fit-content;
+  max-width: calc(100vw / 2 - 100px);
   margin-left: 20px;
 }
 

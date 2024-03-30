@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, HostListener, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -68,6 +68,12 @@ export class AddOrEditQuizComponent implements OnDestroy {
   selectedWritingPart = 0;
 
   subscription: Subscription[] = [];
+
+  @HostListener('document:keydown.control.s', ['$event'])
+  onKeydownHandler(event: KeyboardEvent) {
+    console.log('Save');
+    this.saveOrEditQuiz(this.currentQuiz);
+  }
 
   constructor(
     protected quizService: QuizService,
@@ -241,9 +247,10 @@ export class AddOrEditQuizComponent implements OnDestroy {
     } else {
       this.saveOrEditQuiz(this.currentQuiz);
     }
+    this.router.navigate(['/']);
   }
 
-  saveOrEditQuiz(quiz: any) {
+  saveOrEditQuiz(quiz: Quiz) {
     let observer;
     if (quiz.id) {
       observer = this.quizService.edit(quiz);
@@ -251,9 +258,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
       quiz.id = CommonUtils.generateRandomId();
       observer = this.quizService.create(quiz);
     }
-    const sub = observer.subscribe(() => {
-      this.router.navigate(['/']);
-    });
+    const sub = observer.subscribe();
     this.subscription.push(sub);
   }
 

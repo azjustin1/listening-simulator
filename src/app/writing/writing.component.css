@@ -6,6 +6,12 @@
 .question-group {
   width: 100%;
   height: 100%;
+  max-width: calc(100vw / 2 - 100px);
+}
+
+.writing-description {
+  max-width: calc(100vw / 2 - 100px);
+  word-wrap: break-word;
 }
 
 .input-writing {
@@ -32,6 +38,6 @@
   margin-bottom: 16px;
 }
 
-.start-button{ 
+.start-button {
   margin-bottom: 16px;
 }

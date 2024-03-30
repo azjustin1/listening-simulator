@@ -3,13 +3,14 @@
     @if (!isSaved && !isReadOnly && !isTesting) {
       <angular-editor
         name="reading-question"
+        class="editor"
         [id]="data.id"
         [config]="config"
         [(ngModel)]="data.content"
         (ngModelChange)="onPaste($event)"
       ></angular-editor>
     } @else {
-      <span [innerHTML]="data.content"></span>
+      <p [innerHTML]="data.content" class="writing-description"></p>
     }
   </div>
   @if (isTesting) {

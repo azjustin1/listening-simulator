@@ -47,6 +47,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
 
   config: AngularEditorConfig = {
     editable: true,
+    sanitize: true,
     toolbarHiddenButtons: [
       [
         'backgroundColor',
