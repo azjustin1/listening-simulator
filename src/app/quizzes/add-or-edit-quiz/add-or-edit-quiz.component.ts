@@ -71,7 +71,6 @@ export class AddOrEditQuizComponent implements OnDestroy {
 
   @HostListener('document:keydown.control.s', ['$event'])
   onKeydownHandler(event: KeyboardEvent) {
-    console.log('Save');
     this.saveOrEditQuiz(this.currentQuiz);
   }
 
