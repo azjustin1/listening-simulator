@@ -6,7 +6,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { clone, each, mapValues } from 'lodash-es';
+import { clone, cloneDeep, each, mapValues } from 'lodash-es';
 import { AbstractQuestionComponent } from '../../common/abstract-question.component';
 import { Question } from '../../common/models/question.model';
 import { CommonUtils } from '../../utils/common-utils';
@@ -32,21 +32,21 @@ export class MultipleQuestionComponent
   extends AbstractQuestionComponent
   implements OnInit, OnChanges
 {
-  mapEdittingQuestion: Record<string, boolean> = {};
-
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
     each(this.question.subQuestions, (question) => {
       this.updateEdittingQuestion(false);
     });
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  override ngOnChanges(changes: SimpleChanges): void {
+    super.ngOnChanges(changes);
     if (changes['isSaved']?.currentValue) {
       mapValues(this.mapEdittingQuestion, () => false);
     }
   }
 
-  updateEdittingQuestion(status: boolean) {
+  override updateEdittingQuestion(status: boolean) {
     each(this.question.subQuestions, (question) => {
       this.mapEdittingQuestion[question.id!] = status;
     });
@@ -109,6 +109,16 @@ export class MultipleQuestionComponent
   onEditSubQuestion(id: string) {
     this.saveOthersEditting();
     this.mapEdittingQuestion[id] = true;
+  }
+
+  duplicateQuestion(question: Question) {
+    let cloneQuestion = cloneDeep(question);
+    cloneQuestion = {
+      ...cloneQuestion,
+      id: CommonUtils.generateRandomId(),
+      name: `Copy of ${cloneQuestion.name}`,
+    };
+    this.question.subQuestions!.push(cloneQuestion);
   }
 
   onRemoveSubQuestion(index: number) {
