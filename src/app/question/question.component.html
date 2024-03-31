@@ -1,6 +1,5 @@
 @switch (question.type) {
   @case (0) {
-    {{ isEditting }}
     <div class="question">
       <app-multiple-choices
         [question]="question"
@@ -11,7 +10,6 @@
     </div>
   }
   @case (1) {
-    {{ isEditting }}
     <div class="question">
       <app-short-answer
         [question]="question"
