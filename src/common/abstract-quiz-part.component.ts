@@ -6,11 +6,11 @@ import {
   OnChanges,
   OnDestroy,
   Output,
-  SimpleChanges
+  SimpleChanges,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AngularEditorConfig, UploadResponse } from '@wfpena/angular-wysiwyg';
-import { clone, debounce, each, mapValues } from 'lodash-es';
+import { clone, cloneDeep, debounce, each, mapValues } from 'lodash-es';
 import { map, Subscription } from 'rxjs';
 import { FileService } from '../app/file.service';
 import { CommonUtils } from '../utils/common-utils';
@@ -85,6 +85,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isSaved']?.currentValue) {
+      console.log('Save', changes['isSaved']?.currentValue)
       mapValues(this.mapQuestionEditting, () => false);
     }
   }
@@ -190,6 +191,16 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     const tempQuestion = clone(this.data.questions[index + 1]);
     this.data.questions[index + 1] = this.data.questions[index];
     this.data.questions[index] = tempQuestion;
+  }
+
+  duplicateQuestion(question: Question) {
+    let cloneQuestion = cloneDeep(question);
+    cloneQuestion = {
+      ...cloneQuestion,
+      id: CommonUtils.generateRandomId(),
+      name: `Copy of ${cloneQuestion.name}`,
+    };
+    this.data.questions.push(cloneQuestion);
   }
 
   removeQuestion(questionIdex: number) {
