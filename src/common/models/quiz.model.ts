@@ -3,6 +3,7 @@ import { Reading } from './reading.model';
 import { Writing } from './writing.model';
 
 export interface Quiz {
+  _id?: string;
   id: string;
   name: string;
   audioUrl?: string;

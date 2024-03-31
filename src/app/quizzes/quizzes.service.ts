@@ -10,7 +10,7 @@ export class QuizService {
   constructor(private httpClient: HttpClient) {}
 
   getAll(): Observable<any> {
-    return this.httpClient.get(`${this.baseUrl}/quizzes`);
+    return this.httpClient.get(`${this.baseUrl}/quiz`);
   }
 
   searchByName(name: string): Observable<any> {
@@ -18,15 +18,15 @@ export class QuizService {
   }
 
   getById(id: number): Observable<any> {
-    return this.httpClient.get(`${this.baseUrl}/quizzes/${id}`);
+    return this.httpClient.get(`${this.baseUrl}/quiz/${id}`);
   }
 
   create(quiz: Quiz): Observable<any> {
-    return this.httpClient.post(`${this.baseUrl}/quizzes`, quiz);
+    return this.httpClient.post(`${this.baseUrl}/quiz`, quiz);
   }
 
   edit(quiz: Quiz): Observable<any> {
-    return this.httpClient.put(`${this.baseUrl}/quizzes/${quiz.id}`, quiz);
+    return this.httpClient.put(`${this.baseUrl}/quiz/${quiz._id}`, quiz);
   }
 
   delete(quizId: string): Observable<any> {

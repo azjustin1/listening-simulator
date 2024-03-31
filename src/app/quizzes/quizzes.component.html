@@ -3,7 +3,8 @@
     Add New Test
   </button>
   <mat-form-field>
-    <input   autocomplete="off"
+    <input
+      autocomplete="off"
       placeholder="Search"
       matInput
       name="searchQuiz"
@@ -18,22 +19,22 @@
 </div>
 <div class="container">
   @for (quiz of quizzes; track $index) {
-  <mat-card class="card">
-    <mat-card-content class="card-content">
-      <h2 class="mat-display-2 card-content-text">
-        {{ quiz.name }}
-      </h2></mat-card-content
-    >
-    <mat-card-actions>
-      <button mat-icon-button [matMenuTriggerFor]="menu">
-        <mat-icon>more_vert</mat-icon>
-      </button>
-      <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="test(quiz.id)">Test</button>
-        <button mat-menu-item (click)="edit(quiz.id)">Edit</button>
-        <button mat-menu-item (click)="onDeleteClick(quiz)">Delete</button>
-      </mat-menu>
-    </mat-card-actions>
-  </mat-card>
+    <mat-card class="card">
+      <mat-card-content class="card-content">
+        <h2 class="mat-display-2 card-content-text">
+          {{ quiz.name }}
+        </h2></mat-card-content
+      >
+      <mat-card-actions>
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="test(quiz._id!)">Test</button>
+          <button mat-menu-item (click)="edit(quiz._id!)">Edit</button>
+          <button mat-menu-item (click)="onDeleteClick(quiz)">Delete</button>
+        </mat-menu>
+      </mat-card-actions>
+    </mat-card>
   }
 </div>
