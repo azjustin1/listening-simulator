@@ -1,9 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  ElementRef,
-  ViewChild
-} from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -258,7 +254,6 @@ export class TestComponent extends AddOrEditQuizComponent {
           // Multiple choices
           this.totalPoints++;
           if (question.answer === question.correctAnswer) {
-            console.log(question)
             this.correctPoints++;
           }
           break;
@@ -267,7 +262,6 @@ export class TestComponent extends AddOrEditQuizComponent {
           each(question.choices, (choice) => {
             this.totalPoints++;
             if (choice.answer === choice.correctAnswer) {
-              console.log(question)
               this.correctPoints++;
             }
           });
