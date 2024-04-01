@@ -10,7 +10,8 @@
 .logo {
   width: 100px;
   height: 100px;
-  margin: 20px 50px;
+  margin: 16px 50px;
+  aspect-ratio: 1920 / 1080;
 }
 
 .author {

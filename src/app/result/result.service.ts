@@ -5,24 +5,21 @@ import { Result } from '../../common/models/result.model';
 
 @Injectable({ providedIn: 'root' })
 export class ResultService {
-  baseUrl: string = 'http://localhost:3000';
   constructor(private httpClient: HttpClient) {}
 
   getAll(): Observable<Result[]> {
-    return this.httpClient.get<Result[]>(`${this.baseUrl}/results`);
+    return this.httpClient.get<Result[]>(`/results`);
   }
 
   getById(id: string): Observable<Result> {
-    return this.httpClient.get<Result>(`${this.baseUrl}/results/${id}`);
+    return this.httpClient.get<Result>(`/results/${id}`);
   }
 
   getByStudentName(name: string): Observable<Result[]> {
-    return this.httpClient.get<Result[]>(
-      `${this.baseUrl}/results?name_like=${name}`
-    );
+    return this.httpClient.get<Result[]>(`/results?name_like=${name}`);
   }
 
   deleteById(id: string): Observable<Result> {
-    return this.httpClient.delete<Result>(`${this.baseUrl}/results/${id}`);
+    return this.httpClient.delete<Result>(`/results/${id}`);
   }
 }

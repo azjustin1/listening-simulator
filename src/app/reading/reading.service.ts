@@ -4,22 +4,21 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class ReadingService {
-  baseUrl: string = 'http://localhost:3000';
   constructor(private httpClient: HttpClient) {}
 
   getAllReadingTest(): Observable<any> {
-    return this.httpClient.get(`${this.baseUrl}/reading`);
+    return this.httpClient.get(`/reading`);
   }
 
   getById(id: number): Observable<any> {
-    return this.httpClient.get(`${this.baseUrl}/reading/${id}`);
+    return this.httpClient.get(`/reading/${id}`);
   }
 
   createReadingTest(readingTest: any): Observable<any> {
-    return this.httpClient.post(`${this.baseUrl}/reading`, readingTest);
+    return this.httpClient.post(`/reading`, readingTest);
   }
 
   editReadingTest(readingTest: any): Observable<any> {
-    return this.httpClient.put(`${this.baseUrl}/reading/${readingTest.id}`, readingTest);
+    return this.httpClient.put(`/reading/${readingTest.id}`, readingTest);
   }
 }

@@ -4,12 +4,10 @@ import { Observable, map } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class FileService {
-  baseUrl: string = 'http://localhost:3000';
-
   constructor(private httpClient: HttpClient) {}
 
   getFile(fileName: string): Observable<any> {
-    return this.httpClient.get<any>(`${this.baseUrl}/file/${fileName}`, {
+    return this.httpClient.get<any>(`/file/${fileName}`, {
       responseType: 'blob' as 'json',
     });
   }
@@ -19,11 +17,11 @@ export class FileService {
 
     formData.append('file', file);
 
-    return this.httpClient.post<any>(`${this.baseUrl}/upload`, formData);
+    return this.httpClient.post<any>(`/upload`, formData);
   }
 
   deleteFile(fileName: string): Observable<any> {
-    return this.httpClient.delete<any>(`${this.baseUrl}/file/${fileName}`, {
+    return this.httpClient.delete<any>(`/file/${fileName}`, {
       responseType: 'json',
     });
   }
