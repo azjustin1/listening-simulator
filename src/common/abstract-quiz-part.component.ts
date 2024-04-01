@@ -85,7 +85,6 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isSaved']?.currentValue) {
-      console.log('Save', changes['isSaved']?.currentValue)
       mapValues(this.mapQuestionEditting, () => false);
     }
   }

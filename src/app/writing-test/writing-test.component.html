@@ -1,0 +1,22 @@
+<div class="container">
+  @for (writing of writings; track $index) {
+    <mat-card class="card">
+      <mat-card-content class="card-content">
+        <h2 class="mat-display-2 card-content-text">
+          {{ writing.name }}
+        </h2></mat-card-content
+      >
+      <mat-card-actions>
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="test(writing.id)">Test</button>
+          <button mat-menu-item (click)="edit(writing.id)">Edit</button>
+          <button mat-menu-item (click)="duplicate(writing)">Duplicate</button>
+          <button mat-menu-item (click)="onDeleteClick(writing)">Delete</button>
+        </mat-menu>
+      </mat-card-actions>
+    </mat-card>
+  }
+</div>

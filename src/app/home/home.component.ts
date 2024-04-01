@@ -8,7 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTabsModule } from '@angular/material/tabs';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { QuizzesComponent } from '../quizzes/quizzes.component';
 import { QuizService } from '../quizzes/quizzes.service';
 import { ReadingService } from '../reading/reading.service';
@@ -24,18 +24,9 @@ enum Tab {
   selector: 'app-home',
   standalone: true,
   imports: [
-    CommonModule,
     RouterModule,
     MatCardModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatTabsModule,
-    MatMenuModule,
-    MatIconModule,
-    FormsModule,
-    ResultComponent,
-    QuizzesComponent,
+   
   ],
   providers: [QuizService, TestService, ReadingService],
   templateUrl: './home.component.html',
