@@ -9,7 +9,6 @@ import { apiInterceptor } from './interceptors/api.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideClientHydration(),
     provideAnimationsAsync(),
     provideRouter(routes),
     provideHttpClient(withInterceptors([apiInterceptor])), provideClientHydration(),
