@@ -50,6 +50,22 @@
   </mat-tab>
   <mat-tab label="Results">
     <ng-template matTabContent>
+      <div class="searchInput">
+        <mat-form-field>
+          <input
+            autocomplete="off"
+            placeholder="Search"
+            matInput
+            name="searchResult"
+            type="search"
+            class="form-control"
+            id="searchResult"
+            [(ngModel)]="searchString"
+            (ngModelChange)="onSearchResult($event)"
+          />
+          <mat-icon matPrefix class="my-icon">search</mat-icon>
+        </mat-form-field>
+      </div>
       <div class="container">
         @for (result of writingResults; track $index) {
           <mat-card class="card">

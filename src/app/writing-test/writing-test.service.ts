@@ -15,6 +15,10 @@ export class WritingService {
     return this.httpClient.get('/writings-result');
   }
 
+  searchResultByStudentName(name: string): Observable<any> {
+    return this.httpClient.get(`/writings-result?studentName_like=${name}`);
+  }
+
   getResultById(id: number): Observable<any> {
     return this.httpClient.get(`/writings-result/${id}`);
   }

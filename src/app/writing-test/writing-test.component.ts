@@ -41,6 +41,7 @@ export class WritingTestComponent implements OnDestroy {
   subscriptions: Subscription[] = [];
 
   onSearch = debounce(() => this.search(), 500);
+  onSearchResult = debounce(($event) => this.searchResult($event), 500);
 
   constructor(
     private writingService: WritingService,
@@ -61,6 +62,15 @@ export class WritingTestComponent implements OnDestroy {
       .searchByName(this.searchString)
       .subscribe((writings) => {
         this.writings = writings;
+      });
+  }
+
+  searchResult(studentName: string) {
+    console.log(studentName)
+    this.writingService
+      .searchResultByStudentName(studentName)
+      .subscribe((results) => {
+        this.writingResults = results;
       });
   }
 
