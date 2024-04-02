@@ -66,7 +66,6 @@ export class WritingTestComponent implements OnDestroy {
   }
 
   searchResult(studentName: string) {
-    console.log(studentName)
     this.writingService
       .searchResultByStudentName(studentName)
       .subscribe((results) => {
