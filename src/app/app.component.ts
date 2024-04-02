@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { RouterOutlet } from '@angular/router';
+import { RouterModule, RouterOutlet } from '@angular/router';
 import { QuizService } from './quizzes/quizzes.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, MatToolbarModule],
+  imports: [RouterOutlet, MatToolbarModule, RouterModule],
   providers: [QuizService],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],

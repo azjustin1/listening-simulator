@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddEditWritingComponent } from './add-edit-writing.component';
+import { WritingResultComponent } from './writing-result.component';
 
-describe('AddEditWritingComponent', () => {
-  let component: AddEditWritingComponent;
-  let fixture: ComponentFixture<AddEditWritingComponent>;
+describe('WritingResultComponent', () => {
+  let component: WritingResultComponent;
+  let fixture: ComponentFixture<WritingResultComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddEditWritingComponent]
+      imports: [WritingResultComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(AddEditWritingComponent);
+    fixture = TestBed.createComponent(WritingResultComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { AddEditWritingComponent } from './add-edit-writing/add-edit-writing.component';
 import { HomeComponent } from './home/home.component';
 import { MockTestComponent } from './mock-test/mock-test.component';
 import { AddOrEditQuizComponent } from './quizzes/add-or-edit-quiz/add-or-edit-quiz.component';
@@ -8,12 +7,15 @@ import { ResultDetailComponent } from './result/result-detail/result-detail.comp
 import { ResultComponent } from './result/result.component';
 import { TestComponent } from './test/test.component';
 import { WritingTestComponent } from './writing-test/writing-test.component';
+import { AddOrEditWritingComponent } from './writing-test/add-or-edit-writing/add-or-edit-writing.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'writings', component: WritingTestComponent },
-  { path: 'add-writing', component: AddEditWritingComponent },
-  { path: 'edit-writing/:id', component: AddEditWritingComponent },
+  { path: 'add-writing', component: AddOrEditWritingComponent },
+  { path: 'result-writing/:id', component: AddOrEditWritingComponent },
+  { path: 'edit-writing/:id', component: AddOrEditWritingComponent },
+  { path: 'test-writing/:id', component: AddOrEditWritingComponent },
   { path: 'mock-test', component: MockTestComponent },
   { path: 'add-quiz', component: AddOrEditQuizComponent },
   { path: 'edit-quiz/:quizId', component: AddOrEditQuizComponent },

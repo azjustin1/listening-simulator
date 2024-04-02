@@ -1,51 +1,87 @@
-import { Component, inject, OnDestroy } from '@angular/core';
-import { Writing } from '../../common/models/writing.model';
-import { WritingService } from '../add-edit-writing/writing.service';
-import { MatCardModule } from '@angular/material/card';
-import { ActivatedRoute, Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialogComponent } from '../dialog/confirm-dialog/confirm-dialog.component';
-import { cloneDeep, filter } from 'lodash-es';
-import { CommonUtils } from '../../utils/common-utils';
-import { Subscription } from 'rxjs';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
+import { Component, OnDestroy } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialog } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTabsModule } from '@angular/material/tabs';
+import { Router } from '@angular/router';
+import { cloneDeep, debounce, filter } from 'lodash-es';
+import { Subscription } from 'rxjs';
+import { Writing } from '../../common/models/writing.model';
+import { CommonUtils } from '../../utils/common-utils';
+import { ConfirmDialogComponent } from '../dialog/confirm-dialog/confirm-dialog.component';
+import { WritingService } from './writing-test.service';
 
 @Component({
   selector: 'app-writing-test',
   standalone: true,
-  imports: [MatCardModule, MatIconModule, MatMenuModule, MatButtonModule],
+  imports: [
+    FormsModule,
+    MatCardModule,
+    MatIconModule,
+    MatMenuModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatTabsModule,
+    MatInputModule,
+  ],
   providers: [WritingService],
   templateUrl: './writing-test.component.html',
   styleUrl: './writing-test.component.css',
 })
 export class WritingTestComponent implements OnDestroy {
   writings: Writing[] = [];
+  writingResults: Writing[] = [];
+  searchString: string = '';
 
   subscriptions: Subscription[] = [];
 
+  onSearch = debounce(() => this.search(), 500);
+
   constructor(
     private writingService: WritingService,
-    private route: ActivatedRoute,
     private router: Router,
     private dialog: MatDialog,
   ) {
     this.writingService.getAll().subscribe((writings) => {
       this.writings = writings;
     });
+
+    this.writingService.getAllResults().subscribe((results) => {
+      this.writingResults = results;
+    });
+  }
+
+  search() {
+    this.writingService
+      .searchByName(this.searchString)
+      .subscribe((writings) => {
+        this.writings = writings;
+      });
   }
 
   test(id: string) {
-    this.router.navigate(['/test', id]);
+    this.router.navigate(['/test-writing', id], {
+      state: { isTesting: true },
+    });
   }
 
   addNewQuiz() {
-    this.router.navigate(['add-writing']);
+    this.router.navigate(['add-writing'], { state: { isEditting: true } });
+  }
+
+  view(id: string) {
+    this.router.navigate(['result-writing', id], {
+      state: { isReadOnly: true },
+    });
   }
 
   edit(id: string) {
-    this.router.navigate(['edit-writing', id]);
+    this.router.navigate(['edit-writing', id], { state: { isEditting: true } });
   }
 
   duplicate(writing: Writing) {
@@ -69,6 +105,25 @@ export class WritingTestComponent implements OnDestroy {
     dialogRef.afterClosed().subscribe((isConfirm) => {
       if (isConfirm) {
         this.deleteQuiz(quiz);
+      }
+    });
+  }
+
+  onDeleteResult(result: Writing) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      hasBackdrop: true,
+    });
+
+    dialogRef.componentInstance.title = 'Warning';
+    dialogRef.componentInstance.message = 'Confirm to delete this?';
+    dialogRef.afterClosed().subscribe((isConfirm) => {
+      if (isConfirm) {
+        this.writingService.deleteResult(result.id).subscribe(() => {
+          this.writingResults = filter(
+            this.writingResults,
+            (r) => result.id !== r.id,
+          );
+        });
       }
     });
   }

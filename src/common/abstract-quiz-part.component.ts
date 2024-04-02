@@ -238,9 +238,11 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
         const imageName = response.fileName;
         this.data.imageName = imageName;
         this.data.content = this.data.content?.replace(
-          imageSrc,
-          `http://localhost:3000/upload/${response.fileName}`,
+          `"${imageSrc}"`,
+          `"http://localhost:3000/upload/${response.fileName}" width="100%"`,
         );
+
+        console.log(this.data.content)
       });
     }
   }
