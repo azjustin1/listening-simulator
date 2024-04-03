@@ -2,8 +2,10 @@ import { Quiz } from './quiz.model';
 
 export interface Result extends Quiz {
   studentName: string;
-  correctPoint: number;
-  totalPoint: number;
+  correctListeningPoint: number;
+  totalListeningPoint: number;
+  correctReadingPoint: number;
+  totalReadingPoint: number;
   testDate: string;
   quizId: string;
 }

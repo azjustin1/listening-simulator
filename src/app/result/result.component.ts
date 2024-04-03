@@ -18,6 +18,7 @@ import { MultipleChoicesComponent } from '../multiple-choices/multiple-choices.c
 import { QuizService } from '../quizzes/quizzes.service';
 import { ShortAnswerComponent } from '../short-answer/short-answer.component';
 import { ResultService } from './result.service';
+import { BandScorePipe } from './band-score.pipe';
 
 @Component({
   selector: 'app-result',
@@ -35,6 +36,7 @@ import { ResultService } from './result.service';
     ListeningComponent,
     MatMenuModule,
     MatIcon,
+    BandScorePipe,
   ],
   providers: [QuizService, ResultService],
   templateUrl: './result.component.html',
@@ -44,12 +46,14 @@ export class ResultComponent {
   results: Result[] = [];
   searchString: string = '';
   onSearchChange = debounce(() => this.search(), 500);
+  listeningBand = 0;
+  readingBand = 0;
 
   constructor(
     private route: ActivatedRoute,
     private resultService: ResultService,
     private router: Router,
-    private dialog: MatDialog
+    private dialog: MatDialog,
   ) {
     this.resultService.getAll().subscribe((results) => {
       this.results = results;

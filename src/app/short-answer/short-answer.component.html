@@ -5,7 +5,7 @@
         @if (choice.answer === choice.correctAnswer) {
           <p class="question-text">
             <b>{{ choice.index }}</b>
-            <span class="answer correct" style="margin-left: 10px">
+            <span class="correct-answer" style="margin-left: 10px">
               {{ choice.answer }}
             </span>
           </p>
@@ -13,12 +13,12 @@
           <div class="answer">
             <span class="question-text">
               <b>{{ choice.index }}</b>
-            </span>
-            <span class="answer incorrect" style="margin-left: 10px">{{
-              !choice.answer || choice.answer === "" ? "❌" : choice.answer
-            }}</span>
-            <span class="answer correct" style="margin-left: 32px">
-              {{ choice.correctAnswer }}
+              <span class="incorrect-answer">{{
+                !choice.answer || choice.answer === "" ? "❌" : choice.answer
+              }}</span>
+              <span class="correct-answer" style="margin-left: 32px">
+                {{ choice.correctAnswer }}
+              </span>
             </span>
           </div>
         }

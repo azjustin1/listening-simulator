@@ -15,6 +15,9 @@ import { ReadingComponent } from '../../reading/reading.component';
 import { ShortAnswerComponent } from '../../short-answer/short-answer.component';
 import { WritingComponent } from '../../writing/writing.component';
 import { ResultService } from '../result.service';
+import { each } from 'lodash-es';
+import { Question } from '../../../common/models/question.model';
+import { BandScorePipe } from '../band-score.pipe';
 
 @Component({
   selector: 'app-result-detail',
@@ -33,6 +36,7 @@ import { ResultService } from '../result.service';
     ReadingComponent,
     ListeningComponent,
     WritingComponent,
+    BandScorePipe,
   ],
 
   templateUrl: './result-detail.component.html',
@@ -46,11 +50,16 @@ export class ResultDetailComponent {
     listeningParts: [],
     readingParts: [],
     writingParts: [],
-    correctPoint: 0,
-    totalPoint: 0,
+    correctReadingPoint: 0,
+    totalReadingPoint: 0,
+    correctListeningPoint: 0,
+    totalListeningPoint: 0,
     testDate: '',
     quizId: '',
   };
+
+  correctListeningPoint = 0;
+  totalListeningPoint = 0;
 
   constructor(
     private route: ActivatedRoute,

@@ -1,7 +1,8 @@
 <div class="actions">
   <div class="search">
     <mat-form-field>
-      <input   autocomplete="off"
+      <input
+        autocomplete="off"
         placeholder="Search"
         matInput
         name="searchResult"
@@ -36,8 +37,25 @@
           </mat-card-actions>
         </mat-card-title>
         <mat-card-content class="card-content" (click)="view(result.id)">
-          Point: {{ result.correctPoint }}/{{ result.totalPoint }} <br />
-          Test date: {{ result.testDate }}
+          <span>
+            <b>Listening:</b> {{ result.correctListeningPoint }}/{{
+              result.totalListeningPoint
+            }}
+            &nbsp;&nbsp;<span
+              ><b>Band:</b> {{ result.correctListeningPoint | bandScore }}</span
+            >
+          </span>
+          <br />
+          <span>
+            <b>Reading:</b> {{ result.correctReadingPoint }}/{{
+              result.totalReadingPoint
+            }}
+            &nbsp;&nbsp;&nbsp;&nbsp;<span
+              ><b>Band:</b> {{ result.correctReadingPoint | bandScore }}</span
+            >
+          </span>
+          <br />
+          <b>Test date:</b> {{ result.testDate }}
         </mat-card-content>
       </mat-card>
     </div>

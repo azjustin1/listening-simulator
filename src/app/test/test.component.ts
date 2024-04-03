@@ -54,8 +54,10 @@ export class TestComponent extends AddOrEditQuizComponent {
     id: '',
     name: '',
     studentName: '',
-    correctPoint: 0,
-    totalPoint: 0,
+    correctReadingPoint: 0,
+    totalReadingPoint: 0,
+    correctListeningPoint: 0,
+    totalListeningPoint: 0,
     testDate: '',
     quizId: '',
     listeningParts: [],
@@ -160,9 +162,10 @@ export class TestComponent extends AddOrEditQuizComponent {
     this.result.listeningParts = this.quiz.listeningParts;
     this.result.readingParts = this.quiz.readingParts;
     this.result.writingParts = this.quiz.writingParts;
-    this.calculatePoint();
+    this.calculateListeningPoint();
+    this.calculateReadingPoint();
     this.testService.submitTest(this.result).subscribe(() => {
-      this.router.navigate(['']);
+      this.router.navigate(['mock-test']);
     });
   }
 
@@ -235,43 +238,67 @@ export class TestComponent extends AddOrEditQuizComponent {
     return formattedDate;
   }
 
-  private calculatePoint() {
+  private calculateListeningPoint() {
+    let correctPoint = 0;
+    let totalPoint = 0;
     each(this.result.listeningParts, (part) => {
-      this.calculateQuestionPoints(part.questions);
+      each(part.questions, (question) => {
+        switch (question.type) {
+          case 0:
+            // Multiple choices
+            totalPoint++;
+            if (question.answer === question.correctAnswer) {
+              correctPoint++;
+            }
+            break;
+          case 1:
+            // Short answer
+            each(question.choices, (choice) => {
+              totalPoint++;
+              if (choice.answer === choice.correctAnswer) {
+                correctPoint++;
+              }
+            });
+            break;
+          default:
+            break;
+        }
+      });
     });
-
-    each(this.result.readingParts, (part) => {
-      this.calculateQuestionPoints(part.questions);
-    });
-    this.result.totalPoint = this.totalPoints;
-    this.result.correctPoint = this.correctPoints;
+    this.result.correctListeningPoint = correctPoint;
+    this.result.totalListeningPoint = totalPoint;
   }
 
-  calculateQuestionPoints(questions: Question[]) {
-    each(questions, (question) => {
-      switch (question.type) {
-        case 0:
-          // Multiple choices
-          this.totalPoints++;
-          if (question.answer === question.correctAnswer) {
-            this.correctPoints++;
+  private calculateReadingPoint() {
+    let correctPoint = 0;
+    let totalPoint = 0;
+    each(this.result.readingParts, (part) => {
+      each(part.questions, (question) => {
+        each(question.subQuestions, (subQuestion) => {
+          switch (subQuestion.type) {
+            case 0:
+              // Multiple choices
+              totalPoint++;
+              if (subQuestion.answer === subQuestion.correctAnswer) {
+                correctPoint++;
+              }
+              break;
+            case 1:
+              // Short answer
+              each(subQuestion.choices, (choice) => {
+                totalPoint++;
+                if (choice.answer === choice.correctAnswer) {
+                  correctPoint++;
+                }
+              });
+              break;
+            default:
+              break;
           }
-          break;
-        case 1:
-          // Short answer
-          each(question.choices, (choice) => {
-            this.totalPoints++;
-            if (choice.answer === choice.correctAnswer) {
-              this.correctPoints++;
-            }
-          });
-          break;
-        case 2:
-          this.calculateQuestionPoints(question.subQuestions!);
-          break;
-        default:
-          break;
-      }
+        });
+      });
     });
+    this.result.correctReadingPoint = correctPoint;
+    this.result.totalReadingPoint = totalPoint;
   }
 }
