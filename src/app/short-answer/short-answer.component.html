@@ -2,7 +2,10 @@
   @if (isReadOnly) {
     <div class="choice-group">
       @for (choice of question.choices; track $index) {
-        @if (choice.answer === choice.correctAnswer) {
+        @if (
+          choice.answer === choice.correctAnswer ||
+          choice.correctAnswer?.includes(choice.answer!)
+        ) {
           <p class="question-text">
             <b>{{ choice.index }}</b>
             <span class="correct-answer" style="margin-left: 10px">
@@ -45,14 +48,14 @@
             @if (isEditting) {
               <mat-form-field class="choice-index">
                 <mat-label>No.</mat-label>
-                <input
+                <textarea
                   autocomplete="off"
                   matInput
                   [name]="$index.toString()"
                   type="text"
                   class="form-control"
                   [(ngModel)]="choice.index"
-                />
+                ></textarea>
               </mat-form-field>
               <mat-form-field>
                 <mat-label>Answer</mat-label>
@@ -85,7 +88,7 @@
                 <p class="answer-input">
                   <b>{{ choice.index }}&nbsp;</b>
                 </p>
-                <div class="answer correct">
+                <div class="correct-answer">
                   {{ choice.correctAnswer }}
                 </div>
               }

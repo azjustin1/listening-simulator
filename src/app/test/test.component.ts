@@ -11,7 +11,6 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { each } from 'lodash-es';
 import { Subscription, interval } from 'rxjs';
-import { Question } from '../../common/models/question.model';
 import { Quiz } from '../../common/models/quiz.model';
 import { Result } from '../../common/models/result.model';
 import { CommonUtils } from '../../utils/common-utils';
@@ -255,7 +254,10 @@ export class TestComponent extends AddOrEditQuizComponent {
             // Short answer
             each(question.choices, (choice) => {
               totalPoint++;
-              if (choice.answer === choice.correctAnswer) {
+              if (
+                choice.answer === choice.correctAnswer ||
+                choice.correctAnswer?.includes(choice.answer!)
+              ) {
                 correctPoint++;
               }
             });
@@ -287,7 +289,10 @@ export class TestComponent extends AddOrEditQuizComponent {
               // Short answer
               each(subQuestion.choices, (choice) => {
                 totalPoint++;
-                if (choice.answer === choice.correctAnswer) {
+                if (
+                  choice.answer === choice.correctAnswer ||
+                  choice.correctAnswer?.includes(choice.answer!)
+                ) {
                   correctPoint++;
                 }
               });
