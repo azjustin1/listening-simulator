@@ -16,6 +16,7 @@ export const routes: Routes = [
   { path: 'result-writing/:id', component: AddOrEditWritingComponent },
   { path: 'edit-writing/:id', component: AddOrEditWritingComponent },
   { path: 'test-writing/:id', component: AddOrEditWritingComponent },
+  { path: 'continue-test-writing/:testId', component: AddOrEditWritingComponent },
   { path: 'mock-test', component: MockTestComponent },
   { path: 'add-quiz', component: AddOrEditQuizComponent },
   { path: 'edit-quiz/:quizId', component: AddOrEditQuizComponent },

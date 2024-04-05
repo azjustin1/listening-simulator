@@ -5,4 +5,5 @@ export interface Writing extends AbstractPart {
   studentName?: string;
   answer: string;
   parts?: Writing[];
+  isSubmit?: boolean;
 }

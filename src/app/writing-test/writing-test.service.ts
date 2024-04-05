@@ -31,7 +31,7 @@ export class WritingService {
     return this.httpClient.get(`/writings?name_like=${name}`);
   }
 
-  getById(id: number): Observable<any> {
+  getById(id: string): Observable<any> {
     return this.httpClient.get(`/writings/${id}`);
   }
 
@@ -45,6 +45,10 @@ export class WritingService {
 
   edit(writing: Writing): Observable<any> {
     return this.httpClient.put(`/writings/${writing.id}`, writing);
+  }
+
+  editWritingResult(writing: Writing): Observable<any> {
+    return this.httpClient.put(`/writings-result/${writing.id}`, writing);
   }
 
   delete(id: string): Observable<any> {

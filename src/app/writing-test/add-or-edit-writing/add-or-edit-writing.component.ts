@@ -25,6 +25,7 @@ import { WritingService } from '../writing-test.service';
 import { WritingComponent } from '../../writing/writing.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ConfirmDialogComponent } from '../../dialog/confirm-dialog/confirm-dialog.component';
+import { Result } from '../../../common/models/result.model';
 
 @Component({
   selector: 'app-add-or-edit-writing',
@@ -65,6 +66,8 @@ export class AddOrEditWritingComponent {
     questions: [],
     parts: [],
   };
+
+  result!: Writing;
 
   isReady: boolean = false;
   mapSavedPart: Record<number, boolean> = {};
@@ -108,7 +111,12 @@ export class AddOrEditWritingComponent {
 
   @HostListener('document:keydown.control.s', ['$event'])
   onKeydownHandler(event: KeyboardEvent) {
-    this.saveOrEdit(this.writing);
+    if (this.state['isTesting']) {
+      this.onCtrlSave();
+    }
+    if (this.state['isEditting']) {
+      this.saveOrEdit(this.writing);
+    }
   }
 
   constructor(
@@ -122,6 +130,16 @@ export class AddOrEditWritingComponent {
       ...this.state,
       ...this.router.getCurrentNavigation()?.extras.state!,
     };
+    const resultId =
+      this.router.getCurrentNavigation()?.extras.state?.['resultId'];
+    if (resultId) {
+      this.writingService.getResultById(resultId).subscribe((result) => {
+        this.writing = result;
+        this.result = { ...this.writing };
+        this.writing.timeout = this.result.timeout;
+        this.onStart();
+      });
+    }
     this.route.paramMap.subscribe((paramMap: any) => {
       const id = paramMap.get('id');
       if (id) {
@@ -155,6 +173,10 @@ export class AddOrEditWritingComponent {
   }
 
   onStart() {
+    if (!this.result) {
+      this.result = { ...this.writing, id: CommonUtils.generateRandomId() };
+      this.writingService.submit(this.result).subscribe();
+    }
     this.isReady = true;
     this.getTimeout();
     const sub = interval(1000).subscribe(() => {
@@ -198,12 +220,18 @@ export class AddOrEditWritingComponent {
     this.subscriptions.push(sub);
   }
 
+  onCtrlSave() {
+    this.result = {
+      ...this.writing,
+      timeout: this.seconds / 60 + this.minutes,
+    };
+    this.writingService.editWritingResult(this.result).subscribe();
+  }
+
   onSubmit() {
-    const result = { ...this.writing, id: CommonUtils.generateRandomId() };
-    console.log(result);
-    this.writingService.submit(result).subscribe(() => {
-      this.router.navigate(['writings']);
-    });
+    this.result = { ...this.result, isSubmit: true };
+    this.onCtrlSave();
+    this.router.navigate(['writings']);
   }
 
   onWritingChange(value: string) {
@@ -237,6 +265,7 @@ export class AddOrEditWritingComponent {
   }
 
   ngOnDestroy(): void {
+    this.onCtrlSave();
     this.subscriptions.forEach((sub) => {
       sub.unsubscribe();
     });

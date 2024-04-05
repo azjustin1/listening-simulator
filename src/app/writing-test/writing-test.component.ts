@@ -89,6 +89,12 @@ export class WritingTestComponent implements OnDestroy {
     });
   }
 
+  continueTest(resultId: string) {
+    this.router.navigate(['continue-test-writing', resultId], {
+      state: { isTesting: true, resultId: resultId },
+    });
+  }
+
   edit(id: string) {
     this.router.navigate(['edit-writing', id], { state: { isEditting: true } });
   }

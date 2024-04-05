@@ -25,7 +25,7 @@
           <input
             matInput
             [(ngModel)]="writing.studentName"
-            [disabled]="state['isReadOnly']"
+            [disabled]="state['isReadOnly'] || isReady"
           />
         </mat-form-field>
       }
