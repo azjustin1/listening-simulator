@@ -64,7 +64,11 @@ export class QuizzesComponent implements OnDestroy {
   }
 
   test(id: string) {
-    this.router.navigate(['/test', id]);
+    const newResult = {
+      id: CommonUtils.generateRandomId(),
+      quizId: id,
+    };
+    this.router.navigate(['/test', newResult.id], { state: newResult });
   }
 
   addNewQuiz() {

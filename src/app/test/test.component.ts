@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { each } from 'lodash-es';
+import { each, mapValues } from 'lodash-es';
 import { Subscription, interval } from 'rxjs';
 import { Quiz } from '../../common/models/quiz.model';
 import { Result } from '../../common/models/result.model';
@@ -49,6 +49,14 @@ import { TestService } from './test.service';
 })
 export class TestComponent extends AddOrEditQuizComponent {
   @ViewChild('audioPlayer') audioPlayer!: ElementRef;
+
+  @HostListener('document:keydown.control.s', ['$event'])
+  override onKeydownHandler(event: KeyboardEvent) {
+    if (this.isStart) {
+      this.onCtrlSave();
+    }
+  }
+
   result: Result = {
     id: '',
     name: '',
@@ -62,6 +70,7 @@ export class TestComponent extends AddOrEditQuizComponent {
     listeningParts: [],
     readingParts: [],
     writingParts: [],
+    isSubmit: false,
   };
   quiz: Quiz = {
     id: '',
@@ -101,17 +110,32 @@ export class TestComponent extends AddOrEditQuizComponent {
     protected testService: TestService,
   ) {
     super(quizService, fileService, route, router, dialog);
-    this.route.paramMap.subscribe((paramMap: any) => {
-      const quizId = paramMap.get('quizId');
-      if (quizId) {
-        this.quizService.getById(quizId).subscribe((quiz: any) => {
-          this.quiz = quiz;
-          this.totalSeconds = this.quiz.listeningTimeout! * 60;
-          this.audioPlayer.nativeElement.load();
-          this.getTimeout();
-        });
-      }
-    });
+    const quizId = this.router.getCurrentNavigation()?.extras.state?.['quizId'];
+    if (quizId) {
+      this.quizService.getById(quizId).subscribe((quiz) => {
+        this.quiz = quiz;
+        this.result = { ...quiz };
+        this.totalSeconds = this.result.listeningTimeout! * 60;
+        this.audioPlayer.nativeElement.load();
+        this.getTimeout();
+      });
+    }
+
+    const testId = this.router.getCurrentNavigation()?.extras.state?.['testId'];
+    if (testId) {
+      this.testService.getResultById(testId).subscribe((result) => {
+        this.result = result;
+        this.totalSeconds = this.result.listeningTimeout! * 60;
+        this.audioPlayer.nativeElement.load();
+        this.getTimeout();
+        if (this.result.currentTab) {
+          this.currentTab = this.result.currentTab;
+          this.disableOthersTab();
+          this.mapDisablePart[this.currentTab] = false;
+        }
+      });
+      this.isReady = true;
+    }
   }
 
   override ngOnDestroy(): void {
@@ -129,13 +153,13 @@ export class TestComponent extends AddOrEditQuizComponent {
 
   getTimeout() {
     if (this.currentTab === 0) {
-      this.totalSeconds = this.quiz.listeningTimeout! * 60;
+      this.totalSeconds = this.result.listeningTimeout! * 60;
     }
     if (this.currentTab === 1) {
-      this.totalSeconds = this.quiz.readingTimeout! * 60;
+      this.totalSeconds = this.result.readingTimeout! * 60;
     }
     if (this.currentTab === 2) {
-      this.totalSeconds = this.quiz.writingTimeout! * 60;
+      this.totalSeconds = this.result.writingTimeout! * 60;
     }
     this.minutes = Math.floor(this.totalSeconds / 60);
     this.seconds = this.totalSeconds % 60;
@@ -152,26 +176,42 @@ export class TestComponent extends AddOrEditQuizComponent {
     });
   }
 
-  submit() {
-    this.audioPlayer.nativeElement.pause();
-    this.result.id = CommonUtils.generateRandomId();
-    this.result.testDate = this.getCurrentDate();
-    this.result.name = this.quiz.name;
-    this.result.quizId = this.quiz.id!;
-    this.result.listeningParts = this.quiz.listeningParts;
-    this.result.readingParts = this.quiz.readingParts;
-    this.result.writingParts = this.quiz.writingParts;
-    this.calculateListeningPoint();
-    this.calculateReadingPoint();
-    this.testService.submitTest(this.result).subscribe(() => {
-      this.router.navigate(['mock-test']);
-    });
-  }
-
   onStartTest() {
     this.isReady = true;
+    this.result.id = CommonUtils.generateRandomId();
+    this.testService.submitTest(this.result).subscribe();
   }
 
+  onCtrlSave() {
+    this.saveTimeout();
+    this.result.testDate = this.getCurrentDate();
+    this.result.currentTab = this.currentTab;
+    this.testService.saveCurrentTest(this.result).subscribe();
+  }
+
+  saveTimeout() {
+    const timeout = this.minutes + this.seconds / 60;
+    if (this.currentTab === 0) {
+      this.result.listeningTimeout = timeout;
+    }
+
+    if (this.currentTab === 1) {
+      this.result.readingTimeout = timeout;
+    }
+
+    if (this.currentTab === 2) {
+      this.result.writingTimeout = timeout;
+    }
+  }
+
+  submit() {
+    this.audioPlayer.nativeElement.pause();
+    this.calculateListeningPoint();
+    this.calculateReadingPoint();
+    this.result.isSubmit = true;
+    this.onCtrlSave();
+    this.router.navigate(['mock-test']);
+  }
   onListeningStart() {
     this.audioPlayer.nativeElement.play();
     this.onStartPart();
@@ -217,12 +257,16 @@ export class TestComponent extends AddOrEditQuizComponent {
     if (tab === 0) {
       this.audioPlayer.nativeElement.pause();
     }
-    this.mapDisablePart[tab] = true;
+    this.disableOthersTab();
     this.mapDisablePart[tab + 1] = false;
     this.currentTab = tab + 1;
     if (this.timeoutInterval) {
       this.timeoutInterval.unsubscribe();
     }
+  }
+
+  private disableOthersTab() {
+    this.mapDisablePart = mapValues(this.mapDisablePart, () => true);
   }
 
   private getCurrentDate() {
@@ -290,8 +334,9 @@ export class TestComponent extends AddOrEditQuizComponent {
               each(subQuestion.choices, (choice) => {
                 totalPoint++;
                 if (
-                  choice.answer === choice.correctAnswer ||
-                  choice.correctAnswer?.includes(choice.answer!)
+                  choice.answer !== '' &&
+                  (choice.answer === choice.correctAnswer ||
+                    choice.correctAnswer?.split('/').includes(choice.answer!))
                 ) {
                   correctPoint++;
                 }

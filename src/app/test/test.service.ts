@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Result } from '../../common/models/result.model';
 
 @Injectable({ providedIn: 'root' })
 export class TestService {
@@ -16,6 +17,10 @@ export class TestService {
 
   deleteResultById(resultId: string): Observable<any> {
     return this.httpClient.delete<any>(`/results/${resultId}`);
+  }
+
+  saveCurrentTest(result: Result): Observable<any> {
+    return this.httpClient.put<any>(`/results/${result.id}`, result);
   }
 
   submitTest(result: any): Observable<any> {

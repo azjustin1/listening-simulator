@@ -72,6 +72,13 @@ export class ResultComponent {
     this.router.navigate([`result-detail`, id]);
   }
 
+  continue(id: string) {
+    const test = {
+      testId: id,
+    };
+    this.router.navigate(['continue-test', id], { state: test });
+  }
+
   onDeleteResultClick(resultId: string) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       hasBackdrop: true,

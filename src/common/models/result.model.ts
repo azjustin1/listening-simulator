@@ -8,4 +8,6 @@ export interface Result extends Quiz {
   totalReadingPoint: number;
   testDate: string;
   quizId: string;
+  isSubmit: boolean;
+  currentTab?: number;
 }

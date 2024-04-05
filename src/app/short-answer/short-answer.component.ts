@@ -9,7 +9,6 @@ import { MatInputModule } from '@angular/material/input';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { AbstractQuestionComponent } from '../../common/abstract-question.component';
 import { FileService } from '../file.service';
-import { CorrectShortAnswerPipe } from './correct-answer.pipe';
 
 @Component({
   selector: 'app-short-answer',
@@ -23,7 +22,6 @@ import { CorrectShortAnswerPipe } from './correct-answer.pipe';
     AngularEditorModule,
     MatIconModule,
     MatCardModule,
-    CorrectShortAnswerPipe
   ],
   providers: [FileService],
   templateUrl: './short-answer.component.html',

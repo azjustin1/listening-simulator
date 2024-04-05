@@ -3,8 +3,9 @@
     <div class="choice-group">
       @for (choice of question.choices; track $index) {
         @if (
-          choice.answer === choice.correctAnswer ||
-          choice.correctAnswer?.includes(choice.answer!)
+          choice.answer !== "" &&
+          (choice.answer === choice.correctAnswer ||
+            choice.correctAnswer!.split("/")!.includes(choice.answer!))
         ) {
           <p class="question-text">
             <b>{{ choice.index }}</b>

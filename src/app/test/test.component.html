@@ -20,6 +20,7 @@
         class="form-control"
         id="quizName"
         [(ngModel)]="result.studentName"
+        [disabled]="this.isReady!"
         required
       />
     </mat-form-field>
@@ -58,7 +59,7 @@
             animationDuration="0ms"
             headerPosition="below"
           >
-            @for (part of quiz.listeningParts; track $index) {
+            @for (part of result.listeningParts; track $index) {
               <mat-tab>
                 <ng-template matTabLabel="">{{ $index + 1 }}</ng-template>
                 @if (isStart) {
@@ -89,6 +90,7 @@
           </button>
         </ng-template>
       </mat-tab>
+
       <mat-tab label="Reading" [disabled]="mapDisablePart[1]">
         <ng-template matTabContent>
           <mat-tab-group
@@ -97,7 +99,7 @@
             animationDuration="0ms"
             headerPosition="below"
           >
-            @for (part of quiz.readingParts; track $index) {
+            @for (part of result.readingParts; track $index) {
               <mat-tab>
                 <ng-template matTabLabel="">{{ $index + 1 }}</ng-template>
                 @if (isStart) {
@@ -126,6 +128,7 @@
           </button>
         </ng-template>
       </mat-tab>
+
       <mat-tab label="Writing" [disabled]="mapDisablePart[2]">
         <ng-template matTabContent>
           <mat-tab-group
@@ -134,7 +137,7 @@
             animationDuration="0ms"
             headerPosition="below"
           >
-            @for (part of quiz.writingParts; track $index) {
+            @for (part of result.writingParts; track $index) {
               <mat-tab>
                 <ng-template matTabLabel="">{{ $index + 1 }}</ng-template>
                 @if (isStart) {

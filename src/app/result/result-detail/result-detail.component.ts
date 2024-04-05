@@ -14,10 +14,8 @@ import { MultipleChoicesComponent } from '../../multiple-choices/multiple-choice
 import { ReadingComponent } from '../../reading/reading.component';
 import { ShortAnswerComponent } from '../../short-answer/short-answer.component';
 import { WritingComponent } from '../../writing/writing.component';
-import { ResultService } from '../result.service';
-import { each } from 'lodash-es';
-import { Question } from '../../../common/models/question.model';
 import { BandScorePipe } from '../band-score.pipe';
+import { ResultService } from '../result.service';
 
 @Component({
   selector: 'app-result-detail',
@@ -56,6 +54,7 @@ export class ResultDetailComponent {
     totalListeningPoint: 0,
     testDate: '',
     quizId: '',
+    isSubmit: false,
   };
 
   correctListeningPoint = 0;
