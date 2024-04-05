@@ -10,22 +10,21 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
+import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   AngularEditorConfig,
   AngularEditorModule,
   UploadResponse,
 } from '@wfpena/angular-wysiwyg';
-import { debounce, each } from 'lodash-es';
+import { each } from 'lodash-es';
 import { interval, map, Subscription } from 'rxjs';
 import { Writing } from '../../../common/models/writing.model';
 import { CommonUtils } from '../../../utils/common-utils';
-import { FileService } from '../../file.service';
-import { WritingService } from '../writing-test.service';
-import { WritingComponent } from '../../writing/writing.component';
-import { MatTabsModule } from '@angular/material/tabs';
 import { ConfirmDialogComponent } from '../../dialog/confirm-dialog/confirm-dialog.component';
-import { Result } from '../../../common/models/result.model';
+import { FileService } from '../../file.service';
+import { WritingComponent } from '../../writing/writing.component';
+import { WritingService } from '../writing-test.service';
 
 @Component({
   selector: 'app-add-or-edit-writing',
