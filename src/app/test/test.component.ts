@@ -52,9 +52,7 @@ export class TestComponent extends AddOrEditQuizComponent {
 
   @HostListener('document:keydown.control.s', ['$event'])
   override onKeydownHandler(event: KeyboardEvent) {
-    if (this.isStart) {
-      this.onCtrlSave();
-    }
+    this.onCtrlSave();
   }
 
   result: Result = {
@@ -212,6 +210,7 @@ export class TestComponent extends AddOrEditQuizComponent {
     this.onCtrlSave();
     this.router.navigate(['mock-test']);
   }
+
   onListeningStart() {
     this.audioPlayer.nativeElement.play();
     this.onStartPart();

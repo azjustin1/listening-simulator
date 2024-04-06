@@ -229,8 +229,9 @@ export class AddOrEditWritingComponent {
 
   onSubmit() {
     this.result = { ...this.result, isSubmit: true };
-    this.onCtrlSave();
-    this.router.navigate(['writings']);
+    this.writingService.editWritingResult(this.result).subscribe(() => {
+      this.router.navigate(['writings']);
+    });
   }
 
   onWritingChange(value: string) {

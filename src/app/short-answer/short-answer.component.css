@@ -43,6 +43,10 @@
 }
 
 .choice-index {
-  width: 15%;
+  width: 20%;
   margin-right: 16px;
+}
+
+.choice-answer {
+  width: 20%;
 }

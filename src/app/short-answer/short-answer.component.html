@@ -48,7 +48,7 @@
           <div class="form-group">
             @if (isEditting) {
               <mat-form-field class="choice-index">
-                <mat-label>No.</mat-label>
+                <mat-label>Question</mat-label>
                 <textarea
                   autocomplete="off"
                   matInput
@@ -58,7 +58,7 @@
                   [(ngModel)]="choice.index"
                 ></textarea>
               </mat-form-field>
-              <mat-form-field>
+              <mat-form-field class="choice-answer">
                 <mat-label>Answer</mat-label>
                 <input
                   autocomplete="off"
