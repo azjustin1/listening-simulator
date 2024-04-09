@@ -54,7 +54,7 @@ export class AddOrEditWritingComponent {
     isTesting: false,
     isReadOnly: false,
   };
-  writing: Writing = {
+  data: Writing = {
     id: '',
     name: '',
     content: '',
@@ -114,7 +114,7 @@ export class AddOrEditWritingComponent {
       this.onCtrlSave();
     }
     if (this.state['isEditting']) {
-      this.saveOrEdit(this.writing);
+      this.saveOrEdit(this.data);
     }
   }
 
@@ -133,9 +133,9 @@ export class AddOrEditWritingComponent {
       this.router.getCurrentNavigation()?.extras.state?.['resultId'];
     if (resultId) {
       this.writingService.getResultById(resultId).subscribe((result) => {
-        this.writing = result;
-        this.result = { ...this.writing };
-        this.writing.timeout = this.result.timeout;
+        this.result = { ...result };
+        this.data = { ...result };
+        this.getTimeout();
         this.onStart();
       });
     }
@@ -146,8 +146,8 @@ export class AddOrEditWritingComponent {
           const sub = this.writingService
             .getById(id)
             .subscribe((writing: any) => {
-              this.writing = writing;
-              each(this.writing.parts, (part, index) => {
+              this.data = writing;
+              each(this.data.parts, (part, index) => {
                 this.mapSavedPart[index] = true;
               });
             });
@@ -157,7 +157,7 @@ export class AddOrEditWritingComponent {
           const sub = this.writingService
             .getResultById(id)
             .subscribe((result) => {
-              this.writing = result;
+              this.data = result;
             });
           this.subscriptions.push(sub);
         }
@@ -166,14 +166,14 @@ export class AddOrEditWritingComponent {
   }
 
   getTimeout() {
-    this.totalSeconds = this.writing.timeout! * 60;
+    this.totalSeconds = this.result.timeout! * 60;
     this.minutes = Math.floor(this.totalSeconds / 60);
     this.seconds = this.totalSeconds % 60;
   }
 
   onStart() {
     if (!this.result) {
-      this.result = { ...this.writing, id: CommonUtils.generateRandomId() };
+      this.result = { ...this.data, id: CommonUtils.generateRandomId() };
       this.writingService.submit(this.result).subscribe();
     }
     this.isReady = true;
@@ -194,7 +194,9 @@ export class AddOrEditWritingComponent {
         dialogRef.componentInstance.message = "Time's up";
         dialogRef.componentInstance.isWarning = true;
         dialogRef.afterClosed().subscribe((isConfirm) => {
-          this.onSubmit();
+          if (isConfirm) {
+            this.onSubmit();
+          }
         });
       }
     });
@@ -202,7 +204,7 @@ export class AddOrEditWritingComponent {
   }
 
   onSaveClick() {
-    this.saveOrEdit(this.writing);
+    this.saveOrEdit(this.data);
     this.router.navigate(['writings']);
   }
 
@@ -221,7 +223,7 @@ export class AddOrEditWritingComponent {
 
   onCtrlSave() {
     this.result = {
-      ...this.writing,
+      ...this.result,
       timeout: this.seconds / 60 + this.minutes,
     };
     this.writingService.editWritingResult(this.result).subscribe();
@@ -235,7 +237,7 @@ export class AddOrEditWritingComponent {
   }
 
   onWritingChange(value: string) {
-    this.writing.wordCount = value.trim().split(/\s+/).length;
+    this.data.wordCount = value.trim().split(/\s+/).length;
   }
 
   onAddPart() {
@@ -249,7 +251,7 @@ export class AddOrEditWritingComponent {
       answer: '',
       wordCount: 0,
     };
-    this.writing.parts?.push(newWritingParagraph);
+    this.data.parts?.push(newWritingParagraph);
   }
 
   onSavePart(index: number) {
@@ -261,7 +263,7 @@ export class AddOrEditWritingComponent {
   }
 
   remove(index: number) {
-    this.writing.parts!.splice(index, 1);
+    this.data.parts!.splice(index, 1);
   }
 
   ngOnDestroy(): void {

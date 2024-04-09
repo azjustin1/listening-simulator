@@ -11,11 +11,11 @@
       @if (state["isEditting"]) {
         <mat-form-field>
           <mat-label>Name</mat-label>
-          <input matInput [(ngModel)]="writing.name" />
+          <input matInput [(ngModel)]="data.name" />
         </mat-form-field>
         <mat-form-field>
           <mat-label>Time</mat-label>
-          <input matInput [(ngModel)]="writing.timeout" />
+          <input matInput [(ngModel)]="data.timeout" />
         </mat-form-field>
       }
 
@@ -24,7 +24,7 @@
           <mat-label>Name</mat-label>
           <input
             matInput
-            [(ngModel)]="writing.studentName"
+            [(ngModel)]="data.studentName"
             [disabled]="state['isReadOnly'] || isReady"
           />
         </mat-form-field>
@@ -33,7 +33,7 @@
         <div class="save-button">
           <button
             mat-raised-button
-            [disabled]="!writing.studentName || writing.studentName === ''"
+            [disabled]="!data.studentName || data.studentName === ''"
             (click)="onStart()"
           >
             Start
@@ -48,7 +48,7 @@
           animationDuration="0ms"
           headerPosition="below"
         >
-          @for (part of writing.parts; track $index) {
+          @for (part of data.parts; track $index) {
             <mat-tab>
               <ng-template matTabLabel="">{{ $index + 1 }}</ng-template>
               <mat-card style="margin-bottom: 16px" appearance="outlined">

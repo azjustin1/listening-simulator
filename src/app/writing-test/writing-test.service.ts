@@ -48,6 +48,7 @@ export class WritingService {
   }
 
   editWritingResult(writing: Writing): Observable<any> {
+    console.log(writing)
     return this.httpClient.put(`/writings-result/${writing.id}`, writing);
   }
 
