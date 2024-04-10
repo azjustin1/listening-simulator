@@ -182,7 +182,7 @@ export class TestComponent extends AddOrEditQuizComponent {
 
   onCtrlSave() {
     this.saveTimeout();
-    this.result.testDate = this.getCurrentDate();
+    this.result.testDate = CommonUtils.getCurrentDate();
     this.result.currentTab = this.currentTab;
     this.testService.saveCurrentTest(this.result).subscribe();
   }
@@ -266,18 +266,6 @@ export class TestComponent extends AddOrEditQuizComponent {
 
   private disableOthersTab() {
     this.mapDisablePart = mapValues(this.mapDisablePart, () => true);
-  }
-
-  private getCurrentDate() {
-    const currentDate = new Date();
-
-    const day = String(currentDate.getDate()).padStart(2, '0');
-    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-    const year = currentDate.getFullYear();
-
-    const formattedDate = `${day}/${month}/${year}`;
-
-    return formattedDate;
   }
 
   private calculateListeningPoint() {

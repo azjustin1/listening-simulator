@@ -26,6 +26,9 @@ import { FileService } from '../../file.service';
 import { WritingComponent } from '../../writing/writing.component';
 import { WritingService } from '../writing-test.service';
 
+import { saveAs } from 'file-saver';
+import { asBlob } from 'html-docx-js-typescript';
+
 @Component({
   selector: 'app-add-or-edit-writing',
   standalone: true,
@@ -231,8 +234,24 @@ export class AddOrEditWritingComponent {
 
   onSubmit() {
     this.result = { ...this.result, isSubmit: true };
+    this.download();
     this.writingService.editWritingResult(this.result).subscribe(() => {
       this.router.navigate(['writings']);
+    });
+  }
+
+  public download(): void {
+    let htmlString = `<h1>${this.result.name}</h1><br><h2>Name: ${this.result.studentName}</h2><br><h2>Point: </h2><br>`;
+    each(this.result.parts, (part) => {
+      htmlString =
+        htmlString + part.content + '<br>' + part.answer + '<hr><br>';
+    });
+
+    asBlob(htmlString).then((data: any) => {
+      saveAs(
+        data,
+        `${this.result.name}_${this.result.studentName}_${CommonUtils.getCurrentDate()}`,
+      );
     });
   }
 
