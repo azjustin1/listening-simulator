@@ -28,7 +28,7 @@ import { ShortAnswerComponent } from '../short-answer/short-answer.component';
 import { WritingComponent } from '../writing/writing.component';
 import { TestService } from './test.service';
 
-const SAVE_INTERVAL = 5000;
+const SAVE_INTERVAL = 120000;
 
 @Component({
   selector: 'app-test',
