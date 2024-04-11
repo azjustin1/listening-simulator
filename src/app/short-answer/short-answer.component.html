@@ -60,14 +60,14 @@
               </mat-form-field>
               <mat-form-field class="choice-answer">
                 <mat-label>Answer</mat-label>
-                <input
+                <textarea
                   autocomplete="off"
                   matInput
                   [name]="choice.id!"
                   type="text"
                   class="form-control"
                   [(ngModel)]="choice.correctAnswer"
-                />
+                ></textarea>
               </mat-form-field>
             } @else {
               @if (isTesting) {

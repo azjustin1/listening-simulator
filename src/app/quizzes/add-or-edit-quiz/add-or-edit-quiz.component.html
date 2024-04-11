@@ -73,48 +73,44 @@
             @for (part of currentQuiz.listeningParts; track $index) {
               <mat-tab>
                 <ng-template matTabLabel="">{{ $index + 1 }}</ng-template>
-                <mat-card class="part-card" appearance="outlined">
-                  <mat-card-content>
-                    <div>
-                      <app-listening
-                        [data]="part"
-                        [isSaved]="mapSavedPart['listening'][$index]!"
-                      ></app-listening>
-                    </div>
-                    <div class="actions">
-                      @if (mapSavedPart["listening"][$index]) {
-                        <button
-                          mat-button
-                          color="primary"
-                          type="button"
-                          class="btn btn-danger"
-                          (click)="onEditClick('listening', $index)"
-                        >
-                          <mat-icon>edit</mat-icon> Edit part
-                        </button>
-                      } @else {
-                        <button
-                          mat-button
-                          color="primary"
-                          type="button"
-                          class="btn btn-danger"
-                          (click)="onSavePart('listening', $index)"
-                        >
-                          <mat-icon>save</mat-icon> Save
-                        </button>
-                      }
-                      <button
-                        mat-button
-                        color="warn"
-                        type="button"
-                        class="btn btn-danger"
-                        (click)="removeListeningPart($index)"
-                      >
-                        <mat-icon>delete</mat-icon> Remove part
-                      </button>
-                    </div>
-                  </mat-card-content>
-                </mat-card>
+                <div>
+                  <app-listening
+                    [data]="part"
+                    [isSaved]="mapSavedPart['listening'][$index]!"
+                  ></app-listening>
+                </div>
+                <div class="actions">
+                  @if (mapSavedPart["listening"][$index]) {
+                    <button
+                      mat-button
+                      color="primary"
+                      type="button"
+                      class="btn btn-danger"
+                      (click)="onEditClick('listening', $index)"
+                    >
+                      <mat-icon>edit</mat-icon> Edit part
+                    </button>
+                  } @else {
+                    <button
+                      mat-button
+                      color="primary"
+                      type="button"
+                      class="btn btn-danger"
+                      (click)="onSavePart('listening', $index)"
+                    >
+                      <mat-icon>save</mat-icon> Save
+                    </button>
+                  }
+                  <button
+                    mat-button
+                    color="warn"
+                    type="button"
+                    class="btn btn-danger"
+                    (click)="removeListeningPart($index)"
+                  >
+                    <mat-icon>delete</mat-icon> Remove part
+                  </button>
+                </div>
               </mat-tab>
             }
           </mat-tab-group>

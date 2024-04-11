@@ -9,11 +9,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
+import { saveAs } from 'file-saver';
+import { asBlob } from 'html-docx-js-typescript';
 import { each, mapValues } from 'lodash-es';
 import { Subscription, interval } from 'rxjs';
 import { Quiz } from '../../common/models/quiz.model';
 import { Result } from '../../common/models/result.model';
 import { CommonUtils } from '../../utils/common-utils';
+import { CHOICE_INDEX } from '../../utils/constant';
 import { ConfirmDialogComponent } from '../dialog/confirm-dialog/confirm-dialog.component';
 import { FileService } from '../file.service';
 import { ListeningComponent } from '../listening/listening.component';
@@ -24,6 +27,8 @@ import { ReadingComponent } from '../reading/reading.component';
 import { ShortAnswerComponent } from '../short-answer/short-answer.component';
 import { WritingComponent } from '../writing/writing.component';
 import { TestService } from './test.service';
+
+const SAVE_INTERVAL = 5000;
 
 @Component({
   selector: 'app-test',
@@ -117,6 +122,11 @@ export class TestComponent extends AddOrEditQuizComponent {
         this.audioPlayer.nativeElement.load();
         this.getTimeout();
       });
+
+      const saveInterval = interval(SAVE_INTERVAL).subscribe(() => {
+        this.onCtrlSave();
+      });
+      this.subscriptions.push(saveInterval);
     }
 
     const testId = this.router.getCurrentNavigation()?.extras.state?.['testId'];
@@ -204,11 +214,98 @@ export class TestComponent extends AddOrEditQuizComponent {
 
   submit() {
     this.audioPlayer.nativeElement.pause();
+    this.exportWriting();
     this.calculateListeningPoint();
     this.calculateReadingPoint();
     this.result.isSubmit = true;
     this.onCtrlSave();
     this.router.navigate(['mock-test']);
+  }
+
+  exportTestResult() {
+    if (this.currentTab === 0) {
+      this.exportListening();
+      return;
+    }
+    if (this.currentTab === 1) {
+      this.exportReading();
+      return;
+    }
+  }
+
+  exportListening() {
+    let htmlString = `<h1>${this.result.name} - Listening</h1><br><h2>Name: ${this.result.studentName}</h2><br><h2>Point: </h2><br>`;
+    each(this.result.listeningParts, (part, index) => {
+      htmlString += `<h3>Part ${index + 1}</h3><br>`;
+      each(part.questions, (question) => {
+        htmlString += `<p>${question.content ? question.content : ''}</p><br>`;
+        each(question.choices, (choice, index) => {
+          if (question.type === 0) {
+            if (question.answer === choice.id) {
+              htmlString += `<u>${CHOICE_INDEX[index]}${choice.content ? choice.content : ''}</u><br>`;
+            } else {
+              htmlString += `${CHOICE_INDEX[index]} ${choice.content ? choice.content : ''}<br>`;
+            }
+          } else {
+            htmlString += `<b>${choice.index ? choice.index : ''}</b> ${choice.answer}<br>`;
+          }
+        });
+      });
+      htmlString += '<hr>';
+    });
+    asBlob(htmlString).then((data: any) => {
+      saveAs(
+        data,
+        `${this.result.studentName}_Listening_${this.result.name}_${CommonUtils.getCurrentDate()}`,
+      );
+    });
+  }
+
+  exportReading() {
+    let htmlString = `<h1>${this.result.name} - Reading</h1><br><h2>Name: ${this.result.studentName}</h2><br><h2>Point: </h2><br>`;
+    each(this.result.readingParts, (part, index) => {
+      htmlString += `<h3>Part ${index + 1}</h3><br>`;
+      htmlString += `<p>${part.content}</p><br>`;
+      each(part.questions, (question) => {
+        htmlString += `<b>${question.name ? question.name : ''}<b><br>`;
+        each(question.subQuestions, (subQuestion) => {
+          htmlString += `<p>${subQuestion.content ? subQuestion.content : ''}</p><br>`;
+          each(subQuestion.choices, (choice, index) => {
+            if (subQuestion.type === 0) {
+              if (subQuestion.answer === choice.id) {
+                htmlString += `<u>${CHOICE_INDEX[index]} ${choice.content ? choice.content : ''}</u><br>`;
+              } else {
+                htmlString += `${CHOICE_INDEX[index]} ${choice.content ? choice.content : ''}<br>`;
+              }
+            } else {
+              htmlString += `<b>${choice.index ? choice.index : ''}</b> ${choice.answer}<br>`;
+            }
+          });
+        });
+        htmlString += '<hr>';
+      });
+    });
+    asBlob(htmlString).then((data: any) => {
+      saveAs(
+        data,
+        `${this.result.studentName}_Reading_${this.result.name}_${CommonUtils.getCurrentDate()}`,
+      );
+    });
+  }
+
+  exportWriting() {
+    let htmlString = `<h1>${this.result.name} - Writing</h1><br><h2>Name: ${this.result.studentName}</h2><br><h2>Point: </h2><br>`;
+    each(this.result.writingParts, (part) => {
+      htmlString =
+        htmlString + part.content + '<br>' + part.answer + '<hr><br>';
+    });
+
+    asBlob(htmlString).then((data: any) => {
+      saveAs(
+        data,
+        `${this.result.studentName}_Writing_${this.result.name}_${CommonUtils.getCurrentDate()}`,
+      );
+    });
   }
 
   onListeningStart() {
@@ -258,6 +355,7 @@ export class TestComponent extends AddOrEditQuizComponent {
     }
     this.disableOthersTab();
     this.mapDisablePart[tab + 1] = false;
+    this.exportTestResult();
     this.currentTab = tab + 1;
     if (this.timeoutInterval) {
       this.timeoutInterval.unsubscribe();

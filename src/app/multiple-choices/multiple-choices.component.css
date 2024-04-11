@@ -32,3 +32,7 @@
   align-items: start;
   width: 100%;
 }
+
+.choice-input {
+  width: 400px;
+}

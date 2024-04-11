@@ -38,8 +38,8 @@
           </div>
           <div class="form-group">
             @if (isEditting) {
-              <mat-form-field>
-                <input
+              <mat-form-field class="choice-input">
+                <textarea
                   autocomplete="off"
                   [disabled]="isReadOnly"
                   matInput
@@ -47,7 +47,7 @@
                   type="text"
                   class="form-control"
                   [(ngModel)]="choice.content"
-                />
+                ></textarea>
               </mat-form-field>
               <button
                 mat-button
