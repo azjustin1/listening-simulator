@@ -11,7 +11,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { saveAs } from 'file-saver';
 import { asBlob } from 'html-docx-js-typescript';
-import { each, mapValues } from 'lodash-es';
+import { chunk, each, isEqual, mapValues, sortBy } from 'lodash-es';
 import { Subscription, interval } from 'rxjs';
 import { Quiz } from '../../common/models/quiz.model';
 import { Result } from '../../common/models/result.model';
@@ -27,7 +27,7 @@ import { ReadingComponent } from '../reading/reading.component';
 import { ShortAnswerComponent } from '../short-answer/short-answer.component';
 import { WritingComponent } from '../writing/writing.component';
 import { TestService } from './test.service';
-
+const ID_LENGTH = 20;
 const SAVE_INTERVAL = 120000;
 
 @Component({
@@ -375,7 +375,21 @@ export class TestComponent extends AddOrEditQuizComponent {
           case 0:
             // Multiple choices
             totalPoint++;
-            if (question.answer === question.correctAnswer) {
+            if (
+              question.answer !== '' &&
+              isEqual(
+                sortBy(
+                  chunk(question.answer, ID_LENGTH).map((chunk) =>
+                    chunk.join(''),
+                  ),
+                ),
+                sortBy(
+                  chunk(question.correctAnswer, ID_LENGTH).map((chunk) =>
+                    chunk.join(''),
+                  ),
+                ),
+              )
+            ) {
               correctPoint++;
             }
             break;
@@ -410,7 +424,21 @@ export class TestComponent extends AddOrEditQuizComponent {
             case 0:
               // Multiple choices
               totalPoint++;
-              if (subQuestion.answer === subQuestion.correctAnswer) {
+              if (
+                subQuestion.answer !== '' &&
+                isEqual(
+                  sortBy(
+                    chunk(question.answer, ID_LENGTH).map((chunk) =>
+                      chunk.join(''),
+                    ),
+                  ),
+                  sortBy(
+                    chunk(question.correctAnswer, ID_LENGTH).map((chunk) =>
+                      chunk.join(''),
+                    ),
+                  ),
+                )
+              ) {
                 correctPoint++;
               }
               break;

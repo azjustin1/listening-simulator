@@ -24,13 +24,12 @@
             class="choice-index"
             [ngClass]="{
               selected: isTesting
-                ? question.answer === choice.id
-                : question.correctAnswer === choice.id,
+                ? (question.answer | correctChoice).includes(choice.id!)
+                : (question.correctAnswer | correctChoice).includes(choice.id!),
               isWrong:
                 isReadOnly &&
-                question.answer === choice.id &&
-                question.answer !== question.correctAnswer,
-              readonly: isReadOnly
+                (question.answer | correctChoice).includes(choice.id!) &&
+                !(question.correctAnswer | correctChoice).includes(choice.id!)
             }"
             (click)="onSelectChoice($index)"
           >
