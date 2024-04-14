@@ -119,7 +119,7 @@ export abstract class AbstractQuestionComponent implements OnChanges {
       this.fileService.uploadFile(imageFile).subscribe((response) => {
         this.question.content = this.question.content?.replace(
           imageSrc,
-          `http://localhost:3000/upload/${response.fileName}`,
+          `http://localhost:3000/upload/${response.fileName} width="100%"`,
         );
       });
     }

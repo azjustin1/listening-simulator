@@ -241,8 +241,6 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
           `"${imageSrc}"`,
           `"http://localhost:3000/upload/${response.fileName}" width="100%"`,
         );
-
-        console.log(this.data.content)
       });
     }
   }
