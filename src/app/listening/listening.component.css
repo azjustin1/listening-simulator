@@ -17,15 +17,8 @@
   pointer-events: none;
 }
 
-.card {
-  margin: 0 16px 16px 0;
-  cursor: pointer;
-}
-
-.question-type-item {
-  width: 120px;
-  text-align: center;
-  margin: 16px 0;
+.add-question-button {
+  margin: 0 10px 0 0;
 }
 
 .actions {

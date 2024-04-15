@@ -100,16 +100,27 @@
 
   @if (!isSaved && !isTesting && !isReadOnly) {
     <div class="question-type-container">
-      <mat-card class="card" (click)="addQuestion(0)">
-        <mat-card-content class="question-type-item">
-          Multiple Choices
-        </mat-card-content>
-      </mat-card>
-      <mat-card class="card" (click)="addQuestion(1)">
-        <mat-card-content class="question-type-item">
-          Short Answer
-        </mat-card-content>
-      </mat-card>
+      <button
+        class="add-question-button"
+        mat-raised-button
+        (click)="addQuestion(0)"
+      >
+        <mat-icon>add</mat-icon> Multiple Choices
+      </button>
+      <button
+        class="add-question-button"
+        mat-raised-button
+        (click)="addQuestion(1)"
+      >
+        <mat-icon>add</mat-icon> Short Answer
+      </button>
+      <button
+        class="add-question-button"
+        mat-raised-button
+        (click)="addQuestion(3)"
+      >
+        <mat-icon>add</mat-icon> Dropdown Choices
+      </button>
     </div>
   }
 </div>

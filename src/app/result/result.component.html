@@ -34,14 +34,14 @@
             <mat-menu #menu="matMenu">
               @if (result.isSubmit) {
                 <button mat-menu-item (click)="view(result.id)">View</button>
-                <button mat-menu-item (click)="onDeleteResultClick(result.id)">
-                  Delete
-                </button>
               } @else {
                 <button mat-menu-item (click)="continue(result.id)">
                   Continue
                 </button>
               }
+              <button mat-menu-item (click)="onDeleteResultClick(result.id)">
+                Delete
+              </button>
             </mat-menu>
           </mat-card-actions>
         </mat-card-title>

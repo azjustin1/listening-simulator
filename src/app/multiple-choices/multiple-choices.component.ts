@@ -9,7 +9,6 @@ import { MatInputModule } from '@angular/material/input';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { AbstractQuestionComponent } from '../../common/abstract-question.component';
 import { FileService } from '../file.service';
-import { chunk, each, isEqual, sortBy } from 'lodash-es';
 import { ChoicePipe } from './choice.pipe';
 @Component({
   selector: 'app-multiple-choices',

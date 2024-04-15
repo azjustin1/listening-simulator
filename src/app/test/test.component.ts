@@ -101,9 +101,6 @@ export class TestComponent extends AddOrEditQuizComponent {
     2: true,
   };
 
-  correctPoints: number = 0;
-  totalPoints: number = 0;
-
   constructor(
     protected override quizService: QuizService,
     protected override route: ActivatedRoute,
@@ -222,17 +219,6 @@ export class TestComponent extends AddOrEditQuizComponent {
     this.router.navigate(['mock-test']);
   }
 
-  exportTestResult() {
-    if (this.currentTab === 0) {
-      this.exportListening();
-      return;
-    }
-    if (this.currentTab === 1) {
-      this.exportReading();
-      return;
-    }
-  }
-
   exportListening() {
     let htmlString = `<h1>${this.result.name} - Listening</h1><br><h2>Name: ${this.result.studentName}</h2><br><h2>Point: </h2><br>`;
     each(this.result.listeningParts, (part, index) => {
@@ -245,6 +231,10 @@ export class TestComponent extends AddOrEditQuizComponent {
               htmlString += `<u>${CHOICE_INDEX[index]}${choice.content ? choice.content : ''}</u><br>`;
             } else {
               htmlString += `${CHOICE_INDEX[index]} ${choice.content ? choice.content : ''}<br>`;
+            }
+          } else if (question.type === 3) {
+            if (question.answer === choice.content) {
+              htmlString += `${choice.content}<br>`;
             }
           } else {
             htmlString += `<b>${choice.index ? choice.index : ''}</b> ${choice.answer}<br>`;
@@ -276,6 +266,10 @@ export class TestComponent extends AddOrEditQuizComponent {
                 htmlString += `<u>${CHOICE_INDEX[index]} ${choice.content ? choice.content : ''}</u><br>`;
               } else {
                 htmlString += `${CHOICE_INDEX[index]} ${choice.content ? choice.content : ''}<br>`;
+              }
+            } else if (question.type === 3) {
+              if (question.answer === choice.content) {
+                htmlString += `${choice.content}<br>`;
               }
             } else {
               htmlString += `<b>${choice.index ? choice.index : ''}</b> ${choice.answer}<br>`;
@@ -314,7 +308,7 @@ export class TestComponent extends AddOrEditQuizComponent {
   }
 
   onStartPart() {
-    if (this.currentTab === 0) {
+    if (this.currentTab === 0 && this.audioPlayer) {
       this.audioPlayer.nativeElement.play();
     }
     this.isStart = true;
@@ -355,7 +349,6 @@ export class TestComponent extends AddOrEditQuizComponent {
     }
     this.disableOthersTab();
     this.mapDisablePart[tab + 1] = false;
-    this.exportTestResult();
     this.currentTab = tab + 1;
     if (this.timeoutInterval) {
       this.timeoutInterval.unsubscribe();
@@ -404,6 +397,12 @@ export class TestComponent extends AddOrEditQuizComponent {
                 correctPoint++;
               }
             });
+            break;
+          case 3:
+            totalPoint++;
+            if (question.correctAnswer === question.answer) {
+              correctPoint++;
+            }
             break;
           default:
             break;
@@ -454,6 +453,12 @@ export class TestComponent extends AddOrEditQuizComponent {
                   correctPoint++;
                 }
               });
+              break;
+            case 3:
+              totalPoint++;
+              if (question.answer === question.correctAnswer) {
+                correctPoint++;
+              }
               break;
             default:
               break;

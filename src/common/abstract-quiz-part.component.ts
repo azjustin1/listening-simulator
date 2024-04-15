@@ -163,6 +163,16 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
           subQuestions: [],
         };
         break;
+      case 3:
+        this.currentQuestion = {
+          id: id,
+          content: '',
+          type: questionType,
+          choices: this.defaultMultipleChoices(),
+          answer: '',
+          correctAnswer: '',
+        };
+        break;
       default:
         break;
     }

@@ -3,11 +3,17 @@ import { MatIconModule } from '@angular/material/icon';
 import { AbstractQuestionComponent } from '../../common/abstract-question.component';
 import { MultipleChoicesComponent } from '../multiple-choices/multiple-choices.component';
 import { ShortAnswerComponent } from '../short-answer/short-answer.component';
+import { DropdownChoicesComponent } from '../dropdown-choices/dropdown-choices.component';
 
 @Component({
   selector: 'app-question',
   standalone: true,
-  imports: [MatIconModule, MultipleChoicesComponent, ShortAnswerComponent],
+  imports: [
+    MatIconModule,
+    MultipleChoicesComponent,
+    ShortAnswerComponent,
+    DropdownChoicesComponent,
+  ],
   templateUrl: './question.component.html',
   styleUrl: './question.component.css',
 })
