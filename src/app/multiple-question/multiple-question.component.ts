@@ -67,7 +67,7 @@ export class MultipleQuestionComponent
           id: id,
           content: '',
           type: questionType,
-          choices: this.defaultMultipleChoices(),
+          choices: this.defaultChoices(4),
           answer: '',
           correctAnswer: '',
         };
@@ -87,7 +87,7 @@ export class MultipleQuestionComponent
           id: id,
           content: '',
           type: questionType,
-          choices: this.defaultMultipleChoices(),
+          choices: this.defaultChoices(3),
           answer: '',
           correctAnswer: '',
         };
@@ -135,9 +135,9 @@ export class MultipleQuestionComponent
     this.question.subQuestions?.splice(index, 1);
   }
 
-  defaultMultipleChoices() {
+  defaultChoices(numberOfChocies: number) {
     const choices = [];
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < numberOfChocies; i++) {
       const choice = {
         id: CommonUtils.generateRandomId(),
         content: '',

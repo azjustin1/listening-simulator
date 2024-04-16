@@ -104,25 +104,12 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     this.data.wordCount = value.trim().split(/\s+/).length;
   }
 
-  defaultMultipleChoices() {
+  defaultChoices(numberOfChocies: number) {
     const choices = [];
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < numberOfChocies; i++) {
       const choice = {
         id: CommonUtils.generateRandomId(),
         content: '',
-      };
-      choices.push(choice);
-    }
-    return choices;
-  }
-
-  defaultShortAnswerChoices() {
-    const choices = [];
-    for (let i = 0; i < 4; i++) {
-      const choice = {
-        id: CommonUtils.generateRandomId(),
-        content: '',
-        index: '',
       };
       choices.push(choice);
     }
@@ -137,7 +124,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
           id: id,
           content: '',
           type: questionType,
-          choices: this.defaultMultipleChoices(),
+          choices: this.defaultChoices(4),
           answer: '',
           correctAnswer: '',
         };
@@ -168,7 +155,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
           id: id,
           content: '',
           type: questionType,
-          choices: this.defaultMultipleChoices(),
+          choices: this.defaultChoices(3),
           answer: '',
           correctAnswer: '',
         };
