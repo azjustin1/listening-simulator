@@ -194,7 +194,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     cloneQuestion = {
       ...cloneQuestion,
       id: CommonUtils.generateRandomId(),
-      name: `Copy of ${cloneQuestion.name}`,
+      content: `Copy of ${cloneQuestion.content}`,
     };
     this.data.questions.push(cloneQuestion);
   }

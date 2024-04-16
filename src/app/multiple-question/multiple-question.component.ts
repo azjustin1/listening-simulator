@@ -126,7 +126,7 @@ export class MultipleQuestionComponent
     cloneQuestion = {
       ...cloneQuestion,
       id: CommonUtils.generateRandomId(),
-      name: `Copy of ${cloneQuestion.name}`,
+      content: `Copy of ${cloneQuestion.content}`,
     };
     this.question.subQuestions!.push(cloneQuestion);
   }
