@@ -82,6 +82,16 @@ export class MultipleQuestionComponent
           correctAnswer: '',
         };
         break;
+      case 3:
+        newQuestion = {
+          id: id,
+          content: '',
+          type: questionType,
+          choices: this.defaultMultipleChoices(),
+          answer: '',
+          correctAnswer: '',
+        };
+        break;
       default:
         break;
     }
