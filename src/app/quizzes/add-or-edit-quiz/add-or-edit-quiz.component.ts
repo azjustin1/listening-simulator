@@ -245,8 +245,8 @@ export class AddOrEditQuizComponent implements OnDestroy {
       dialogRef.componentInstance.isWarning = true;
     } else {
       this.saveOrEditQuiz(this.currentQuiz);
+      this.router.navigate(['/mock-test']);
     }
-    this.router.navigate(['/mock-test']);
   }
 
   saveOrEditQuiz(quiz: Quiz) {
