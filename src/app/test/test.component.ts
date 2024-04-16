@@ -346,6 +346,10 @@ export class TestComponent extends AddOrEditQuizComponent {
   onSubmitPartClick(tab: number) {
     if (tab === 0) {
       this.audioPlayer.nativeElement.pause();
+      this.exportListening();
+    }
+    if (tab === 1) {
+      this.exportReading();
     }
     this.disableOthersTab();
     this.mapDisablePart[tab + 1] = false;
