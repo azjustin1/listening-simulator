@@ -4,7 +4,7 @@ export class CommonUtils {
     const machineId = Math.floor(Math.random() * 16777216).toString(16);
     const counter = Math.floor(Math.random() * 16777216).toString(16);
 
-    return timestamp + machineId + counter;
+    return (timestamp + machineId + counter).substring(0, 20);
   }
 
   static base64ToFile(base64Image: string, fileName: string) {
