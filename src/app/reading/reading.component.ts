@@ -59,44 +59,6 @@ export class ReadingComponent
     return choices.find((choice) => choice.id === id);
   }
 
-  addSubQuestion(index: number, questionType: number) {
-    let newQuestion: Question = {
-      content: '',
-      type: null,
-      choices: [],
-      answer: '',
-      correctAnswer: '',
-    };
-    const id = CommonUtils.generateRandomId();
-    switch (questionType) {
-      case 0:
-        newQuestion = {
-          id: id,
-          content: '',
-          type: questionType,
-          choices: this.defaultMultipleChoices(),
-          answer: '',
-          correctAnswer: '',
-        };
-        break;
-      case 1:
-        newQuestion = {
-          id: id,
-          content: '',
-          type: questionType,
-          choices: [],
-          answer: '',
-          correctAnswer: '',
-        };
-        break;
-      default:
-        break;
-    }
-    this.data.questions[index].subQuestions!.push(newQuestion);
-    this.mapQuestionEditting[newQuestion.id!] = true;
-    this.mapSavedQuestion[newQuestion.id!] = true;
-  }
-
   override onSaveQuestion(id: string): void {
     super.onSaveQuestion(id);
     this.mapSavedQuestion[id] = true;
