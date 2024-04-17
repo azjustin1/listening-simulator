@@ -395,8 +395,9 @@ export class TestComponent extends AddOrEditQuizComponent {
             each(question.choices, (choice) => {
               totalPoint++;
               if (
-                choice.answer === choice.correctAnswer ||
-                choice.correctAnswer?.includes(choice.answer!)
+                choice.answer !== '' &&
+                (choice.answer?.trim() === choice.correctAnswer?.trim() ||
+                  choice.correctAnswer?.split('/').includes(choice.answer!))
               ) {
                 correctPoint++;
               }
@@ -451,7 +452,7 @@ export class TestComponent extends AddOrEditQuizComponent {
                 totalPoint++;
                 if (
                   choice.answer !== '' &&
-                  (choice.answer === choice.correctAnswer ||
+                  (choice.answer?.trim() === choice.correctAnswer?.trim() ||
                     choice.correctAnswer?.split('/').includes(choice.answer!))
                 ) {
                   correctPoint++;
