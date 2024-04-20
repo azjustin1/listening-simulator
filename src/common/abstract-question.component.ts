@@ -114,7 +114,7 @@ export abstract class AbstractQuestionComponent implements OnChanges {
     const base64Image = this.extractBase64Image(content);
     if (base64Image !== null && base64Image[1].startsWith('data')) {
       const imageSrc = base64Image[1];
-      const fileName = `${this.question.id}.png`;
+      const fileName = `${this.question.id}_${new Date().getMilliseconds()}.png`;
       const imageFile: File = CommonUtils.base64ToFile(imageSrc, fileName);
       this.fileService.uploadFile(imageFile).subscribe((response) => {
         this.question.content = this.question.content?.replace(

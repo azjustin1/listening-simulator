@@ -229,7 +229,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     const base64Image = this.extractBase64Image(content);
     if (base64Image !== null && base64Image[1].startsWith('data')) {
       const imageSrc = base64Image[1];
-      const fileName = `${this.data.id}.png`;
+      const fileName = `${this.data.id}_${new Date().getMilliseconds()}.png`;
       const imageFile: File = CommonUtils.base64ToFile(imageSrc, fileName);
       this.fileService.uploadFile(imageFile).subscribe((response) => {
         const imageName = response.fileName;
