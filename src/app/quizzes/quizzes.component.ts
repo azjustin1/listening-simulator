@@ -61,7 +61,6 @@ export class QuizzesComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.breakpointObserver.observe(['(max-width: 768px)']).subscribe((state) => {
-      console.log(state);
     });
   }
 

@@ -22,12 +22,12 @@
         <div class="choice">
           @if (question.answer === question.correctAnswer) {
             <span class="answer">
-              {{ question.answer }}
+              {{ question | answerChoice }}
             </span>
           } @else {
-            <span class="answer incorrect"> {{ question.answer }} </span>
+            <span class="answer incorrect"> {{ question | answerChoice }} </span>
             <span class="answer correct">
-              {{ question.correctAnswer }}
+              {{ question | correctAnswerChoice }}
             </span>
           }
         </div>
@@ -40,7 +40,7 @@
                   [(ngModel)]="question.correctAnswer"
                   name="correctAnswer"
                 >
-                  <mat-radio-button [value]="choice.content">
+                  <mat-radio-button [value]="choice.id!">
                   </mat-radio-button>
                 </mat-radio-group>
                 <mat-form-field class="choice-input">
@@ -71,7 +71,7 @@
             <mat-form-field class="choice-input">
               <mat-select [(value)]="question.answer">
                 @for (choice of question.choices; track $index) {
-                  <mat-option [value]="choice.content">{{
+                  <mat-option [value]="choice.id!">{{
                     choice.content
                   }}</mat-option>
                 }
@@ -81,7 +81,7 @@
             <mat-form-field class="choice-input">
               <mat-select [(value)]="question.correctAnswer">
                 @for (choice of question.choices; track $index) {
-                  <mat-option [value]="choice.content">{{
+                  <mat-option [value]="choice.id!">{{
                     choice.content
                   }}</mat-option>
                 }
