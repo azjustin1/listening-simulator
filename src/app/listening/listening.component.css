@@ -4,6 +4,7 @@
 }
 
 .question-group {
+  justify-content: center;
   flex: 50%;
   max-height: fit-content;
 }

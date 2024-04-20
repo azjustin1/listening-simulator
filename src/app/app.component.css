@@ -25,4 +25,8 @@
   .author {
     font-size: xx-small;
   }
+
+  .container {
+    margin: 30px 10px;
+  }
 }
