@@ -35,16 +35,15 @@
           >
             <p>{{ CHOICE_INDEX[$index] }}</p>
           </div>
-          <div class="form-group">
+          <div class="choice-content">
             @if (isEditting) {
-              <mat-form-field class="choice-input">
+              <mat-form-field>
                 <textarea
                   autocomplete="off"
                   [disabled]="isReadOnly"
                   matInput
                   [name]="choice.id!"
                   type="text"
-                  class="form-control"
                   [(ngModel)]="choice.content"
                 ></textarea>
               </mat-form-field>

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -18,6 +18,7 @@ import { FileService } from '../file.service';
 import { ListeningComponent } from '../listening/listening.component';
 import { QuizService } from './quizzes.service';
 import { CommonUtils } from '../../utils/common-utils';
+import { BreakpointObserver } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-quizzes',
@@ -38,7 +39,7 @@ import { CommonUtils } from '../../utils/common-utils';
   templateUrl: './quizzes.component.html',
   styleUrl: './quizzes.component.css',
 })
-export class QuizzesComponent implements OnDestroy {
+export class QuizzesComponent implements OnInit, OnDestroy {
   quizzes: Quiz[] = [];
   searchString: string = '';
 
@@ -51,9 +52,16 @@ export class QuizzesComponent implements OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private dialog: MatDialog,
+    private breakpointObserver: BreakpointObserver,
   ) {
     this.quizService.getAll().subscribe((quizzes) => {
       this.quizzes = quizzes;
+    });
+  }
+
+  ngOnInit(): void {
+    this.breakpointObserver.observe(['(max-width: 768px)']).subscribe((state) => {
+      console.log(state);
     });
   }
 

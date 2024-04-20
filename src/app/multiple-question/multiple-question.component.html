@@ -105,29 +105,27 @@
   </div>
   @if (isEditting) {
     <div class="question-type-container">
-      <div class="question-type-container">
-        <button
-          class="add-question-button"
-          mat-raised-button
-          (click)="addQuestion(0)"
-        >
-          <mat-icon>add</mat-icon> Multiple Choices
-        </button>
-        <button
-          class="add-question-button"
-          mat-raised-button
-          (click)="addQuestion(1)"
-        >
-          <mat-icon>add</mat-icon> Short Answer
-        </button>
-        <button
-          class="add-question-button"
-          mat-raised-button
-          (click)="addQuestion(3)"
-        >
-          <mat-icon>add</mat-icon> Dropdown Choices
-        </button>
-      </div>
+      <button
+        class="add-question-button"
+        mat-raised-button
+        (click)="addQuestion(0)"
+      >
+        <mat-icon>add</mat-icon> Multiple Choices
+      </button>
+      <button
+        class="add-question-button"
+        mat-raised-button
+        (click)="addQuestion(1)"
+      >
+        <mat-icon>add</mat-icon> Short Answer
+      </button>
+      <button
+        class="add-question-button"
+        mat-raised-button
+        (click)="addQuestion(3)"
+      >
+        <mat-icon>add</mat-icon> Dropdown Choices
+      </button>
     </div>
   }
 </mat-expansion-panel>

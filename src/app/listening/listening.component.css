@@ -4,9 +4,8 @@
 }
 
 .question-group {
-  justify-content: center;
   flex: 50%;
-  height: fit-content;
+  max-height: fit-content;
 }
 
 .input-group {
@@ -29,7 +28,6 @@
 .question {
   padding: 16px;
   margin: 16px 0;
-  height: fit-content;
 }
 
 .upload-file {

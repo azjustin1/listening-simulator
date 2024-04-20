@@ -142,6 +142,7 @@ export class AddOrEditWritingComponent {
         this.onStart();
       });
     }
+
     this.route.paramMap.subscribe((paramMap: any) => {
       const id = paramMap.get('id');
       if (id) {
@@ -216,8 +217,10 @@ export class AddOrEditWritingComponent {
     if (writing.id) {
       observer = this.writingService.edit(writing);
     } else {
-      writing.id = CommonUtils.generateRandomId();
-      observer = this.writingService.create(writing);
+      observer = this.writingService.create({
+        ...writing,
+        id: CommonUtils.generateRandomId(),
+      });
     }
     const sub = observer.subscribe();
 
@@ -229,18 +232,20 @@ export class AddOrEditWritingComponent {
       ...this.result,
       timeout: this.seconds / 60 + this.minutes,
     };
-    this.writingService.editWritingResult(this.result).subscribe();
+    this.subscriptions.push(
+      this.writingService.editWritingResult(this.result).subscribe(),
+    );
   }
 
   onSubmit() {
     this.result = { ...this.result, isSubmit: true };
-    this.download();
+    this.buildDownloadFile();
     this.writingService.editWritingResult(this.result).subscribe(() => {
       this.router.navigate(['writings']);
     });
   }
 
-  public download(): void {
+  public buildDownloadFile(): void {
     let htmlString = `<h1>${this.result.name}</h1><br><h2>Name: ${this.result.studentName}</h2><br><h2>Point: </h2><br>`;
     each(this.result.parts, (part) => {
       htmlString =

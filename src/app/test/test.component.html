@@ -65,14 +65,12 @@
                 @if (isStart) {
                   <mat-card class="question-group" appearance="outlined">
                     <mat-card-content>
-                      <div class="question-group">
-                        <app-listening
-                          [data]="part"
-                          [isTesting]="true"
-                          [isStart]="isStart"
-                          (onStartChange)="onListeningStart()"
-                        ></app-listening>
-                      </div>
+                      <app-listening
+                        [data]="part"
+                        [isTesting]="true"
+                        [isStart]="isStart"
+                        (onStartChange)="onListeningStart()"
+                      ></app-listening>
                     </mat-card-content>
                   </mat-card>
                 }

@@ -14,10 +14,6 @@
   width: 100%;
 }
 
-.choice-input {
-  width: 400px;
-}
-
 .answer {
   color: var(--success-color);
 }

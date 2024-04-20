@@ -45,66 +45,64 @@
 
       <div class="choice-group">
         @for (choice of question.choices; track $index) {
-          <div class="form-group">
-            @if (isEditting) {
-              <mat-form-field class="choice-index">
-                <mat-label>Question</mat-label>
-                <textarea
-                  autocomplete="off"
-                  matInput
-                  [name]="$index.toString()"
-                  type="text"
-                  class="form-control"
-                  [(ngModel)]="choice.index"
-                ></textarea>
-              </mat-form-field>
-              <mat-form-field class="choice-answer">
+          @if (isEditting) {
+            <mat-form-field class="choice-index">
+              <mat-label>Question</mat-label>
+              <textarea
+                autocomplete="off"
+                matInput
+                [name]="$index.toString()"
+                type="text"
+                class="form-control"
+                [(ngModel)]="choice.index"
+              ></textarea>
+            </mat-form-field>
+            <mat-form-field class="choice-answer">
+              <mat-label>Answer</mat-label>
+              <textarea
+                autocomplete="off"
+                matInput
+                [name]="choice.id!"
+                type="text"
+                class="form-control"
+                [(ngModel)]="choice.correctAnswer"
+              ></textarea>
+            </mat-form-field>
+          } @else {
+            @if (isTesting) {
+              <p class="answer-input">
+                <b>{{ choice.index }}&nbsp;</b>
+              </p>
+              <mat-form-field>
                 <mat-label>Answer</mat-label>
-                <textarea
+                <input
                   autocomplete="off"
                   matInput
                   [name]="choice.id!"
                   type="text"
                   class="form-control"
-                  [(ngModel)]="choice.correctAnswer"
-                ></textarea>
+                  [(ngModel)]="choice.answer"
+                />
               </mat-form-field>
             } @else {
-              @if (isTesting) {
-                <p class="answer-input">
-                  <b>{{ choice.index }}&nbsp;</b>
-                </p>
-                <mat-form-field style="margin-left: 10px">
-                  <mat-label>Answer</mat-label>
-                  <input
-                    autocomplete="off"
-                    matInput
-                    [name]="choice.id!"
-                    type="text"
-                    class="form-control"
-                    [(ngModel)]="choice.answer"
-                  />
-                </mat-form-field>
-              } @else {
-                <p class="answer-input">
-                  <b>{{ choice.index }}&nbsp;</b>
-                </p>
-                <div class="correct-answer">
-                  {{ choice.correctAnswer }}
-                </div>
-              }
+              <p class="answer-input">
+                <b>{{ choice.index }}&nbsp;</b>
+              </p>
+              <div class="correct-answer">
+                {{ choice.correctAnswer }}
+              </div>
             }
-            <button
-              *ngIf="isEditting"
-              mat-button
-              color="warn"
-              type="button"
-              class="btn btn-danger"
-              (click)="removeChoice($index)"
-            >
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
+          }
+          <button
+            *ngIf="isEditting"
+            mat-button
+            color="warn"
+            type="button"
+            class="btn btn-danger"
+            (click)="removeChoice($index)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
         }
       </div>
 

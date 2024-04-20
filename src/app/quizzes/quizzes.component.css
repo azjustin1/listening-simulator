@@ -1,7 +1,7 @@
 .container {
-  height: 100vh;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  max-height: calc(100vh - 300px);
+  grid-template-columns: repeat(auto-fill, 300px);
   grid-template-rows: repeat(10000, 64px);
   grid-gap: 16px;
 }
@@ -9,15 +9,13 @@
 .card {
   display: flex;
   flex-direction: row;
-  height: 64px;
-  margin: 16px 0;
-  min-width: 200px;
-  max-width: 400px;
-  text-overflow: ellipsis;
 }
 
 .card-content {
   width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .actions {
