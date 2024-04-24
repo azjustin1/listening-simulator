@@ -1,34 +1,15 @@
-.question-text {
-  width: 100%;
-  height: fit-content;
-  line-height: 60px;
-}
-
-.answer-input {
-  height: fit-content;
-  line-height: 60px;
-}
-
-.answer-container {
-  display: flex;
-  width: 100%;
-}
-
 .answer {
-  width: max-content;
+  width: fit-content;
   font-weight: bold;
 }
 
 .incorrect-answer {
   margin-left: 16px;
-  line-height: 60px;
   color: var(--danger-color);
   width: 100%;
 }
 
 .correct-answer {
-  height: 30px;
-  line-height: 60px;
   color: var(--success-color);
   font-weight: bold;
   margin-left: 16px;
@@ -39,7 +20,7 @@
 }
 
 .choice-group {
-  max-width:800px;
+  max-width: 800px;
   margin: 16px 0 0 0;
 }
 
