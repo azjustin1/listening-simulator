@@ -18,6 +18,7 @@ import { Result } from '../../common/models/result.model';
 import { CommonUtils } from '../../utils/common-utils';
 import { CHOICE_INDEX } from '../../utils/constant';
 import { ConfirmDialogComponent } from '../dialog/confirm-dialog/confirm-dialog.component';
+import { AnswerChoicePipe } from '../dropdown-choices/answer-choice.pipe';
 import { FileService } from '../file.service';
 import { ListeningComponent } from '../listening/listening.component';
 import { MultipleChoicesComponent } from '../multiple-choices/multiple-choices.component';
@@ -237,7 +238,7 @@ export class TestComponent extends AddOrEditQuizComponent {
               htmlString += `${choice.content}<br>`;
             }
           } else {
-            htmlString += `<b>${choice.index ? choice.index : ''}</b> ${choice.answer}<br>`;
+            htmlString += `<b>${choice.index ? choice.index : ''}</b> ${choice.answer ? choice.answer : ''}<br>`;
           }
         });
       });
@@ -260,21 +261,21 @@ export class TestComponent extends AddOrEditQuizComponent {
         htmlString += `<b>${question.name ? question.name : ''}<b><br>`;
         each(question.subQuestions, (subQuestion) => {
           htmlString += `<p>${subQuestion.content ? subQuestion.content : ''}</p><br>`;
-          each(subQuestion.choices, (choice, index) => {
-            if (subQuestion.type === 0) {
-              if (subQuestion.answer === choice.id) {
-                htmlString += `<u>${CHOICE_INDEX[index]} ${choice.content ? choice.content : ''}</u><br>`;
+          if (subQuestion.type === 3) {
+            htmlString += `${AnswerChoicePipe.prototype.transform(subQuestion)}<br>`;
+          } else {
+            each(subQuestion.choices, (choice, index) => {
+              if (subQuestion.type === 0) {
+                if (subQuestion.answer === choice.id) {
+                  htmlString += `<u>${CHOICE_INDEX[index]} ${choice.content ? choice.content : ''}</u><br>`;
+                } else {
+                  htmlString += `${CHOICE_INDEX[index]} ${choice.content ? choice.content : ''}<br>`;
+                }
               } else {
-                htmlString += `${CHOICE_INDEX[index]} ${choice.content ? choice.content : ''}<br>`;
+                htmlString += `<b>${choice.index ? choice.index : ''}</b> ${choice.answer ? choice.answer : ''}<br>`;
               }
-            } else if (question.type === 3) {
-              if (question.answer === choice.content) {
-                htmlString += `${choice.content}<br>`;
-              }
-            } else {
-              htmlString += `<b>${choice.index ? choice.index : ''}</b> ${choice.answer}<br>`;
-            }
-          });
+            });
+          }
         });
         htmlString += '<hr>';
       });

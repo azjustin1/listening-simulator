@@ -10,7 +10,6 @@ export class AnswerChoicePipe implements PipeTransform {
     const selectedChoice = question.choices.find(
       (choice) => choice.id === question.answer,
     );
-    console.log(selectedChoice)
     if (selectedChoice) {
       return selectedChoice.content;
     }
