@@ -227,11 +227,22 @@ export class TestComponent extends AddOrEditQuizComponent {
       each(part.questions, (question) => {
         htmlString += `<p>${question.content ? question.content : ''}</p><br>`;
         each(question.choices, (choice, index) => {
+          console.log(
+            chunk(question.answer, ID_LENGTH).map((chunk) => chunk.join('')),
+            choice.id,
+            chunk(question.answer, ID_LENGTH)
+              .map((chunk) => chunk.join(''))
+              .includes(choice.id!),
+          );
           if (question.type === 0) {
-            if (question.answer === choice.id) {
-              htmlString += `<u>${CHOICE_INDEX[index]}${choice.content ? choice.content : ''}</u><br>`;
+            if (
+              chunk(question.answer, ID_LENGTH)
+                .map((chunk) => chunk.join(''))
+                .includes(choice.id!)
+            ) {
+              htmlString += `<u>${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}</u><br>`;
             } else {
-              htmlString += `${CHOICE_INDEX[index]} ${choice.content ? choice.content : ''}<br>`;
+              htmlString += `${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}<br>`;
             }
           } else if (question.type === 3) {
             if (question.answer === choice.content) {
@@ -266,10 +277,14 @@ export class TestComponent extends AddOrEditQuizComponent {
           } else {
             each(subQuestion.choices, (choice, index) => {
               if (subQuestion.type === 0) {
-                if (subQuestion.answer === choice.id) {
-                  htmlString += `<u>${CHOICE_INDEX[index]} ${choice.content ? choice.content : ''}</u><br>`;
+                if (
+                  chunk(subQuestion.answer, ID_LENGTH)
+                    .map((chunk) => chunk.join(''))
+                    .includes(choice.id!)
+                ) {
+                  htmlString += `<u>${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}</u><br>`;
                 } else {
-                  htmlString += `${CHOICE_INDEX[index]} ${choice.content ? choice.content : ''}<br>`;
+                  htmlString += `${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}<br>`;
                 }
               } else {
                 htmlString += `<b>${choice.index ? choice.index : ''}</b> ${choice.answer ? choice.answer : ''}<br>`;
