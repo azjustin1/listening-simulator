@@ -227,13 +227,6 @@ export class TestComponent extends AddOrEditQuizComponent {
       each(part.questions, (question) => {
         htmlString += `<p>${question.content ? question.content : ''}</p><br>`;
         each(question.choices, (choice, index) => {
-          console.log(
-            chunk(question.answer, ID_LENGTH).map((chunk) => chunk.join('')),
-            choice.id,
-            chunk(question.answer, ID_LENGTH)
-              .map((chunk) => chunk.join(''))
-              .includes(choice.id!),
-          );
           if (question.type === 0) {
             if (
               chunk(question.answer, ID_LENGTH)
