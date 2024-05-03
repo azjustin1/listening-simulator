@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -10,13 +10,15 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { ActivatedRoute, Router } from '@angular/router';
-import { debounce, filter } from 'lodash-es';
+import { cloneDeep, debounce, filter } from 'lodash-es';
 import { Subscription } from 'rxjs';
 import { Quiz } from '../../common/models/quiz.model';
 import { ConfirmDialogComponent } from '../dialog/confirm-dialog/confirm-dialog.component';
 import { FileService } from '../file.service';
 import { ListeningComponent } from '../listening/listening.component';
 import { QuizService } from './quizzes.service';
+import { CommonUtils } from '../../utils/common-utils';
+import { BreakpointObserver } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-quizzes',
@@ -37,7 +39,7 @@ import { QuizService } from './quizzes.service';
   templateUrl: './quizzes.component.html',
   styleUrl: './quizzes.component.css',
 })
-export class QuizzesComponent implements OnDestroy {
+export class QuizzesComponent implements OnInit, OnDestroy {
   quizzes: Quiz[] = [];
   searchString: string = '';
 
@@ -49,10 +51,16 @@ export class QuizzesComponent implements OnDestroy {
     private quizService: QuizService,
     private route: ActivatedRoute,
     private router: Router,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private breakpointObserver: BreakpointObserver,
   ) {
     this.quizService.getAll().subscribe((quizzes) => {
       this.quizzes = quizzes;
+    });
+  }
+
+  ngOnInit(): void {
+    this.breakpointObserver.observe(['(max-width: 768px)']).subscribe((state) => {
     });
   }
 
@@ -63,7 +71,11 @@ export class QuizzesComponent implements OnDestroy {
   }
 
   test(id: string) {
-    this.router.navigate(['/test', id]);
+    const newResult = {
+      id: CommonUtils.generateRandomId(),
+      quizId: id,
+    };
+    this.router.navigate(['/test', newResult.id], { state: newResult });
   }
 
   addNewQuiz() {
@@ -74,9 +86,19 @@ export class QuizzesComponent implements OnDestroy {
     this.router.navigate(['edit-quiz', id]);
   }
 
+  duplicate(quiz: Quiz) {
+    let cloneQuiz = cloneDeep(quiz);
+    cloneQuiz = {
+      ...cloneQuiz,
+      id: CommonUtils.generateRandomId(),
+      name: `Copy of ${cloneQuiz.name}`,
+    };
+    this.quizService.create(cloneQuiz).subscribe(() => {
+      this.quizzes.push(cloneQuiz);
+    });
+  }
+
   onDeleteClick(quiz: Quiz) {
-    console
-    .log(quiz)
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       hasBackdrop: true,
     });

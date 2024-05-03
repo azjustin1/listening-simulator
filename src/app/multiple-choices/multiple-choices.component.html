@@ -24,30 +24,28 @@
             class="choice-index"
             [ngClass]="{
               selected: isTesting
-                ? question.answer === choice.id
-                : question.correctAnswer === choice.id,
+                ? (question.answer | correctChoice).includes(choice.id!)
+                : (question.correctAnswer | correctChoice).includes(choice.id!),
               isWrong:
                 isReadOnly &&
-                question.answer === choice.id &&
-                question.answer !== question.correctAnswer,
-              readonly: isReadOnly
+                (question.answer | correctChoice).includes(choice.id!) &&
+                !(question.correctAnswer | correctChoice).includes(choice.id!)
             }"
             (click)="onSelectChoice($index)"
           >
             <p>{{ CHOICE_INDEX[$index] }}</p>
           </div>
-          <div class="form-group">
+          <div class="choice-content">
             @if (isEditting) {
               <mat-form-field>
-                <input
+                <textarea
                   autocomplete="off"
                   [disabled]="isReadOnly"
                   matInput
                   [name]="choice.id!"
                   type="text"
-                  class="form-control"
                   [(ngModel)]="choice.content"
-                />
+                ></textarea>
               </mat-form-field>
               <button
                 mat-button

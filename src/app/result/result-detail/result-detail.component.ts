@@ -14,6 +14,7 @@ import { MultipleChoicesComponent } from '../../multiple-choices/multiple-choice
 import { ReadingComponent } from '../../reading/reading.component';
 import { ShortAnswerComponent } from '../../short-answer/short-answer.component';
 import { WritingComponent } from '../../writing/writing.component';
+import { BandScorePipe } from '../band-score.pipe';
 import { ResultService } from '../result.service';
 
 @Component({
@@ -33,6 +34,7 @@ import { ResultService } from '../result.service';
     ReadingComponent,
     ListeningComponent,
     WritingComponent,
+    BandScorePipe,
   ],
 
   templateUrl: './result-detail.component.html',
@@ -46,11 +48,17 @@ export class ResultDetailComponent {
     listeningParts: [],
     readingParts: [],
     writingParts: [],
-    correctPoint: 0,
-    totalPoint: 0,
+    correctReadingPoint: 0,
+    totalReadingPoint: 0,
+    correctListeningPoint: 0,
+    totalListeningPoint: 0,
     testDate: '',
     quizId: '',
+    isSubmit: false,
   };
+
+  correctListeningPoint = 0;
+  totalListeningPoint = 0;
 
   constructor(
     private route: ActivatedRoute,

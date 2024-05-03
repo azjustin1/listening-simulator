@@ -1,12 +1,9 @@
-<mat-tab-group animationDuration="0ms">
-  <mat-tab label="Tests">
-    <ng-template matTabContent>
-      <app-quizzes></app-quizzes>
-    </ng-template>
-  </mat-tab>
-  <mat-tab label="Results">
-    <ng-template matTabContent>
-      <app-result></app-result>
-    </ng-template>
-  </mat-tab>
-</mat-tab-group>
+<div class="container">
+  <mat-card routerLink="writings" class="card" color="primary">
+    <mat-card-content> Writing </mat-card-content>
+  </mat-card>
+
+  <mat-card routerLink="mock-test" class="card" color="primary">
+    <mat-card-content> Mock test </mat-card-content>
+  </mat-card>
+</div>

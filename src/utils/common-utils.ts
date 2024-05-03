@@ -4,7 +4,7 @@ export class CommonUtils {
     const machineId = Math.floor(Math.random() * 16777216).toString(16);
     const counter = Math.floor(Math.random() * 16777216).toString(16);
 
-    return timestamp + machineId + counter;
+    return (timestamp + machineId + counter).substring(0, 20);
   }
 
   static base64ToFile(base64Image: string, fileName: string) {
@@ -29,5 +29,17 @@ export class CommonUtils {
 
     const blob = new Blob(byteArrays, { type: 'image/png' });
     return new File([blob], fileName, { type: 'image/png' });
+  }
+
+  static getCurrentDate() {
+    const currentDate = new Date();
+
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const year = currentDate.getFullYear();
+
+    const formattedDate = `${day}/${month}/${year}`;
+
+    return formattedDate;
   }
 }

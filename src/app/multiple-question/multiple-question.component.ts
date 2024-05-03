@@ -6,7 +6,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { clone, each, mapValues } from 'lodash-es';
+import { clone, cloneDeep, each, mapValues } from 'lodash-es';
 import { AbstractQuestionComponent } from '../../common/abstract-question.component';
 import { Question } from '../../common/models/question.model';
 import { CommonUtils } from '../../utils/common-utils';
@@ -32,21 +32,21 @@ export class MultipleQuestionComponent
   extends AbstractQuestionComponent
   implements OnInit, OnChanges
 {
-  mapEdittingQuestion: Record<string, boolean> = {};
-
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
     each(this.question.subQuestions, (question) => {
       this.updateEdittingQuestion(false);
     });
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  override ngOnChanges(changes: SimpleChanges): void {
+    super.ngOnChanges(changes);
     if (changes['isSaved']?.currentValue) {
       mapValues(this.mapEdittingQuestion, () => false);
     }
   }
 
-  updateEdittingQuestion(status: boolean) {
+  override updateEdittingQuestion(status: boolean) {
     each(this.question.subQuestions, (question) => {
       this.mapEdittingQuestion[question.id!] = status;
     });
@@ -67,7 +67,7 @@ export class MultipleQuestionComponent
           id: id,
           content: '',
           type: questionType,
-          choices: this.defaultMultipleChoices(),
+          choices: this.defaultChoices(4),
           answer: '',
           correctAnswer: '',
         };
@@ -78,6 +78,16 @@ export class MultipleQuestionComponent
           content: '',
           type: questionType,
           choices: [],
+          answer: '',
+          correctAnswer: '',
+        };
+        break;
+      case 3:
+        newQuestion = {
+          id: id,
+          content: '',
+          type: questionType,
+          choices: this.defaultChoices(3),
           answer: '',
           correctAnswer: '',
         };
@@ -111,13 +121,23 @@ export class MultipleQuestionComponent
     this.mapEdittingQuestion[id] = true;
   }
 
+  duplicateQuestion(question: Question) {
+    let cloneQuestion = cloneDeep(question);
+    cloneQuestion = {
+      ...cloneQuestion,
+      id: CommonUtils.generateRandomId(),
+      content: `Copy of ${cloneQuestion.content}`,
+    };
+    this.question.subQuestions!.push(cloneQuestion);
+  }
+
   onRemoveSubQuestion(index: number) {
     this.question.subQuestions?.splice(index, 1);
   }
 
-  defaultMultipleChoices() {
+  defaultChoices(numberOfChocies: number) {
     const choices = [];
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < numberOfChocies; i++) {
       const choice = {
         id: CommonUtils.generateRandomId(),
         content: '',

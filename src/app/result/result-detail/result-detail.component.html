@@ -4,9 +4,20 @@
       <h1>
         <b>{{ result.name }}</b>
       </h1>
-      <h4><b>Name:</b> {{ result!.studentName }}</h4>
-      <h4><b>Point:</b> {{ result!.correctPoint }}/{{ result.totalPoint }}</h4>
-      <h4><b>Test date:</b> {{ result!.testDate }}</h4>
+      <h4><b>Name:</b> {{ result.studentName }}</h4>
+      <h4>
+        <b>Listening:</b> {{ result.correctListeningPoint }}/{{
+          result.totalListeningPoint
+        }}
+        &nbsp;&nbsp;<b>Band:</b> {{ result.correctListeningPoint | bandScore }}
+      </h4>
+      <h4>
+        <b>Reading:</b> {{ result.correctReadingPoint }}/{{
+          result.totalReadingPoint
+        }}
+        &nbsp;&nbsp;&nbsp;&nbsp;<b>Band:</b> {{ result.correctReadingPoint | bandScore }}
+      </h4>
+      <h4><b>Test date:</b> {{ result.testDate }}</h4>
     </div>
 
     <div class="question-container">

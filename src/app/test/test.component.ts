@@ -1,9 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  ElementRef,
-  ViewChild
-} from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -13,13 +9,16 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { each } from 'lodash-es';
+import { saveAs } from 'file-saver';
+import { asBlob } from 'html-docx-js-typescript';
+import { chunk, each, isEqual, mapValues, sortBy } from 'lodash-es';
 import { Subscription, interval } from 'rxjs';
-import { Question } from '../../common/models/question.model';
 import { Quiz } from '../../common/models/quiz.model';
 import { Result } from '../../common/models/result.model';
 import { CommonUtils } from '../../utils/common-utils';
+import { CHOICE_INDEX } from '../../utils/constant';
 import { ConfirmDialogComponent } from '../dialog/confirm-dialog/confirm-dialog.component';
+import { AnswerChoicePipe } from '../dropdown-choices/answer-choice.pipe';
 import { FileService } from '../file.service';
 import { ListeningComponent } from '../listening/listening.component';
 import { MultipleChoicesComponent } from '../multiple-choices/multiple-choices.component';
@@ -29,6 +28,8 @@ import { ReadingComponent } from '../reading/reading.component';
 import { ShortAnswerComponent } from '../short-answer/short-answer.component';
 import { WritingComponent } from '../writing/writing.component';
 import { TestService } from './test.service';
+const ID_LENGTH = 20;
+const SAVE_INTERVAL = 120000;
 
 @Component({
   selector: 'app-test',
@@ -54,17 +55,26 @@ import { TestService } from './test.service';
 })
 export class TestComponent extends AddOrEditQuizComponent {
   @ViewChild('audioPlayer') audioPlayer!: ElementRef;
+
+  @HostListener('document:keydown.control.s', ['$event'])
+  override onKeydownHandler(event: KeyboardEvent) {
+    this.onCtrlSave();
+  }
+
   result: Result = {
     id: '',
     name: '',
     studentName: '',
-    correctPoint: 0,
-    totalPoint: 0,
+    correctReadingPoint: 0,
+    totalReadingPoint: 0,
+    correctListeningPoint: 0,
+    totalListeningPoint: 0,
     testDate: '',
     quizId: '',
     listeningParts: [],
     readingParts: [],
     writingParts: [],
+    isSubmit: false,
   };
   quiz: Quiz = {
     id: '',
@@ -92,9 +102,6 @@ export class TestComponent extends AddOrEditQuizComponent {
     2: true,
   };
 
-  correctPoints: number = 0;
-  totalPoints: number = 0;
-
   constructor(
     protected override quizService: QuizService,
     protected override route: ActivatedRoute,
@@ -104,17 +111,37 @@ export class TestComponent extends AddOrEditQuizComponent {
     protected testService: TestService,
   ) {
     super(quizService, fileService, route, router, dialog);
-    this.route.paramMap.subscribe((paramMap: any) => {
-      const quizId = paramMap.get('quizId');
-      if (quizId) {
-        this.quizService.getById(quizId).subscribe((quiz: any) => {
-          this.quiz = quiz;
-          this.totalSeconds = this.quiz.listeningTimeout! * 60;
-          this.audioPlayer.nativeElement.load();
-          this.getTimeout();
-        });
-      }
-    });
+    const quizId = this.router.getCurrentNavigation()?.extras.state?.['quizId'];
+    if (quizId) {
+      this.quizService.getById(quizId).subscribe((quiz) => {
+        this.quiz = quiz;
+        this.result = { ...quiz };
+        this.totalSeconds = this.result.listeningTimeout! * 60;
+        this.audioPlayer.nativeElement.load();
+        this.getTimeout();
+      });
+
+      const saveInterval = interval(SAVE_INTERVAL).subscribe(() => {
+        this.onCtrlSave();
+      });
+      this.subscriptions.push(saveInterval);
+    }
+
+    const testId = this.router.getCurrentNavigation()?.extras.state?.['testId'];
+    if (testId) {
+      this.testService.getResultById(testId).subscribe((result) => {
+        this.result = result;
+        this.totalSeconds = this.result.listeningTimeout! * 60;
+        this.audioPlayer.nativeElement.load();
+        this.getTimeout();
+        if (this.result.currentTab) {
+          this.currentTab = this.result.currentTab;
+          this.disableOthersTab();
+          this.mapDisablePart[this.currentTab] = false;
+        }
+      });
+      this.isReady = true;
+    }
   }
 
   override ngOnDestroy(): void {
@@ -132,13 +159,13 @@ export class TestComponent extends AddOrEditQuizComponent {
 
   getTimeout() {
     if (this.currentTab === 0) {
-      this.totalSeconds = this.quiz.listeningTimeout! * 60;
+      this.totalSeconds = this.result.listeningTimeout! * 60;
     }
     if (this.currentTab === 1) {
-      this.totalSeconds = this.quiz.readingTimeout! * 60;
+      this.totalSeconds = this.result.readingTimeout! * 60;
     }
     if (this.currentTab === 2) {
-      this.totalSeconds = this.quiz.writingTimeout! * 60;
+      this.totalSeconds = this.result.writingTimeout! * 60;
     }
     this.minutes = Math.floor(this.totalSeconds / 60);
     this.seconds = this.totalSeconds % 60;
@@ -155,23 +182,133 @@ export class TestComponent extends AddOrEditQuizComponent {
     });
   }
 
+  onStartTest() {
+    this.isReady = true;
+    this.result.id = CommonUtils.generateRandomId();
+    this.testService.submitTest(this.result).subscribe();
+  }
+
+  onCtrlSave() {
+    this.saveTimeout();
+    this.result.testDate = CommonUtils.getCurrentDate();
+    this.result.currentTab = this.currentTab;
+    this.testService.saveCurrentTest(this.result).subscribe();
+  }
+
+  saveTimeout() {
+    const timeout = this.minutes + this.seconds / 60;
+    if (this.currentTab === 0) {
+      this.result.listeningTimeout = timeout;
+    }
+
+    if (this.currentTab === 1) {
+      this.result.readingTimeout = timeout;
+    }
+
+    if (this.currentTab === 2) {
+      this.result.writingTimeout = timeout;
+    }
+  }
+
   submit() {
     this.audioPlayer.nativeElement.pause();
-    this.result.id = CommonUtils.generateRandomId();
-    this.result.testDate = this.getCurrentDate();
-    this.result.name = this.quiz.name;
-    this.result.quizId = this.quiz.id!;
-    this.result.listeningParts = this.quiz.listeningParts;
-    this.result.readingParts = this.quiz.readingParts;
-    this.result.writingParts = this.quiz.writingParts;
-    this.calculatePoint();
-    this.testService.submitTest(this.result).subscribe(() => {
-      this.router.navigate(['']);
+    this.exportWriting();
+    this.calculateListeningPoint();
+    this.calculateReadingPoint();
+    this.result.isSubmit = true;
+    this.onCtrlSave();
+    this.router.navigate(['mock-test']);
+  }
+
+  exportListening() {
+    let htmlString = `<h1>${this.result.name} - Listening</h1><br><h2>Name: ${this.result.studentName}</h2><br><h2>Point: </h2><br>`;
+    each(this.result.listeningParts, (part, index) => {
+      htmlString += `<h3>Part ${index + 1}</h3><br>`;
+      each(part.questions, (question) => {
+        htmlString += `<p>${question.content ? question.content : ''}</p><br>`;
+        each(question.choices, (choice, index) => {
+          if (question.type === 0) {
+            if (
+              chunk(question.answer, ID_LENGTH)
+                .map((chunk) => chunk.join(''))
+                .includes(choice.id!)
+            ) {
+              htmlString += `<u>${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}</u><br>`;
+            } else {
+              htmlString += `${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}<br>`;
+            }
+          } else if (question.type === 3) {
+            if (question.answer === choice.content) {
+              htmlString += `${choice.content}<br>`;
+            }
+          } else {
+            htmlString += `<b>${choice.index ? choice.index : ''}</b> ${choice.answer ? choice.answer : ''}<br>`;
+          }
+        });
+      });
+      htmlString += '<hr>';
+    });
+    asBlob(htmlString).then((data: any) => {
+      saveAs(
+        data,
+        `${this.result.studentName}_Listening_${this.result.name}_${CommonUtils.getCurrentDate()}`,
+      );
     });
   }
 
-  onStartTest() {
-    this.isReady = true;
+  exportReading() {
+    let htmlString = `<h1>${this.result.name} - Reading</h1><br><h2>Name: ${this.result.studentName}</h2><br><h2>Point: </h2><br>`;
+    each(this.result.readingParts, (part, index) => {
+      htmlString += `<h3>Part ${index + 1}</h3><br>`;
+      htmlString += `<p>${part.content}</p><br>`;
+      each(part.questions, (question) => {
+        htmlString += `<b>${question.name ? question.name : ''}<b><br>`;
+        each(question.subQuestions, (subQuestion) => {
+          htmlString += `<p>${subQuestion.content ? subQuestion.content : ''}</p><br>`;
+          if (subQuestion.type === 3) {
+            htmlString += `${AnswerChoicePipe.prototype.transform(subQuestion)}<br>`;
+          } else {
+            each(subQuestion.choices, (choice, index) => {
+              if (subQuestion.type === 0) {
+                if (
+                  chunk(subQuestion.answer, ID_LENGTH)
+                    .map((chunk) => chunk.join(''))
+                    .includes(choice.id!)
+                ) {
+                  htmlString += `<u>${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}</u><br>`;
+                } else {
+                  htmlString += `${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}<br>`;
+                }
+              } else {
+                htmlString += `<b>${choice.index ? choice.index : ''}</b> ${choice.answer ? choice.answer : ''}<br>`;
+              }
+            });
+          }
+        });
+        htmlString += '<hr>';
+      });
+    });
+    asBlob(htmlString).then((data: any) => {
+      saveAs(
+        data,
+        `${this.result.studentName}_Reading_${this.result.name}_${CommonUtils.getCurrentDate()}`,
+      );
+    });
+  }
+
+  exportWriting() {
+    let htmlString = `<h1>${this.result.name} - Writing</h1><br><h2>Name: ${this.result.studentName}</h2><br><h2>Point: </h2><br>`;
+    each(this.result.writingParts, (part) => {
+      htmlString =
+        htmlString + part.content + '<br>' + part.answer + '<hr><br>';
+    });
+
+    asBlob(htmlString).then((data: any) => {
+      saveAs(
+        data,
+        `${this.result.studentName}_Writing_${this.result.name}_${CommonUtils.getCurrentDate()}`,
+      );
+    });
   }
 
   onListeningStart() {
@@ -180,7 +317,7 @@ export class TestComponent extends AddOrEditQuizComponent {
   }
 
   onStartPart() {
-    if (this.currentTab === 0) {
+    if (this.currentTab === 0 && this.audioPlayer) {
       this.audioPlayer.nativeElement.play();
     }
     this.isStart = true;
@@ -218,8 +355,12 @@ export class TestComponent extends AddOrEditQuizComponent {
   onSubmitPartClick(tab: number) {
     if (tab === 0) {
       this.audioPlayer.nativeElement.pause();
+      this.exportListening();
     }
-    this.mapDisablePart[tab] = true;
+    if (tab === 1) {
+      this.exportReading();
+    }
+    this.disableOthersTab();
     this.mapDisablePart[tab + 1] = false;
     this.currentTab = tab + 1;
     if (this.timeoutInterval) {
@@ -227,57 +368,119 @@ export class TestComponent extends AddOrEditQuizComponent {
     }
   }
 
-  private getCurrentDate() {
-    const currentDate = new Date();
-
-    const day = String(currentDate.getDate()).padStart(2, '0');
-    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-    const year = currentDate.getFullYear();
-
-    const formattedDate = `${day}/${month}/${year}`;
-
-    return formattedDate;
+  private disableOthersTab() {
+    this.mapDisablePart = mapValues(this.mapDisablePart, () => true);
   }
 
-  private calculatePoint() {
+  private calculateListeningPoint() {
+    let correctPoint = 0;
+    let totalPoint = 0;
     each(this.result.listeningParts, (part) => {
-      this.calculateQuestionPoints(part.questions);
+      each(part.questions, (question) => {
+        switch (question.type) {
+          case 0:
+            // Multiple choices
+            totalPoint++;
+            if (
+              question.answer !== '' &&
+              isEqual(
+                sortBy(
+                  chunk(question.answer, ID_LENGTH).map((chunk) =>
+                    chunk.join(''),
+                  ),
+                ),
+                sortBy(
+                  chunk(question.correctAnswer, ID_LENGTH).map((chunk) =>
+                    chunk.join(''),
+                  ),
+                ),
+              )
+            ) {
+              correctPoint++;
+            }
+            break;
+          case 1:
+            // Short answer
+            each(question.choices, (choice) => {
+              totalPoint++;
+              if (
+                choice.answer !== '' &&
+                (choice.answer?.trim() === choice.correctAnswer?.trim() ||
+                  choice.correctAnswer?.split('/').includes(choice.answer!))
+              ) {
+                correctPoint++;
+              }
+            });
+            break;
+          case 3:
+            totalPoint++;
+            if (question.correctAnswer === question.answer) {
+              correctPoint++;
+            }
+            break;
+          default:
+            break;
+        }
+      });
     });
-
-    each(this.result.readingParts, (part) => {
-      this.calculateQuestionPoints(part.questions);
-    });
-    this.result.totalPoint = this.totalPoints;
-    this.result.correctPoint = this.correctPoints;
+    this.result.correctListeningPoint = correctPoint;
+    this.result.totalListeningPoint = totalPoint;
   }
 
-  calculateQuestionPoints(questions: Question[]) {
-    each(questions, (question) => {
-      switch (question.type) {
-        case 0:
-          // Multiple choices
-          this.totalPoints++;
-          if (question.answer === question.correctAnswer) {
-            console.log(question)
-            this.correctPoints++;
+  private calculateReadingPoint() {
+    let correctPoint = 0;
+    let totalPoint = 0;
+    each(this.result.readingParts, (part) => {
+      each(part.questions, (question) => {
+        each(question.subQuestions, (subQuestion) => {
+          switch (subQuestion.type) {
+            case 0:
+              // Multiple choices
+              totalPoint++;
+              if (
+                subQuestion.answer !== '' &&
+                isEqual(
+                  sortBy(
+                    chunk(question.answer, ID_LENGTH).map((chunk) =>
+                      chunk.join(''),
+                    ),
+                  ),
+                  sortBy(
+                    chunk(question.correctAnswer, ID_LENGTH).map((chunk) =>
+                      chunk.join(''),
+                    ),
+                  ),
+                )
+              ) {
+                correctPoint++;
+              }
+              break;
+            case 1:
+              // Short answer
+              each(subQuestion.choices, (choice) => {
+                totalPoint++;
+                if (
+                  choice.answer !== '' &&
+                  (choice.answer?.trim() === choice.correctAnswer?.trim() ||
+                    choice.correctAnswer?.split('/').includes(choice.answer!))
+                ) {
+                  correctPoint++;
+                }
+              });
+              break;
+            case 3:
+              totalPoint++;
+              if (question.answer === question.correctAnswer) {
+                correctPoint++;
+              }
+              break;
+            default:
+              break;
           }
-          break;
-        case 1:
-          // Short answer
-          each(question.choices, (choice) => {
-            this.totalPoints++;
-            if (choice.answer === choice.correctAnswer) {
-              console.log(question)
-              this.correctPoints++;
-            }
-          });
-          break;
-        case 2:
-          this.calculateQuestionPoints(question.subQuestions!);
-          break;
-        default:
-          break;
-      }
+        });
+      });
     });
+    this.result.correctReadingPoint = correctPoint;
+    this.result.totalReadingPoint = totalPoint;
   }
 }

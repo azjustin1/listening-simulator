@@ -6,11 +6,11 @@ import {
   OnChanges,
   OnDestroy,
   Output,
-  SimpleChanges
+  SimpleChanges,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AngularEditorConfig, UploadResponse } from '@wfpena/angular-wysiwyg';
-import { clone, debounce, each, mapValues } from 'lodash-es';
+import { clone, cloneDeep, debounce, each, mapValues } from 'lodash-es';
 import { map, Subscription } from 'rxjs';
 import { FileService } from '../app/file.service';
 import { CommonUtils } from '../utils/common-utils';
@@ -104,25 +104,12 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     this.data.wordCount = value.trim().split(/\s+/).length;
   }
 
-  defaultMultipleChoices() {
+  defaultChoices(numberOfChocies: number) {
     const choices = [];
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < numberOfChocies; i++) {
       const choice = {
         id: CommonUtils.generateRandomId(),
         content: '',
-      };
-      choices.push(choice);
-    }
-    return choices;
-  }
-
-  defaultShortAnswerChoices() {
-    const choices = [];
-    for (let i = 0; i < 4; i++) {
-      const choice = {
-        id: CommonUtils.generateRandomId(),
-        content: '',
-        index: '',
       };
       choices.push(choice);
     }
@@ -137,7 +124,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
           id: id,
           content: '',
           type: questionType,
-          choices: this.defaultMultipleChoices(),
+          choices: this.defaultChoices(4),
           answer: '',
           correctAnswer: '',
         };
@@ -161,6 +148,16 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
           answer: '',
           correctAnswer: '',
           subQuestions: [],
+        };
+        break;
+      case 3:
+        this.currentQuestion = {
+          id: id,
+          content: '',
+          type: questionType,
+          choices: this.defaultChoices(3),
+          answer: '',
+          correctAnswer: '',
         };
         break;
       default:
@@ -190,6 +187,16 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     const tempQuestion = clone(this.data.questions[index + 1]);
     this.data.questions[index + 1] = this.data.questions[index];
     this.data.questions[index] = tempQuestion;
+  }
+
+  duplicateQuestion(question: Question) {
+    let cloneQuestion = cloneDeep(question);
+    cloneQuestion = {
+      ...cloneQuestion,
+      id: CommonUtils.generateRandomId(),
+      content: `Copy of ${cloneQuestion.content}`,
+    };
+    this.data.questions.push(cloneQuestion);
   }
 
   removeQuestion(questionIdex: number) {
@@ -222,14 +229,14 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     const base64Image = this.extractBase64Image(content);
     if (base64Image !== null && base64Image[1].startsWith('data')) {
       const imageSrc = base64Image[1];
-      const fileName = `${this.data.id}.png`;
+      const fileName = `${this.data.id}_${new Date().getMilliseconds()}.png`;
       const imageFile: File = CommonUtils.base64ToFile(imageSrc, fileName);
       this.fileService.uploadFile(imageFile).subscribe((response) => {
         const imageName = response.fileName;
         this.data.imageName = imageName;
         this.data.content = this.data.content?.replace(
-          imageSrc,
-          `http://localhost:3000/upload/${response.fileName}`,
+          `"${imageSrc}"`,
+          `"http://localhost:3000/upload/${response.fileName}" width="100%"`,
         );
       });
     }

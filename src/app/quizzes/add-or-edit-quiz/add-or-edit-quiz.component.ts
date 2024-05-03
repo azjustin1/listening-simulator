@@ -230,7 +230,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
     this.currentQuiz.readingParts.splice(index, 1);
   }
 
-  remoteWritingPart(index: number) {
+  removeWritingPart(index: number) {
     this.currentQuiz.writingParts.splice(index, 1);
   }
 
@@ -245,8 +245,8 @@ export class AddOrEditQuizComponent implements OnDestroy {
       dialogRef.componentInstance.isWarning = true;
     } else {
       this.saveOrEditQuiz(this.currentQuiz);
+      this.router.navigate(['/mock-test']);
     }
-    this.router.navigate(['/']);
   }
 
   saveOrEditQuiz(quiz: Quiz) {

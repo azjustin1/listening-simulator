@@ -1,4 +1,4 @@
-<div class="test-container">
+<div class="container">
   <div class="question-group">
     <mat-accordion>
       @for (
@@ -38,6 +38,14 @@
                 <mat-icon>edit</mat-icon>
               </button>
             }
+            <button
+              mat-button
+              type="button"
+              class="btn btn-danger"
+              (click)="duplicateQuestion(question)"
+            >
+              <mat-icon>content_copy</mat-icon>
+            </button>
             <button
               mat-button
               color="warn"
@@ -95,7 +103,7 @@
         [config]="config"
       ></angular-editor>
     } @else {
-      <span [innerHTML]="data.content"></span>
+      <span class="reading-content" [innerHTML]="data.content"></span>
     }
   </div>
 </div>

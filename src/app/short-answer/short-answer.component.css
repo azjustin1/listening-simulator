@@ -1,45 +1,18 @@
-.question-text {
-  display: flex;
-  width: 100%;
-  height: 30px;
-  line-height: 60px;
-}
-
-.answer-input {
-  height: 30px;
-  line-height: 60px;
-}
-
-.answer-container {
-  display: flex;
-  width: 100%;
-}
-
 .answer {
-  display: flex;
-  height: 30px;
-  width: max-content;
-  line-height: 60px;
+  width: fit-content;
   font-weight: bold;
 }
 
-.answer.correct {
-  color: var(--success-color);
-}
-
-.answer.incorrect {
-  height: 30px;
-  line-height: 60px;
+.incorrect-answer {
+  margin-left: 16px;
   color: var(--danger-color);
+  width: 100%;
 }
 
 .correct-answer {
-  height: 30px;
-  line-height: 60px;
   color: var(--success-color);
   font-weight: bold;
   margin-left: 16px;
-  text-decoration: none;
 }
 
 .form-group {
@@ -47,10 +20,14 @@
 }
 
 .choice-group {
+  max-width: 800px;
   margin: 16px 0 0 0;
 }
 
 .choice-index {
-  width: 50px;
   margin-right: 16px;
+}
+
+.choice-answer {
+  width: 50%;
 }

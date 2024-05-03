@@ -1,5 +1,5 @@
 <div class="actions">
-  <button mat-raised-button color="primary" (click)="addNewQuiz()">
+  <button style="height: 56px;" mat-raised-button color="primary" (click)="addNewQuiz()">
     Add New Test
   </button>
   <mat-form-field>
@@ -23,15 +23,16 @@
       <mat-card-content class="card-content">
         <h2 class="mat-display-2 card-content-text">
           {{ quiz.name }}
-        </h2></mat-card-content
-      >
+        </h2>
+      </mat-card-content>
       <mat-card-actions>
         <button mat-icon-button [matMenuTriggerFor]="menu">
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="test(quiz._id!)">Test</button>
-          <button mat-menu-item (click)="edit(quiz._id!)">Edit</button>
+          <button mat-menu-item (click)="test(quiz.id)">Test</button>
+          <button mat-menu-item (click)="edit(quiz.id)">Edit</button>
+          <button mat-menu-item (click)="duplicate(quiz)">Duplicate</button>
           <button mat-menu-item (click)="onDeleteClick(quiz)">Delete</button>
         </mat-menu>
       </mat-card-actions>

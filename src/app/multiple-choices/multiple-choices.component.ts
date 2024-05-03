@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { AbstractQuestionComponent } from '../../common/abstract-question.component';
 import { FileService } from '../file.service';
+import { ChoicePipe } from './choice.pipe';
 @Component({
   selector: 'app-multiple-choices',
   standalone: true,
@@ -21,6 +22,7 @@ import { FileService } from '../file.service';
     AngularEditorModule,
     MatIconModule,
     MatCardModule,
+    ChoicePipe,
   ],
   providers: [FileService],
   templateUrl: './multiple-choices.component.html',
@@ -28,6 +30,7 @@ import { FileService } from '../file.service';
 })
 export class MultipleChoicesComponent extends AbstractQuestionComponent {
   selectedAnswer: string = '';
+  mapSelectedChoice: Record<number, boolean> = {};
 
   CHOICE_INDEX = [
     'A',
@@ -63,14 +66,30 @@ export class MultipleChoicesComponent extends AbstractQuestionComponent {
       return;
     }
 
-    this.selectedAnswer = this.question.choices[index].id!;
+    this.mapSelectedChoice[index] = !this.mapSelectedChoice[index];
 
     if (this.isEditting) {
-      this.question.correctAnswer = this.selectedAnswer;
+      if (
+        !this.question.correctAnswer?.includes(this.question.choices[index].id!)
+      ) {
+        this.question.correctAnswer += `${this.question.choices[index].id}`;
+      } else {
+        this.question.correctAnswer = this.question.correctAnswer.replace(
+          `${this.question.choices[index].id}`,
+          '',
+        );
+      }
     }
 
     if (this.isTesting) {
-      this.question.answer = this.selectedAnswer;
+      if (!this.question.answer.includes(this.question.choices[index].id!)) {
+        this.question.answer += `${this.question.choices[index].id}`;
+      } else {
+        this.question.answer = this.question.answer?.replace(
+          `${this.question.choices[index].id}`,
+          '',
+        );
+      }
     }
   }
 }

@@ -7,7 +7,7 @@ export interface Question {
   type?: number | null;
   choices: Choice[];
   answer: string;
-  correctAnswer?: string;
+  correctAnswer: string;
   imageName?: string;
   subQuestions?: Question[];
 }

@@ -1,8 +1,7 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 
 export const apiInterceptor: HttpInterceptorFn = (req, next) => {
-  const cloneReq = req.clone({
-    url: 'http://localhost:3000' + req.url,
-  });
+  const api = 'http://127.0.0.1:3000';
+  const cloneReq = req.clone({ url: `${api}${req.url}` });
   return next(cloneReq);
 };

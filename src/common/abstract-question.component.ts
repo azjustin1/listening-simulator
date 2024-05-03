@@ -1,7 +1,14 @@
 import { HttpResponse } from '@angular/common/http';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { AngularEditorConfig, UploadResponse } from '@wfpena/angular-wysiwyg';
-import { debounce } from 'lodash-es';
+import { debounce, each } from 'lodash-es';
 import { map } from 'rxjs';
 import { FileService } from '../app/file.service';
 import { Question } from '../common/models/question.model';
@@ -10,7 +17,7 @@ import { CommonUtils } from '../utils/common-utils';
 @Component({
   template: '',
 })
-export abstract class AbstractQuestionComponent {
+export abstract class AbstractQuestionComponent implements OnChanges {
   @Input() question!: Question;
   @Input() isSaved: boolean = false;
   @Input() isEditting: boolean = false;
@@ -24,7 +31,19 @@ export abstract class AbstractQuestionComponent {
 
   onPaste = debounce((event) => this.uploadQuestionBase64Images(event), 1000);
 
+  mapEdittingQuestion: Record<string, boolean> = {};
+
   constructor(private fileService: FileService) {}
+
+  ngOnInit(): void {
+    this.mapEdittingQuestion[this.question.id!] = false;
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['isSaved']?.currentValue) {
+      this.isEditting = false;
+    }
+  }
 
   config: AngularEditorConfig = {
     editable: true,
@@ -56,6 +75,12 @@ export abstract class AbstractQuestionComponent {
       );
     },
   };
+
+  updateEdittingQuestion(status: boolean) {
+    each(this.question.subQuestions, (question) => {
+      this.mapEdittingQuestion[question.id!] = status;
+    });
+  }
 
   onSaveQuestion() {
     this.onSave.emit();
@@ -89,12 +114,12 @@ export abstract class AbstractQuestionComponent {
     const base64Image = this.extractBase64Image(content);
     if (base64Image !== null && base64Image[1].startsWith('data')) {
       const imageSrc = base64Image[1];
-      const fileName = `${this.question.id}.png`;
+      const fileName = `${this.question.id}_${new Date().getMilliseconds()}.png`;
       const imageFile: File = CommonUtils.base64ToFile(imageSrc, fileName);
       this.fileService.uploadFile(imageFile).subscribe((response) => {
         this.question.content = this.question.content?.replace(
-          imageSrc,
-          `http://localhost:3000/upload/${response.fileName}`,
+          `"${imageSrc}"`,
+          `"http://localhost:3000/upload/${response.fileName}" width="100%"`,
         );
       });
     }

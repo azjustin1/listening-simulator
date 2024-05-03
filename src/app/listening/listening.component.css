@@ -6,7 +6,7 @@
 .question-group {
   justify-content: center;
   flex: 50%;
-  height: fit-content;
+  max-height: fit-content;
 }
 
 .input-group {
@@ -17,15 +17,8 @@
   pointer-events: none;
 }
 
-.card {
-  margin: 0 16px 16px 0;
-  cursor: pointer;
-}
-
-.question-type-item {
-  width: 120px;
-  text-align: center;
-  margin: 16px 0;
+.add-question-button {
+  margin: 0 10px 0 0;
 }
 
 .actions {
@@ -36,7 +29,6 @@
 .question {
   padding: 16px;
   margin: 16px 0;
-  height: fit-content;
 }
 
 .upload-file {
