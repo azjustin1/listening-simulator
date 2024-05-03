@@ -1,10 +1,14 @@
 const express = require("express");
 const jsonServer = require("json-server");
+const mongoose = require("mongoose");
 const cors = require("cors");
 const server = express();
 const path = require("path");
 const multer = require("multer");
 const fs = require("fs");
+
+// Routes
+const quizRoute = require("./routes/quiz.routes");
 
 const port = process.env.PORT || 3000;
 
@@ -29,7 +33,7 @@ const upload = multer({ storage: storage });
 server.use(express.static(`${__dirname}/dist/browser`));
 server.use(cors({ origin: "http://localhost:4200" }));
 server.use(express.json());
-server.use('/upload', express.static(`${__dirname}/upload`))
+server.use("/upload", express.static(`${__dirname}/upload`));
 
 server.post("/upload", upload.single("file"), (req, res) => {
   // Access uploaded file information using req.file
@@ -80,7 +84,16 @@ server.delete("/file/:filename", (req, res) => {
   }
 });
 
+server.use("/quiz", quizRoute);
 server.use("/", jsonServer.router("db.json"));
+
+mongoose.connect("mongodb://0.0.0.0:27017/listening-simulator", {});
+
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "MongoDB connection error:"));
+db.once("open", () => {
+  console.log("Connected to MongoDB");
+});
 
 server.listen(port, () => {
   console.log(`Server is running at port ${port}`);
