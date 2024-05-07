@@ -24,6 +24,7 @@ import { ListeningComponent } from '../../listening/listening.component';
 import { ReadingComponent } from '../../reading/reading.component';
 import { WritingComponent } from '../../writing/writing.component';
 import { QuizService } from '../quizzes.service';
+import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-add-or-edit-quiz',
@@ -116,7 +117,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
       .subscribe((res) => {
         this.subscription.push(uploadSub);
         if (res) {
-          this.currentQuiz.audioUrl = `http://localhost:3000/upload/${res.fileName}`;
+          this.currentQuiz.audioUrl = `${environment.api}/upload/${res.fileName}`;
         }
       });
     this.subscription.push(uploadSub);

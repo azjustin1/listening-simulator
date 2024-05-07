@@ -28,6 +28,7 @@ import { WritingService } from '../writing-test.service';
 
 import { saveAs } from 'file-saver';
 import { asBlob } from 'html-docx-js-typescript';
+import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-add-or-edit-writing',
@@ -99,7 +100,7 @@ export class AddOrEditWritingComponent {
     upload: (file: File) => {
       return this.fileService.uploadFile(file).pipe(
         map((response) => {
-          const imageUrl = `http://localhost:3000/upload/${response.fileName}`;
+          const imageUrl = `${environment.api}/upload/${response.fileName}`;
           return {
             ...response,
             body: { imageUrl: imageUrl },

@@ -6,22 +6,16 @@ import { Observable, map } from 'rxjs';
 export class FileService {
   constructor(private httpClient: HttpClient) {}
 
-  getFile(fileName: string): Observable<any> {
-    return this.httpClient.get<any>(`/file/${fileName}`, {
-      responseType: 'blob' as 'json',
-    });
-  }
-
   uploadFile(file: File): Observable<any> {
     const formData: FormData = new FormData();
 
     formData.append('file', file);
 
-    return this.httpClient.post<any>(`/upload`, formData);
+    return this.httpClient.post<any>(`upload`, formData);
   }
 
   deleteFile(fileName: string): Observable<any> {
-    return this.httpClient.delete<any>(`/file/${fileName}`, {
+    return this.httpClient.delete<any>(`file/${fileName}`, {
       responseType: 'json',
     });
   }

@@ -5,8 +5,7 @@ const server = express();
 const path = require("path");
 const multer = require("multer");
 const fs = require("fs");
-
-const port = process.env.PORT || 3000;
+require('dotenv').config();
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -31,7 +30,7 @@ server.use(cors({ origin: "http://localhost:4200" }));
 server.use(express.json());
 server.use('/upload', express.static(`${__dirname}/upload`))
 
-server.post("/upload", upload.single("file"), (req, res) => {
+server.post("/api/upload", upload.single("file"), (req, res) => {
   // Access uploaded file information using req.file
   if (req.file) {
     // File was uploaded successfully
@@ -42,7 +41,7 @@ server.post("/upload", upload.single("file"), (req, res) => {
   }
 });
 
-server.get("/file/:filename", (req, res) => {
+server.get("/api/file/:filename", (req, res) => {
   const filename = req.params.filename;
   const filePath = path.join(__dirname, "upload", filename);
 
@@ -80,8 +79,14 @@ server.delete("/file/:filename", (req, res) => {
   }
 });
 
-server.use("/", jsonServer.router("db.json"));
+server.use("/api", jsonServer.router("db.json"));
+server.get('*', function(req, res){
+  res.sendFile(__dirname + "/dist/browser/index.html");
+});
 
-server.listen(port, () => {
-  console.log(`Server is running at port ${port}`);
+const port = process.env.PORT || 3000;
+const host = process.env.HOST || "0.0.0.0";
+
+server.listen(port, host, () => {
+  console.log(`Server is running at port ${host}:${port}`);
 });

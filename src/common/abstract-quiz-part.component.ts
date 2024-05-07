@@ -16,6 +16,7 @@ import { FileService } from '../app/file.service';
 import { CommonUtils } from '../utils/common-utils';
 import { AbstractPart } from './models/abstract-part.model';
 import { Question } from './models/question.model';
+import { environment } from '../environments/environment.development';
 
 @Component({
   template: '',
@@ -66,7 +67,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     upload: (file: File) => {
       return this.fileService.uploadFile(file).pipe(
         map((response) => {
-          const imageUrl = `http://localhost:3000/upload/${response.fileName}`;
+          const imageUrl = `${environment.api}/api/upload/${response.fileName}`;
           return {
             ...response,
             body: { imageUrl: imageUrl },
@@ -236,7 +237,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
         this.data.imageName = imageName;
         this.data.content = this.data.content?.replace(
           `"${imageSrc}"`,
-          `"http://localhost:3000/upload/${response.fileName}" width="100%"`,
+          `"${environment.api}upload/${response.fileName}" width="100%"`,
         );
       });
     }

@@ -13,6 +13,7 @@ import { map } from 'rxjs';
 import { FileService } from '../app/file.service';
 import { Question } from '../common/models/question.model';
 import { CommonUtils } from '../utils/common-utils';
+import { environment } from '../environments/environment.development';
 
 @Component({
   template: '',
@@ -66,7 +67,7 @@ export abstract class AbstractQuestionComponent implements OnChanges {
     upload: (file: File) => {
       return this.fileService.uploadFile(file).pipe(
         map((response) => {
-          const imageUrl = `http://localhost:3000/upload/${response.fileName}`;
+          const imageUrl = `${environment.api}/upload/${response.fileName}`;
           return {
             ...response,
             body: { imageUrl: imageUrl },
@@ -119,7 +120,7 @@ export abstract class AbstractQuestionComponent implements OnChanges {
       this.fileService.uploadFile(imageFile).subscribe((response) => {
         this.question.content = this.question.content?.replace(
           `"${imageSrc}"`,
-          `"http://localhost:3000/upload/${response.fileName}" width="100%"`,
+          `"${environment.api}/upload/${response.fileName}" width="100%"`,
         );
       });
     }
