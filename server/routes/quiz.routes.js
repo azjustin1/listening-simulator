@@ -55,7 +55,7 @@ router.put("/:id", async (req, res) => {
 // Delete a quiz
 router.delete("/:id", async (req, res) => {
   try {
-    const quiz = await Quiz.findByIdAndRemove(req.params.id);
+    const quiz = await Quiz.findByIdAndDelete(req.params.id);
     if (!quiz) {
       return res.status(404).json({ message: "Quiz not found" });
     }

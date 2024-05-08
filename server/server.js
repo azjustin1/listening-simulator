@@ -10,8 +10,6 @@ const fs = require("fs");
 // Routes
 const quizRoute = require("./routes/quiz.routes");
 
-const port = process.env.PORT || 3000;
-
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     let uploadDir = `${__dirname}/upload`;
@@ -30,12 +28,18 @@ const storage = multer.diskStorage({
 // Create an instance of Multer with the storage configuration
 const upload = multer({ storage: storage });
 
-server.use(express.static(`${__dirname}/dist/browser`));
-server.use(cors({ origin: "http://localhost:4200" }));
+server.use(cors());
 server.use(express.json());
+server.use(express.static(`${__dirname}/dist/browser`));
+server.use("/mock-test", (req, res) => {
+  res.sendFile(`${__dirname}/dist/browser/index.html`);
+});
+server.use("/edit-quiz/:id", (req, res) => {
+  res.sendFile(`${__dirname}/dist/browser/index.html`);
+});
 server.use("/upload", express.static(`${__dirname}/upload`));
 
-server.post("/upload", upload.single("file"), (req, res) => {
+server.post("/api/upload", upload.single("file"), (req, res) => {
   // Access uploaded file information using req.file
   if (req.file) {
     // File was uploaded successfully
@@ -65,7 +69,7 @@ server.get("/file/:filename", (req, res) => {
   }
 });
 
-server.delete("/file/:filename", (req, res) => {
+server.delete("/api/file/:filename", (req, res) => {
   const filename = req.params.filename;
   const filePath = path.join(__dirname, "upload", filename);
 
@@ -84,8 +88,8 @@ server.delete("/file/:filename", (req, res) => {
   }
 });
 
-server.use("/quiz", quizRoute);
-server.use("/", jsonServer.router("db.json"));
+server.use("/api/quizzes", quizRoute);
+server.use("/api", jsonServer.router("db.json"));
 
 mongoose.connect("mongodb://0.0.0.0:27017/listening-simulator", {});
 
@@ -95,6 +99,9 @@ db.once("open", () => {
   console.log("Connected to MongoDB");
 });
 
-server.listen(port, () => {
+const host = process.env.HOST || '0.0.0.0';
+const port = process.env.PORT || 3000;
+
+server.listen(3000, '192.168.1.10', () => {
   console.log(`Server is running at port ${port}`);
 });

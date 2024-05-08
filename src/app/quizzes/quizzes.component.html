@@ -30,8 +30,8 @@
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="test(quiz.id)">Test</button>
-          <button mat-menu-item (click)="edit(quiz.id)">Edit</button>
+          <button mat-menu-item (click)="test(quiz._id!)">Test</button>
+          <button mat-menu-item (click)="edit(quiz._id!)">Edit</button>
           <button mat-menu-item (click)="duplicate(quiz)">Duplicate</button>
           <button mat-menu-item (click)="onDeleteClick(quiz)">Delete</button>
         </mat-menu>
