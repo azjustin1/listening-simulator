@@ -470,7 +470,7 @@ export class TestComponent extends AddOrEditQuizComponent {
               break;
             case 3:
               totalPoint++;
-              if (question.answer === question.correctAnswer) {
+              if (subQuestion.answer === subQuestion.correctAnswer) {
                 correctPoint++;
               }
               break;
