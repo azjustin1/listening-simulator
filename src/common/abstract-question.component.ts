@@ -13,7 +13,7 @@ import { map } from 'rxjs';
 import { FileService } from '../app/file.service';
 import { Question } from '../common/models/question.model';
 import { CommonUtils } from '../utils/common-utils';
-import { environment } from '../environments/environment.development';
+import { environment } from '../environments/environment';
 
 @Component({
   template: '',

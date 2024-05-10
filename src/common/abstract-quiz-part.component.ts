@@ -16,7 +16,7 @@ import { FileService } from '../app/file.service';
 import { CommonUtils } from '../utils/common-utils';
 import { AbstractPart } from './models/abstract-part.model';
 import { Question } from './models/question.model';
-import { environment } from '../environments/environment.development';
+import { environment } from '../environments/environment';
 
 @Component({
   template: '',

@@ -28,7 +28,7 @@ import { WritingService } from '../writing-test.service';
 
 import { saveAs } from 'file-saver';
 import { asBlob } from 'html-docx-js-typescript';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-add-or-edit-writing',
