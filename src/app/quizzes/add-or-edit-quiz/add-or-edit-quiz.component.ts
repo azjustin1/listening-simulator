@@ -24,7 +24,7 @@ import { ListeningComponent } from '../../listening/listening.component';
 import { ReadingComponent } from '../../reading/reading.component';
 import { WritingComponent } from '../../writing/writing.component';
 import { QuizService } from '../quizzes.service';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-add-or-edit-quiz',
