@@ -11,11 +11,11 @@ export class FileService {
 
     formData.append('file', file);
 
-    return this.httpClient.post<any>(`upload`, formData);
+    return this.httpClient.post<any>(`/upload`, formData);
   }
 
   deleteFile(fileName: string): Observable<any> {
-    return this.httpClient.delete<any>(`file/${fileName}`, {
+    return this.httpClient.delete<any>(`/file/${fileName}`, {
       responseType: 'json',
     });
   }
