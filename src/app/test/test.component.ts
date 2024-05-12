@@ -121,10 +121,7 @@ export class TestComponent extends AddOrEditQuizComponent {
         this.getTimeout();
       });
 
-      const saveInterval = interval(SAVE_INTERVAL).subscribe(() => {
-        this.onCtrlSave();
-      });
-      this.subscriptions.push(saveInterval);
+      this.startAutoSave();
     }
 
     const testId = this.router.getCurrentNavigation()?.extras.state?.['testId'];
@@ -141,6 +138,7 @@ export class TestComponent extends AddOrEditQuizComponent {
         }
       });
       this.isReady = true;
+      this.startAutoSave();
     }
   }
 
@@ -149,6 +147,13 @@ export class TestComponent extends AddOrEditQuizComponent {
     if (this.timeoutInterval) {
       this.timeoutInterval.unsubscribe();
     }
+  }
+
+  startAutoSave() {
+    const saveInterval = interval(SAVE_INTERVAL).subscribe(() => {
+      this.onCtrlSave();
+    });
+    this.subscriptions.push(saveInterval);
   }
 
   onChangeTab(tab: number) {
