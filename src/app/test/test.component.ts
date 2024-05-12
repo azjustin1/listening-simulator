@@ -322,7 +322,7 @@ export class TestComponent extends AddOrEditQuizComponent {
     }
     this.isStart = true;
     this.timeoutInterval = interval(1000).subscribe(() => {
-      if (this.seconds === 0) {
+      if (this.seconds < 1) {
         this.minutes--;
         this.seconds = 59;
       } else {

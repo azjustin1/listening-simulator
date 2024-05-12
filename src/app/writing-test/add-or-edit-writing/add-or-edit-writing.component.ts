@@ -183,7 +183,7 @@ export class AddOrEditWritingComponent {
     this.isReady = true;
     this.getTimeout();
     const sub = interval(1000).subscribe(() => {
-      if (this.seconds === 0) {
+      if (this.seconds < 1) {
         this.minutes--;
         this.seconds = 59;
       } else {
