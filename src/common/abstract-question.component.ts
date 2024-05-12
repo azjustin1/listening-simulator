@@ -14,6 +14,7 @@ import { FileService } from '../app/file.service';
 import { Question } from '../common/models/question.model';
 import { CommonUtils } from '../utils/common-utils';
 import { environment } from '../environments/environment';
+import { BASE64_IMAGE_REGEX } from '../utils/constant';
 
 @Component({
   template: '',
@@ -106,7 +107,7 @@ export abstract class AbstractQuestionComponent implements OnChanges {
   }
 
   extractBase64Image(content: string) {
-    const regex = /<img[^>]+src="([^">]+)"/g;
+    const regex = BASE64_IMAGE_REGEX;
     const match = regex.exec(content);
     return match;
   }

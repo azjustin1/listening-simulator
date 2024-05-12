@@ -5,6 +5,5 @@ export interface AbstractPart {
   content: string;
   timeout: number | undefined;
   questions: Question[];
-  imageName?: string;
   wordCount: number
 }

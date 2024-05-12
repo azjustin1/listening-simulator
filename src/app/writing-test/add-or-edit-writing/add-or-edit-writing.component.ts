@@ -64,7 +64,6 @@ export class AddOrEditWritingComponent {
     content: '',
     answer: '',
     timeout: 0,
-    imageName: '',
     wordCount: 0,
     questions: [],
     parts: [],
@@ -272,7 +271,6 @@ export class AddOrEditWritingComponent {
       content: '',
       timeout: undefined,
       questions: [],
-      imageName: '',
       answer: '',
       wordCount: 0,
     };

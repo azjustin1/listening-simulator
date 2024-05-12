@@ -17,6 +17,7 @@ import { CommonUtils } from '../utils/common-utils';
 import { AbstractPart } from './models/abstract-part.model';
 import { Question } from './models/question.model';
 import { environment } from '../environments/environment';
+import { BASE64_IMAGE_REGEX } from '../utils/constant';
 
 @Component({
   template: '',
@@ -211,7 +212,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
   }
 
   extractBase64Image(content: string) {
-    const regex = /<img[^>]+src="([^">]+)"/g;
+    const regex = BASE64_IMAGE_REGEX;
     const match = regex.exec(content);
     return match;
   }
@@ -233,12 +234,11 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
       const fileName = `${this.data.id}_${new Date().getMilliseconds()}.png`;
       const imageFile: File = CommonUtils.base64ToFile(imageSrc, fileName);
       this.fileService.uploadFile(imageFile).subscribe((response) => {
-        const imageName = response.fileName;
-        this.data.imageName = imageName;
         this.data.content = this.data.content?.replace(
           `"${imageSrc}"`,
-          `"${environment.api}upload/${response.fileName}" width="100%"`,
+          `"${environment.api}/upload/${response.fileName}" width="100%"`,
         );
+        console.log(this.data.content)
       });
     }
   }

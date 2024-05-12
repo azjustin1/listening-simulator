@@ -8,6 +8,5 @@ export interface Question {
   choices: Choice[];
   answer: string;
   correctAnswer: string;
-  imageName?: string;
   subQuestions?: Question[];
 }

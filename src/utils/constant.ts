@@ -26,3 +26,6 @@ export const CHOICE_INDEX = [
   'Y',
   'Z',
 ];
+
+
+export const BASE64_IMAGE_REGEX = /<img[^>]+src="(data[^">]+)"/g;

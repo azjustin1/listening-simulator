@@ -173,7 +173,6 @@ export class AddOrEditQuizComponent implements OnDestroy {
       content: '',
       timeout: undefined,
       questions: [],
-      imageName: '',
       wordCount: 0,
     };
     this.mapSavedPart['reading'][size(this.mapSavedPart['reading'])] = false;
@@ -187,7 +186,6 @@ export class AddOrEditQuizComponent implements OnDestroy {
       content: '',
       timeout: undefined,
       questions: [],
-      imageName: '',
       answer: '',
       wordCount: 0,
     };
