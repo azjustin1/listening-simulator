@@ -4,13 +4,19 @@
       @for (choice of question.choices; track $index) {
         @if (
           choice.answer !== "" &&
-          (choice.answer === choice.correctAnswer ||
+          ((choice.answer &&
+            choice.correctAnswer &&
+            choice.answer!.trim() === choice.correctAnswer!.trim()) ||
             choice.correctAnswer!.split("/")!.includes(choice.answer!))
         ) {
-          <b>{{ choice.index }}</b>
-          <span class="correct-answer" style="margin-left: 10px">
-            {{ choice.answer }}
-          </span>
+          <div class="result">
+            <div>
+              <b>{{ choice.index }}</b>
+            </div>
+            <div class="correct-answer">
+              {{ choice.answer }}
+            </div>
+          </div>
         } @else {
           <div class="answer">
             <span class="answer-input">

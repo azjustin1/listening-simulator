@@ -231,25 +231,25 @@ export class TestComponent extends AddOrEditQuizComponent {
       htmlString += `<h3>Part ${index + 1}</h3><br>`;
       each(part.questions, (question) => {
         htmlString += `<p>${question.content ? question.content : ''}</p><br>`;
-        each(question.choices, (choice, index) => {
-          if (question.type === 0) {
-            if (
-              chunk(question.answer, ID_LENGTH)
-                .map((chunk) => chunk.join(''))
-                .includes(choice.id!)
-            ) {
-              htmlString += `<u>${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}</u><br>`;
+        if (question.type === 3) {
+          htmlString += `${AnswerChoicePipe.prototype.transform(question)}<br>`;
+        } else {
+          each(question.choices, (choice, index) => {
+            if (question.type === 0) {
+              if (
+                chunk(question.answer, ID_LENGTH)
+                  .map((chunk) => chunk.join(''))
+                  .includes(choice.id!)
+              ) {
+                htmlString += `<u>${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}</u><br>`;
+              } else {
+                htmlString += `${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}<br>`;
+              }
             } else {
-              htmlString += `${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}<br>`;
+              htmlString += `<b>${choice.index ? choice.index : ''}</b> ${choice.answer ? choice.answer : ''}<br>`;
             }
-          } else if (question.type === 3) {
-            if (question.answer === choice.content) {
-              htmlString += `${choice.content}<br>`;
-            }
-          } else {
-            htmlString += `<b>${choice.index ? choice.index : ''}</b> ${choice.answer ? choice.answer : ''}<br>`;
-          }
-        });
+          });
+        }
       });
       htmlString += '<hr>';
     });
