@@ -14,6 +14,7 @@ import { asBlob } from 'html-docx-js-typescript';
 import {
   chunk,
   each,
+  intersection,
   isEqual,
   isUndefined,
   mapValues,
@@ -391,13 +392,21 @@ export class TestComponent extends AddOrEditQuizComponent {
     let totalPoint = 0;
     each(this.result.listeningParts, (part) => {
       each(part.questions, (question) => {
+        const correctAnswer = sortBy(
+          chunk(question.correctAnswer, ID_LENGTH).map((chunk) =>
+            chunk.join(''),
+          ),
+        );
+        const answer = sortBy(
+          chunk(question.answer, ID_LENGTH).map((chunk) => chunk.join('')),
+        );
         switch (question.type) {
           case 0:
-          case 3:
             // Multiple choices
-            totalPoint++;
-            if (this.isCorrectChoices(question)) {
-              correctPoint++;
+            totalPoint = totalPoint + correctAnswer.length;
+            if (intersection(correctAnswer, answer).length !== 0) {
+              correctPoint =
+                correctPoint + intersection(correctAnswer, answer).length;
             }
             break;
           case 1:
@@ -408,6 +417,9 @@ export class TestComponent extends AddOrEditQuizComponent {
                 correctPoint++;
               }
             });
+            break;
+          case 3:
+            this.isCorrectChoices(question);
             break;
           default:
             break;
@@ -428,7 +440,10 @@ export class TestComponent extends AddOrEditQuizComponent {
             case 0:
             case 3:
               // Multiple choices
-              totalPoint++;
+              totalPoint =
+                totalPoint +
+                chunk(question.answer, ID_LENGTH).map((chunk) => chunk.join(''))
+                  .length;
               if (this.isCorrectChoices(subQuestion)) {
                 correctPoint++;
               }
