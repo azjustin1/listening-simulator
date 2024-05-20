@@ -11,7 +11,14 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { saveAs } from 'file-saver';
 import { asBlob } from 'html-docx-js-typescript';
-import { chunk, each, isEqual, mapValues, sortBy } from 'lodash-es';
+import {
+  chunk,
+  each,
+  isEqual,
+  isUndefined,
+  mapValues,
+  sortBy,
+} from 'lodash-es';
 import { Subscription, interval } from 'rxjs';
 import { Quiz } from '../../common/models/quiz.model';
 import { Result } from '../../common/models/result.model';
@@ -28,6 +35,8 @@ import { ReadingComponent } from '../reading/reading.component';
 import { ShortAnswerComponent } from '../short-answer/short-answer.component';
 import { WritingComponent } from '../writing/writing.component';
 import { TestService } from './test.service';
+import { Question } from '../../common/models/question.model';
+import { Choice } from '../../common/models/choice.model';
 const ID_LENGTH = 20;
 const SAVE_INTERVAL = 120000;
 
@@ -384,23 +393,10 @@ export class TestComponent extends AddOrEditQuizComponent {
       each(part.questions, (question) => {
         switch (question.type) {
           case 0:
+          case 3:
             // Multiple choices
             totalPoint++;
-            if (
-              question.answer !== '' &&
-              isEqual(
-                sortBy(
-                  chunk(question.answer, ID_LENGTH).map((chunk) =>
-                    chunk.join(''),
-                  ),
-                ),
-                sortBy(
-                  chunk(question.correctAnswer, ID_LENGTH).map((chunk) =>
-                    chunk.join(''),
-                  ),
-                ),
-              )
-            ) {
+            if (this.isCorrectChoices(question)) {
               correctPoint++;
             }
             break;
@@ -408,20 +404,10 @@ export class TestComponent extends AddOrEditQuizComponent {
             // Short answer
             each(question.choices, (choice) => {
               totalPoint++;
-              if (
-                choice.answer !== '' &&
-                (choice.answer?.trim() === choice.correctAnswer?.trim() ||
-                  choice.correctAnswer?.split('/').includes(choice.answer!))
-              ) {
+              if (this.isCorrectAnswer(choice)) {
                 correctPoint++;
               }
             });
-            break;
-          case 3:
-            totalPoint++;
-            if (question.correctAnswer === question.answer) {
-              correctPoint++;
-            }
             break;
           default:
             break;
@@ -440,23 +426,10 @@ export class TestComponent extends AddOrEditQuizComponent {
         each(question.subQuestions, (subQuestion) => {
           switch (subQuestion.type) {
             case 0:
+            case 3:
               // Multiple choices
               totalPoint++;
-              if (
-                subQuestion.answer !== '' &&
-                isEqual(
-                  sortBy(
-                    chunk(question.answer, ID_LENGTH).map((chunk) =>
-                      chunk.join(''),
-                    ),
-                  ),
-                  sortBy(
-                    chunk(question.correctAnswer, ID_LENGTH).map((chunk) =>
-                      chunk.join(''),
-                    ),
-                  ),
-                )
-              ) {
+              if (this.isCorrectChoices(subQuestion)) {
                 correctPoint++;
               }
               break;
@@ -464,20 +437,10 @@ export class TestComponent extends AddOrEditQuizComponent {
               // Short answer
               each(subQuestion.choices, (choice) => {
                 totalPoint++;
-                if (
-                  choice.answer !== '' &&
-                  (choice.answer?.trim() === choice.correctAnswer?.trim() ||
-                    choice.correctAnswer?.split('/').includes(choice.answer!))
-                ) {
+                if (this.isCorrectAnswer(choice)) {
                   correctPoint++;
                 }
               });
-              break;
-            case 3:
-              totalPoint++;
-              if (subQuestion.answer === subQuestion.correctAnswer) {
-                correctPoint++;
-              }
               break;
             default:
               break;
@@ -487,5 +450,31 @@ export class TestComponent extends AddOrEditQuizComponent {
     });
     this.result.correctReadingPoint = correctPoint;
     this.result.totalReadingPoint = totalPoint;
+  }
+
+  private isCorrectAnswer(choice: Choice) {
+    return (
+      choice.answer !== '' &&
+      !isUndefined(choice.answer) &&
+      !isUndefined(choice.correctAnswer) &&
+      (choice.answer?.trim() === choice.correctAnswer?.trim() ||
+        choice.correctAnswer?.split('/').includes(choice.answer?.trim()))
+    );
+  }
+
+  private isCorrectChoices(question: Question) {
+    return (
+      question.answer !== '' &&
+      isEqual(
+        sortBy(
+          chunk(question.answer, ID_LENGTH).map((chunk) => chunk.join('')),
+        ),
+        sortBy(
+          chunk(question.correctAnswer, ID_LENGTH).map((chunk) =>
+            chunk.join(''),
+          ),
+        ),
+      )
+    );
   }
 }
