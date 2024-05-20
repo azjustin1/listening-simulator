@@ -7,7 +7,10 @@
           ((choice.answer &&
             choice.correctAnswer &&
             choice.answer!.trim() === choice.correctAnswer!.trim()) ||
-            choice.correctAnswer!.split("/")!.includes(choice.answer!))
+            (choice.answer &&
+              choice
+                .correctAnswer!.split("/")!
+                .includes(choice.answer!.trim())))
         ) {
           <div class="result">
             <div>
