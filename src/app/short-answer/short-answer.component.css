@@ -31,3 +31,7 @@
 .choice-answer {
   width: 50%;
 }
+
+.result {
+  display: flex;
+}
