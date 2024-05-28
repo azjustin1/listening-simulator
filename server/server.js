@@ -60,7 +60,7 @@ server.get("/api/file/:filename", (req, res) => {
   }
 });
 
-server.delete("/file/:filename", (req, res) => {
+server.delete("/api/file/:filename", (req, res) => {
   const filename = req.params.filename;
   const filePath = path.join(__dirname, "upload", filename);
 
@@ -68,7 +68,6 @@ server.delete("/file/:filename", (req, res) => {
   if (fs.existsSync(filePath)) {
     fs.unlink(filePath, (err) => {
       if (err) {
-        console.error(err);
         return res.status(500).send("Failed to delete the file");
       }
 

@@ -99,8 +99,18 @@ export class AddOrEditQuizComponent implements OnDestroy {
   }
 
   onFileSelected(event: any) {
+    if (this.currentQuiz.audioName || this.currentQuiz.audioName !== '') {
+      this.deleteFile(this.currentQuiz.audioName!);
+    }
     this.selectedFile = event.target.files[0] ?? null;
     this.uploadFile();
+  }
+
+  deleteFile(fileName: string) {
+    const deleteSub = this.fileService.deleteFile(fileName).subscribe(res => {
+      console.log(res)
+    });
+    this.subscription.push(deleteSub);
   }
 
   uploadFile() {
@@ -109,6 +119,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
       .subscribe((res) => {
         this.subscription.push(uploadSub);
         if (res) {
+          this.currentQuiz.audioName = res.fileName;
           this.currentQuiz.audioUrl = `${environment.api}/upload/${res.fileName}`;
         }
       });
