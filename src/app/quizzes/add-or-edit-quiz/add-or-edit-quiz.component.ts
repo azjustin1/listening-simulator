@@ -99,16 +99,8 @@ export class AddOrEditQuizComponent implements OnDestroy {
   }
 
   onFileSelected(event: any) {
-    if (this.currentQuiz.audioUrl || this.currentQuiz.audioUrl !== '') {
-      this.deleteFile(this.currentQuiz.audioUrl!);
-    }
     this.selectedFile = event.target.files[0] ?? null;
     this.uploadFile();
-  }
-
-  deleteFile(fileName: string) {
-    const deleteSub = this.fileService.deleteFile(fileName).subscribe();
-    this.subscription.push(deleteSub);
   }
 
   uploadFile() {
