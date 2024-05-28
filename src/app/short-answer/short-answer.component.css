@@ -33,15 +33,5 @@
 }
 
 .result {
-  display: grid;
-  grid-template-columns: 10px auto;
-}
-
-.correct-answer {
-  margin-left: 10px;
-}
-
-.answer-input {
-  display: grid;
-  grid-template-columns: 10px 1fr auto;
+  display: flex;
 }
