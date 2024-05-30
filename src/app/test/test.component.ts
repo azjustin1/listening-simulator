@@ -64,7 +64,7 @@ const SAVE_INTERVAL = 120000;
   styleUrl: './test.component.css',
 })
 export class TestComponent extends AddOrEditQuizComponent {
-  @ViewChild('audioPlayer') audioPlayer!: ElementRef;
+  @ViewChild('audioPlayer') audioPlayer!: ElementRef<HTMLAudioElement>;
 
   @HostListener('document:keydown.control.s', ['$event'])
   override onKeydownHandler(event: KeyboardEvent) {
@@ -124,6 +124,7 @@ export class TestComponent extends AddOrEditQuizComponent {
     const quizId = this.router.getCurrentNavigation()?.extras.state?.['quizId'];
     if (quizId) {
       this.quizService.getById(quizId).subscribe((quiz) => {
+        quiz.audioTime = 0;
         this.quiz = quiz;
         this.result = { ...quiz };
         this.totalSeconds = this.result.listeningTimeout! * 60;
@@ -139,6 +140,7 @@ export class TestComponent extends AddOrEditQuizComponent {
       this.testService.getResultById(testId).subscribe((result) => {
         this.result = result;
         this.totalSeconds = this.result.listeningTimeout! * 60;
+        this.audioPlayer.nativeElement.currentTime = this.result.audioTime!;
         this.audioPlayer.nativeElement.load();
         this.getTimeout();
         if (this.result.currentTab) {
@@ -337,6 +339,7 @@ export class TestComponent extends AddOrEditQuizComponent {
     }
     this.isStart = true;
     this.timeoutInterval = interval(1000).subscribe(() => {
+      this.result.audioTime! += 1;
       if (this.seconds < 1) {
         this.minutes--;
         this.seconds = 59;

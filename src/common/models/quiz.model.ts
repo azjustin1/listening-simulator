@@ -7,6 +7,7 @@ export interface Quiz {
   name: string;
   audioName?: string;
   audioUrl?: string;
+  audioTime?: number;
   listeningTimeout?: number;
   readingTimeout?: number;
   writingTimeout?: number;
