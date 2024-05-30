@@ -339,7 +339,9 @@ export class TestComponent extends AddOrEditQuizComponent {
     }
     this.isStart = true;
     this.timeoutInterval = interval(1000).subscribe(() => {
-      this.result.audioTime! += 1;
+      if (this.currentTab === 0) {
+        this.result.audioTime! += 1;
+      }
       if (this.seconds < 1) {
         this.minutes--;
         this.seconds = 59;
