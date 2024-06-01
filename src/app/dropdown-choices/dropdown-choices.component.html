@@ -12,7 +12,7 @@
       } @else {
         <span [innerHTML]="question.content"> </span>
       }
-      @if (isReadOnly && question.answer === "") {
+      @if (isReadOnly && question.answer.length === 0) {
         ❌
       }
     </div>
@@ -20,12 +20,14 @@
     <div class="choice-group">
       @if (isReadOnly) {
         <div class="choice">
-          @if (question.answer === question.correctAnswer) {
+          @if (question.answer[0] === question.correctAnswer[0]) {
             <span class="answer">
               {{ question | answerChoice }}
             </span>
           } @else {
-            <span class="answer incorrect"> {{ question | answerChoice }} </span>
+            <span class="answer incorrect">
+              {{ question | answerChoice }}
+            </span>
             <span class="answer correct">
               {{ question | correctAnswerChoice }}
             </span>
@@ -40,8 +42,7 @@
                   [(ngModel)]="question.correctAnswer"
                   name="correctAnswer"
                 >
-                  <mat-radio-button [value]="choice.id!">
-                  </mat-radio-button>
+                  <mat-radio-button [value]="choice.id!"> </mat-radio-button>
                 </mat-radio-group>
                 <mat-form-field class="choice-input">
                   <textarea

@@ -10,6 +10,7 @@ import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { AbstractQuestionComponent } from '../../common/abstract-question.component';
 import { FileService } from '../file.service';
 import { ChoicePipe } from './choice.pipe';
+import { isArray } from 'lodash-es';
 @Component({
   selector: 'app-multiple-choices',
   standalone: true,
@@ -72,23 +73,23 @@ export class MultipleChoicesComponent extends AbstractQuestionComponent {
       if (
         !this.question.correctAnswer?.includes(this.question.choices[index].id!)
       ) {
-        this.question.correctAnswer += `${this.question.choices[index].id}`;
+        this.question.correctAnswer.push(this.question.choices[index].id!);
       } else {
-        this.question.correctAnswer = this.question.correctAnswer.replace(
-          `${this.question.choices[index].id}`,
-          '',
+        this.question.correctAnswer = this.question.correctAnswer.filter(
+          (id) => id !== this.question.choices[index].id!,
         );
       }
     }
 
     if (this.isTesting) {
-      if (!this.question.answer.includes(this.question.choices[index].id!)) {
-        this.question.answer += `${this.question.choices[index].id}`;
-      } else {
-        this.question.answer = this.question.answer?.replace(
-          `${this.question.choices[index].id}`,
-          '',
-        );
+      if (isArray(this.question.answer)) {
+        if (!this.question.answer?.includes(this.question.choices[index].id!)) {
+          this.question.answer.push(this.question.choices[index].id!);
+        } else {
+          this.question.answer = this.question.answer.filter(
+            (id) => id !== this.question.choices[index].id!,
+          );
+        }
       }
     }
   }

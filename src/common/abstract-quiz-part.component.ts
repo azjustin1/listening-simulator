@@ -38,8 +38,8 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     content: '',
     type: null,
     choices: [],
-    answer: '',
-    correctAnswer: '',
+    answer: [],
+    correctAnswer: [],
   };
   mapQuestionEditting: Record<string, boolean> = {};
   subscriptions: Subscription[] = [];
@@ -127,8 +127,8 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
           content: '',
           type: questionType,
           choices: this.defaultChoices(4),
-          answer: '',
-          correctAnswer: '',
+          answer: [],
+          correctAnswer: [],
         };
         break;
       case 1:
@@ -137,8 +137,8 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
           content: '',
           type: questionType,
           choices: [],
-          answer: '',
-          correctAnswer: '',
+          answer: [],
+          correctAnswer: [],
         };
         break;
       case 2:
@@ -147,8 +147,8 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
           content: '',
           type: questionType,
           choices: [],
-          answer: '',
-          correctAnswer: '',
+          answer: [],
+          correctAnswer: [],
           subQuestions: [],
         };
         break;
@@ -158,8 +158,8 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
           content: '',
           type: questionType,
           choices: this.defaultChoices(3),
-          answer: '',
-          correctAnswer: '',
+          answer: [],
+          correctAnswer: [],
         };
         break;
       default:

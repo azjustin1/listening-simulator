@@ -12,15 +12,17 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { saveAs } from 'file-saver';
 import { asBlob } from 'html-docx-js-typescript';
 import {
-  chunk,
   each,
   intersection,
   isEqual,
+  isString,
   isUndefined,
-  mapValues,
-  sortBy,
+  mapValues
 } from 'lodash-es';
 import { Subscription, interval } from 'rxjs';
+import { questionType } from '../../common/enums/question-type.enum';
+import { Choice } from '../../common/models/choice.model';
+import { Question } from '../../common/models/question.model';
 import { Quiz } from '../../common/models/quiz.model';
 import { Result } from '../../common/models/result.model';
 import { CommonUtils } from '../../utils/common-utils';
@@ -36,8 +38,6 @@ import { ReadingComponent } from '../reading/reading.component';
 import { ShortAnswerComponent } from '../short-answer/short-answer.component';
 import { WritingComponent } from '../writing/writing.component';
 import { TestService } from './test.service';
-import { Question } from '../../common/models/question.model';
-import { Choice } from '../../common/models/choice.model';
 const ID_LENGTH = 20;
 const SAVE_INTERVAL = 120000;
 
@@ -228,7 +228,9 @@ export class TestComponent extends AddOrEditQuizComponent {
   }
 
   submit() {
-    this.audioPlayer.nativeElement.pause();
+    if (!this.audioPlayer.nativeElement.paused) {
+      this.audioPlayer.nativeElement.pause();
+    }
     this.exportWriting();
     this.calculateListeningPoint();
     this.calculateReadingPoint();
@@ -248,11 +250,7 @@ export class TestComponent extends AddOrEditQuizComponent {
         } else {
           each(question.choices, (choice, index) => {
             if (question.type === 0) {
-              if (
-                chunk(question.answer, ID_LENGTH)
-                  .map((chunk) => chunk.join(''))
-                  .includes(choice.id!)
-              ) {
+              if (question.answer.includes(choice.id!)) {
                 htmlString += `<u>${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}</u><br>`;
               } else {
                 htmlString += `${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}<br>`;
@@ -287,11 +285,7 @@ export class TestComponent extends AddOrEditQuizComponent {
           } else {
             each(subQuestion.choices, (choice, index) => {
               if (subQuestion.type === 0) {
-                if (
-                  chunk(subQuestion.answer, ID_LENGTH)
-                    .map((chunk) => chunk.join(''))
-                    .includes(choice.id!)
-                ) {
+                if (subQuestion.answer.includes(choice.id!)) {
                   htmlString += `<u>${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}</u><br>`;
                 } else {
                   htmlString += `${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}<br>`;
@@ -329,7 +323,6 @@ export class TestComponent extends AddOrEditQuizComponent {
   }
 
   onListeningStart() {
-    this.audioPlayer.nativeElement.play();
     this.onStartPart();
   }
 
@@ -397,21 +390,16 @@ export class TestComponent extends AddOrEditQuizComponent {
     let totalPoint = 0;
     each(this.result.listeningParts, (part) => {
       each(part.questions, (question) => {
-        const correctAnswer = sortBy(
-          chunk(question.correctAnswer, ID_LENGTH).map((chunk) =>
-            chunk.join(''),
-          ),
-        );
-        const answer = sortBy(
-          chunk(question.answer, ID_LENGTH).map((chunk) => chunk.join('')),
-        );
         switch (question.type) {
           case 0:
             // Multiple choices
-            totalPoint = totalPoint + correctAnswer.length;
-            if (intersection(correctAnswer, answer).length !== 0) {
+            totalPoint = totalPoint + question.correctAnswer.length;
+            if (
+              intersection(question.correctAnswer, question.answer).length !== 0
+            ) {
               correctPoint =
-                correctPoint + intersection(correctAnswer, answer).length;
+                correctPoint +
+                intersection(question.correctAnswer, question.answer).length;
             }
             break;
           case 1:
@@ -424,7 +412,10 @@ export class TestComponent extends AddOrEditQuizComponent {
             });
             break;
           case 3:
-            this.isCorrectChoices(question);
+            totalPoint++;
+            if (question.answer === question.correctAnswer) {
+              correctPoint++;
+            }
             break;
           default:
             break;
@@ -443,12 +434,8 @@ export class TestComponent extends AddOrEditQuizComponent {
         each(question.subQuestions, (subQuestion) => {
           switch (subQuestion.type) {
             case 0:
-            case 3:
               // Multiple choices
-              totalPoint =
-                totalPoint +
-                chunk(question.answer, ID_LENGTH).map((chunk) => chunk.join(''))
-                  .length;
+              totalPoint = totalPoint + question.answer.length;
               if (this.isCorrectChoices(subQuestion)) {
                 correctPoint++;
               }
@@ -461,6 +448,12 @@ export class TestComponent extends AddOrEditQuizComponent {
                   correctPoint++;
                 }
               });
+              break;
+            case 3:
+              totalPoint++;
+              if (subQuestion.answer === subQuestion.correctAnswer) {
+                correctPoint++;
+              }
               break;
             default:
               break;
@@ -483,18 +476,16 @@ export class TestComponent extends AddOrEditQuizComponent {
   }
 
   private isCorrectChoices(question: Question) {
+    if (
+      question.type === questionType.DROPDOWN_ANSWER ||
+      isString(question.answer)
+    ) {
+      return question.answer === question.correctAnswer;
+    }
+
     return (
-      question.answer !== '' &&
-      isEqual(
-        sortBy(
-          chunk(question.answer, ID_LENGTH).map((chunk) => chunk.join('')),
-        ),
-        sortBy(
-          chunk(question.correctAnswer, ID_LENGTH).map((chunk) =>
-            chunk.join(''),
-          ),
-        ),
-      )
+      question.answer.length > 0 &&
+      isEqual(question.answer.sort(), question.correctAnswer.sort())
     );
   }
 }

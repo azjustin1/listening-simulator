@@ -6,7 +6,7 @@ export interface Question {
   content?: string;
   type?: number | null;
   choices: Choice[];
-  answer: string;
-  correctAnswer: string;
+  answer: string[] | string;
+  correctAnswer: string[];
   subQuestions?: Question[];
 }

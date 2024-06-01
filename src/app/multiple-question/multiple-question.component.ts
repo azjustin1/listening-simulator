@@ -58,8 +58,8 @@ export class MultipleQuestionComponent
       content: '',
       type: null,
       choices: [],
-      answer: '',
-      correctAnswer: '',
+      answer: [],
+      correctAnswer: [],
     };
     switch (questionType) {
       case 0:
@@ -68,8 +68,8 @@ export class MultipleQuestionComponent
           content: '',
           type: questionType,
           choices: this.defaultChoices(4),
-          answer: '',
-          correctAnswer: '',
+          answer: [],
+          correctAnswer: [],
         };
         break;
       case 1:
@@ -78,8 +78,8 @@ export class MultipleQuestionComponent
           content: '',
           type: questionType,
           choices: [],
-          answer: '',
-          correctAnswer: '',
+          answer: [],
+          correctAnswer: [],
         };
         break;
       case 3:
@@ -88,8 +88,8 @@ export class MultipleQuestionComponent
           content: '',
           type: questionType,
           choices: this.defaultChoices(3),
-          answer: '',
-          correctAnswer: '',
+          answer: [],
+          correctAnswer: [],
         };
         break;
       default:
