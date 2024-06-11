@@ -379,6 +379,8 @@ export class TestComponent extends AddOrEditQuizComponent {
     if (this.timeoutInterval) {
       this.timeoutInterval.unsubscribe();
     }
+    this.getTimeout();
+    this.onCtrlSave();
   }
 
   private disableOthersTab() {
