@@ -17,7 +17,7 @@ import {
   isEqual,
   isString,
   isUndefined,
-  mapValues
+  mapValues,
 } from 'lodash-es';
 import { Subscription, interval } from 'rxjs';
 import { questionType } from '../../common/enums/question-type.enum';
@@ -99,8 +99,6 @@ export class TestComponent extends AddOrEditQuizComponent {
   totalSeconds: number = 0;
   timeoutInterval!: Subscription;
 
-  subscriptions: Subscription[] = [];
-
   isReady: boolean = false;
   isStart: boolean = false;
 
@@ -142,12 +140,12 @@ export class TestComponent extends AddOrEditQuizComponent {
         this.totalSeconds = this.result.listeningTimeout! * 60;
         this.audioPlayer.nativeElement.currentTime = this.result.audioTime!;
         this.audioPlayer.nativeElement.load();
-        this.getTimeout();
         if (this.result.currentTab) {
           this.currentTab = this.result.currentTab;
           this.disableOthersTab();
           this.mapDisablePart[this.currentTab] = false;
         }
+        this.getTimeout();
       });
       this.isReady = true;
       this.startAutoSave();
@@ -209,7 +207,9 @@ export class TestComponent extends AddOrEditQuizComponent {
     this.saveTimeout();
     this.result.testDate = CommonUtils.getCurrentDate();
     this.result.currentTab = this.currentTab;
-    this.testService.saveCurrentTest(this.result).subscribe();
+    this.subscriptions.push(
+      this.testService.saveCurrentTest(this.result).subscribe(),
+    );
   }
 
   saveTimeout() {
@@ -379,8 +379,10 @@ export class TestComponent extends AddOrEditQuizComponent {
     if (this.timeoutInterval) {
       this.timeoutInterval.unsubscribe();
     }
-    this.getTimeout();
-    this.onCtrlSave();
+    this.result = { ...this.result, currentTab: this.currentTab };
+    this.subscriptions.push(
+      this.testService.saveCurrentTest(this.result).subscribe(),
+    );
   }
 
   private disableOthersTab() {

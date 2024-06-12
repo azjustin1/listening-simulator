@@ -68,7 +68,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
   selectedReadingPart = 0;
   selectedWritingPart = 0;
 
-  subscription: Subscription[] = [];
+  subscriptions: Subscription[] = [];
 
   @HostListener('document:keydown.control.s', ['$event'])
   onKeydownHandler(event: KeyboardEvent) {
@@ -93,7 +93,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
           this.generateReadingEdittingPartMap(this.currentQuiz.readingParts);
           this.generateWritingEdittingPartMap(this.currentQuiz.writingParts);
         });
-        this.subscription.push(sub);
+        this.subscriptions.push(sub);
       }
     });
   }
@@ -110,20 +110,20 @@ export class AddOrEditQuizComponent implements OnDestroy {
     const deleteSub = this.fileService.deleteFile(fileName).subscribe(res => {
       console.log(res)
     });
-    this.subscription.push(deleteSub);
+    this.subscriptions.push(deleteSub);
   }
 
   uploadFile() {
     const uploadSub = this.fileService
       .uploadFile(this.selectedFile)
       .subscribe((res) => {
-        this.subscription.push(uploadSub);
+        this.subscriptions.push(uploadSub);
         if (res) {
           this.currentQuiz.audioName = res.fileName;
           this.currentQuiz.audioUrl = `${environment.api}/upload/${res.fileName}`;
         }
       });
-    this.subscription.push(uploadSub);
+    this.subscriptions.push(uploadSub);
   }
 
   generateListeningEdittingPartMap(listeningParts: Listening[]) {
@@ -260,11 +260,11 @@ export class AddOrEditQuizComponent implements OnDestroy {
       observer = this.quizService.create(quiz);
     }
     const sub = observer.subscribe();
-    this.subscription.push(sub);
+    this.subscriptions.push(sub);
   }
 
   ngOnDestroy(): void {
-    this.subscription.forEach((sub) => {
+    this.subscriptions.forEach((sub) => {
       sub.unsubscribe();
     });
   }
