@@ -36,6 +36,6 @@ import { ShortAnswerComponent } from '../short-answer/short-answer.component';
     MatStepperModule,
   ],
   templateUrl: './writing.component.html',
-  styleUrl: './writing.component.css',
+  styleUrl: './writing.component.scss',
 })
 export class WritingComponent extends AbstractQuizPartComponent<Writing> {}

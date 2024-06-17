@@ -26,7 +26,7 @@ import { QuestionComponent } from '../question/question.component';
     QuestionComponent,
   ],
   templateUrl: './multiple-question.component.html',
-  styleUrl: './multiple-question.component.css',
+  styleUrl: './multiple-question.component.scss',
 })
 export class MultipleQuestionComponent
   extends AbstractQuestionComponent

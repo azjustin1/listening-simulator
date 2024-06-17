@@ -27,7 +27,7 @@ import { isArray } from 'lodash-es';
   ],
   providers: [FileService],
   templateUrl: './multiple-choices.component.html',
-  styleUrl: './multiple-choices.component.css',
+  styleUrl: './multiple-choices.component.scss',
 })
 export class MultipleChoicesComponent extends AbstractQuestionComponent {
   selectedAnswer: string = '';
@@ -82,6 +82,7 @@ export class MultipleChoicesComponent extends AbstractQuestionComponent {
     }
 
     if (this.isTesting) {
+      console.log(isArray(this.question.answer), this.question.answer)
       if (isArray(this.question.answer)) {
         if (!this.question.answer?.includes(this.question.choices[index].id!)) {
           this.question.answer.push(this.question.choices[index].id!);

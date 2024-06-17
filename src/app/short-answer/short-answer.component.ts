@@ -25,7 +25,7 @@ import { FileService } from '../file.service';
   ],
   providers: [FileService],
   templateUrl: './short-answer.component.html',
-  styleUrl: './short-answer.component.css',
+  styleUrl: './short-answer.component.scss',
 })
 export class ShortAnswerComponent extends AbstractQuestionComponent {
   @Input() hasIndex: boolean = true;

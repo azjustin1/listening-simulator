@@ -15,6 +15,6 @@ import { DropdownChoicesComponent } from '../dropdown-choices/dropdown-choices.c
     DropdownChoicesComponent,
   ],
   templateUrl: './question.component.html',
-  styleUrl: './question.component.css',
+  styleUrl: './question.component.scss',
 })
 export class QuestionComponent extends AbstractQuestionComponent {}

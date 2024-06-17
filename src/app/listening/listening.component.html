@@ -23,79 +23,79 @@
     class="question-group"
     [ngClass]="{ unclickable: isTesting && !isStart }"
   >
-    @for (question of data.questions; track question.id) {
-      <div class="question">
-        <app-question
-          [question]="question"
-          [isSaved]="isSaved"
-          [isEditting]="mapQuestionEditting[question.id!]"
-          [isReadOnly]="isReadOnly"
-          [isTesting]="isTesting"
-        ></app-question>
-        <div class="actions">
-          @if (!isSaved && !isTesting && !isReadOnly) {
-            @if (mapQuestionEditting[question.id!]) {
+      @for (question of data.questions; track question.id) {
+        <div class="question">
+          <app-question
+            [question]="question"
+            [isSaved]="isSaved"
+            [isEditting]="mapQuestionEditting[question.id!]"
+            [isReadOnly]="isReadOnly"
+            [isTesting]="isTesting"
+          ></app-question>
+          <div class="actions">
+            @if (!isSaved && !isTesting && !isReadOnly) {
+              @if (mapQuestionEditting[question.id!]) {
+                <button
+                  mat-button
+                  color="primary"
+                  type="button"
+                  class="btn btn-danger"
+                  (click)="onSaveQuestion(question.id!)"
+                >
+                  <mat-icon>save</mat-icon>
+                </button>
+              } @else {
+                <button
+                  mat-button
+                  color="primary"
+                  type="button"
+                  class="btn btn-danger"
+                  (click)="onEditQuestion(question.id!)"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+              }
               <button
                 mat-button
-                color="primary"
                 type="button"
                 class="btn btn-danger"
-                (click)="onSaveQuestion(question.id!)"
+                (click)="duplicateQuestion(question)"
               >
-                <mat-icon>save</mat-icon>
+                <mat-icon>content_copy</mat-icon>
               </button>
-            } @else {
               <button
                 mat-button
-                color="primary"
+                color="warn"
                 type="button"
                 class="btn btn-danger"
-                (click)="onEditQuestion(question.id!)"
+                (click)="removeQuestion($index)"
               >
-                <mat-icon>edit</mat-icon>
+                <mat-icon>delete</mat-icon>
               </button>
+              @if ($index !== 0) {
+                <button
+                  mat-button
+                  type="button"
+                  class="btn btn-danger"
+                  (click)="moveQuestionUp($index)"
+                >
+                  <mat-icon>arrow_upward</mat-icon>
+                </button>
+              }
+              @if ($index !== data.questions.length - 1) {
+                <button
+                  mat-button
+                  type="button"
+                  class="btn btn-danger"
+                  (click)="moveQuestionDown($index)"
+                >
+                  <mat-icon>arrow_downward</mat-icon>
+                </button>
+              }
             }
-            <button
-              mat-button
-              type="button"
-              class="btn btn-danger"
-              (click)="duplicateQuestion(question)"
-            >
-              <mat-icon>content_copy</mat-icon>
-            </button>
-            <button
-              mat-button
-              color="warn"
-              type="button"
-              class="btn btn-danger"
-              (click)="removeQuestion($index)"
-            >
-              <mat-icon>delete</mat-icon>
-            </button>
-            @if ($index !== 0) {
-              <button
-                mat-button
-                type="button"
-                class="btn btn-danger"
-                (click)="moveQuestionUp($index)"
-              >
-                <mat-icon>arrow_upward</mat-icon>
-              </button>
-            }
-            @if ($index !== data.questions.length - 1) {
-              <button
-                mat-button
-                type="button"
-                class="btn btn-danger"
-                (click)="moveQuestionDown($index)"
-              >
-                <mat-icon>arrow_downward</mat-icon>
-              </button>
-            }
-          }
+          </div>
         </div>
-      </div>
-    }
+      }
   </div>
 
   @if (!isSaved && !isTesting && !isReadOnly) {

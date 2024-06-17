@@ -39,7 +39,7 @@ import { ReadingService } from './reading.service';
   ],
   providers: [ReadingService],
   templateUrl: './reading.component.html',
-  styleUrl: './reading.component.css',
+  styleUrl: './reading.component.scss',
 })
 export class ReadingComponent
   extends AbstractQuizPartComponent<Reading>
@@ -49,7 +49,8 @@ export class ReadingComponent
 
   subscription: Subscription[] = [];
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
     each(this.data.questions, (question) => {
       this.mapSavedQuestion[question.id!] = true;
     });

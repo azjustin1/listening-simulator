@@ -40,7 +40,7 @@ import { BandScorePipe } from './band-score.pipe';
   ],
   providers: [QuizService, ResultService],
   templateUrl: './result.component.html',
-  styleUrl: './result.component.css',
+  styleUrl: './result.component.scss',
 })
 export class ResultComponent {
   results: Result[] = [];

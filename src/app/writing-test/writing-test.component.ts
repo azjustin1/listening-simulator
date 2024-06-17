@@ -31,7 +31,7 @@ import { WritingService } from './writing-test.service';
   ],
   providers: [WritingService],
   templateUrl: './writing-test.component.html',
-  styleUrl: './writing-test.component.css',
+  styleUrl: './writing-test.component.scss',
 })
 export class WritingTestComponent implements OnDestroy {
   writings: Writing[] = [];

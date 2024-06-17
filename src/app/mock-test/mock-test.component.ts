@@ -8,6 +8,6 @@ import { ResultComponent } from '../result/result.component';
   standalone: true,
   imports: [MatTabsModule, ResultComponent, QuizzesComponent],
   templateUrl: './mock-test.component.html',
-  styleUrl: './mock-test.component.css',
+  styleUrl: './mock-test.component.scss',
 })
 export class MockTestComponent {}

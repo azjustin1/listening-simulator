@@ -10,20 +10,23 @@
     <div class="backdrop"></div>
   </div>
   <div class="form-group">
-    <mat-form-field>
-      <mat-label>Name</mat-label>
-      <input
-        autocomplete="off"
-        matInput
-        name="quizName"
-        type="text"
-        class="form-control"
-        id="quizName"
-        [(ngModel)]="result.studentName"
-        [disabled]="this.isReady!"
-        required
-      />
-    </mat-form-field>
+    @if (!this.isReady) {
+      <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input
+          autocomplete="off"
+          matInput
+          name="quizName"
+          type="text"
+          class="form-control"
+          id="quizName"
+          [(ngModel)]="result.studentName"
+          required
+        />
+      </mat-form-field>
+    } @else {
+      <h1>Name: {{ result.studentName }}</h1>
+    }
   </div>
 
   <mat-card class="timer">

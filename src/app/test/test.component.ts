@@ -61,7 +61,7 @@ const SAVE_INTERVAL = 120000;
   ],
   providers: [QuizService, TestService],
   templateUrl: './test.component.html',
-  styleUrl: './test.component.css',
+  styleUrl: './test.component.scss',
 })
 export class TestComponent extends AddOrEditQuizComponent {
   @ViewChild('audioPlayer') audioPlayer!: ElementRef<HTMLAudioElement>;

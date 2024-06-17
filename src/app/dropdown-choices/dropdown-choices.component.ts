@@ -30,6 +30,6 @@ import { CorrectAnswerPipe } from './corect-answer-choice.pipe';
     CorrectAnswerPipe
   ],
   templateUrl: './dropdown-choices.component.html',
-  styleUrl: './dropdown-choices.component.css',
+  styleUrl: './dropdown-choices.component.scss',
 })
 export class DropdownChoicesComponent extends AbstractQuestionComponent {}

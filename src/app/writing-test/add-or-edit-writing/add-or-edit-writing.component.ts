@@ -49,7 +49,7 @@ import { environment } from '../../../environments/environment';
   ],
   providers: [WritingService, FileService],
   templateUrl: './add-or-edit-writing.component.html',
-  styleUrl: './add-or-edit-writing.component.css',
+  styleUrl: './add-or-edit-writing.component.scss',
 })
 export class AddOrEditWritingComponent {
   state: { [key: string]: boolean } = {

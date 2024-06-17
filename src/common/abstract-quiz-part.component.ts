@@ -5,6 +5,7 @@ import {
   Input,
   OnChanges,
   OnDestroy,
+  OnInit,
   Output,
   SimpleChanges,
 } from '@angular/core';
@@ -23,9 +24,10 @@ import { BASE64_IMAGE_REGEX } from '../utils/constant';
   template: '',
 })
 export abstract class AbstractQuizPartComponent<T extends AbstractPart>
-  implements OnChanges, OnDestroy
+  implements OnInit, OnChanges, OnDestroy
 {
   @Input() data!: T;
+  @Output() dataChange = new EventEmitter();
   @Input() isTesting: boolean = false;
   @Input() isEditting: boolean = false;
   @Input() isReadOnly: boolean = false;
@@ -84,6 +86,8 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     protected fileService: FileService,
     private dialog: MatDialog,
   ) {}
+
+  ngOnInit(): void {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isSaved']?.currentValue) {
@@ -238,7 +242,6 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
           `"${imageSrc}"`,
           `"${environment.api}/upload/${response.fileName}" width="100%"`,
         );
-        console.log(this.data.content)
       });
     }
   }

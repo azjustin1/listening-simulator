@@ -25,6 +25,8 @@ import { ReadingComponent } from '../../reading/reading.component';
 import { WritingComponent } from '../../writing/writing.component';
 import { QuizService } from '../quizzes.service';
 import { environment } from '../../../environments/environment';
+import { PartNavigationComponent } from '../../part-navigation/part-navigation.component';
+import { AbstractPart } from '../../../common/models/abstract-part.model';
 
 @Component({
   selector: 'app-add-or-edit-quiz',
@@ -43,10 +45,11 @@ import { environment } from '../../../environments/environment';
     ListeningComponent,
     ReadingComponent,
     WritingComponent,
+    PartNavigationComponent,
   ],
   providers: [QuizService, FileService],
   templateUrl: './add-or-edit-quiz.component.html',
-  styleUrl: './add-or-edit-quiz.component.css',
+  styleUrl: './add-or-edit-quiz.component.scss',
 })
 export class AddOrEditQuizComponent implements OnDestroy {
   selectedFile!: File;
@@ -67,6 +70,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
   selectedListeningPart = 0;
   selectedReadingPart = 0;
   selectedWritingPart = 0;
+  selectedPart!: AbstractPart;
 
   subscriptions: Subscription[] = [];
 
@@ -85,15 +89,14 @@ export class AddOrEditQuizComponent implements OnDestroy {
     this.route.paramMap.subscribe((paramMap: any) => {
       const quizId = paramMap.get('quizId');
       if (quizId) {
-        const sub = this.quizService.getById(quizId).subscribe((quiz: any) => {
-          this.currentQuiz = quiz;
-          this.generateListeningEdittingPartMap(
-            this.currentQuiz.listeningParts,
-          );
-          this.generateReadingEdittingPartMap(this.currentQuiz.readingParts);
-          this.generateWritingEdittingPartMap(this.currentQuiz.writingParts);
-        });
-        this.subscriptions.push(sub);
+        this.subscriptions.push(
+          this.quizService.getById(quizId).subscribe((quiz: any) => {
+            this.generateListeningEdittingPartMap(quiz.listeningParts);
+            this.generateReadingEdittingPartMap(quiz.readingParts);
+            this.generateWritingEdittingPartMap(quiz.writingParts);
+            this.currentQuiz = quiz;
+          }),
+        );
       }
     });
   }
@@ -107,8 +110,8 @@ export class AddOrEditQuizComponent implements OnDestroy {
   }
 
   deleteFile(fileName: string) {
-    const deleteSub = this.fileService.deleteFile(fileName).subscribe(res => {
-      console.log(res)
+    const deleteSub = this.fileService.deleteFile(fileName).subscribe((res) => {
+      console.log(res);
     });
     this.subscriptions.push(deleteSub);
   }
@@ -200,8 +203,8 @@ export class AddOrEditQuizComponent implements OnDestroy {
     this.selectedWritingPart++;
   }
 
-  onTabChange(key: string, event: MatTabChangeEvent) {
-    this.mapSavedPart[key][event.index] = true;
+  onTabChange(key: string, index: number) {
+    this.mapSavedPart[key][index] = true;
   }
 
   onSavePart(key: string, index: number) {

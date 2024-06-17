@@ -37,7 +37,7 @@ import { BreakpointObserver } from '@angular/cdk/layout';
   ],
   providers: [QuizService, FileService],
   templateUrl: './quizzes.component.html',
-  styleUrl: './quizzes.component.css',
+  styleUrl: './quizzes.component.scss',
 })
 export class QuizzesComponent implements OnInit, OnDestroy {
   quizzes: Quiz[] = [];

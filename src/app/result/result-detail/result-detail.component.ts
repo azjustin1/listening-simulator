@@ -16,6 +16,16 @@ import { ShortAnswerComponent } from '../../short-answer/short-answer.component'
 import { WritingComponent } from '../../writing/writing.component';
 import { BandScorePipe } from '../band-score.pipe';
 import { ResultService } from '../result.service';
+import {
+  chunk,
+  each,
+  intersection,
+  isEqual,
+  isString,
+  isUndefined,
+} from 'lodash-es';
+import { Question } from '../../../common/models/question.model';
+import { Choice } from '../../../common/models/choice.model';
 
 @Component({
   selector: 'app-result-detail',
@@ -38,7 +48,7 @@ import { ResultService } from '../result.service';
   ],
 
   templateUrl: './result-detail.component.html',
-  styleUrl: './result-detail.component.css',
+  styleUrl: './result-detail.component.scss',
 })
 export class ResultDetailComponent {
   result: Result = {
@@ -70,9 +80,112 @@ export class ResultDetailComponent {
       if (resultId) {
         this.resultService.getById(resultId).subscribe((result) => {
           this.result = result;
+          this.calculateListeningPoint();
+          this.calculateReadingPoint();
         });
       }
     });
+  }
+
+  private calculateListeningPoint() {
+    let correctPoint = 0;
+    let totalPoint = 0;
+    each(this.result.listeningParts, (part) => {
+      each(part.questions, (question) => {
+        switch (question.type) {
+          case 0:
+            // Multiple choices
+            totalPoint = totalPoint + question.correctAnswer.length;
+            if (
+              intersection(question.correctAnswer, question.answer).length !== 0
+            ) {
+              correctPoint =
+                correctPoint +
+                intersection(question.correctAnswer, question.answer).length;
+            }
+            break;
+          case 1:
+            // Short answer
+            each(question.choices, (choice) => {
+              totalPoint++;
+              if (this.isCorrectAnswer(choice)) {
+                correctPoint++;
+              }
+            });
+            break;
+          case 3:
+            totalPoint++;
+            if (question.answer === question.correctAnswer) {
+              correctPoint++;
+            }
+            break;
+          default:
+            break;
+        }
+      });
+    });
+    this.result.correctListeningPoint = correctPoint;
+    this.result.totalListeningPoint = totalPoint;
+  }
+
+  private calculateReadingPoint() {
+    let correctPoint = 0;
+    let totalPoint = 0;
+    each(this.result.readingParts, (part) => {
+      each(part.questions, (question) => {
+        each(question.subQuestions, (subQuestion) => {
+          switch (subQuestion.type) {
+            case 0:
+              // Multiple choices
+              totalPoint = totalPoint + question.answer.length;
+              if (this.isCorrectChoices(subQuestion)) {
+                correctPoint++;
+              }
+              break;
+            case 1:
+              // Short answer
+              each(subQuestion.choices, (choice) => {
+                totalPoint++;
+                if (this.isCorrectAnswer(choice)) {
+                  correctPoint++;
+                }
+              });
+              break;
+            case 3:
+              totalPoint++;
+              if (subQuestion.answer === subQuestion.correctAnswer) {
+                correctPoint++;
+              }
+              break;
+            default:
+              break;
+          }
+        });
+      });
+    });
+    this.result.correctReadingPoint = correctPoint;
+    this.result.totalReadingPoint = totalPoint;
+  }
+
+  private isCorrectAnswer(choice: Choice) {
+    return (
+      choice.answer !== '' &&
+      !isUndefined(choice.answer) &&
+      !isUndefined(choice.correctAnswer) &&
+      (choice.answer?.trim() === choice.correctAnswer?.trim() ||
+        choice.correctAnswer?.split('/').includes(choice.answer?.trim()))
+    );
+  }
+
+  private isCorrectChoices(question: Question) {
+    if (question.type === 3 || isString(question.answer)) {
+      return question.answer === question.correctAnswer;
+    }
+
+    return (
+      question.answer.length > 0 &&
+      isEqual(question.answer.sort(), question.correctAnswer.sort())
+    );
   }
 
   printPage() {

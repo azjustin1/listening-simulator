@@ -9,7 +9,7 @@ import { QuizService } from './quizzes/quizzes.service';
   imports: [RouterOutlet, MatToolbarModule, RouterModule],
   providers: [QuizService],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
   title = 'listening-simulator';

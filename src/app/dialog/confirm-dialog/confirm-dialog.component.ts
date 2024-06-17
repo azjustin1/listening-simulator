@@ -22,7 +22,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     MatDialogClose,
   ],
   templateUrl: './confirm-dialog.component.html',
-  styleUrl: './confirm-dialog.component.css',
+  styleUrl: './confirm-dialog.component.scss',
 })
 export class ConfirmDialogComponent {
   @Input() title: string = '';

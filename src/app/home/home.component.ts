@@ -20,6 +20,6 @@ enum Tab {
   ],
   providers: [QuizService, TestService, ReadingService],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css',
+  styleUrl: './home.component.scss',
 })
 export class HomeComponent {}
