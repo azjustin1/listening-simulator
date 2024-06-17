@@ -9,24 +9,24 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatStepperModule } from '@angular/material/stepper';
-import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
+import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { each, size } from 'lodash-es';
 import { Subscription } from 'rxjs';
+import { AbstractPart } from '../../../common/models/abstract-part.model';
 import { Listening } from '../../../common/models/listening.model';
 import { Quiz } from '../../../common/models/quiz.model';
 import { Reading } from '../../../common/models/reading.model';
 import { Writing } from '../../../common/models/writing.model';
+import { environment } from '../../../environments/environment';
 import { CommonUtils } from '../../../utils/common-utils';
 import { ConfirmDialogComponent } from '../../dialog/confirm-dialog/confirm-dialog.component';
 import { FileService } from '../../file.service';
 import { ListeningComponent } from '../../listening/listening.component';
+import { PartNavigationComponent } from '../../part-navigation/part-navigation.component';
 import { ReadingComponent } from '../../reading/reading.component';
 import { WritingComponent } from '../../writing/writing.component';
 import { QuizService } from '../quizzes.service';
-import { environment } from '../../../environments/environment';
-import { PartNavigationComponent } from '../../part-navigation/part-navigation.component';
-import { AbstractPart } from '../../../common/models/abstract-part.model';
 
 @Component({
   selector: 'app-add-or-edit-quiz',

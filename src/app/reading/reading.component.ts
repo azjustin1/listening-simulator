@@ -13,9 +13,7 @@ import { each } from 'lodash-es';
 import { Subscription } from 'rxjs';
 import { AbstractQuizPartComponent } from '../../common/abstract-quiz-part.component';
 import { Choice } from '../../common/models/choice.model';
-import { Question } from '../../common/models/question.model';
 import { Reading } from '../../common/models/reading.model';
-import { CommonUtils } from '../../utils/common-utils';
 import { MultipleQuestionComponent } from '../multiple-question/multiple-question.component';
 import { QuestionComponent } from '../question/question.component';
 import { ReadingService } from './reading.service';
@@ -49,8 +47,7 @@ export class ReadingComponent
 
   subscription: Subscription[] = [];
 
-  override ngOnInit(): void {
-    super.ngOnInit();
+  ngOnInit(): void {
     each(this.data.questions, (question) => {
       this.mapSavedQuestion[question.id!] = true;
     });

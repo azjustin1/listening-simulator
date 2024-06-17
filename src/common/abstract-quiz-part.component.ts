@@ -5,26 +5,25 @@ import {
   Input,
   OnChanges,
   OnDestroy,
-  OnInit,
   Output,
   SimpleChanges,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AngularEditorConfig, UploadResponse } from '@wfpena/angular-wysiwyg';
-import { clone, cloneDeep, debounce, each, mapValues } from 'lodash-es';
+import { clone, cloneDeep, debounce, each, isNull, mapValues } from 'lodash-es';
 import { map, Subscription } from 'rxjs';
 import { FileService } from '../app/file.service';
+import { environment } from '../environments/environment';
 import { CommonUtils } from '../utils/common-utils';
+import { BASE64_IMAGE_REGEX } from '../utils/constant';
 import { AbstractPart } from './models/abstract-part.model';
 import { Question } from './models/question.model';
-import { environment } from '../environments/environment';
-import { BASE64_IMAGE_REGEX } from '../utils/constant';
 
 @Component({
   template: '',
 })
 export abstract class AbstractQuizPartComponent<T extends AbstractPart>
-  implements OnInit, OnChanges, OnDestroy
+  implements OnChanges, OnDestroy
 {
   @Input() data!: T;
   @Output() dataChange = new EventEmitter();
@@ -86,8 +85,6 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     protected fileService: FileService,
     private dialog: MatDialog,
   ) {}
-
-  ngOnInit(): void {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isSaved']?.currentValue) {
@@ -233,7 +230,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
 
   uploadQuestionBase64Images(content: string) {
     const base64Image = this.extractBase64Image(content);
-    if (base64Image !== null && base64Image[1].startsWith('data')) {
+    if (!isNull(base64Image) && base64Image[1].startsWith('data')) {
       const imageSrc = base64Image[1];
       const fileName = `${this.data.id}_${new Date().getMilliseconds()}.png`;
       const imageFile: File = CommonUtils.base64ToFile(imageSrc, fileName);
