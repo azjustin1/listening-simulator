@@ -45,7 +45,6 @@
                   type="button"
                   mat-raised-button
                   (click)="fileInput.click()"
-                  style="margin-right: 16px"
                 >
                   Audio File <mat-icon>upload</mat-icon>
                 </button>
@@ -57,7 +56,7 @@
                   type="file"
                   id="file"
                 />
-                <span class="file-name">{{ this.currentQuiz.audioName }}</span>
+                <span class="file-name">&nbsp;{{ currentQuiz.audioName }}</span>
               </div>
             </div>
           </div>
@@ -138,11 +137,10 @@
               </mat-form-field>
             }
           </div>
-
           <mat-card class="part-card" appearance="outlined">
             <mat-card-content>
               <app-reading
-                [data]="this.currentQuiz.readingParts[selectedReadingPart]"
+                [data]="currentQuiz.readingParts[selectedReadingPart]"
                 [isSaved]="mapSavedPart['reading'][selectedReadingPart]!"
               ></app-reading>
             </mat-card-content>
@@ -218,46 +216,48 @@
               </mat-form-field>
             }
           </div>
-          <mat-card appearance="outlined">
-            <mat-card-content>
-              <app-writing
-                [data]="currentQuiz.writingParts[selectedWritingPart]"
-                [isSaved]="mapSavedPart['writing'][selectedWritingPart]!"
-              ></app-writing>
-              <div class="actions">
-                @if (mapSavedPart["writing"][selectedWritingPart]) {
+          @if (currentQuiz.writingParts[selectedWritingPart]) {
+            <mat-card appearance="outlined">
+              <mat-card-content>
+                <app-writing
+                  [data]="currentQuiz.writingParts[selectedWritingPart]"
+                  [isSaved]="mapSavedPart['writing'][selectedWritingPart]!"
+                ></app-writing>
+                <div class="actions">
+                  @if (mapSavedPart["writing"][selectedWritingPart]) {
+                    <button
+                      mat-button
+                      color="primary"
+                      type="button"
+                      class="btn btn-danger"
+                      (click)="onEditClick('writing', selectedWritingPart)"
+                    >
+                      <mat-icon>edit</mat-icon> Edit part
+                    </button>
+                  } @else {
+                    <button
+                      mat-button
+                      color="primary"
+                      type="button"
+                      class="btn btn-danger"
+                      (click)="onSavePart('writing', selectedWritingPart)"
+                    >
+                      <mat-icon>save</mat-icon> Save part
+                    </button>
+                  }
                   <button
                     mat-button
-                    color="primary"
+                    color="warn"
                     type="button"
                     class="btn btn-danger"
-                    (click)="onEditClick('writing', selectedWritingPart)"
+                    (click)="removeWritingPart(selectedWritingPart)"
                   >
-                    <mat-icon>edit</mat-icon> Edit part
+                    <mat-icon>delete</mat-icon> Remove part
                   </button>
-                } @else {
-                  <button
-                    mat-button
-                    color="primary"
-                    type="button"
-                    class="btn btn-danger"
-                    (click)="onSavePart('writing', selectedWritingPart)"
-                  >
-                    <mat-icon>save</mat-icon> Save part
-                  </button>
-                }
-                <button
-                  mat-button
-                  color="warn"
-                  type="button"
-                  class="btn btn-danger"
-                  (click)="removeWritingPart(selectedWritingPart)"
-                >
-                  <mat-icon>delete</mat-icon> Remove part
-                </button>
-              </div>
-            </mat-card-content>
-          </mat-card>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          }
 
           <app-part-navigation
             [(selectedPart)]="selectedWritingPart"

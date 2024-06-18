@@ -1,7 +1,7 @@
 .choice-index {
   width: 30px;
   height: 30px;
-  background-color: rgb(216, 210, 210);
+  background-color: #d8d2d2;
   border-radius: 15px;
   text-align: center;
   line-height: 30px;
@@ -21,10 +21,12 @@
 
 .choice-index.selected {
   background: var(--success-color);
+  color: #fff
 }
 
 .choice-index.isWrong {
-  background: #f81212;
+  background: var(--danger-color);
+  color: #fff
 }
 
 .choice-content {

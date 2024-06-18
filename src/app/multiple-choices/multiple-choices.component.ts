@@ -82,7 +82,6 @@ export class MultipleChoicesComponent extends AbstractQuestionComponent {
     }
 
     if (this.isTesting) {
-      console.log(isArray(this.question.answer), this.question.answer)
       if (isArray(this.question.answer)) {
         if (!this.question.answer?.includes(this.question.choices[index].id!)) {
           this.question.answer.push(this.question.choices[index].id!);

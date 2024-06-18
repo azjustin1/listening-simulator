@@ -56,30 +56,23 @@
     >
       <mat-tab label="Listening" [disabled]="mapDisablePart[0]">
         <ng-template matTabContent>
-          <mat-tab-group
-            animationDuration="0ms"
-            mat-align-tabs="center"
-            animationDuration="0ms"
-            headerPosition="below"
-          >
-            @for (part of result.listeningParts; track $index) {
-              <mat-tab>
-                <ng-template matTabLabel="">{{ $index + 1 }}</ng-template>
-                @if (isStart) {
-                  <mat-card class="question-group" appearance="outlined">
-                    <mat-card-content>
-                      <app-listening
-                        [data]="part"
-                        [isTesting]="true"
-                        [isStart]="isStart"
-                        (onStartChange)="onListeningStart()"
-                      ></app-listening>
-                    </mat-card-content>
-                  </mat-card>
-                }
-              </mat-tab>
-            }
-          </mat-tab-group>
+          @if (isStart) {
+            <mat-card class="question-group" appearance="outlined">
+              <mat-card-content>
+                <app-listening
+                  [data]="result.listeningParts[selectedListeningPart]"
+                  [isTesting]="true"
+                  [isStart]="isStart"
+                  (onStartChange)="onListeningStart()"
+                ></app-listening>
+              </mat-card-content>
+            </mat-card>
+          }
+          <app-part-navigation
+            [(selectedPart)]="selectedListeningPart"
+            [parts]="result.listeningParts"
+            (onPartChange)="onTabChange('listening', $event)"
+          ></app-part-navigation>
           <button
             mat-raised-button
             type="button"
@@ -94,30 +87,23 @@
 
       <mat-tab label="Reading" [disabled]="mapDisablePart[1]">
         <ng-template matTabContent>
-          <mat-tab-group
-            animationDuration="0ms"
-            mat-align-tabs="center"
-            animationDuration="0ms"
-            headerPosition="below"
-          >
-            @for (part of result.readingParts; track $index) {
-              <mat-tab>
-                <ng-template matTabLabel="">{{ $index + 1 }}</ng-template>
-                @if (isStart) {
-                  <mat-card class="question-group" appearance="outlined">
-                    <mat-card-content>
-                      <app-reading
-                        [data]="part"
-                        [isTesting]="true"
-                        [isStart]="isStart"
-                        (onStartChange)="onStartPart()"
-                      ></app-reading
-                    ></mat-card-content>
-                  </mat-card>
-                }
-              </mat-tab>
-            }
-          </mat-tab-group>
+          @if (isStart) {
+            <mat-card class="question-group" appearance="outlined">
+              <mat-card-content>
+                <app-reading
+                  [data]="result.readingParts[selectedReadingPart]"
+                  [isTesting]="true"
+                  [isStart]="isStart"
+                  (onStartChange)="onStartPart()"
+                ></app-reading
+              ></mat-card-content>
+            </mat-card>
+          }
+          <app-part-navigation
+            [(selectedPart)]="selectedWritingPart"
+            [parts]="result.readingParts"
+            (onPartChange)="onTabChange('reading', $event)"
+          ></app-part-navigation>
           <button
             mat-raised-button
             type="button"
@@ -132,30 +118,23 @@
 
       <mat-tab label="Writing" [disabled]="mapDisablePart[2]">
         <ng-template matTabContent>
-          <mat-tab-group
-            animationDuration="0ms"
-            mat-align-tabs="center"
-            animationDuration="0ms"
-            headerPosition="below"
-          >
-            @for (part of result.writingParts; track $index) {
-              <mat-tab>
-                <ng-template matTabLabel="">{{ $index + 1 }}</ng-template>
-                @if (isStart) {
-                  <mat-card class="question-group" appearance="outlined">
-                    <mat-card-content>
-                      <app-writing
-                        [data]="part"
-                        [isTesting]="true"
-                        [isStart]="isStart"
-                        (onStartChange)="onStartPart()"
-                      ></app-writing
-                    ></mat-card-content>
-                  </mat-card>
-                }
-              </mat-tab>
-            }
-          </mat-tab-group>
+          @if (isStart && result.writingParts[selectedWritingPart]) {
+            <mat-card class="question-group" appearance="outlined">
+              <mat-card-content>
+                <app-writing
+                  [data]="result.writingParts[selectedWritingPart]"
+                  [isTesting]="true"
+                  [isStart]="isStart"
+                  (onStartChange)="onStartPart()"
+                ></app-writing
+              ></mat-card-content>
+            </mat-card>
+          }
+          <app-part-navigation
+            [(selectedPart)]="selectedWritingPart"
+            [parts]="result.writingParts"
+            (onPartChange)="onTabChange('writing', $event)"
+          ></app-part-navigation>
         </ng-template>
       </mat-tab>
     </mat-tab-group>

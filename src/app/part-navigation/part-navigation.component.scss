@@ -1,3 +1,5 @@
+@use "@angular/material" as mat;
+
 .part-container {
   display: flex;
   align-items: center;
@@ -12,11 +14,11 @@
   margin: 0 3px;
   border-radius: 5px;
   text-align: center;
-  border: 1px solid black;
+  border: 1px solid rgba($color: #000000, $alpha: 0.14);
   cursor: pointer;
 }
 
 .part-item.active {
-  background-color: #000;
+  background-color: var(--success-color);
   color: #fff;
 }

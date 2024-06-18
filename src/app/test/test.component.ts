@@ -38,6 +38,7 @@ import { ReadingComponent } from '../reading/reading.component';
 import { ShortAnswerComponent } from '../short-answer/short-answer.component';
 import { WritingComponent } from '../writing/writing.component';
 import { TestService } from './test.service';
+import { PartNavigationComponent } from '../part-navigation/part-navigation.component';
 const ID_LENGTH = 20;
 const SAVE_INTERVAL = 120000;
 
@@ -58,6 +59,7 @@ const SAVE_INTERVAL = 120000;
     ListeningComponent,
     ReadingComponent,
     WritingComponent,
+    PartNavigationComponent,
   ],
   providers: [QuizService, TestService],
   templateUrl: './test.component.html',
