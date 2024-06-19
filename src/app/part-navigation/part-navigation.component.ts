@@ -18,5 +18,10 @@ export class PartNavigationComponent {
   onPartClick(index: number) {
     this.selectedPart = index;
     this.selectedPartChange.emit(this.selectedPart);
+    this.scrollToTop();
+  }
+
+  scrollToTop() {
+    window.scroll({ top: 0, behavior: 'instant' });
   }
 }
