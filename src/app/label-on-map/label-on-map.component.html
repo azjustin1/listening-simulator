@@ -1,0 +1,120 @@
+<div class="container">
+  <div class="question">
+    @if (isEditting) {
+      <angular-editor
+        class="editor"
+        name="questionContent"
+        [id]="question.id!"
+        [(ngModel)]="question.content"
+        (ngModelChange)="onPaste($event)"
+        [config]="config"
+      ></angular-editor>
+    } @else {
+      <span class="reading-content" [innerHTML]="question.content"></span>
+    }
+  </div>
+
+  <div class="table">
+    <table class="table">
+      <tr>
+        <th></th>
+        @if (question.subQuestions![0]) {
+          @for (choice of question.subQuestions![0].choices; track $index) {
+            <th>{{ choiceIndexs[$index] }}</th>
+          }
+
+          @if (isEditting) {
+            <th>
+              <button color="warn" mat-icon-button (click)="onRemoveColumn()">
+                <mat-icon>clear</mat-icon>
+              </button>
+            </th>
+          }
+        }
+        @if (isEditting) {
+          <th>
+            <button color="primary" mat-icon-button (click)="onAddColumn()">
+              <mat-icon>add</mat-icon>
+            </button>
+          </th>
+        }
+      </tr>
+      @for (
+        question of question.subQuestions;
+        track $index;
+        let questionIndex = $index
+      ) {
+        <tr>
+          <td>
+            @if (isEditting) {
+              <input matInput type="text" [(ngModel)]="question.content" />
+            } @else {
+              {{ question.content }}
+            }
+          </td>
+          @for (
+            choice of question.choices;
+            track $index;
+            let choicIndex = $index
+          ) {
+            <td
+              class="choice-item"
+              (click)="onRowClick(questionIndex, choicIndex)"
+            >
+              @if (!isTesting) {
+                @if (isReadOnly) {
+                  @if (
+                    (question.answer.includes(choice.id!) &&
+                      question.correctAnswer.includes(choice.id!)) ||
+                    question.correctAnswer.includes(choice.id!)
+                  ) {
+                    <mat-icon color="primary">check</mat-icon>
+                  }
+
+                  @if (
+                    question.answer.includes(choice.id!) &&
+                    !question.correctAnswer.includes(choice.id!)
+                  ) {
+                    <mat-icon color="warn">clear</mat-icon>
+                  }
+                } @else {
+                  @if (question.correctAnswer.includes(choice.id!)) {
+                    <mat-icon color="primary">check</mat-icon>
+                  }
+                }
+              } @else {
+                @if (question.answer.includes(choice.id!)) {
+                  <mat-icon color="primary">check</mat-icon>
+                }
+              }
+            </td>
+          }
+        </tr>
+        @if (isEditting) {
+          <button
+            mat-button
+            type="button"
+            color="warn"
+            class="btn btn-danger"
+            (click)="onRemoveRow(questionIndex)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        }
+      }
+    </table>
+
+    @if (isEditting) {
+      <button
+        mat-button
+        color="primary"
+        type="button"
+        class="btn btn-primary"
+        (click)="addQuestion(1)"
+      >
+        <mat-icon>add</mat-icon>
+        More option
+      </button>
+    }
+  </div>
+</div>

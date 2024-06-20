@@ -29,4 +29,14 @@
       ></app-dropdown-choices>
     </div>
   }
+  @case (4) {
+    <div class="question">
+      <app-label-on-map
+        [question]="question"
+        [isReadOnly]="isReadOnly"
+        [isEditting]="isEditting"
+        [isTesting]="isTesting"
+      ></app-label-on-map>
+    </div>
+  }
 }

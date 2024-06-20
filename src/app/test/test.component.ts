@@ -249,6 +249,16 @@ export class TestComponent extends AddOrEditQuizComponent {
         htmlString += `<p>${question.content ? question.content : ''}</p><br>`;
         if (question.type === 3) {
           htmlString += `${AnswerChoicePipe.prototype.transform(question)}<br>`;
+        } else if (question.type === questionType.LABEL_ON_MAP) {
+          each(question.subQuestions, (question) => {
+            each(question.choices, (choice) => {
+              if (question.answer.includes(choice.id!)) {
+                htmlString += `<u>${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}</u><br>`;
+              } else {
+                htmlString += `${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}<br>`;
+              }
+            });
+          });
         } else {
           each(question.choices, (choice, index) => {
             if (question.type === 0) {
@@ -333,6 +343,7 @@ export class TestComponent extends AddOrEditQuizComponent {
       this.audioPlayer.nativeElement.play();
     }
     this.isStart = true;
+
     this.timeoutInterval = interval(1000).subscribe(() => {
       if (this.currentTab === 0) {
         this.result.audioTime! += 1;

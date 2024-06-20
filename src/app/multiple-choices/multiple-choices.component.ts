@@ -11,6 +11,7 @@ import { AbstractQuestionComponent } from '../../common/abstract-question.compon
 import { FileService } from '../file.service';
 import { ChoicePipe } from './choice.pipe';
 import { isArray } from 'lodash-es';
+import { CHOICE_INDEX } from '../../utils/constant';
 @Component({
   selector: 'app-multiple-choices',
   standalone: true,
@@ -33,34 +34,7 @@ export class MultipleChoicesComponent extends AbstractQuestionComponent {
   selectedAnswer: string = '';
   mapSelectedChoice: Record<number, boolean> = {};
 
-  CHOICE_INDEX = [
-    'A',
-    'B',
-    'C',
-    'D',
-    'E',
-    'F',
-    'G',
-    'H',
-    'I',
-    'J',
-    'K',
-    'L',
-    'M',
-    'N',
-    'O',
-    'P',
-    'Q',
-    'R',
-    'S',
-    'T',
-    'U',
-    'V',
-    'W',
-    'X',
-    'Y',
-    'Z',
-  ];
+  CHOICE_INDEX: string[] = CHOICE_INDEX;
 
   onSelectChoice(index: number) {
     if (this.isReadOnly) {

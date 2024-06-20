@@ -135,18 +135,6 @@ export class MultipleQuestionComponent
     this.question.subQuestions?.splice(index, 1);
   }
 
-  defaultChoices(numberOfChocies: number) {
-    const choices = [];
-    for (let i = 0; i < numberOfChocies; i++) {
-      const choice = {
-        id: CommonUtils.generateRandomId(),
-        content: '',
-      };
-      choices.push(choice);
-    }
-    return choices;
-  }
-
   saveOthersEditting() {
     for (const key in this.mapEdittingQuestion) {
       this.mapEdittingQuestion[key] = false;

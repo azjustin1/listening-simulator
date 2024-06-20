@@ -223,40 +223,40 @@
                   [data]="currentQuiz.writingParts[selectedWritingPart]"
                   [isSaved]="mapSavedPart['writing'][selectedWritingPart]!"
                 ></app-writing>
-                <div class="actions">
-                  @if (mapSavedPart["writing"][selectedWritingPart]) {
-                    <button
-                      mat-button
-                      color="primary"
-                      type="button"
-                      class="btn btn-danger"
-                      (click)="onEditClick('writing', selectedWritingPart)"
-                    >
-                      <mat-icon>edit</mat-icon> Edit part
-                    </button>
-                  } @else {
-                    <button
-                      mat-button
-                      color="primary"
-                      type="button"
-                      class="btn btn-danger"
-                      (click)="onSavePart('writing', selectedWritingPart)"
-                    >
-                      <mat-icon>save</mat-icon> Save part
-                    </button>
-                  }
-                  <button
-                    mat-button
-                    color="warn"
-                    type="button"
-                    class="btn btn-danger"
-                    (click)="removeWritingPart(selectedWritingPart)"
-                  >
-                    <mat-icon>delete</mat-icon> Remove part
-                  </button>
-                </div>
               </mat-card-content>
             </mat-card>
+            <div class="actions">
+              @if (mapSavedPart["writing"][selectedWritingPart]) {
+                <button
+                  mat-button
+                  color="primary"
+                  type="button"
+                  class="btn btn-danger"
+                  (click)="onEditClick('writing', selectedWritingPart)"
+                >
+                  <mat-icon>edit</mat-icon> Edit part
+                </button>
+              } @else {
+                <button
+                  mat-button
+                  color="primary"
+                  type="button"
+                  class="btn btn-danger"
+                  (click)="onSavePart('writing', selectedWritingPart)"
+                >
+                  <mat-icon>save</mat-icon> Save part
+                </button>
+              }
+              <button
+                mat-button
+                color="warn"
+                type="button"
+                class="btn btn-danger"
+                (click)="removeWritingPart(selectedWritingPart)"
+              >
+                <mat-icon>delete</mat-icon> Remove part
+              </button>
+            </div>
           }
 
           <app-part-navigation

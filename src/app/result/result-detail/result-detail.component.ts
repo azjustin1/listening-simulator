@@ -9,11 +9,12 @@ import { MatListModule } from '@angular/material/list';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
+  differenceWith,
   each,
   intersection,
   isEqual,
   isString,
-  isUndefined
+  isUndefined,
 } from 'lodash-es';
 import { Choice } from '../../../common/models/choice.model';
 import { Question } from '../../../common/models/question.model';
@@ -123,6 +124,18 @@ export class ResultDetailComponent {
             if (question.answer === question.correctAnswer) {
               correctPoint++;
             }
+            break;
+          case 4:
+            each(question.subQuestions, (question) => {
+              totalPoint++;
+              console.log(question.answer, 'Correct: ', question.correctAnswer);
+              if (
+                differenceWith(question.answer, question.correctAnswer, isEqual)
+                  .length === 0
+              ) {
+                correctPoint++;
+              }
+            });
             break;
           default:
             break;
