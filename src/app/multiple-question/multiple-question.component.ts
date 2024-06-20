@@ -11,6 +11,7 @@ import { AbstractQuestionComponent } from '../../common/abstract-question.compon
 import { Question } from '../../common/models/question.model';
 import { CommonUtils } from '../../utils/common-utils';
 import { QuestionComponent } from '../question/question.component';
+import { QuestionType } from '../../common/enums/question-type.enum';
 
 @Component({
   selector: 'app-multiple-question',
@@ -62,7 +63,7 @@ export class MultipleQuestionComponent
       correctAnswer: [],
     };
     switch (questionType) {
-      case 0:
+      case QuestionType.MULTIPLE_CHOICE:
         newQuestion = {
           id: id,
           content: '',
@@ -72,7 +73,7 @@ export class MultipleQuestionComponent
           correctAnswer: [],
         };
         break;
-      case 1:
+      case QuestionType.SHORT_ANSWER:
         newQuestion = {
           id: id,
           content: '',
@@ -82,7 +83,7 @@ export class MultipleQuestionComponent
           correctAnswer: [],
         };
         break;
-      case 3:
+      case QuestionType.DROPDOWN_ANSWER:
         newQuestion = {
           id: id,
           content: '',

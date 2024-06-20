@@ -20,7 +20,7 @@ import {
   mapValues,
 } from 'lodash-es';
 import { Subscription, interval } from 'rxjs';
-import { questionType } from '../../common/enums/question-type.enum';
+import { QuestionType } from '../../common/enums/question-type.enum';
 import { Choice } from '../../common/models/choice.model';
 import { Question } from '../../common/models/question.model';
 import { Quiz } from '../../common/models/quiz.model';
@@ -249,7 +249,7 @@ export class TestComponent extends AddOrEditQuizComponent {
         htmlString += `<p>${question.content ? question.content : ''}</p><br>`;
         if (question.type === 3) {
           htmlString += `${AnswerChoicePipe.prototype.transform(question)}<br>`;
-        } else if (question.type === questionType.LABEL_ON_MAP) {
+        } else if (question.type === QuestionType.LABEL_ON_MAP) {
           each(question.subQuestions, (question) => {
             each(question.choices, (choice) => {
               if (question.answer.includes(choice.id!)) {
@@ -494,7 +494,7 @@ export class TestComponent extends AddOrEditQuizComponent {
 
   private isCorrectChoices(question: Question) {
     if (
-      question.type === questionType.DROPDOWN_ANSWER ||
+      question.type === QuestionType.DROPDOWN_ANSWER ||
       isString(question.answer)
     ) {
       return question.answer === question.correctAnswer;

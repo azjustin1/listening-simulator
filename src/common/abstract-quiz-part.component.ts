@@ -18,6 +18,7 @@ import { CommonUtils } from '../utils/common-utils';
 import { BASE64_IMAGE_REGEX } from '../utils/constant';
 import { AbstractPart } from './models/abstract-part.model';
 import { Question } from './models/question.model';
+import { QuestionType } from './enums/question-type.enum';
 
 @Component({
   template: '',
@@ -119,48 +120,59 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     return choices;
   }
 
-  addQuestion(questionType: number) {
+  addQuestion(type: number) {
     const id = CommonUtils.generateRandomId();
-    switch (questionType) {
-      case 0:
+    switch (type) {
+      case QuestionType.MULTIPLE_CHOICE:
         this.currentQuestion = {
           id: id,
           content: '',
-          type: questionType,
+          type: type,
           choices: this.defaultChoices(4),
           answer: [],
           correctAnswer: [],
         };
         break;
-      case 1:
+      case QuestionType.SHORT_ANSWER:
         this.currentQuestion = {
           id: id,
           content: '',
-          type: questionType,
+          type: type,
           choices: [],
           answer: [],
           correctAnswer: [],
         };
         break;
-      case 2:
+      case QuestionType.MULTIPLE_QUESTIONS:
         this.currentQuestion = {
           id: id,
           content: '',
-          type: questionType,
+          type: type,
           choices: [],
           answer: [],
           correctAnswer: [],
           subQuestions: [],
         };
         break;
-      case 3:
+      case QuestionType.DROPDOWN_ANSWER:
         this.currentQuestion = {
           id: id,
           content: '',
-          type: questionType,
+          type: type,
           choices: this.defaultChoices(3),
           answer: [],
           correctAnswer: [],
+        };
+        break;
+      case QuestionType.LABEL_ON_MAP:
+        this.currentQuestion = {
+          id: id,
+          content: '',
+          type: type,
+          choices: this.defaultChoices(4),
+          answer: [],
+          correctAnswer: [],
+          subQuestions: [],
         };
         break;
       default:

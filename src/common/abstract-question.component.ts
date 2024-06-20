@@ -29,7 +29,6 @@ export abstract class AbstractQuestionComponent implements OnChanges {
 
   @Output() onSave = new EventEmitter();
   @Output() onEdit = new EventEmitter();
-  @Output() onRemove = new EventEmitter();
 
   onPaste = debounce((event) => this.uploadQuestionBase64Images(event), 1000);
 
@@ -78,6 +77,18 @@ export abstract class AbstractQuestionComponent implements OnChanges {
     },
   };
 
+  defaultChoices(numberOfChocies: number) {
+    const choices = [];
+    for (let i = 0; i < numberOfChocies; i++) {
+      const choice = {
+        id: CommonUtils.generateRandomId(),
+        content: '',
+      };
+      choices.push(choice);
+    }
+    return choices;
+  }
+
   updateEdittingQuestion(status: boolean) {
     each(this.question.subQuestions, (question) => {
       this.mapEdittingQuestion[question.id!] = status;
@@ -89,9 +100,6 @@ export abstract class AbstractQuestionComponent implements OnChanges {
   }
   onEditQuestion() {
     this.onEdit.emit();
-  }
-  removeQuestion() {
-    this.onRemove.emit();
   }
 
   addChoice() {
