@@ -20,7 +20,6 @@ import {
   mapValues,
 } from 'lodash-es';
 import { Subscription, interval } from 'rxjs';
-import { QuestionType } from '../../common/enums/question-type.enum';
 import { Choice } from '../../common/models/choice.model';
 import { Question } from '../../common/models/question.model';
 import { Quiz } from '../../common/models/quiz.model';
@@ -39,6 +38,7 @@ import { ShortAnswerComponent } from '../short-answer/short-answer.component';
 import { WritingComponent } from '../writing/writing.component';
 import { TestService } from './test.service';
 import { PartNavigationComponent } from '../part-navigation/part-navigation.component';
+import { QuestionType } from '../../common/enums/question-type.enum';
 const ID_LENGTH = 20;
 const SAVE_INTERVAL = 120000;
 
@@ -408,7 +408,7 @@ export class TestComponent extends AddOrEditQuizComponent {
     each(this.result.listeningParts, (part) => {
       each(part.questions, (question) => {
         switch (question.type) {
-          case 0:
+          case QuestionType.MULTIPLE_CHOICE:
             // Multiple choices
             totalPoint = totalPoint + question.correctAnswer.length;
             if (
@@ -419,7 +419,7 @@ export class TestComponent extends AddOrEditQuizComponent {
                 intersection(question.correctAnswer, question.answer).length;
             }
             break;
-          case 1:
+          case QuestionType.SHORT_ANSWER:
             // Short answer
             each(question.choices, (choice) => {
               totalPoint++;
@@ -428,11 +428,19 @@ export class TestComponent extends AddOrEditQuizComponent {
               }
             });
             break;
-          case 3:
+          case QuestionType.MULTIPLE_QUESTIONS:
             totalPoint++;
             if (question.answer === question.correctAnswer) {
               correctPoint++;
             }
+            break;
+          case QuestionType.LABEL_ON_MAP:
+            each(question.subQuestions, (question) => {
+              totalPoint++;
+              if (question.answer === question.correctAnswer) {
+                correctPoint++;
+              }
+            });
             break;
           default:
             break;
