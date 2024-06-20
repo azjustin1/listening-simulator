@@ -12,7 +12,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { saveAs } from 'file-saver';
 import { asBlob } from 'html-docx-js-typescript';
 import {
+  differenceWith,
   each,
+  findIndex,
   intersection,
   isEqual,
   isString,
@@ -20,6 +22,7 @@ import {
   mapValues,
 } from 'lodash-es';
 import { Subscription, interval } from 'rxjs';
+import { QuestionType } from '../../common/enums/question-type.enum';
 import { Choice } from '../../common/models/choice.model';
 import { Question } from '../../common/models/question.model';
 import { Quiz } from '../../common/models/quiz.model';
@@ -31,14 +34,13 @@ import { AnswerChoicePipe } from '../dropdown-choices/answer-choice.pipe';
 import { FileService } from '../file.service';
 import { ListeningComponent } from '../listening/listening.component';
 import { MultipleChoicesComponent } from '../multiple-choices/multiple-choices.component';
+import { PartNavigationComponent } from '../part-navigation/part-navigation.component';
 import { AddOrEditQuizComponent } from '../quizzes/add-or-edit-quiz/add-or-edit-quiz.component';
 import { QuizService } from '../quizzes/quizzes.service';
 import { ReadingComponent } from '../reading/reading.component';
 import { ShortAnswerComponent } from '../short-answer/short-answer.component';
 import { WritingComponent } from '../writing/writing.component';
 import { TestService } from './test.service';
-import { PartNavigationComponent } from '../part-navigation/part-navigation.component';
-import { QuestionType } from '../../common/enums/question-type.enum';
 const ID_LENGTH = 20;
 const SAVE_INTERVAL = 120000;
 
@@ -247,21 +249,21 @@ export class TestComponent extends AddOrEditQuizComponent {
       htmlString += `<h3>Part ${index + 1}</h3><br>`;
       each(part.questions, (question) => {
         htmlString += `<p>${question.content ? question.content : ''}</p><br>`;
-        if (question.type === 3) {
+        if (question.type === QuestionType.DROPDOWN_ANSWER) {
           htmlString += `${AnswerChoicePipe.prototype.transform(question)}<br>`;
         } else if (question.type === QuestionType.LABEL_ON_MAP) {
           each(question.subQuestions, (question) => {
-            each(question.choices, (choice) => {
-              if (question.answer.includes(choice.id!)) {
-                htmlString += `<u>${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}</u><br>`;
-              } else {
-                htmlString += `${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}<br>`;
-              }
-            });
+            htmlString += `${question.content} ${
+              CHOICE_INDEX[
+                findIndex(question.choices, (choie) =>
+                  question.answer.includes(choie.id!),
+                )
+              ]
+            } ${AnswerChoicePipe.prototype.transform(question)}<br>`;
           });
         } else {
           each(question.choices, (choice, index) => {
-            if (question.type === 0) {
+            if (question.type === QuestionType.MULTIPLE_CHOICE) {
               if (question.answer.includes(choice.id!)) {
                 htmlString += `<u>${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}</u><br>`;
               } else {
@@ -292,11 +294,11 @@ export class TestComponent extends AddOrEditQuizComponent {
         htmlString += `<b>${question.name ? question.name : ''}<b><br>`;
         each(question.subQuestions, (subQuestion) => {
           htmlString += `<p>${subQuestion.content ? subQuestion.content : ''}</p><br>`;
-          if (subQuestion.type === 3) {
+          if (subQuestion.type === QuestionType.DROPDOWN_ANSWER) {
             htmlString += `${AnswerChoicePipe.prototype.transform(subQuestion)}<br>`;
           } else {
             each(subQuestion.choices, (choice, index) => {
-              if (subQuestion.type === 0) {
+              if (subQuestion.type === QuestionType.MULTIPLE_CHOICE) {
                 if (subQuestion.answer.includes(choice.id!)) {
                   htmlString += `<u>${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}</u><br>`;
                 } else {
@@ -437,7 +439,7 @@ export class TestComponent extends AddOrEditQuizComponent {
           case QuestionType.LABEL_ON_MAP:
             each(question.subQuestions, (question) => {
               totalPoint++;
-              if (question.answer === question.correctAnswer) {
+              if (this.isCorrectChoices(question)) {
                 correctPoint++;
               }
             });
@@ -460,7 +462,7 @@ export class TestComponent extends AddOrEditQuizComponent {
           switch (subQuestion.type) {
             case 0:
               // Multiple choices
-              totalPoint = totalPoint + question.answer.length;
+              totalPoint += subQuestion.answer.length;
               if (this.isCorrectChoices(subQuestion)) {
                 correctPoint++;
               }
@@ -510,7 +512,8 @@ export class TestComponent extends AddOrEditQuizComponent {
 
     return (
       question.answer.length > 0 &&
-      isEqual(question.answer.sort(), question.correctAnswer.sort())
+      differenceWith(question.answer, question.correctAnswer, isEqual)
+        .length === 0
     );
   }
 }

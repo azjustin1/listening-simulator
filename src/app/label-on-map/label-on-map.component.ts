@@ -8,11 +8,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
+import { each, isEmpty } from 'lodash-es';
 import { AbstractQuestionComponent } from '../../common/abstract-question.component';
 import { CommonUtils } from '../../utils/common-utils';
-import { ChoicePipe } from '../multiple-choices/choice.pipe';
-import { each } from 'lodash-es';
 import { CHOICE_INDEX } from '../../utils/constant';
+import { ChoicePipe } from '../multiple-choices/choice.pipe';
 
 @Component({
   selector: 'app-label-on-map',
@@ -51,11 +51,23 @@ export class LabelOnMapComponent extends AbstractQuestionComponent {
   onRowClick(questionIndex: number, choiceIndex: number) {
     const choiceId =
       this.question.subQuestions![questionIndex].choices[choiceIndex].id;
+    const correctAnswer =
+      this.question.subQuestions![questionIndex].correctAnswer;
+    const answer = this.question.subQuestions![questionIndex].answer;
+
     if (this.isEditting) {
-      this.question.subQuestions![questionIndex].correctAnswer = [choiceId!];
+      if (!isEmpty(correctAnswer) && correctAnswer.includes(choiceId!)) {
+        this.question.subQuestions![questionIndex].correctAnswer = [];
+      } else {
+        this.question.subQuestions![questionIndex].correctAnswer = [choiceId!];
+      }
     }
     if (this.isTesting) {
-      this.question.subQuestions![questionIndex].answer = [choiceId!];
+      if (!isEmpty(correctAnswer) && answer.includes(choiceId!)) {
+        this.question.subQuestions![questionIndex].answer = [];
+      } else {
+        this.question.subQuestions![questionIndex].answer = [choiceId!];
+      }
     }
   }
 
