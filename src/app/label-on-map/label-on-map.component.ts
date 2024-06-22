@@ -8,8 +8,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
-import { each, isEmpty } from 'lodash-es';
+import { each, isEmpty, last } from 'lodash-es';
 import { AbstractQuestionComponent } from '../../common/abstract-question.component';
+import { Choice } from '../../common/models/choice.model';
 import { CommonUtils } from '../../utils/common-utils';
 import { CHOICE_INDEX } from '../../utils/constant';
 import { ChoicePipe } from '../multiple-choices/choice.pipe';
@@ -37,15 +38,19 @@ export class LabelOnMapComponent extends AbstractQuestionComponent {
   selectedIndex = 0;
 
   addQuestion(questionType: number): void {
+    const lastQuestion = last(this.question.subQuestions);
+    let choices: Choice[] = [];
+    if (lastQuestion) {
+      choices = [...lastQuestion.choices];
+    }
     this.question.subQuestions?.push({
       id: CommonUtils.generateRandomId(),
       content: '',
       type: questionType,
-      choices: [],
+      choices: choices,
       answer: [],
       correctAnswer: [],
     });
-    console.log(this.question.subQuestions);
   }
 
   onRowClick(questionIndex: number, choiceIndex: number) {
@@ -79,8 +84,6 @@ export class LabelOnMapComponent extends AbstractQuestionComponent {
     each(this.question.subQuestions, (question) => {
       question.choices.push(newChoice);
     });
-
-    console.log(this.question);
   }
 
   onRemoveColumn() {
