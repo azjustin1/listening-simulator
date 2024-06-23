@@ -12,7 +12,7 @@ import { AbstractQuestionComponent } from '../../common/abstract-question.compon
 import { Choice } from '../../common/models/choice.model';
 import { CommonUtils } from '../../utils/common-utils';
 import { ArrayContentChoice } from './array-content.pipe';
-import { FitContentDirective } from './fix-content.directive';
+import { FitContentDirective } from './fit-content.directive';
 import { IsInputPipe } from './is-input.pipe';
 import { MapIndexPipe } from './map-index.pipe';
 import { INPUT_PATTERN } from '../../utils/constant';

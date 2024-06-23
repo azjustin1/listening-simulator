@@ -15,6 +15,7 @@ import { debounce } from 'lodash-es';
 })
 export class FitContentDirective implements OnChanges {
   private originalWidth: number;
+  private minWidth = 200;
   @Input() content = '';
 
   constructor(
@@ -42,7 +43,7 @@ export class FitContentDirective implements OnChanges {
 
   private setInputWidth(): void {
     const inputElement = this.element.nativeElement;
-    const width = Math.max(this.originalWidth, inputElement.scrollWidth + 2);
+    const width = Math.max(this.minWidth, this.content.length * 8);
     this.renderer.setStyle(inputElement, 'width', `${width}px`);
   }
 }
