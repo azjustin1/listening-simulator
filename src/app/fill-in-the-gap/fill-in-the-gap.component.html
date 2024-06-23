@@ -36,25 +36,25 @@
                         class="answer"
                         [ngClass]="{
                           correct:
-                            mapChoiceById[content.match(indexPattern)![1]]
+                            mapChoiceById[content.match(inputPattern)![1]]
                               .answer ===
-                            mapChoiceById[content.match(indexPattern)![1]]
+                            mapChoiceById[content.match(inputPattern)![1]]
                               .correctAnswer
                         }"
                       >
                         {{
-                          mapChoiceById[content.match(indexPattern)![1]].answer
+                          mapChoiceById[content.match(inputPattern)![1]].answer
                         }}
                         @if (
-                          mapChoiceById[content.match(indexPattern)![1]]
+                          mapChoiceById[content.match(inputPattern)![1]]
                             .answer !==
-                          mapChoiceById[content.match(indexPattern)![1]]
+                          mapChoiceById[content.match(inputPattern)![1]]
                             .correctAnswer
                         ) {
                           <span class="answer correct">
                             |
                             {{
-                              mapChoiceById[content.match(indexPattern)![1]]
+                              mapChoiceById[content.match(inputPattern)![1]]
                                 .correctAnswer
                             }}
                           </span>
@@ -62,7 +62,7 @@
                       </div>
                     } @else {
                       {{
-                        mapChoiceById[content.match(indexPattern)![1]]
+                        mapChoiceById[content.match(inputPattern)![1]]
                           .correctAnswer
                       }}
                     }
@@ -73,11 +73,11 @@
                     [placeholder]="
                       mapChoiceById
                         | keyvalue
-                        | mapIndex: content.match(indexPattern)![1]
+                        | mapIndex: content.match(inputPattern)![1]
                     "
                     class="input-answer"
                     [(ngModel)]="
-                      mapChoiceById[content.match(indexPattern)![1]].answer
+                      mapChoiceById[content.match(inputPattern)![1]].answer
                     "
                   />
                 } @else {
@@ -109,11 +109,11 @@
                     [placeholder]="
                       mapChoiceById
                         | keyvalue
-                        | mapIndex: content.match(indexPattern)![1]
+                        | mapIndex: content.match(inputPattern)![1]
                     "
                     class="input-answer"
                     [(ngModel)]="
-                      mapChoiceById[content.match(indexPattern)![1]]
+                      mapChoiceById[content.match(inputPattern)![1]]
                         .correctAnswer
                     "
                   />

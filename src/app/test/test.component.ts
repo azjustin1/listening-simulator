@@ -29,6 +29,7 @@ import { Quiz } from '../../common/models/quiz.model';
 import { Result } from '../../common/models/result.model';
 import { CommonUtils } from '../../utils/common-utils';
 import { CHOICE_INDEX } from '../../utils/constant';
+import { ExportUtils } from '../../utils/export.utils';
 import { ConfirmDialogComponent } from '../dialog/confirm-dialog/confirm-dialog.component';
 import { AnswerChoicePipe } from '../dropdown-choices/answer-choice.pipe';
 import { FileService } from '../file.service';
@@ -249,33 +250,32 @@ export class TestComponent extends AddOrEditQuizComponent {
       htmlString += `<h3>Part ${index + 1}</h3><br>`;
       each(part.questions, (question) => {
         htmlString += `<p>${question.content ? question.content : ''}</p><br>`;
-        if (QuestionType.DROPDOWN_ANSWER === question.type) {
-          htmlString += `${AnswerChoicePipe.prototype.transform(question)}<br>`;
-        } else if (QuestionType.LABEL_ON_MAP === question.type) {
-          each(question.subQuestions, (question) => {
-            htmlString += `${question.content} ${
-              CHOICE_INDEX[
-                findIndex(question.choices, (choie) =>
-                  question.answer.includes(choie.id!),
-                )
-              ]
-            } ${AnswerChoicePipe.prototype.transform(question)}<br>`;
-          });
-        } else if (
-          QuestionType.SHORT_ANSWER === question.type ||
-          QuestionType.FILL_IN_THE_GAP === question.type
-        ) {
-          each(question.choices, (choice, index) => {
-            if (QuestionType.MULTIPLE_CHOICE === question.type) {
-              if (question.answer.includes(choice.id!)) {
-                htmlString += `<u>${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}</u><br>`;
-              } else {
-                htmlString += `${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}<br>`;
-              }
-            } else {
-              htmlString += `<b>${choice.index ? choice.index : ''}</b> ${choice.answer ? choice.answer : ''}<br>`;
-            }
-          });
+        switch (question.type) {
+          case QuestionType.MULTIPLE_CHOICE:
+            htmlString += ExportUtils.exportMultipleChoices(question);
+            break;
+          case QuestionType.SHORT_ANSWER:
+            htmlString += ExportUtils.exportShortAnswer(question);
+            break;
+          case QuestionType.DROPDOWN_ANSWER:
+            htmlString += ExportUtils.exportDropDownChoice(question);
+            break;
+          case QuestionType.LABEL_ON_MAP:
+            each(question.subQuestions, (question) => {
+              htmlString += `${question.content} ${
+                CHOICE_INDEX[
+                  findIndex(question.choices, (choie) =>
+                    question.answer.includes(choie.id!),
+                  )
+                ]
+              } ${AnswerChoicePipe.prototype.transform(question)}<br>`;
+            });
+            break;
+          case QuestionType.FILL_IN_THE_GAP:
+            htmlString += ExportUtils.exportFIllInTheGap(question);
+            break;
+          default:
+            break;
         }
       });
       htmlString += '<hr>';
@@ -297,20 +297,21 @@ export class TestComponent extends AddOrEditQuizComponent {
         htmlString += `<b>${question.name ? question.name : ''}<b><br>`;
         each(question.subQuestions, (subQuestion) => {
           htmlString += `<p>${subQuestion.content ? subQuestion.content : ''}</p><br>`;
-          if (QuestionType.DROPDOWN_ANSWER === subQuestion.type) {
-            htmlString += `${AnswerChoicePipe.prototype.transform(subQuestion)}<br>`;
-          } else {
-            each(subQuestion.choices, (choice, index) => {
-              if (QuestionType.MULTIPLE_CHOICE === subQuestion.type) {
-                if (subQuestion.answer.includes(choice.id!)) {
-                  htmlString += `<u>${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}</u><br>`;
-                } else {
-                  htmlString += `${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}<br>`;
-                }
-              } else {
-                htmlString += `<b>${choice.index ? choice.index : ''}</b> ${choice.answer ? choice.answer : ''}<br>`;
-              }
-            });
+          switch (subQuestion.type) {
+            case QuestionType.MULTIPLE_CHOICE:
+              htmlString += ExportUtils.exportMultipleChoices(subQuestion);
+              break;
+            case QuestionType.SHORT_ANSWER:
+              htmlString += ExportUtils.exportShortAnswer(subQuestion);
+              break;
+            case QuestionType.DROPDOWN_ANSWER:
+              htmlString += ExportUtils.exportDropDownChoice(subQuestion);
+              break;
+            case QuestionType.FILL_IN_THE_GAP:
+              htmlString += ExportUtils.exportFIllInTheGap(subQuestion);
+              break;
+            default:
+              break;
           }
         });
         htmlString += '<hr>';

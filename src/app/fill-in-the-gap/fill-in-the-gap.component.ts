@@ -15,6 +15,7 @@ import { ArrayContentChoice } from './array-content.pipe';
 import { FitContentDirective } from './fix-content.directive';
 import { IsInputPipe } from './is-input.pipe';
 import { MapIndexPipe } from './map-index.pipe';
+import { INPUT_PATTERN } from '../../utils/constant';
 
 @Component({
   selector: 'app-fill-in-the-gap',
@@ -37,7 +38,7 @@ import { MapIndexPipe } from './map-index.pipe';
   styleUrl: './fill-in-the-gap.component.scss',
 })
 export class FillInTheGapComponent extends AbstractQuestionComponent {
-  indexPattern = /<(.+?)>/;
+  inputPattern = INPUT_PATTERN;
   mapSaveTextByIndex: Record<number, Record<number, boolean>> = {};
   mapChoiceById: Record<string, Choice> = {};
   mapShowActionByIndex: Record<number, Record<number, boolean>> = {};
