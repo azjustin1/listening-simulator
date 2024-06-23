@@ -11,22 +11,12 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { saveAs } from 'file-saver';
 import { asBlob } from 'html-docx-js-typescript';
-import {
-  differenceWith,
-  each,
-  findIndex,
-  intersection,
-  isEqual,
-  isString,
-  isUndefined,
-  mapValues,
-} from 'lodash-es';
+import { each, findIndex, intersection, mapValues } from 'lodash-es';
 import { Subscription, interval } from 'rxjs';
 import { QuestionType } from '../../common/enums/question-type.enum';
-import { Choice } from '../../common/models/choice.model';
-import { Question } from '../../common/models/question.model';
 import { Quiz } from '../../common/models/quiz.model';
 import { Result } from '../../common/models/result.model';
+import { AnswerUtils } from '../../utils/answer.utils';
 import { CommonUtils } from '../../utils/common-utils';
 import { CHOICE_INDEX } from '../../utils/constant';
 import { ExportUtils } from '../../utils/export.utils';
@@ -42,7 +32,6 @@ import { ReadingComponent } from '../reading/reading.component';
 import { ShortAnswerComponent } from '../short-answer/short-answer.component';
 import { WritingComponent } from '../writing/writing.component';
 import { TestService } from './test.service';
-import { AnswerUtils } from '../../utils/answer.utils';
 const ID_LENGTH = 20;
 const SAVE_INTERVAL = 120000;
 
