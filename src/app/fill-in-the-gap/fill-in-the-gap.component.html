@@ -37,9 +37,15 @@
                         [ngClass]="{
                           correct:
                             mapChoiceById[content.match(inputPattern)![1]]
-                              .answer ===
+                              .answer &&
                             mapChoiceById[content.match(inputPattern)![1]]
-                              .correctAnswer
+                              .correctAnswer &&
+                            mapChoiceById[
+                              content.match(inputPattern)![1]
+                            ].answer?.toLowerCase() ===
+                              mapChoiceById[
+                                content.match(inputPattern)![1]
+                              ].correctAnswer?.toLowerCase()
                         }"
                       >
                         {{
@@ -47,9 +53,13 @@
                         }}
                         @if (
                           mapChoiceById[content.match(inputPattern)![1]]
-                            .answer !==
+                            .answer &&
                           mapChoiceById[content.match(inputPattern)![1]]
-                            .correctAnswer
+                            .correctAnswer &&
+                          mapChoiceById[content.match(inputPattern)![1]]
+                            .answer !==
+                            mapChoiceById[content.match(inputPattern)![1]]
+                              .correctAnswer
                         ) {
                           @if (
                             !mapChoiceById[content.match(inputPattern)![1]]
@@ -99,7 +109,7 @@
                       </button>
                       <button
                         mat-button
-                        color="primary"
+                        color="accent"
                         (click)="addInput(lineIndex, contentIndex)"
                       >
                         <mat-icon>add</mat-icon> Input
@@ -129,7 +139,7 @@
                       </button>
                       <button
                         mat-button
-                        color="primary"
+                        color="accent"
                         (click)="addInput(lineIndex, contentIndex + 1)"
                       >
                         <mat-icon>add</mat-icon> Input
@@ -183,7 +193,7 @@
                     </button>
                     <button
                       mat-button
-                      color="primary"
+                      color="accent"
                       (click)="addInput(lineIndex, contentIndex)"
                     >
                       <mat-icon>add</mat-icon> Input
@@ -204,7 +214,7 @@
                     </button>
                     <button
                       mat-button
-                      color="primary"
+                      color="accent"
                       (click)="addInput(lineIndex, contentIndex + 1)"
                     >
                       <mat-icon>add</mat-icon> Input
@@ -258,7 +268,7 @@
         }
         <br />
       }
-      @if (question.arrayContent?.length === 0 && isEditting) {
+      @if (question.arrayContent.length === 0 && isEditting) {
         <button mat-button color="primary" (click)="addNewLine(-1)">
           <mat-icon>add</mat-icon> New Line
         </button>

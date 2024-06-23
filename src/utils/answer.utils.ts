@@ -8,8 +8,8 @@ export class AnswerUtils {
       choice.answer !== '' &&
       !isUndefined(choice.answer) &&
       !isUndefined(choice.correctAnswer) &&
-      (choice.answer?.trim() === choice.correctAnswer?.trim() ||
-        choice.correctAnswer?.split('/').includes(choice.answer?.trim()))
+      (choice.answer?.toLocaleLowerCase().trim() === choice.correctAnswer?.toLocaleLowerCase().trim() ||
+        choice.correctAnswer?.split('/').includes(choice.answer?.toLocaleLowerCase().trim()))
     );
   }
 
