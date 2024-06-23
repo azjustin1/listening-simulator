@@ -7,6 +7,7 @@ import {
   Renderer2,
   SimpleChanges,
 } from '@angular/core';
+import { debounce } from 'lodash-es';
 
 @Directive({
   selector: '[fitContentInput]',
@@ -41,10 +42,7 @@ export class FitContentDirective implements OnChanges {
 
   private setInputWidth(): void {
     const inputElement = this.element.nativeElement;
-    let width = `${Math.max(this.originalWidth, inputElement.scrollWidth + 1)}`;
-    if (this.content) {
-      width = `${this.content.length}ch`;
-    }
-    this.renderer.setStyle(inputElement, 'width', width);
+    const width = Math.max(this.originalWidth, inputElement.scrollWidth + 2);
+    this.renderer.setStyle(inputElement, 'width', `${width}px`);
   }
 }
