@@ -7,7 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
-import { clone, each, isEmpty, mapValues, toArray } from 'lodash-es';
+import { clone, each, isEmpty, mapValues, omit, toArray } from 'lodash-es';
 import { AbstractQuestionComponent } from '../../common/abstract-question.component';
 import { Choice } from '../../common/models/choice.model';
 import { CommonUtils } from '../../utils/common-utils';
@@ -51,11 +51,6 @@ export class FillInTheGapComponent extends AbstractQuestionComponent {
     }
   }
 
-  @HostListener('input', ['$event.target'])
-  onInput(element: HTMLInputElement): void {
-    this.autoGrowInput(element);
-  }
-
   override ngOnInit(): void {
     super.ngOnInit();
     this.initMapSaveText();
@@ -89,8 +84,12 @@ export class FillInTheGapComponent extends AbstractQuestionComponent {
     };
   }
 
-  onDeleteLine(index: number) {
-    this.question.arrayContent!.splice(index, 1);
+  onDeleteLine(lineIndex: number) {
+    each(this.question.arrayContent![lineIndex], (content, contentIndex) => {
+      this.updateMapChoiceId(lineIndex, contentIndex);
+    });
+    this.question.arrayContent!.splice(lineIndex, 1);
+    this.initMapSaveText();
   }
 
   moveLineUp(index: number) {
@@ -145,7 +144,9 @@ export class FillInTheGapComponent extends AbstractQuestionComponent {
   }
 
   onDeleteText(lineIndex: number, contentIndex: number) {
+    this.updateMapChoiceId(lineIndex, contentIndex);
     this.question.arrayContent![lineIndex].splice(contentIndex, 1);
+    this.initMapSaveText();
     this.saveAllEditting();
   }
 
@@ -181,8 +182,17 @@ export class FillInTheGapComponent extends AbstractQuestionComponent {
     this.mapSaveTextByIndex[lineIndex][contentIndex] = true;
   }
 
-  private autoGrowInput(element: HTMLInputElement): void {
-    element.style.width = `${element.value.length + 2}ch`;
+  private updateMapChoiceId(lineIndex: number, contentIndex: number) {
+    const content = this.question.arrayContent![lineIndex][contentIndex];
+    console.log(content);
+    if (IsInputPipe.prototype.transform(content)) {
+      this.mapChoiceById = omit(
+        this.mapChoiceById,
+        content.match(INPUT_PATTERN)![1],
+      );
+    }
+
+    console.log(this.mapChoiceById);
   }
 
   private saveAllEditting() {

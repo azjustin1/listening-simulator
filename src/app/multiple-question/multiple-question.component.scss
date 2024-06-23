@@ -8,7 +8,8 @@
 
 .question-type-container {
   display: flex;
-  margin: 16px 0 0 0;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .add-question-button {
@@ -25,4 +26,3 @@
     overflow: scroll;
   }
 }
-

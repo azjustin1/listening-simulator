@@ -39,7 +39,7 @@ export class FitContentDirective implements OnChanges {
 
   private setInputWidth(): void {
     const inputElement = this.element.nativeElement;
-    const width = Math.max(this.originalWidth, inputElement.scrollWidth - 5);
+    const width = Math.max(this.originalWidth, inputElement.scrollWidth + 1);
     this.renderer.setStyle(inputElement, 'width', `${width}px`);
   }
 }

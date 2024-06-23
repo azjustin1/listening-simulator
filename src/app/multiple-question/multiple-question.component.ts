@@ -93,6 +93,18 @@ export class MultipleQuestionComponent
           correctAnswer: [],
         };
         break;
+      case QuestionType.FILL_IN_THE_GAP:
+        newQuestion = {
+          id: id,
+          content: '',
+          arrayContent: [],
+          type: questionType,
+          choices: [],
+          answer: [],
+          correctAnswer: [],
+          subQuestions: [],
+        };
+        break;
       default:
         break;
     }

@@ -168,7 +168,7 @@
                     [ngClass]="{ edit: isEditting }"
                     (click)="onEditText(lineIndex, contentIndex)"
                   >
-                    {{ question.arrayContent[lineIndex][contentIndex] }}
+                    {{ question.arrayContent[lineIndex][contentIndex] === '' ? '...' : question.arrayContent[lineIndex][contentIndex] }}
                   </div>
                 } @else {
                   @if ($index === 0) {
@@ -256,6 +256,11 @@
           }
         }
         <br />
+      }
+      @if (question.arrayContent?.length === 0 && isEditting) {
+        <button mat-button color="primary" (click)="addNewLine(-1)">
+          <mat-icon>add</mat-icon> New Line
+        </button>
       }
     </div>
   }

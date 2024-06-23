@@ -42,6 +42,7 @@ import { ReadingComponent } from '../reading/reading.component';
 import { ShortAnswerComponent } from '../short-answer/short-answer.component';
 import { WritingComponent } from '../writing/writing.component';
 import { TestService } from './test.service';
+import { AnswerUtils } from '../../utils/answer.utils';
 const ID_LENGTH = 20;
 const SAVE_INTERVAL = 120000;
 
@@ -428,21 +429,21 @@ export class TestComponent extends AddOrEditQuizComponent {
           case QuestionType.FILL_IN_THE_GAP:
             each(question.choices, (choice) => {
               totalPoint++;
-              if (this.isCorrectAnswer(choice)) {
+              if (AnswerUtils.isCorrcectAnswer(choice)) {
                 correctPoint++;
               }
             });
             break;
-          case QuestionType.MULTIPLE_QUESTIONS:
+          case QuestionType.DROPDOWN_ANSWER:
             totalPoint++;
-            if (question.answer === question.correctAnswer) {
+            if (AnswerUtils.isCorrectDropdownChoice(question)) {
               correctPoint++;
             }
             break;
           case QuestionType.LABEL_ON_MAP:
             each(question.subQuestions, (question) => {
               totalPoint++;
-              if (this.isCorrectChoices(question)) {
+              if (AnswerUtils.isCorrectChoices(question)) {
                 correctPoint++;
               }
             });
@@ -463,25 +464,26 @@ export class TestComponent extends AddOrEditQuizComponent {
       each(part.questions, (question) => {
         each(question.subQuestions, (subQuestion) => {
           switch (subQuestion.type) {
-            case 0:
+            case QuestionType.MULTIPLE_CHOICE:
               // Multiple choices
               totalPoint += subQuestion.answer.length;
-              if (this.isCorrectChoices(subQuestion)) {
+              if (AnswerUtils.isCorrectChoices(subQuestion)) {
                 correctPoint++;
               }
               break;
-            case 1:
+            case QuestionType.SHORT_ANSWER:
+            case QuestionType.FILL_IN_THE_GAP:
               // Short answer
               each(subQuestion.choices, (choice) => {
                 totalPoint++;
-                if (this.isCorrectAnswer(choice)) {
+                if (AnswerUtils.isCorrcectAnswer(choice)) {
                   correctPoint++;
                 }
               });
               break;
-            case 3:
+            case QuestionType.DROPDOWN_ANSWER:
               totalPoint++;
-              if (subQuestion.answer === subQuestion.correctAnswer) {
+              if (AnswerUtils.isCorrectDropdownChoice(subQuestion)) {
                 correctPoint++;
               }
               break;
@@ -493,30 +495,5 @@ export class TestComponent extends AddOrEditQuizComponent {
     });
     this.result.correctReadingPoint = correctPoint;
     this.result.totalReadingPoint = totalPoint;
-  }
-
-  private isCorrectAnswer(choice: Choice) {
-    return (
-      choice.answer !== '' &&
-      !isUndefined(choice.answer) &&
-      !isUndefined(choice.correctAnswer) &&
-      (choice.answer?.trim() === choice.correctAnswer?.trim() ||
-        choice.correctAnswer?.split('/').includes(choice.answer?.trim()))
-    );
-  }
-
-  private isCorrectChoices(question: Question) {
-    if (
-      QuestionType.DROPDOWN_ANSWER === question.type ||
-      isString(question.answer)
-    ) {
-      return question.answer === question.correctAnswer;
-    }
-
-    return (
-      question.answer.length > 0 &&
-      differenceWith(question.answer, question.correctAnswer, isEqual)
-        .length === 0
-    );
   }
 }
