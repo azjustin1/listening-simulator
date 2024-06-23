@@ -15,7 +15,6 @@ import { AbstractQuizPartComponent } from '../../common/abstract-quiz-part.compo
 import { Writing } from '../../common/models/writing.model';
 import { MultipleChoicesComponent } from '../multiple-choices/multiple-choices.component';
 import { ShortAnswerComponent } from '../short-answer/short-answer.component';
-import { LinebreaksPipe } from './line-break.pipe';
 
 @Component({
   selector: 'app-writing',
@@ -35,7 +34,6 @@ import { LinebreaksPipe } from './line-break.pipe';
     AngularEditorModule,
     MatSelectModule,
     MatStepperModule,
-    LinebreaksPipe,
   ],
   templateUrl: './writing.component.html',
   styleUrl: './writing.component.scss',
