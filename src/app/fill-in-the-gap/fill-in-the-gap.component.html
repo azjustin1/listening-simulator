@@ -51,8 +51,17 @@
                           mapChoiceById[content.match(inputPattern)![1]]
                             .correctAnswer
                         ) {
+                          @if (
+                            !mapChoiceById[content.match(inputPattern)![1]]
+                              .answer ||
+                            mapChoiceById[content.match(inputPattern)![1]]
+                              .answer === ""
+                          ) {
+                            <mat-icon color="warn">close</mat-icon>
+                          }
+
                           <span class="answer correct">
-                            |
+                            &nbsp;
                             {{
                               mapChoiceById[content.match(inputPattern)![1]]
                                 .correctAnswer
@@ -168,7 +177,11 @@
                     [ngClass]="{ edit: isEditting }"
                     (click)="onEditText(lineIndex, contentIndex)"
                   >
-                    {{ question.arrayContent[lineIndex][contentIndex] === '' ? '...' : question.arrayContent[lineIndex][contentIndex] }}
+                    {{
+                      question.arrayContent[lineIndex][contentIndex] === ""
+                        ? "..."
+                        : question.arrayContent[lineIndex][contentIndex]
+                    }}
                   </div>
                 } @else {
                   @if ($index === 0) {
