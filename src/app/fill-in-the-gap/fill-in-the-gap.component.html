@@ -79,11 +79,6 @@
                 } @else if (isTesting) {
                   <input
                     fitContentInput
-                    [placeholder]="
-                      mapChoiceById
-                        | keyvalue
-                        | mapIndex: content.match(inputPattern)![1]
-                    "
                     class="input-answer"
                     [(ngModel)]="
                       mapChoiceById[content.match(inputPattern)![1]].answer
@@ -115,11 +110,6 @@
 
                   <input
                     fitContentInput
-                    [placeholder]="
-                      mapChoiceById
-                        | keyvalue
-                        | mapIndex: content.match(inputPattern)![1]
-                    "
                     class="input-answer"
                     [(ngModel)]="
                       mapChoiceById[content.match(inputPattern)![1]]
@@ -202,7 +192,6 @@
                   }
                   <input
                     fitContentInput
-                    placeholder="Text"
                     class="form-control"
                     [(ngModel)]="question.arrayContent[lineIndex][contentIndex]"
                   />
