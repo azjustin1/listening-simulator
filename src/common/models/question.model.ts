@@ -4,6 +4,7 @@ export interface Question {
   id?: string;
   name?: string;
   content?: string;
+  arrayContent?: string[][];
   type?: number | null;
   choices: Choice[];
   answer: string[] | string;

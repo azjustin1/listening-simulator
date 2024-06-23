@@ -175,6 +175,18 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
           subQuestions: [],
         };
         break;
+      case QuestionType.FILL_IN_THE_GAP:
+        this.currentQuestion = {
+          id: id,
+          content: '',
+          arrayContent: [],
+          type: type,
+          choices: [],
+          answer: [],
+          correctAnswer: [],
+          subQuestions: [],
+        };
+        break;
       default:
         break;
     }

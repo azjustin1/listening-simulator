@@ -48,9 +48,11 @@ export class ReadingComponent
   subscription: Subscription[] = [];
 
   ngOnInit(): void {
-    each(this.data.questions, (question) => {
-      this.mapSavedQuestion[question.id!] = true;
-    });
+    if (this.data) {
+      each(this.data.questions, (question) => {
+        this.mapSavedQuestion[question.id!] = true;
+      });
+    }
   }
 
   getChoiceById(id: string, choices: Choice[]) {

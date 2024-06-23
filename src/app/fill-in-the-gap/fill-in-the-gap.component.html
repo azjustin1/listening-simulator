@@ -1,0 +1,262 @@
+<div class="container">
+  <div class="description">
+    @if (isEditting) {
+      <angular-editor
+        [name]="question.id!"
+        [config]="config"
+        [(ngModel)]="question.content"
+        (ngModelChange)="onPaste($event)"
+      ></angular-editor>
+    } @else {
+      <span [innerHTML]="question.content"></span>
+    }
+  </div>
+
+  @if (question.arrayContent) {
+    <div class="line">
+      @for (
+        line of question.arrayContent;
+        track $index;
+        let lineIndex = $index
+      ) {
+        <div class="text-container">
+          @for (content of line; track $index; let contentIndex = $index) {
+            @if (content | isInput) {
+              <div class="content">
+                @if (
+                  mapSaveTextByIndex[lineIndex][contentIndex] && !isTesting
+                ) {
+                  <div
+                    class="choice-content"
+                    [ngClass]="{ edit: isEditting }"
+                    (click)="onEditInput(lineIndex, contentIndex)"
+                  >
+                    @if (isReadOnly) {
+                      <div
+                        class="answer"
+                        [ngClass]="{
+                          correct:
+                            mapChoiceById[content.match(indexPattern)![1]]
+                              .answer ===
+                            mapChoiceById[content.match(indexPattern)![1]]
+                              .correctAnswer
+                        }"
+                      >
+                        {{
+                          mapChoiceById[content.match(indexPattern)![1]].answer
+                        }}
+                        @if (
+                          mapChoiceById[content.match(indexPattern)![1]]
+                            .answer !==
+                          mapChoiceById[content.match(indexPattern)![1]]
+                            .correctAnswer
+                        ) {
+                          <span class="answer correct">
+                            |
+                            {{
+                              mapChoiceById[content.match(indexPattern)![1]]
+                                .correctAnswer
+                            }}
+                          </span>
+                        }
+                      </div>
+                    } @else {
+                      {{
+                        mapChoiceById[content.match(indexPattern)![1]]
+                          .correctAnswer
+                      }}
+                    }
+                  </div>
+                } @else if (isTesting) {
+                  <input
+                    fitContentInput
+                    [placeholder]="
+                      mapChoiceById
+                        | keyvalue
+                        | mapIndex: content.match(indexPattern)![1]
+                    "
+                    class="input-answer"
+                    [(ngModel)]="
+                      mapChoiceById[content.match(indexPattern)![1]].answer
+                    "
+                  />
+                } @else {
+                  @if (
+                    isEditting &&
+                    mapShowActionByIndex[lineIndex][contentIndex] &&
+                    contentIndex === 0
+                  ) {
+                    <div class="text-container__button">
+                      <button
+                        mat-button
+                        color="primary"
+                        (click)="addText(lineIndex, contentIndex)"
+                      >
+                        <mat-icon>add</mat-icon> Text
+                      </button>
+                      <button
+                        mat-button
+                        color="primary"
+                        (click)="addInput(lineIndex, contentIndex)"
+                      >
+                        <mat-icon>add</mat-icon> Input
+                      </button>
+                    </div>
+                  }
+
+                  <input
+                    fitContentInput
+                    [placeholder]="
+                      mapChoiceById
+                        | keyvalue
+                        | mapIndex: content.match(indexPattern)![1]
+                    "
+                    class="input-answer"
+                    [(ngModel)]="
+                      mapChoiceById[content.match(indexPattern)![1]]
+                        .correctAnswer
+                    "
+                  />
+
+                  @if (
+                    isEditting && mapShowActionByIndex[lineIndex][contentIndex]
+                  ) {
+                    <div class="text-container__button">
+                      <button
+                        mat-button
+                        color="primary"
+                        (click)="addText(lineIndex, contentIndex + 1)"
+                      >
+                        <mat-icon>add</mat-icon> Text
+                      </button>
+                      <button
+                        mat-button
+                        color="primary"
+                        (click)="addInput(lineIndex, contentIndex + 1)"
+                      >
+                        <mat-icon>add</mat-icon> Input
+                      </button>
+                      @if (mapSaveTextByIndex[lineIndex][contentIndex]) {
+                        <mat-icon
+                          color="primary"
+                          (click)="onEditText(lineIndex, contentIndex)"
+                        >
+                          edit
+                        </mat-icon>
+                      } @else {
+                        <mat-icon
+                          color="primary"
+                          (click)="onSaveText(lineIndex, contentIndex)"
+                        >
+                          check
+                        </mat-icon>
+                      }
+                      <mat-icon
+                        color="warn"
+                        (click)="onDeleteText(lineIndex, contentIndex)"
+                        >delete</mat-icon
+                      >
+                    </div>
+                  }
+                }
+              </div>
+            } @else {
+              <div class="content">
+                @if (mapSaveTextByIndex[lineIndex][contentIndex]) {
+                  <div
+                    class="question__text"
+                    [ngClass]="{ edit: isEditting }"
+                    (click)="onEditText(lineIndex, contentIndex)"
+                  >
+                    {{ question.arrayContent[lineIndex][contentIndex] }}
+                  </div>
+                } @else {
+                  @if ($index === 0) {
+                    <button
+                      mat-button
+                      color="primary"
+                      (click)="addText(lineIndex, contentIndex)"
+                    >
+                      <mat-icon>add</mat-icon> Text
+                    </button>
+                    <button
+                      mat-button
+                      color="primary"
+                      (click)="addInput(lineIndex, contentIndex)"
+                    >
+                      <mat-icon>add</mat-icon> Input
+                    </button>
+                  }
+                  <input
+                    fitContentInput
+                    placeholder="Text"
+                    class="form-control"
+                    [(ngModel)]="question.arrayContent[lineIndex][contentIndex]"
+                  />
+                  <div class="text-container__button">
+                    <button
+                      mat-button
+                      color="primary"
+                      (click)="addText(lineIndex, contentIndex + 1)"
+                    >
+                      <mat-icon>add</mat-icon> Text
+                    </button>
+                    <button
+                      mat-button
+                      color="primary"
+                      (click)="addInput(lineIndex, contentIndex + 1)"
+                    >
+                      <mat-icon>add</mat-icon> Input
+                    </button>
+                    <mat-icon
+                      color="primary"
+                      (click)="onSaveText(lineIndex, contentIndex)"
+                    >
+                      check
+                    </mat-icon>
+                    <mat-icon
+                      color="warn"
+                      (click)="onDeleteText(lineIndex, contentIndex)"
+                      >delete</mat-icon
+                    >
+                  </div>
+                }
+              </div>
+
+              <br />
+            }
+          }
+        </div>
+        @if (isEditting) {
+          <button mat-button color="primary" (click)="addNewLine(lineIndex)">
+            <mat-icon>add</mat-icon> New Line
+          </button>
+          <button mat-button color="warn" (click)="onDeleteLine(lineIndex)">
+            <mat-icon>delete</mat-icon> Delete Line
+          </button>
+          @if (lineIndex !== 0) {
+            <button
+              mat-button
+              type="button"
+              class="btn btn-danger"
+              (click)="moveLineUp(lineIndex)"
+            >
+              <mat-icon>arrow_upward</mat-icon>
+            </button>
+          }
+          @if (lineIndex !== question.arrayContent.length - 1) {
+            <button
+              mat-button
+              type="button"
+              class="btn btn-danger"
+              (click)="moveLineDown(lineIndex)"
+            >
+              <mat-icon>arrow_downward</mat-icon>
+            </button>
+          }
+        }
+        <br />
+      }
+    </div>
+  }
+</div>

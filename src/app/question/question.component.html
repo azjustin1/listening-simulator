@@ -39,4 +39,13 @@
       ></app-label-on-map>
     </div>
   }
+  @case (5) {
+    <app-fill-in-the-gap
+      [question]="question"
+      [isReadOnly]="isReadOnly"
+      [isEditting]="isEditting"
+      [isTesting]="isTesting"
+    >
+    </app-fill-in-the-gap>
+  }
 }

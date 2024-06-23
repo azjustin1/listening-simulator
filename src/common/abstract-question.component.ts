@@ -2,6 +2,7 @@ import { HttpResponse } from '@angular/common/http';
 import {
   Component,
   EventEmitter,
+  inject,
   Input,
   OnChanges,
   Output,
@@ -34,7 +35,7 @@ export abstract class AbstractQuestionComponent implements OnChanges {
 
   mapEdittingQuestion: Record<string, boolean> = {};
 
-  constructor(private fileService: FileService) {}
+  fileService = inject(FileService);
 
   ngOnInit(): void {
     this.mapEdittingQuestion[this.question.id!] = false;
@@ -133,5 +134,11 @@ export abstract class AbstractQuestionComponent implements OnChanges {
         );
       });
     }
+  }
+
+  saveAllQuestion() {
+    each(this.question.subQuestions, question => {
+      this.mapEdittingQuestion[question.id!] = false;
+    })
   }
 }

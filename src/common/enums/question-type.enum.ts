@@ -4,4 +4,5 @@ export enum QuestionType {
   MULTIPLE_QUESTIONS,
   DROPDOWN_ANSWER,
   LABEL_ON_MAP,
+  FILL_IN_THE_GAP
 }

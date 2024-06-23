@@ -249,9 +249,9 @@ export class TestComponent extends AddOrEditQuizComponent {
       htmlString += `<h3>Part ${index + 1}</h3><br>`;
       each(part.questions, (question) => {
         htmlString += `<p>${question.content ? question.content : ''}</p><br>`;
-        if (question.type === QuestionType.DROPDOWN_ANSWER) {
+        if (QuestionType.DROPDOWN_ANSWER === question.type) {
           htmlString += `${AnswerChoicePipe.prototype.transform(question)}<br>`;
-        } else if (question.type === QuestionType.LABEL_ON_MAP) {
+        } else if (QuestionType.LABEL_ON_MAP === question.type) {
           each(question.subQuestions, (question) => {
             htmlString += `${question.content} ${
               CHOICE_INDEX[
@@ -261,9 +261,12 @@ export class TestComponent extends AddOrEditQuizComponent {
               ]
             } ${AnswerChoicePipe.prototype.transform(question)}<br>`;
           });
-        } else {
+        } else if (
+          QuestionType.SHORT_ANSWER === question.type ||
+          QuestionType.FILL_IN_THE_GAP === question.type
+        ) {
           each(question.choices, (choice, index) => {
-            if (question.type === QuestionType.MULTIPLE_CHOICE) {
+            if (QuestionType.MULTIPLE_CHOICE === question.type) {
               if (question.answer.includes(choice.id!)) {
                 htmlString += `<u>${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}</u><br>`;
               } else {
@@ -294,11 +297,11 @@ export class TestComponent extends AddOrEditQuizComponent {
         htmlString += `<b>${question.name ? question.name : ''}<b><br>`;
         each(question.subQuestions, (subQuestion) => {
           htmlString += `<p>${subQuestion.content ? subQuestion.content : ''}</p><br>`;
-          if (subQuestion.type === QuestionType.DROPDOWN_ANSWER) {
+          if (QuestionType.DROPDOWN_ANSWER === subQuestion.type) {
             htmlString += `${AnswerChoicePipe.prototype.transform(subQuestion)}<br>`;
           } else {
             each(subQuestion.choices, (choice, index) => {
-              if (subQuestion.type === QuestionType.MULTIPLE_CHOICE) {
+              if (QuestionType.MULTIPLE_CHOICE === subQuestion.type) {
                 if (subQuestion.answer.includes(choice.id!)) {
                   htmlString += `<u>${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}</u><br>`;
                 } else {
@@ -411,7 +414,6 @@ export class TestComponent extends AddOrEditQuizComponent {
       each(part.questions, (question) => {
         switch (question.type) {
           case QuestionType.MULTIPLE_CHOICE:
-            // Multiple choices
             totalPoint = totalPoint + question.correctAnswer.length;
             if (
               intersection(question.correctAnswer, question.answer).length !== 0
@@ -422,7 +424,7 @@ export class TestComponent extends AddOrEditQuizComponent {
             }
             break;
           case QuestionType.SHORT_ANSWER:
-            // Short answer
+          case QuestionType.FILL_IN_THE_GAP:
             each(question.choices, (choice) => {
               totalPoint++;
               if (this.isCorrectAnswer(choice)) {
@@ -504,7 +506,7 @@ export class TestComponent extends AddOrEditQuizComponent {
 
   private isCorrectChoices(question: Question) {
     if (
-      question.type === QuestionType.DROPDOWN_ANSWER ||
+      QuestionType.DROPDOWN_ANSWER === question.type ||
       isString(question.answer)
     ) {
       return question.answer === question.correctAnswer;
