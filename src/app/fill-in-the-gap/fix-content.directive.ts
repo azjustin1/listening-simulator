@@ -2,9 +2,10 @@ import {
   Directive,
   ElementRef,
   HostListener,
+  Input,
   OnChanges,
   Renderer2,
-  SimpleChanges
+  SimpleChanges,
 } from '@angular/core';
 
 @Directive({
@@ -13,6 +14,7 @@ import {
 })
 export class FitContentDirective implements OnChanges {
   private originalWidth: number;
+  @Input() content = '';
 
   constructor(
     private element: ElementRef,
@@ -39,7 +41,10 @@ export class FitContentDirective implements OnChanges {
 
   private setInputWidth(): void {
     const inputElement = this.element.nativeElement;
-    const width = Math.max(this.originalWidth, inputElement.scrollWidth + 1);
-    this.renderer.setStyle(inputElement, 'width', `${width}px`);
+    let width = `${Math.max(this.originalWidth, inputElement.scrollWidth + 1)}`;
+    if (this.content) {
+      width = `${this.content.length}ch`;
+    }
+    this.renderer.setStyle(inputElement, 'width', width);
   }
 }

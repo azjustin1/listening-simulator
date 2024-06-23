@@ -79,6 +79,7 @@
                 } @else if (isTesting) {
                   <input
                     fitContentInput
+                    [content]="mapChoiceById[content.match(inputPattern)![1]].answer!"
                     class="input-answer"
                     [(ngModel)]="
                       mapChoiceById[content.match(inputPattern)![1]].answer
@@ -110,6 +111,7 @@
 
                   <input
                     fitContentInput
+                    [content]="mapChoiceById[content.match(inputPattern)![1]].correctAnswer!"
                     class="input-answer"
                     [(ngModel)]="
                       mapChoiceById[content.match(inputPattern)![1]]
@@ -192,6 +194,7 @@
                   }
                   <input
                     fitContentInput
+                    [content]="question.arrayContent[lineIndex][contentIndex]"
                     class="form-control"
                     [(ngModel)]="question.arrayContent[lineIndex][contentIndex]"
                   />
