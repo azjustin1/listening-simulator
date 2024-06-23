@@ -16,10 +16,6 @@
   word-wrap: break-word;
 }
 
-.writing-text {
-  height: 70%;
-}
-
 .writing-description img {
   max-width: 100%;
 }
@@ -29,7 +25,6 @@
   flex-direction: column;
   margin-left: 16px;
   width: 100%;
-  min-height: fit-content;
 }
 
 .word-count {

@@ -15,6 +15,7 @@ import { AbstractQuizPartComponent } from '../../common/abstract-quiz-part.compo
 import { Writing } from '../../common/models/writing.model';
 import { MultipleChoicesComponent } from '../multiple-choices/multiple-choices.component';
 import { ShortAnswerComponent } from '../short-answer/short-answer.component';
+import { LinebreaksPipe } from './line-break.pipe';
 
 @Component({
   selector: 'app-writing',
@@ -34,8 +35,15 @@ import { ShortAnswerComponent } from '../short-answer/short-answer.component';
     AngularEditorModule,
     MatSelectModule,
     MatStepperModule,
+    LinebreaksPipe,
   ],
   templateUrl: './writing.component.html',
   styleUrl: './writing.component.scss',
 })
-export class WritingComponent extends AbstractQuizPartComponent<Writing> {}
+export class WritingComponent extends AbstractQuizPartComponent<Writing> {
+  testEditorConfig = {
+    ...this.config,
+    showToolbar: false,
+    minHeight: '28rem',
+  };
+}
