@@ -53,13 +53,9 @@
                         }}
                         @if (
                           mapChoiceById[content.match(inputPattern)![1]]
-                            .answer &&
-                          mapChoiceById[content.match(inputPattern)![1]]
-                            .correctAnswer &&
-                          mapChoiceById[content.match(inputPattern)![1]]
-                            .answer !==
+                            .answer?.toLowerCase() !==
                             mapChoiceById[content.match(inputPattern)![1]]
-                              .correctAnswer
+                              .correctAnswer?.toLowerCase()
                         ) {
                           @if (
                             !mapChoiceById[content.match(inputPattern)![1]]
