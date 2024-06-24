@@ -2,16 +2,7 @@
   @if (isReadOnly) {
     <div class="choice-group">
       @for (choice of question.choices; track $index) {
-        @if (
-          choice.answer !== "" &&
-          ((choice.answer &&
-            choice.correctAnswer &&
-            choice.answer!.trim() === choice.correctAnswer!.trim()) ||
-            (choice.answer &&
-              choice
-                .correctAnswer!.split("/")!
-                .includes(choice.answer!.trim())))
-        ) {
+        @if (choice | isCorrectAnswer) {
           <div class="result">
             <div>
               <b>{{ choice.index }}</b>

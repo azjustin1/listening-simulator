@@ -321,7 +321,10 @@ export class TestComponent extends AddOrEditQuizComponent {
     each(this.result.readingParts, (part) => {
       each(part.questions, (question) => {
         each(question.subQuestions, (subQuestion) => {
-          const scoreResult = ScoreUtils.calculateQuestionPoint(subQuestion);
+          const scoreResult = ScoreUtils.calculateQuestionPoint(
+            subQuestion,
+            true,
+          );
           correctPoint += scoreResult.correct;
           totalPoint += scoreResult.total;
         });

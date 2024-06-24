@@ -20,7 +20,7 @@
     <div class="choice-group">
       @if (isReadOnly) {
         <div class="choice">
-          @if (question.answer[0] === question.correctAnswer[0]) {
+          @if (question | isCorrectDropdown) {
             <span class="answer">
               {{ question | answerChoice }}
             </span>
@@ -29,7 +29,7 @@
               {{ question | answerChoice }}
             </span>
             <span class="answer correct">
-              {{ question | dropDownChocie }}
+              {{ question | dropDownChoice }}
             </span>
           }
         </div>
@@ -42,7 +42,8 @@
                   [(ngModel)]="question.correctAnswer"
                   name="correctAnswer"
                 >
-                  <mat-radio-button color="primary" [value]="choice.id"> </mat-radio-button>
+                  <mat-radio-button color="primary" [value]="choice.id">
+                  </mat-radio-button>
                 </mat-radio-group>
                 <mat-form-field class="choice-input">
                   <textarea

@@ -12,6 +12,7 @@ export class CorrectDropdownPipe extends AbstractAnswerPipe {
     if (isString(question.answer)) {
       return question.correctAnswer.includes(question.answer);
     }
+
     return question.answer === question.correctAnswer;
   }
 }

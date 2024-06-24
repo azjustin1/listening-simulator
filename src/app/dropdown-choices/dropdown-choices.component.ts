@@ -12,6 +12,7 @@ import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { AbstractQuestionComponent } from '../../common/abstract-question.component';
 import { AnswerChoicePipe } from './answer-choice.pipe';
 import { DropdownChoicePipe } from './dropdown-choice.pipe';
+import { CorrectDropdownPipe } from '../../common/pipes/correct-dropdown.pipe';
 @Component({
   selector: 'app-dropdown-choices',
   standalone: true,
@@ -28,6 +29,7 @@ import { DropdownChoicePipe } from './dropdown-choice.pipe';
     MatRadioModule,
     AnswerChoicePipe,
     DropdownChoicePipe,
+    CorrectDropdownPipe,
   ],
   templateUrl: './dropdown-choices.component.html',
   styleUrl: './dropdown-choices.component.scss',

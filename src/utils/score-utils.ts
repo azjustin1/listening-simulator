@@ -1,4 +1,4 @@
-import { each, intersection } from 'lodash-es';
+import { each, intersection, isUndefined } from 'lodash-es';
 import { QuestionType } from '../common/enums/question-type.enum';
 import { Question } from '../common/models/question.model';
 import { CorrectAnswerPipe } from '../common/pipes/correct-answer.pipe';
@@ -11,22 +11,28 @@ interface ScoreResult {
 }
 
 export class ScoreUtils {
-  static calculateQuestionPoint(question: Question) {
+  static calculateQuestionPoint(
+    question: Question,
+    isMultipleChoiceOnePoint?: boolean,
+  ) {
     switch (question.type) {
       case QuestionType.MULTIPLE_CHOICE:
+        if (isMultipleChoiceOnePoint) {
+          return ScoreUtils.forSinglePointChoices(question);
+        }
         return ScoreUtils.forMultiplePointChoices(question);
-      
-        case QuestionType.SHORT_ANSWER:
+
+      case QuestionType.SHORT_ANSWER:
       case QuestionType.FILL_IN_THE_GAP:
         return ScoreUtils.forAnswer(question);
 
       case QuestionType.DROPDOWN_ANSWER:
         return ScoreUtils.forDropdown(question);
-      
-        case QuestionType.LABEL_ON_MAP:
+
+      case QuestionType.LABEL_ON_MAP:
         return ScoreUtils.forMapLabel(question);
-      
-        default:
+
+      default:
         return this.getResult(0, 0);
     }
   }
@@ -38,11 +44,6 @@ export class ScoreUtils {
     if (CorrectChoicesPipe.prototype.transform(question)) {
       correctPoint++;
     }
-
-    correctPoint += intersection(
-      question.correctAnswer,
-      question.answer,
-    ).length;
 
     return this.getResult(correctPoint, totalPoint);
   }
