@@ -9,9 +9,9 @@ import { MatInputModule } from '@angular/material/input';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { AbstractQuestionComponent } from '../../common/abstract-question.component';
 import { FileService } from '../file.service';
-import { ChoicePipe } from './choice.pipe';
 import { isArray } from 'lodash-es';
 import { CHOICE_INDEX } from '../../utils/constant';
+import { CorrectChoicesPipe } from '../../common/pipes/correct-choices.pipe';
 @Component({
   selector: 'app-multiple-choices',
   standalone: true,
@@ -24,7 +24,7 @@ import { CHOICE_INDEX } from '../../utils/constant';
     AngularEditorModule,
     MatIconModule,
     MatCardModule,
-    ChoicePipe,
+    CorrectChoicesPipe,
   ],
   providers: [FileService],
   templateUrl: './multiple-choices.component.html',

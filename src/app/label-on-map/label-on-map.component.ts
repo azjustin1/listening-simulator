@@ -13,7 +13,6 @@ import { AbstractQuestionComponent } from '../../common/abstract-question.compon
 import { Choice } from '../../common/models/choice.model';
 import { CommonUtils } from '../../utils/common-utils';
 import { CHOICE_INDEX } from '../../utils/constant';
-import { ChoicePipe } from '../multiple-choices/choice.pipe';
 
 @Component({
   selector: 'app-label-on-map',
@@ -28,7 +27,6 @@ import { ChoicePipe } from '../multiple-choices/choice.pipe';
     MatIconModule,
     MatCardModule,
     MatTableModule,
-    ChoicePipe,
   ],
   templateUrl: './label-on-map.component.html',
   styleUrl: './label-on-map.component.scss',

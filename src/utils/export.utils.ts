@@ -1,13 +1,13 @@
 import { saveAs } from 'file-saver';
 import { asBlob } from 'html-docx-js-typescript';
 import { each, findIndex } from 'lodash-es';
-import { AnswerChoicePipe } from '../app/dropdown-choices/answer-choice.pipe';
 import { IsInputPipe } from '../app/fill-in-the-gap/is-input.pipe';
 import { QuestionType } from '../common/enums/question-type.enum';
 import { Question } from '../common/models/question.model';
 import { Result } from '../common/models/result.model';
 import { CHOICE_INDEX, INPUT_PATTERN } from './constant';
 import { CommonUtils } from './common-utils';
+import { AnswerChoicePipe } from '../common/pipes/answer-choice.pipe';
 
 export class ExportUtils {
   static exportQuestion(question: Question) {
@@ -76,6 +76,9 @@ export class ExportUtils {
   static exportLabelOnMap(question: Question) {
     let htmlString = '';
     each(question.subQuestions, (question) => {
+      findIndex(question.choices, (choie) => {
+        return question.answer.includes(choie.id);
+      });
       htmlString += `${question.content} ${
         CHOICE_INDEX[
           findIndex(question.choices, (choie) =>
@@ -84,6 +87,7 @@ export class ExportUtils {
         ]
       } ${AnswerChoicePipe.prototype.transform(question)}<br>`;
     });
+    return htmlString;
   }
 
   static exportMultipleChoices(question: Question) {

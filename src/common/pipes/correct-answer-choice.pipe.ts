@@ -3,9 +3,9 @@ import { Question } from '../../common/models/question.model';
 
 @Pipe({
   standalone: true,
-  name: 'dropDownChoice',
+  name: 'correctAnswerChoice',
 })
-export class DropdownChoicePipe implements PipeTransform {
+export class CorrectAnswerChoicePipe implements PipeTransform {
   transform(question: Question, ...args: any[]): any {
     const selectedChoice = question.choices.find(
       (choice) => choice.id === question.correctAnswer.toString(),
