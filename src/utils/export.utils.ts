@@ -1,6 +1,6 @@
 import { saveAs } from 'file-saver';
 import { asBlob } from 'html-docx-js-typescript';
-import { each, findIndex } from 'lodash-es';
+import { each, findIndex, isEmpty } from 'lodash-es';
 import { IsInputPipe } from '../app/fill-in-the-gap/is-input.pipe';
 import { QuestionType } from '../common/enums/question-type.enum';
 import { Question } from '../common/models/question.model';
@@ -44,7 +44,7 @@ export class ExportUtils {
       });
       htmlString += '<hr>';
     });
-    this.exportFile(result, htmlString);
+    this.exportFile(result, htmlString, 'Listening');
   }
 
   static exportReading(result: Result) {
@@ -60,7 +60,7 @@ export class ExportUtils {
         htmlString += '<hr>';
       });
     });
-    this.exportFile(result, htmlString);
+    this.exportFile(result, htmlString, 'Reading');
   }
 
   static exportWriting(result: Result) {
@@ -70,7 +70,7 @@ export class ExportUtils {
         htmlString + part.content + '<br>' + part.answer + '<hr><br>';
     });
 
-    this.exportFile(result, htmlString);
+    this.exportFile(result, htmlString, 'Writing');
   }
 
   static exportLabelOnMap(question: Question) {
@@ -130,12 +130,14 @@ export class ExportUtils {
     return htmlString;
   }
 
-  static exportFile(result: Result, htmlString: string) {
-    asBlob(htmlString).then((data: any) => {
-      saveAs(
-        data,
-        `${result.studentName}_Listening_${result.name}_${CommonUtils.getCurrentDate()}`,
-      );
-    });
+  static exportFile(result: Result, htmlString: string, part: string) {
+    if (!isEmpty(htmlString)) {
+      asBlob(htmlString).then((data: any) => {
+        saveAs(
+          data,
+          `${result.studentName}_${part}_${result.name}_${CommonUtils.getCurrentDate()}`,
+        );
+      });
+    }
   }
 }
