@@ -11,7 +11,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { AbstractQuestionComponent } from '../../common/abstract-question.component';
 import { AnswerChoicePipe } from './answer-choice.pipe';
-import { CorrectAnswerPipe } from './corect-answer-choice.pipe';
+import { DropdownChoicePipe } from './dropdown-choice.pipe';
 @Component({
   selector: 'app-dropdown-choices',
   standalone: true,
@@ -27,7 +27,7 @@ import { CorrectAnswerPipe } from './corect-answer-choice.pipe';
     MatSelectModule,
     MatRadioModule,
     AnswerChoicePipe,
-    CorrectAnswerPipe
+    DropdownChoicePipe,
   ],
   templateUrl: './dropdown-choices.component.html',
   styleUrl: './dropdown-choices.component.scss',

@@ -29,7 +29,7 @@
               {{ question | answerChoice }}
             </span>
             <span class="answer correct">
-              {{ question | correctAnswerChoice }}
+              {{ question | dropDownChocie }}
             </span>
           }
         </div>
@@ -42,7 +42,7 @@
                   [(ngModel)]="question.correctAnswer"
                   name="correctAnswer"
                 >
-                  <mat-radio-button [value]="choice.id!"> </mat-radio-button>
+                  <mat-radio-button color="primary" [value]="choice.id"> </mat-radio-button>
                 </mat-radio-group>
                 <mat-form-field class="choice-input">
                   <textarea

@@ -110,7 +110,7 @@ export class MultipleQuestionComponent
     }
     this.question.subQuestions!.push({ ...newQuestion });
     this.question = { ...this.question };
-    this.mapEdittingQuestion[id] = true;
+    this.onEditSubQuestion(id)
   }
 
   moveQuestionUp(index: number) {

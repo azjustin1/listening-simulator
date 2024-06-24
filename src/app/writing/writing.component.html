@@ -28,17 +28,14 @@
   }
   @if (isReadOnly) {
     <div class="result-container">
-      <mat-form-field class="writing-text">
-        <mat-label>Word count: {{ data.wordCount }}</mat-label>
-        <textarea
-          matInput
-          disabled
-          cdkTextareaAutosize
-          name="reading-question"
-          [(ngModel)]="data.answer"
-          [rows]="5"
-        ></textarea>
-      </mat-form-field>
+      <angular-editor
+        disabled="true"
+        class="student-input"
+        [config]="testEditorConfig"
+        [(ngModel)]="data.answer"
+        (ngModelChange)="onWritingChange($event)"
+      ></angular-editor>
+      <div>Word count: {{ data.wordCount }}</div>
     </div>
   }
 </div>

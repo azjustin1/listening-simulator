@@ -37,27 +37,19 @@
                         [ngClass]="{
                           correct:
                             mapChoiceById[content.match(inputPattern)![1]]
-                              .answer &&
+                              .answer ===
                             mapChoiceById[content.match(inputPattern)![1]]
-                              .correctAnswer &&
-                            mapChoiceById[
-                              content.match(inputPattern)![1]
-                            ].answer?.toLowerCase() ===
-                              mapChoiceById[
-                                content.match(inputPattern)![1]
-                              ].correctAnswer?.toLowerCase()
+                              .correctAnswer
                         }"
                       >
                         {{
                           mapChoiceById[content.match(inputPattern)![1]].answer
                         }}
                         @if (
-                          mapChoiceById[
-                            content.match(inputPattern)![1]
-                          ].answer?.toLowerCase() !==
-                          mapChoiceById[
-                            content.match(inputPattern)![1]
-                          ].correctAnswer?.toLowerCase()
+                          mapChoiceById[content.match(inputPattern)![1]]
+                            .answer !==
+                          mapChoiceById[content.match(inputPattern)![1]]
+                            .correctAnswer
                         ) {
                           @if (
                             !mapChoiceById[content.match(inputPattern)![1]]

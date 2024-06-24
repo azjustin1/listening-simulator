@@ -192,7 +192,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     }
     this.data.questions.push({ ...this.currentQuestion });
     this.data = { ...this.data };
-    this.mapQuestionEditting[id] = true;
+    this.onEditQuestion(id)
   }
 
   onSaveQuestion(id: string) {

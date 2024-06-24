@@ -71,45 +71,52 @@
               </mat-card-content>
             </mat-card>
           }
-          <div class="actions">
-            @if (mapSavedPart["listening"][selectedListeningPart]) {
+          @if (currentQuiz.listeningParts.length > 0) {
+            <div class="actions">
+              @if (mapSavedPart["listening"][selectedListeningPart]) {
+                <button
+                  mat-button
+                  color="primary"
+                  type="button"
+                  class="btn btn-danger"
+                  (click)="onEditClick('listening', selectedListeningPart)"
+                >
+                  <mat-icon>edit</mat-icon> Edit part
+                </button>
+              } @else {
+                <button
+                  mat-button
+                  color="primary"
+                  type="button"
+                  class="btn btn-danger"
+                  (click)="onSavePart('listening', selectedListeningPart)"
+                >
+                  <mat-icon>save</mat-icon> Save
+                </button>
+              }
               <button
                 mat-button
-                color="primary"
+                color="warn"
                 type="button"
                 class="btn btn-danger"
-                (click)="onEditClick('listening', selectedListeningPart)"
+                (click)="removeListeningPart(selectedListeningPart)"
               >
-                <mat-icon>edit</mat-icon> Edit part
+                <mat-icon>delete</mat-icon> Remove part
               </button>
-            } @else {
-              <button
-                mat-button
-                color="primary"
-                type="button"
-                class="btn btn-danger"
-                (click)="onSavePart('listening', selectedListeningPart)"
-              >
-                <mat-icon>save</mat-icon> Save
-              </button>
-            }
-            <button
-              mat-button
-              color="warn"
-              type="button"
-              class="btn btn-danger"
-              (click)="removeListeningPart(selectedListeningPart)"
-            >
-              <mat-icon>delete</mat-icon> Remove part
-            </button>
-          </div>
+            </div>
+          }
+
           <app-part-navigation
             [(selectedPart)]="selectedListeningPart"
             [parts]="currentQuiz.listeningParts"
             (onPartChange)="onTabChange('listening', $event)"
           ></app-part-navigation>
           <div class="add-button">
-            <button mat-raised-button color="black" (click)="onAddListeningPart()">
+            <button
+              mat-raised-button
+              color="black"
+              (click)="onAddListeningPart()"
+            >
               <mat-icon>add</mat-icon> Add part
             </button>
           </div>
@@ -145,38 +152,40 @@
               ></app-reading>
             </mat-card-content>
           </mat-card>
-          <div class="actions">
-            @if (mapSavedPart["reading"][selectedReadingPart]) {
+          @if (currentQuiz.readingParts.length > 0) {
+            <div class="actions">
+              @if (mapSavedPart["reading"][selectedReadingPart]) {
+                <button
+                  mat-button
+                  color="primary"
+                  type="button"
+                  class="btn btn-danger"
+                  (click)="onEditClick('reading', selectedReadingPart)"
+                >
+                  <mat-icon>edit</mat-icon> Edit part
+                </button>
+              } @else {
+                <button
+                  mat-button
+                  color="primary"
+                  type="button"
+                  class="btn btn-danger"
+                  (click)="onSavePart('reading', selectedReadingPart)"
+                >
+                  <mat-icon>save</mat-icon> Save
+                </button>
+              }
               <button
                 mat-button
-                color="primary"
+                color="warn"
                 type="button"
                 class="btn btn-danger"
-                (click)="onEditClick('reading', selectedReadingPart)"
+                (click)="removeReadingPart(selectedReadingPart)"
               >
-                <mat-icon>edit</mat-icon> Edit part
+                <mat-icon>delete</mat-icon> Remove part
               </button>
-            } @else {
-              <button
-                mat-button
-                color="primary"
-                type="button"
-                class="btn btn-danger"
-                (click)="onSavePart('reading', selectedReadingPart)"
-              >
-                <mat-icon>save</mat-icon> Save
-              </button>
-            }
-            <button
-              mat-button
-              color="warn"
-              type="button"
-              class="btn btn-danger"
-              (click)="removeReadingPart(selectedReadingPart)"
-            >
-              <mat-icon>delete</mat-icon> Remove part
-            </button>
-          </div>
+            </div>
+          }
 
           <app-part-navigation
             [(selectedPart)]="selectedReadingPart"
@@ -225,38 +234,40 @@
                 ></app-writing>
               </mat-card-content>
             </mat-card>
-            <div class="actions">
-              @if (mapSavedPart["writing"][selectedWritingPart]) {
+            @if (currentQuiz.writingParts.length > 0) {
+              <div class="actions">
+                @if (mapSavedPart["writing"][selectedWritingPart]) {
+                  <button
+                    mat-button
+                    color="primary"
+                    type="button"
+                    class="btn btn-danger"
+                    (click)="onEditClick('writing', selectedWritingPart)"
+                  >
+                    <mat-icon>edit</mat-icon> Edit part
+                  </button>
+                } @else {
+                  <button
+                    mat-button
+                    color="primary"
+                    type="button"
+                    class="btn btn-danger"
+                    (click)="onSavePart('writing', selectedWritingPart)"
+                  >
+                    <mat-icon>save</mat-icon> Save part
+                  </button>
+                }
                 <button
                   mat-button
-                  color="primary"
+                  color="warn"
                   type="button"
                   class="btn btn-danger"
-                  (click)="onEditClick('writing', selectedWritingPart)"
+                  (click)="removeWritingPart(selectedWritingPart)"
                 >
-                  <mat-icon>edit</mat-icon> Edit part
+                  <mat-icon>delete</mat-icon> Remove part
                 </button>
-              } @else {
-                <button
-                  mat-button
-                  color="primary"
-                  type="button"
-                  class="btn btn-danger"
-                  (click)="onSavePart('writing', selectedWritingPart)"
-                >
-                  <mat-icon>save</mat-icon> Save part
-                </button>
-              }
-              <button
-                mat-button
-                color="warn"
-                type="button"
-                class="btn btn-danger"
-                (click)="removeWritingPart(selectedWritingPart)"
-              >
-                <mat-icon>delete</mat-icon> Remove part
-              </button>
-            </div>
+              </div>
+            }
           }
 
           <app-part-navigation

@@ -9,19 +9,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { saveAs } from 'file-saver';
-import { asBlob } from 'html-docx-js-typescript';
-import { each, findIndex, intersection, mapValues } from 'lodash-es';
+import { each, mapValues } from 'lodash-es';
 import { Subscription, interval } from 'rxjs';
-import { QuestionType } from '../../common/enums/question-type.enum';
 import { Quiz } from '../../common/models/quiz.model';
 import { Result } from '../../common/models/result.model';
-import { AnswerUtils } from '../../utils/answer.utils';
 import { CommonUtils } from '../../utils/common-utils';
-import { CHOICE_INDEX } from '../../utils/constant';
 import { ExportUtils } from '../../utils/export.utils';
+import { ScoreUtils } from '../../utils/score-utils';
 import { ConfirmDialogComponent } from '../dialog/confirm-dialog/confirm-dialog.component';
-import { AnswerChoicePipe } from '../dropdown-choices/answer-choice.pipe';
 import { FileService } from '../file.service';
 import { ListeningComponent } from '../listening/listening.component';
 import { MultipleChoicesComponent } from '../multiple-choices/multiple-choices.component';
@@ -181,17 +176,6 @@ export class TestComponent extends AddOrEditQuizComponent {
     this.seconds = this.totalSeconds % 60;
   }
 
-  onSubmitClick() {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent);
-    dialogRef.componentInstance.title = 'Information';
-    dialogRef.componentInstance.message = 'Submit this test?';
-    dialogRef.afterClosed().subscribe((isConfirm) => {
-      if (isConfirm) {
-        this.submit();
-      }
-    });
-  }
-
   onStartTest() {
     this.isReady = true;
     this.result.id = CommonUtils.generateRandomId();
@@ -222,118 +206,6 @@ export class TestComponent extends AddOrEditQuizComponent {
     }
   }
 
-  submit() {
-    if (!this.audioPlayer.nativeElement.paused) {
-      this.audioPlayer.nativeElement.pause();
-    }
-    this.exportWriting();
-    this.calculateListeningPoint();
-    this.calculateReadingPoint();
-    this.result.isSubmit = true;
-    this.onCtrlSave();
-    this.router.navigate(['mock-test']);
-  }
-
-  exportListening() {
-    let htmlString = `<h1>${this.result.name} - Listening</h1><br><h2>Name: ${this.result.studentName}</h2><br><h2>Point: </h2><br>`;
-    each(this.result.listeningParts, (part, index) => {
-      htmlString += `<h3>Part ${index + 1}</h3><br>`;
-      each(part.questions, (question) => {
-        htmlString += `<p>${question.content ? question.content : ''}</p><br>`;
-        switch (question.type) {
-          case QuestionType.MULTIPLE_CHOICE:
-            htmlString += ExportUtils.exportMultipleChoices(question);
-            break;
-          case QuestionType.SHORT_ANSWER:
-            htmlString += ExportUtils.exportShortAnswer(question);
-            break;
-          case QuestionType.DROPDOWN_ANSWER:
-            htmlString += ExportUtils.exportDropDownChoice(question);
-            break;
-          case QuestionType.LABEL_ON_MAP:
-            each(question.subQuestions, (question) => {
-              htmlString += `${question.content} ${
-                CHOICE_INDEX[
-                  findIndex(question.choices, (choie) =>
-                    question.answer.includes(choie.id!),
-                  )
-                ]
-              } ${AnswerChoicePipe.prototype.transform(question)}<br>`;
-            });
-            break;
-          case QuestionType.FILL_IN_THE_GAP:
-            htmlString += ExportUtils.exportFIllInTheGap(question);
-            break;
-          default:
-            break;
-        }
-      });
-      htmlString += '<hr>';
-    });
-    asBlob(htmlString).then((data: any) => {
-      saveAs(
-        data,
-        `${this.result.studentName}_Listening_${this.result.name}_${CommonUtils.getCurrentDate()}`,
-      );
-    });
-  }
-
-  exportReading() {
-    let htmlString = `<h1>${this.result.name} - Reading</h1><br><h2>Name: ${this.result.studentName}</h2><br><h2>Point: </h2><br>`;
-    each(this.result.readingParts, (part, index) => {
-      htmlString += `<h3>Part ${index + 1}</h3><br>`;
-      htmlString += `<p>${part.content}</p><br>`;
-      each(part.questions, (question) => {
-        htmlString += `<b>${question.name ? question.name : ''}<b><br>`;
-        each(question.subQuestions, (subQuestion) => {
-          htmlString += `<p>${subQuestion.content ? subQuestion.content : ''}</p><br>`;
-          switch (subQuestion.type) {
-            case QuestionType.MULTIPLE_CHOICE:
-              htmlString += ExportUtils.exportMultipleChoices(subQuestion);
-              break;
-            case QuestionType.SHORT_ANSWER:
-              htmlString += ExportUtils.exportShortAnswer(subQuestion);
-              break;
-            case QuestionType.DROPDOWN_ANSWER:
-              htmlString += ExportUtils.exportDropDownChoice(subQuestion);
-              break;
-            case QuestionType.FILL_IN_THE_GAP:
-              htmlString += ExportUtils.exportFIllInTheGap(subQuestion);
-              break;
-            default:
-              break;
-          }
-        });
-        htmlString += '<hr>';
-      });
-    });
-    asBlob(htmlString).then((data: any) => {
-      saveAs(
-        data,
-        `${this.result.studentName}_Reading_${this.result.name}_${CommonUtils.getCurrentDate()}`,
-      );
-    });
-  }
-
-  exportWriting() {
-    let htmlString = `<h1>${this.result.name} - Writing</h1><br><h2>Name: ${this.result.studentName}</h2><br><h2>Point: </h2><br>`;
-    each(this.result.writingParts, (part) => {
-      htmlString =
-        htmlString + part.content + '<br>' + part.answer + '<hr><br>';
-    });
-
-    asBlob(htmlString).then((data: any) => {
-      saveAs(
-        data,
-        `${this.result.studentName}_Writing_${this.result.name}_${CommonUtils.getCurrentDate()}`,
-      );
-    });
-  }
-
-  onListeningStart() {
-    this.onStartPart();
-  }
-
   onStartPart() {
     if (this.currentTab === 0 && this.audioPlayer) {
       this.audioPlayer.nativeElement.play();
@@ -344,32 +216,40 @@ export class TestComponent extends AddOrEditQuizComponent {
       if (this.currentTab === 0) {
         this.result.audioTime! += 1;
       }
-      if (this.seconds < 1) {
-        this.minutes--;
-        this.seconds = 59;
-      } else {
-        this.seconds--;
-      }
+      this.calculateTime();
       if (this.minutes === 0 && this.seconds === 0) {
         if (this.currentTab === 0) {
           this.audioPlayer.nativeElement.pause();
         }
         this.timeoutInterval.unsubscribe();
-        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-          hasBackdrop: true,
-          disableClose: true,
-        });
-        dialogRef.componentInstance.title = 'Information';
-        dialogRef.componentInstance.message = "Time's up";
-        dialogRef.componentInstance.isWarning = true;
-        dialogRef.afterClosed().subscribe((isConfirm) => {
-          if (isConfirm) {
-            this.onSubmitPartClick(this.currentTab);
-            if (this.currentTab > 2) {
-              this.submit();
-            }
-          }
-        });
+        this.showSubmitDialog();
+      }
+    });
+  }
+
+  calculateTime() {
+    if (this.seconds < 1) {
+      this.minutes--;
+      this.seconds = 59;
+    } else {
+      this.seconds--;
+    }
+  }
+
+  showSubmitDialog() {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      hasBackdrop: true,
+      disableClose: true,
+    });
+    dialogRef.componentInstance.title = 'Information';
+    dialogRef.componentInstance.message = "Time's up";
+    dialogRef.componentInstance.isWarning = true;
+    dialogRef.afterClosed().subscribe((isConfirm) => {
+      if (isConfirm) {
+        this.onSubmitPartClick(this.currentTab);
+        if (this.currentTab > 2) {
+          this.submit();
+        }
       }
     });
   }
@@ -377,10 +257,10 @@ export class TestComponent extends AddOrEditQuizComponent {
   onSubmitPartClick(tab: number) {
     if (tab === 0) {
       this.audioPlayer.nativeElement.pause();
-      this.exportListening();
+      ExportUtils.exportListening(this.result);
     }
     if (tab === 1) {
-      this.exportReading();
+      ExportUtils.exportReading(this.result);
     }
     this.disableOthersTab();
     this.mapDisablePart[tab + 1] = false;
@@ -394,6 +274,29 @@ export class TestComponent extends AddOrEditQuizComponent {
     );
   }
 
+  onSubmitClick() {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent);
+    dialogRef.componentInstance.title = 'Information';
+    dialogRef.componentInstance.message = 'Submit this test?';
+    dialogRef.afterClosed().subscribe((isConfirm) => {
+      if (isConfirm) {
+        this.submit();
+      }
+    });
+  }
+
+  submit() {
+    if (!this.audioPlayer.nativeElement.paused) {
+      this.audioPlayer.nativeElement.pause();
+    }
+    ExportUtils.exportWriting(this.result);
+    this.calculateListeningPoint();
+    this.calculateReadingPoint();
+    this.result.isSubmit = true;
+    this.onCtrlSave();
+    this.router.navigate(['mock-test']);
+  }
+
   private disableOthersTab() {
     this.mapDisablePart = mapValues(this.mapDisablePart, () => true);
   }
@@ -403,43 +306,9 @@ export class TestComponent extends AddOrEditQuizComponent {
     let totalPoint = 0;
     each(this.result.listeningParts, (part) => {
       each(part.questions, (question) => {
-        switch (question.type) {
-          case QuestionType.MULTIPLE_CHOICE:
-            totalPoint = totalPoint + question.correctAnswer.length;
-            if (
-              intersection(question.correctAnswer, question.answer).length !== 0
-            ) {
-              correctPoint =
-                correctPoint +
-                intersection(question.correctAnswer, question.answer).length;
-            }
-            break;
-          case QuestionType.SHORT_ANSWER:
-          case QuestionType.FILL_IN_THE_GAP:
-            each(question.choices, (choice) => {
-              totalPoint++;
-              if (AnswerUtils.isCorrcectAnswer(choice)) {
-                correctPoint++;
-              }
-            });
-            break;
-          case QuestionType.DROPDOWN_ANSWER:
-            totalPoint++;
-            if (AnswerUtils.isCorrectDropdownChoice(question)) {
-              correctPoint++;
-            }
-            break;
-          case QuestionType.LABEL_ON_MAP:
-            each(question.subQuestions, (question) => {
-              totalPoint++;
-              if (AnswerUtils.isCorrectChoices(question)) {
-                correctPoint++;
-              }
-            });
-            break;
-          default:
-            break;
-        }
+        const scoreResult = ScoreUtils.calculateQuestionPoint(question);
+        correctPoint += scoreResult.correct;
+        totalPoint += scoreResult.total;
       });
     });
     this.result.correctListeningPoint = correctPoint;
@@ -452,33 +321,9 @@ export class TestComponent extends AddOrEditQuizComponent {
     each(this.result.readingParts, (part) => {
       each(part.questions, (question) => {
         each(question.subQuestions, (subQuestion) => {
-          switch (subQuestion.type) {
-            case QuestionType.MULTIPLE_CHOICE:
-              // Multiple choices
-              totalPoint += subQuestion.answer.length;
-              if (AnswerUtils.isCorrectChoices(subQuestion)) {
-                correctPoint++;
-              }
-              break;
-            case QuestionType.SHORT_ANSWER:
-            case QuestionType.FILL_IN_THE_GAP:
-              // Short answer
-              each(subQuestion.choices, (choice) => {
-                totalPoint++;
-                if (AnswerUtils.isCorrcectAnswer(choice)) {
-                  correctPoint++;
-                }
-              });
-              break;
-            case QuestionType.DROPDOWN_ANSWER:
-              totalPoint++;
-              if (AnswerUtils.isCorrectDropdownChoice(subQuestion)) {
-                correctPoint++;
-              }
-              break;
-            default:
-              break;
-          }
+          const scoreResult = ScoreUtils.calculateQuestionPoint(subQuestion);
+          correctPoint += scoreResult.correct;
+          totalPoint += scoreResult.total;
         });
       });
     });
