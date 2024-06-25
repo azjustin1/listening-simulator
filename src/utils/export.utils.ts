@@ -10,7 +10,7 @@ import { CommonUtils } from './common-utils';
 import { AnswerChoicePipe } from '../common/pipes/answer-choice.pipe';
 
 export class ExportUtils {
-  static exportQuestion(question: Question) {
+  static exportQuestion(question: Question): string {
     let htmlString = '';
     htmlString += `<p>${question.content ? question.content : ''}</p><br>`;
     switch (question.type) {
@@ -55,7 +55,7 @@ export class ExportUtils {
       each(part.questions, (question) => {
         htmlString += `<b>${question.name ? question.name : ''}<b><br>`;
         each(question.subQuestions, (subQuestion) => {
-          this.exportQuestion(subQuestion);
+          htmlString += this.exportQuestion(subQuestion);
         });
         htmlString += '<hr>';
       });
