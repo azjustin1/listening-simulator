@@ -17,9 +17,6 @@ export class ScoreUtils {
   ) {
     switch (question.type) {
       case QuestionType.MULTIPLE_CHOICE:
-        if (isMultipleChoiceOnePoint) {
-          return ScoreUtils.forSinglePointChoices(question);
-        }
         return ScoreUtils.forMultiplePointChoices(question);
 
       case QuestionType.SHORT_ANSWER:
