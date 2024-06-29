@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -17,6 +17,8 @@ import { Reading } from '../../common/models/reading.model';
 import { MultipleQuestionComponent } from '../multiple-question/multiple-question.component';
 import { QuestionComponent } from '../question/question.component';
 import { ReadingService } from './reading.service';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatchingHeaderComponent } from '../matching-header/matching-header.component';
 
 @Component({
   selector: 'app-reading',
@@ -34,6 +36,8 @@ import { ReadingService } from './reading.service';
     MatExpansionModule,
     AngularEditorModule,
     MatSelectModule,
+    MatSlideToggleModule,
+    MatchingHeaderComponent,
   ],
   providers: [ReadingService],
   templateUrl: './reading.component.html',
@@ -43,6 +47,7 @@ export class ReadingComponent
   extends AbstractQuizPartComponent<Reading>
   implements OnInit
 {
+  @Input() isMatchingHeader = false;
   mapSavedQuestion: Record<string, boolean> = {};
 
   subscription: Subscription[] = [];

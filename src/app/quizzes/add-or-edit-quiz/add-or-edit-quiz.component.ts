@@ -172,7 +172,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
     this.currentQuiz.listeningParts.push(newListeningPart);
   }
 
-  onAddReadingParagraph() {
+  onAddReadingParagraph(isMatchHeader: boolean) {
     const id = CommonUtils.generateRandomId();
     const newReadingParagraph: Reading = {
       id: id,
@@ -180,6 +180,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
       timeout: undefined,
       questions: [],
       wordCount: 0,
+      isMatchHeader: isMatchHeader,
     };
     this.mapSavedPart['reading'][size(this.mapSavedPart['reading'])] = false;
     this.currentQuiz.readingParts.push(newReadingParagraph);

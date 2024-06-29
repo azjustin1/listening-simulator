@@ -2,13 +2,13 @@ import { HttpResponse } from '@angular/common/http';
 import {
   Component,
   EventEmitter,
+  inject,
   Input,
   OnChanges,
   OnDestroy,
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { AngularEditorConfig, UploadResponse } from '@wfpena/angular-wysiwyg';
 import { clone, cloneDeep, debounce, each, isNull, mapValues } from 'lodash-es';
 import { map, Subscription } from 'rxjs';
@@ -16,9 +16,9 @@ import { FileService } from '../app/file.service';
 import { environment } from '../environments/environment';
 import { CommonUtils } from '../utils/common-utils';
 import { BASE64_IMAGE_REGEX } from '../utils/constant';
+import { QuestionType } from './enums/question-type.enum';
 import { AbstractPart } from './models/abstract-part.model';
 import { Question } from './models/question.model';
-import { QuestionType } from './enums/question-type.enum';
 
 @Component({
   template: '',
@@ -37,6 +37,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
   @Output() onTimeout = new EventEmitter();
 
   currentQuestion: Question = {
+    id: '',
     content: '',
     type: null,
     choices: [],
@@ -82,10 +83,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
 
   wordCount: number = 0;
 
-  constructor(
-    protected fileService: FileService,
-    private dialog: MatDialog,
-  ) {}
+  fileService = inject(FileService);
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isSaved']?.currentValue) {
@@ -176,6 +174,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
         };
         break;
       case QuestionType.FILL_IN_THE_GAP:
+      case QuestionType.MATCHING_HEADER:
         this.currentQuestion = {
           id: id,
           content: '',
@@ -192,7 +191,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     }
     this.data.questions.push({ ...this.currentQuestion });
     this.data = { ...this.data };
-    this.onEditQuestion(id)
+    this.onEditQuestion(id);
   }
 
   onSaveQuestion(id: string) {
