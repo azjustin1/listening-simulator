@@ -20,28 +20,42 @@
             <div
               [id]="question.id"
               class="answer-drop-container"
-              [ngClass]="
-                isReadOnly && question.answer === question.correctAnswer
-                  ? 'correct'
-                  : 'incorrect'
-              "
               (dragover)="onDragOver($event, question.id)"
               (dragleave)="removeDropOver($event, question.id)"
               (drop)="onDropAnswer($event, question.id)"
             >
               <div
                 class="answer-drop"
-                draggable="true"
+                [draggable]="isTesting"
                 (dragstart)="
                   onDragStart($event, data.questions[$index].answer.toString())
                 "
               >
-                {{
-                  (
-                    this.data.questions[$index].answer
-                    | choiceContent: data.answers!
-                  )?.content ?? ""
-                }}
+                <span
+                  [ngClass]="
+                    isReadOnly && question.answer === question.correctAnswer
+                      ? 'correct'
+                      : 'incorrect'
+                  "
+                >
+                  {{
+                    (
+                      this.data.questions[$index].answer
+                      | choiceContent: data.answers!
+                    )?.content ?? ""
+                  }}
+                </span>
+
+                @if (isReadOnly && question.answer !== question.correctAnswer) {
+                  <span class="correct">
+                    / {{
+                      (
+                        this.data.questions[$index].correctAnswer
+                        | choiceContent: data.answers!
+                      )?.content ?? ""
+                    }}
+                  </span>
+                }
               </div>
             </div>
           }
