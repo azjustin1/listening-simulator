@@ -67,6 +67,7 @@ export class AddOrEditWritingComponent {
     wordCount: 0,
     questions: [],
     parts: [],
+    testDate: '',
   };
 
   result!: Writing;
@@ -238,7 +239,11 @@ export class AddOrEditWritingComponent {
   }
 
   onSubmit() {
-    this.result = { ...this.result, isSubmit: true };
+    this.result = {
+      ...this.result,
+      isSubmit: true,
+      testDate: CommonUtils.getCurrentDate(),
+    };
     this.buildDownloadFile();
     this.writingService.editWritingResult(this.result).subscribe(() => {
       this.router.navigate(['writings']);
@@ -246,7 +251,7 @@ export class AddOrEditWritingComponent {
   }
 
   public buildDownloadFile(): void {
-    let htmlString = `<h1>${this.result.name}</h1><br><h2>Name: ${this.result.studentName}</h2><br><h2>Point: </h2><br>`;
+    let htmlString = `<h1>${this.result.name}</h1><br><h2>Name: ${this.result.studentName}</h2><br><h2>Date: ${CommonUtils.getCurrentDate()}</h2>`;
     each(this.result.parts, (part) => {
       htmlString =
         htmlString + part.content + '<br>' + part.answer + '<hr><br>';
@@ -273,6 +278,7 @@ export class AddOrEditWritingComponent {
       questions: [],
       answer: '',
       wordCount: 0,
+      testDate: '',
     };
     this.data.parts?.push(newWritingParagraph);
   }

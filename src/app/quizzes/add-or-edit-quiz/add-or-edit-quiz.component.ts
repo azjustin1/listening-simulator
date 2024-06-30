@@ -164,6 +164,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
       questions: [],
       audioName: '',
       wordCount: 0,
+      testDate: '',
     };
     this.mapSavedPart['listening'][size(this.mapSavedPart['listening'])] =
       false;
@@ -180,6 +181,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
       wordCount: 0,
       isMatchHeader: isMatchHeader,
       answers: [],
+      testDate: '',
     };
     this.mapSavedPart['reading'][size(this.mapSavedPart['reading'])] = false;
     this.currentQuiz.readingParts.push(newReadingParagraph);
@@ -194,6 +196,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
       questions: [],
       answer: '',
       wordCount: 0,
+      testDate: '',
     };
     this.mapSavedPart['writing'][size(this.mapSavedPart['writing'])] = false;
     if (!this.currentQuiz.writingParts) {

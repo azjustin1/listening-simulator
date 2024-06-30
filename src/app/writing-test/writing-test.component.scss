@@ -17,6 +17,15 @@
   text-overflow: ellipsis;
 }
 
+.card-title {
+  display: flex;
+  margin: 0 0 0 10px;
+  margin-left: 10px;
+  cursor: pointer;
+  justify-content: space-between;
+  align-items: end;
+}
+
 .card-content {
   width: 100%;
   height: 100%;
@@ -25,6 +34,11 @@
 .card-content-text {
   line-height: 32px;
   height: 64px;
+}
+
+.result-card {
+  height: max-content;
+  align-items: stretch;
 }
 
 .actions {
