@@ -184,15 +184,12 @@ export class FillInTheGapComponent extends AbstractQuestionComponent {
 
   private updateMapChoiceId(lineIndex: number, contentIndex: number) {
     const content = this.question.arrayContent![lineIndex][contentIndex];
-    console.log(content);
     if (IsInputPipe.prototype.transform(content)) {
       this.mapChoiceById = omit(
         this.mapChoiceById,
         content.match(INPUT_PATTERN)![1],
       );
     }
-
-    console.log(this.mapChoiceById);
   }
 
   private saveAllEditting() {

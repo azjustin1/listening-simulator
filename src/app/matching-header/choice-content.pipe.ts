@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { find } from 'lodash-es';
+import { find, isEmpty } from 'lodash-es';
 import { Choice } from '../../common/models/choice.model';
 
 @Pipe({
@@ -8,6 +8,6 @@ import { Choice } from '../../common/models/choice.model';
 })
 export class ChoiceContentPipe implements PipeTransform {
   transform(answer: string | string[], answers: Choice[]): Choice | undefined {
-    return find(answers, (item) => item.id === answer);
+    return find(answers, (item) => !isEmpty(answer) && item.id === answer);
   }
 }

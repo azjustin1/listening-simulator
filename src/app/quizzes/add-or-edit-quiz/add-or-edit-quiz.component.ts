@@ -110,9 +110,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
   }
 
   deleteFile(fileName: string) {
-    const deleteSub = this.fileService.deleteFile(fileName).subscribe((res) => {
-      console.log(res);
-    });
+    const deleteSub = this.fileService.deleteFile(fileName).subscribe();
     this.subscriptions.push(deleteSub);
   }
 
@@ -181,6 +179,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
       questions: [],
       wordCount: 0,
       isMatchHeader: isMatchHeader,
+      answers: [],
     };
     this.mapSavedPart['reading'][size(this.mapSavedPart['reading'])] = false;
     this.currentQuiz.readingParts.push(newReadingParagraph);

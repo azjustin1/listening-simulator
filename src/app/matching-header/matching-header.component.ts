@@ -1,13 +1,6 @@
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NgClass } from '@angular/common';
-import {
-  Component,
-  computed,
-  OnInit,
-  signal,
-  SimpleChanges,
-  WritableSignal,
-} from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -20,9 +13,6 @@ import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import {
   each,
   filter,
-  find,
-  findKey,
-  isString,
   isUndefined,
   map,
   mapValues,
@@ -68,13 +58,12 @@ export class MatchingHeaderComponent
   extends AbstractQuizPartComponent<Reading>
   implements OnInit
 {
+  @Input() answers: Choice[] = [];
   mapEdittingById: Record<string, boolean> = {};
   mapAnswerById: Record<string, Choice> = {};
-  answers: WritableSignal<Choice[]> = signal([]);
 
   ngOnInit(): void {
     this.initMapEditAnswer();
-    this.answers.set(this.data.answers!);
     if (this.isTesting) {
       this.remapDroppedAnswers();
     }
@@ -103,11 +92,8 @@ export class MatchingHeaderComponent
 
   remapDroppedAnswers() {
     const answerIds = map(this.data.questions, (question) => question.answer);
-    this.answers.update((answers) =>
-      sortBy(
-        filter(answers, (answer) => !answerIds.includes(answer.id)),
-        'id',
-      ),
+    this.answers = sortBy(
+      filter(this.answers, (answer) => !answerIds.includes(answer.id)),
     );
   }
 
@@ -202,8 +188,8 @@ export class MatchingHeaderComponent
           question.answer = choice.id;
         }
       });
-      
-      this.answers.set(filter(this.data.answers, (a) => a.id !== choice.id));
+
+      this.answers = filter(this.data.answers, (a) => a.id !== choice.id);
       this.removeDropOverClass(questionId);
       this.remapDroppedAnswers();
     }
@@ -231,9 +217,9 @@ export class MatchingHeaderComponent
           question.answer = '';
         }
       });
-      if (!map(this.answers(), (answer) => answer.id).includes(answer.id)) {
-        this.answers().push(answer);
-        this.answers.update((value) => sortBy(value, ['id']));
+      if (!map(this.answers, (answer) => answer.id).includes(answer.id)) {
+        this.answers.push(answer);
+        this.answers = sortBy(this.answers, ['id']);
       }
       this.removeDropOverClass(CONTAINER_RIGHT_ID);
     }

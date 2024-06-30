@@ -3,7 +3,7 @@
     @for (question of data.questions; track $index) {
       <div class="paragraph">
         <div class="input-answer">
-          @if (!isTesting) {
+          @if (!isTesting && !isReadOnly && !isSaved) {
             <mat-form-field style="width: 100%">
               <mat-select
                 [disabled]="!mapEdittingById[question.id]"
@@ -20,6 +20,11 @@
             <div
               [id]="question.id"
               class="answer-drop-container"
+              [ngClass]="
+                isReadOnly && question.answer === question.correctAnswer
+                  ? 'correct'
+                  : 'incorrect'
+              "
               (dragover)="onDragOver($event, question.id)"
               (dragleave)="removeDropOver($event, question.id)"
               (drop)="onDropAnswer($event, question.id)"
@@ -97,52 +102,58 @@
     (dragover)="onAnswerBackDragOver($event)"
     (dragleave)="onAnswerBackDragLeave($event)"
   >
-    <div class="description">
-      @if (!isSaved && !isTesting && !isReadOnly) {
-        <angular-editor
-          [config]="config"
-          [(ngModel)]="this.data.content"
-        ></angular-editor>
-      } @else {
-        <span [innerHTML]="this.data.content"></span>
-      }
-    </div>
-    <h2>List of Headings</h2>
-    @for (answer of answers(); track $index) {
-      <div class="answer">
-        @if (mapEdittingById[answer.id]) {
-          <mat-form-field class="heading-input">
-            <mat-label>Content</mat-label>
-            <textarea matInput [(ngModel)]="answer.content"></textarea>
-          </mat-form-field>
-        } @else {
-          <mat-card
-            class="answer"
-            [draggable]="isTesting"
-            (dragstart)="onDragStart($event, answer.id)"
-          >
-            <mat-card-content>
-              {{ answer.content }}
-            </mat-card-content>
-          </mat-card>
-        }
+    @if (!isReadOnly) {
+      <div class="description">
         @if (!isSaved && !isTesting && !isReadOnly) {
-          <div class="question-actions">
-            <button mat-button color="primary" (click)="editContent(answer.id)">
-              <mat-icon>
-                @if (mapEdittingById[answer.id]) {
-                  save
-                } @else {
-                  edit
-                }
-              </mat-icon>
-            </button>
-            <button mat-button color="warn" (click)="removeAnswer($index)">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
+          <angular-editor
+            [config]="config"
+            [(ngModel)]="this.data.content"
+          ></angular-editor>
+        } @else {
+          <span [innerHTML]="this.data.content"></span>
         }
       </div>
+      <h2>List of Headings</h2>
+      @for (answer of answers; track $index) {
+        <div class="answer">
+          @if (mapEdittingById[answer.id]) {
+            <mat-form-field class="heading-input">
+              <mat-label>Content</mat-label>
+              <textarea matInput [(ngModel)]="answer.content"></textarea>
+            </mat-form-field>
+          } @else {
+            <mat-card
+              class="answer"
+              [draggable]="isTesting"
+              (dragstart)="onDragStart($event, answer.id)"
+            >
+              <mat-card-content>
+                {{ answer.content }}
+              </mat-card-content>
+            </mat-card>
+          }
+          @if (!isSaved && !isTesting && !isReadOnly) {
+            <div class="question-actions">
+              <button
+                mat-button
+                color="primary"
+                (click)="editContent(answer.id)"
+              >
+                <mat-icon>
+                  @if (mapEdittingById[answer.id]) {
+                    save
+                  } @else {
+                    edit
+                  }
+                </mat-icon>
+              </button>
+              <button mat-button color="warn" (click)="removeAnswer($index)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          }
+        </div>
+      }
     }
     @if (!isSaved && !isTesting && !isReadOnly) {
       <button class="add-answer-button" mat-raised-button (click)="addAnswer()">

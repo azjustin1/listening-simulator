@@ -3,6 +3,7 @@
     @if (data.isMatchHeader) {
       <app-matching-header
         [data]="data"
+        [answers]="answers()"
         [isSaved]="isSaved"
         [isReadOnly]="isReadOnly"
         [isTesting]="isTesting"

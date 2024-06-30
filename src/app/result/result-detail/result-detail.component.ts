@@ -9,16 +9,10 @@ import { MatListModule } from '@angular/material/list';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
-  differenceWith,
-  each,
-  intersection,
-  isEqual,
-  isString,
-  isUndefined,
+  each
 } from 'lodash-es';
-import { Choice } from '../../../common/models/choice.model';
-import { Question } from '../../../common/models/question.model';
 import { Result } from '../../../common/models/result.model';
+import { ScoreUtils } from '../../../utils/score-utils';
 import { ListeningComponent } from '../../listening/listening.component';
 import { MultipleChoicesComponent } from '../../multiple-choices/multiple-choices.component';
 import { PartNavigationComponent } from '../../part-navigation/part-navigation.component';
@@ -27,6 +21,7 @@ import { ShortAnswerComponent } from '../../short-answer/short-answer.component'
 import { WritingComponent } from '../../writing/writing.component';
 import { BandScorePipe } from '../band-score.pipe';
 import { ResultService } from '../result.service';
+import { ExportUtils } from '../../../utils/export.utils';
 
 @Component({
   selector: 'app-result-detail',
@@ -86,9 +81,47 @@ export class ResultDetailComponent {
       if (resultId) {
         this.resultService.getById(resultId).subscribe((result) => {
           this.result = result;
+          this.calculateListeningPoint();
+          this.calculateReadingPoint();
         });
       }
     });
+  }
+
+  private calculateListeningPoint() {
+    let correctPoint = 0;
+    let totalPoint = 0;
+    each(this.result.listeningParts, (part) => {
+      each(part.questions, (question) => {
+        const scoreResult = ScoreUtils.calculateQuestionPoint(question);
+        correctPoint += scoreResult.correct;
+        totalPoint += scoreResult.total;
+      });
+    });
+    this.result.correctListeningPoint = correctPoint;
+    this.result.totalListeningPoint = totalPoint;
+  }
+
+  private calculateReadingPoint() {
+    let correctPoint = 0;
+    let totalPoint = 0;
+    each(this.result.readingParts, (part) => {
+      each(part.questions, (question) => {
+        each(question.subQuestions, (subQuestion) => {
+          const scoreResult = ScoreUtils.calculateQuestionPoint(
+            subQuestion,
+          );
+          correctPoint += scoreResult.correct;
+          totalPoint += scoreResult.total;
+        });
+      });
+    });
+    this.result.correctReadingPoint = correctPoint;
+    this.result.totalReadingPoint = totalPoint;
+  }
+
+  export() {
+    ExportUtils.exportReading(this.result);
   }
 
   printPage() {
@@ -96,6 +129,6 @@ export class ResultDetailComponent {
   }
 
   back() {
-    this.router.navigate(['']);
+    this.router.navigate(['mock-test']);
   }
 }

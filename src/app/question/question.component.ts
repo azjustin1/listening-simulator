@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { AbstractQuestionComponent } from '../../common/abstract-question.component';
+import { DropdownChoicesComponent } from '../dropdown-choices/dropdown-choices.component';
+import { FillInTheGapComponent } from '../fill-in-the-gap/fill-in-the-gap.component';
+import { LabelOnMapComponent } from '../label-on-map/label-on-map.component';
 import { MultipleChoicesComponent } from '../multiple-choices/multiple-choices.component';
 import { ShortAnswerComponent } from '../short-answer/short-answer.component';
-import { DropdownChoicesComponent } from '../dropdown-choices/dropdown-choices.component';
-import { LabelOnMapComponent } from '../label-on-map/label-on-map.component';
-import { FillInTheGapComponent } from '../fill-in-the-gap/fill-in-the-gap.component';
-import { DragAndDropAnswerComponent } from '../drag-and-drop-answer/drag-and-drop-answer.component';
 
 @Component({
   selector: 'app-question',
@@ -18,7 +17,6 @@ import { DragAndDropAnswerComponent } from '../drag-and-drop-answer/drag-and-dro
     DropdownChoicesComponent,
     LabelOnMapComponent,
     FillInTheGapComponent,
-    DragAndDropAnswerComponent
   ],
   templateUrl: './question.component.html',
   styleUrl: './question.component.scss',

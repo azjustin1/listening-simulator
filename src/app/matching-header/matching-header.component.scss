@@ -65,6 +65,14 @@
   border: 1px dashed black;
 }
 
+.answer-drop-container.correct {
+  background-color: var(--success-color);
+}
+
+.answer-drop-container.incorrect {
+  background-color: var(--danger-color);
+}
+
 .answer-card-container {
   position: fixed;
   top: 200;
