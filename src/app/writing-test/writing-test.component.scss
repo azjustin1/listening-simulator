@@ -4,7 +4,15 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(10000, 64px);
-  grid-gap: 16px; /* Optional: Add gap between grid items */
+  grid-gap: 16px;
+}
+
+.result-container {
+  display: grid;
+  max-height: calc(100vh - 300px);
+  grid-template-columns: repeat(auto-fill, 300px);
+  grid-template-rows: repeat(10000, 120px);
+  grid-gap: 40px;
 }
 
 .card {

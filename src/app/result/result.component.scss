@@ -2,8 +2,8 @@
   display: grid;
   max-height: calc(100vh - 300px);
   grid-template-columns: repeat(auto-fill, 300px);
-  grid-template-rows: repeat(10000, 120px);
-  grid-gap: 40px; /* Optional: Add gap between grid items */
+  grid-template-rows: repeat(10000, 40px);
+  grid-gap: 40px;
 }
 
 .result {
