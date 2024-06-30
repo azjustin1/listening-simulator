@@ -8,6 +8,7 @@ import { Result } from '../common/models/result.model';
 import { CHOICE_INDEX, INPUT_PATTERN } from './constant';
 import { CommonUtils } from './common-utils';
 import { AnswerChoicePipe } from '../common/pipes/answer-choice.pipe';
+import { ChoiceContentPipe } from '../app/matching-header/choice-content.pipe';
 
 export class ExportUtils {
   static exportQuestion(question: Question): string {
@@ -51,14 +52,29 @@ export class ExportUtils {
     let htmlString = `<h1>${result.name} - Reading</h1><br><h2>Name: ${result.studentName}</h2><br><h2>Point: </h2><br>`;
     each(result.readingParts, (part, index) => {
       htmlString += `<h3>Part ${index + 1}</h3><br>`;
-      htmlString += `<p>${part.content}</p><br>`;
-      each(part.questions, (question) => {
-        htmlString += `<b>${question.name ? question.name : ''}<b><br>`;
-        each(question.subQuestions, (subQuestion) => {
-          htmlString += this.exportQuestion(subQuestion);
+      if (part.isMatchHeader) {
+        each(part.questions, (question) => {
+          if (isEmpty(question.answer)) {
+            htmlString += `<h2>❌</h2><br> ${question.content}<br><br>`;
+          } else {
+            htmlString += `<h2>${
+              ChoiceContentPipe.prototype.transform(
+                question.answer,
+                part.answers!,
+              )?.content
+            }</h2><br> ${question.content}<br><br>`;
+          }
         });
-        htmlString += '<hr>';
-      });
+      } else {
+        htmlString += `<p>${part.content}</p><br>`;
+        each(part.questions, (question) => {
+          htmlString += `<b>${question.name ? question.name : ''}</b><br>`;
+          each(question.subQuestions, (subQuestion) => {
+            htmlString += this.exportQuestion(subQuestion);
+          });
+          htmlString += '<hr>';
+        });
+      }
     });
     this.exportFile(result, htmlString, 'Reading');
   }

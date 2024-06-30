@@ -1,4 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  signal,
+  SimpleChanges,
+  WritableSignal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -8,12 +15,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { each } from 'lodash-es';
 import { Subscription } from 'rxjs';
 import { AbstractQuizPartComponent } from '../../common/abstract-quiz-part.component';
 import { Choice } from '../../common/models/choice.model';
 import { Reading } from '../../common/models/reading.model';
+import { MatchingHeaderComponent } from '../matching-header/matching-header.component';
 import { MultipleQuestionComponent } from '../multiple-question/multiple-question.component';
 import { QuestionComponent } from '../question/question.component';
 import { ReadingService } from './reading.service';
@@ -34,6 +43,8 @@ import { ReadingService } from './reading.service';
     MatExpansionModule,
     AngularEditorModule,
     MatSelectModule,
+    MatSlideToggleModule,
+    MatchingHeaderComponent,
   ],
   providers: [ReadingService],
   templateUrl: './reading.component.html',
@@ -43,15 +54,24 @@ export class ReadingComponent
   extends AbstractQuizPartComponent<Reading>
   implements OnInit
 {
+  @Input() isMatchingHeader = false;
   mapSavedQuestion: Record<string, boolean> = {};
+  answers: WritableSignal<Choice[]> = signal([]);
 
   subscription: Subscription[] = [];
 
   ngOnInit(): void {
     if (this.data) {
       each(this.data.questions, (question) => {
-        this.mapSavedQuestion[question.id!] = true;
+        this.mapSavedQuestion[question.id] = true;
       });
+    }
+  }
+
+  override ngOnChanges(changes: SimpleChanges): void {
+    super.ngOnChanges(changes);
+    if (changes['data']) {
+      this.answers.set(this.data.answers!);
     }
   }
 

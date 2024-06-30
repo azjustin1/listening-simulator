@@ -319,16 +319,21 @@ export class TestComponent extends AddOrEditQuizComponent {
     let correctPoint = 0;
     let totalPoint = 0;
     each(this.result.readingParts, (part) => {
-      each(part.questions, (question) => {
-        each(question.subQuestions, (subQuestion) => {
-          const scoreResult = ScoreUtils.calculateQuestionPoint(
-            subQuestion,
-            true,
-          );
-          correctPoint += scoreResult.correct;
-          totalPoint += scoreResult.total;
+      if (part.isMatchHeader) {
+        each(part.questions, (question) => {
+          totalPoint++;
+          const score = ScoreUtils.forDropdown(question);
+          correctPoint += score.correct;
         });
-      });
+      } else {
+        each(part.questions, (question) => {
+          each(question.subQuestions, (subQuestion) => {
+            const scoreResult = ScoreUtils.calculateQuestionPoint(subQuestion);
+            correctPoint += scoreResult.correct;
+            totalPoint += scoreResult.total;
+          });
+        });
+      }
     });
     this.result.correctReadingPoint = correctPoint;
     this.result.totalReadingPoint = totalPoint;

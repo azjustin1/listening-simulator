@@ -1,5 +1,5 @@
 import { Pipe } from '@angular/core';
-import { isString } from 'lodash-es';
+import { isEmpty, isString } from 'lodash-es';
 import { Question } from '../models/question.model';
 import { AbstractAnswerPipe } from './abstract-answer.pipe';
 
@@ -13,6 +13,8 @@ export class CorrectDropdownPipe extends AbstractAnswerPipe {
       return question.correctAnswer.includes(question.answer);
     }
 
-    return question.answer === question.correctAnswer;
+    return (
+      !isEmpty(question.answer) && question.answer === question.correctAnswer
+    );
   }
 }

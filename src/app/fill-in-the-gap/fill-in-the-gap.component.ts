@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, SimpleChanges } from '@angular/core';
+import { Component, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -11,11 +11,11 @@ import { clone, each, isEmpty, mapValues, omit, toArray } from 'lodash-es';
 import { AbstractQuestionComponent } from '../../common/abstract-question.component';
 import { Choice } from '../../common/models/choice.model';
 import { CommonUtils } from '../../utils/common-utils';
+import { INPUT_PATTERN } from '../../utils/constant';
 import { ArrayContentChoice } from './array-content.pipe';
 import { FitContentDirective } from './fit-content.directive';
 import { IsInputPipe } from './is-input.pipe';
 import { MapIndexPipe } from './map-index.pipe';
-import { INPUT_PATTERN } from '../../utils/constant';
 
 @Component({
   selector: 'app-fill-in-the-gap',
@@ -184,15 +184,12 @@ export class FillInTheGapComponent extends AbstractQuestionComponent {
 
   private updateMapChoiceId(lineIndex: number, contentIndex: number) {
     const content = this.question.arrayContent![lineIndex][contentIndex];
-    console.log(content);
     if (IsInputPipe.prototype.transform(content)) {
       this.mapChoiceById = omit(
         this.mapChoiceById,
         content.match(INPUT_PATTERN)![1],
       );
     }
-
-    console.log(this.mapChoiceById);
   }
 
   private saveAllEditting() {

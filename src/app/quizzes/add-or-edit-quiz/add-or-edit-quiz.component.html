@@ -117,7 +117,7 @@
               color="black"
               (click)="onAddListeningPart()"
             >
-              <mat-icon>add</mat-icon> Add part
+              <mat-icon>add</mat-icon> Add Part
             </button>
           </div>
         </ng-template>
@@ -193,12 +193,11 @@
             (onPartChange)="onTabChange('reading', $event)"
           ></app-part-navigation>
           <div class="add-button">
-            <button
-              mat-button
-              color="primary"
-              (click)="onAddReadingParagraph()"
-            >
-              <mat-icon>add</mat-icon> Add part
+            <button mat-raised-button (click)="onAddReadingParagraph(false)">
+              <mat-icon>add</mat-icon> Add Part
+            </button>
+            <button mat-raised-button (click)="onAddReadingParagraph(true)">
+              <mat-icon>add</mat-icon> Add Matching Headings
             </button>
           </div>
         </ng-template>
@@ -277,12 +276,8 @@
           ></app-part-navigation>
 
           <div class="add-button">
-            <button
-              mat-button
-              color="primary"
-              (click)="onAddWritingParagraph()"
-            >
-              <mat-icon>add</mat-icon> Add part
+            <button mat-raised-button (click)="onAddWritingParagraph()">
+              <mat-icon>add</mat-icon> Add Part
             </button>
           </div>
         </ng-template>

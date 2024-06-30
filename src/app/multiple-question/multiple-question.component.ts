@@ -49,13 +49,14 @@ export class MultipleQuestionComponent
 
   override updateEdittingQuestion(status: boolean) {
     each(this.question.subQuestions, (question) => {
-      this.mapEdittingQuestion[question.id!] = status;
+      this.mapEdittingQuestion[question.id] = status;
     });
   }
 
   addQuestion(questionType: number) {
     const id = CommonUtils.generateRandomId();
     let newQuestion: Question = {
+      id: id,
       content: '',
       type: null,
       choices: [],
@@ -110,7 +111,7 @@ export class MultipleQuestionComponent
     }
     this.question.subQuestions!.push({ ...newQuestion });
     this.question = { ...this.question };
-    this.onEditSubQuestion(id)
+    this.onEditSubQuestion(id);
   }
 
   moveQuestionUp(index: number) {

@@ -8,16 +8,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  differenceWith,
-  each,
-  intersection,
-  isEqual,
-  isString,
-  isUndefined,
-} from 'lodash-es';
-import { Choice } from '../../../common/models/choice.model';
-import { Question } from '../../../common/models/question.model';
 import { Result } from '../../../common/models/result.model';
 import { ListeningComponent } from '../../listening/listening.component';
 import { MultipleChoicesComponent } from '../../multiple-choices/multiple-choices.component';
@@ -96,6 +86,6 @@ export class ResultDetailComponent {
   }
 
   back() {
-    this.router.navigate(['']);
+    this.router.navigate(['mock-test']);
   }
 }
