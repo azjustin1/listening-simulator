@@ -97,6 +97,17 @@
     (dragover)="onAnswerBackDragOver($event)"
     (dragleave)="onAnswerBackDragLeave($event)"
   >
+    <div class="description">
+      @if (!isSaved && !isTesting && !isReadOnly) {
+        <angular-editor
+          [config]="config"
+          [(ngModel)]="this.data.content"
+        ></angular-editor>
+      } @else {
+        <span [innerHTML]="this.data.content"></span>
+      }
+    </div>
+    <h2>List of Headings</h2>
     @for (answer of answers(); track $index) {
       <div class="answer">
         @if (mapEdittingById[answer.id]) {
@@ -135,7 +146,7 @@
     }
     @if (!isSaved && !isTesting && !isReadOnly) {
       <button class="add-answer-button" mat-raised-button (click)="addAnswer()">
-        <mat-icon>add</mat-icon> Add Header
+        <mat-icon>add</mat-icon> Add Heading
       </button>
     }
   </div>

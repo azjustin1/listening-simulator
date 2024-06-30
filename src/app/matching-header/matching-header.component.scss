@@ -14,6 +14,7 @@
 }
 
 .container--right {
+  padding: 10px;
   width: calc(100vw / 2 - 60px);
 }
 
@@ -29,6 +30,7 @@
 
 .answer {
   margin: 10px 0;
+  font-weight: bold;
 }
 
 .answer-content {
@@ -66,4 +68,8 @@
 .answer-card-container {
   position: fixed;
   top: 200;
+}
+
+.description {
+  margin: 0 0 16px 0;
 }

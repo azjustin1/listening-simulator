@@ -1,4 +1,4 @@
-import { each, intersection, isUndefined } from 'lodash-es';
+import { each, intersection } from 'lodash-es';
 import { QuestionType } from '../common/enums/question-type.enum';
 import { Question } from '../common/models/question.model';
 import { CorrectAnswerPipe } from '../common/pipes/correct-answer.pipe';
@@ -13,7 +13,6 @@ interface ScoreResult {
 export class ScoreUtils {
   static calculateQuestionPoint(
     question: Question,
-    isMultipleChoiceOnePoint?: boolean,
   ) {
     switch (question.type) {
       case QuestionType.MULTIPLE_CHOICE:

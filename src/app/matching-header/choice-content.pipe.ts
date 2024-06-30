@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { each, find, isString } from 'lodash-es';
+import { find } from 'lodash-es';
 import { Choice } from '../../common/models/choice.model';
 
 @Pipe({

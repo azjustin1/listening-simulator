@@ -104,8 +104,19 @@ export class MatchingHeaderComponent
   remapDroppedAnswers() {
     const answerIds = map(this.data.questions, (question) => question.answer);
     this.answers.update((answers) =>
-      filter(answers, (answer) => !answerIds.includes(answer.id)),
+      sortBy(
+        filter(answers, (answer) => !answerIds.includes(answer.id)),
+        'id',
+      ),
     );
+  }
+
+  removeDuplicateChoiceInOthers(choice: Choice) {
+    each(this.data.questions, (question) => {
+      if (question.answer && question.answer === choice.id) {
+        question.answer = '';
+      }
+    });
   }
 
   addParagraph() {
@@ -154,7 +165,6 @@ export class MatchingHeaderComponent
 
   private removeMapEdittingId(id: string) {
     this.mapEdittingById = omit(this.mapEdittingById, id);
-    console.log(this.mapEdittingById);
   }
 
   private saveAllEditting() {
@@ -181,20 +191,21 @@ export class MatchingHeaderComponent
 
   onDropAnswer(event: DragEvent, questionId: string) {
     event.preventDefault();
-
-    const answer = ChoiceContentPipe.prototype.transform(
+    const choice = ChoiceContentPipe.prototype.transform(
       event.dataTransfer!.getData(DATA_TRANSFER_KEY),
       this.data.answers!,
     );
-    if (answer) {
+    if (choice) {
+      this.removeDuplicateChoiceInOthers(choice);
       each(this.data.questions, (question) => {
         if (question.id === questionId) {
-          question.answer = answer.id;
+          question.answer = choice.id;
         }
       });
-
+      
+      this.answers.set(filter(this.data.answers, (a) => a.id !== choice.id));
       this.removeDropOverClass(questionId);
-      this.answers.set(filter(this.data.answers, (a) => a.id !== answer.id));
+      this.remapDroppedAnswers();
     }
   }
 
