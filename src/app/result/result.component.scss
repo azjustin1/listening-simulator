@@ -11,6 +11,10 @@
   cursor: pointer;
 }
 
+.content {
+  flex-wrap: wrap;
+}
+
 .search {
   display: flex;
   flex-direction: row-reverse;
