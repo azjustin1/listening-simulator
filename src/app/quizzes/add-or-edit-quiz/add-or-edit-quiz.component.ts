@@ -8,7 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { each, size } from 'lodash-es';
+import { each, isEmpty, size } from 'lodash-es';
 import { Subscription } from 'rxjs';
 import { AbstractPart } from '../../../common/models/abstract-part.model';
 import { Listening } from '../../../common/models/listening.model';
@@ -96,7 +96,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
   }
 
   onFileSelected(event: any) {
-    if (this.currentQuiz.audioName || this.currentQuiz.audioName !== '') {
+    if (!isEmpty(this.currentQuiz.audioName)) {
       this.deleteFile(this.currentQuiz.audioName!);
     }
     this.selectedFile = event.target.files[0] ?? null;

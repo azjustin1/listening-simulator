@@ -11,6 +11,7 @@ import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { each, isEmpty, last } from 'lodash-es';
 import { AbstractQuestionComponent } from '../../common/abstract-question.component';
 import { Choice } from '../../common/models/choice.model';
+import { CorrectChoicesPipe } from '../../common/pipes/correct-choices.pipe';
 import { CommonUtils } from '../../utils/common-utils';
 import { CHOICE_INDEX } from '../../utils/constant';
 
@@ -27,6 +28,7 @@ import { CHOICE_INDEX } from '../../utils/constant';
     MatIconModule,
     MatCardModule,
     MatTableModule,
+    CorrectChoicesPipe,
   ],
   templateUrl: './label-on-map.component.html',
   styleUrl: './label-on-map.component.scss',

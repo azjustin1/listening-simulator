@@ -8,7 +8,7 @@ import { AbstractAnswerPipe } from './abstract-answer.pipe';
   standalone: true,
 })
 export class CorrectChoicesPipe extends AbstractAnswerPipe {
-  override transform(question: Question, ...args: any[]): any {
+  override transform(question: Question, ...args: any[]): boolean {
     return (
       question.answer.length > 0 &&
       differenceWith(question.answer, question.correctAnswer, isEqual)
