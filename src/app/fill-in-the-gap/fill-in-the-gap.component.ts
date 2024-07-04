@@ -16,6 +16,7 @@ import { ArrayContentChoice } from './array-content.pipe';
 import { FitContentDirective } from './fit-content.directive';
 import { IsInputPipe } from './is-input.pipe';
 import { MapIndexPipe } from './map-index.pipe';
+import { CorrectAnswerPipe } from '../../common/pipes/correct-answer.pipe';
 
 @Component({
   selector: 'app-fill-in-the-gap',
@@ -33,6 +34,7 @@ import { MapIndexPipe } from './map-index.pipe';
     IsInputPipe,
     MapIndexPipe,
     FitContentDirective,
+    CorrectAnswerPipe
   ],
   templateUrl: './fill-in-the-gap.component.html',
   styleUrl: './fill-in-the-gap.component.scss',

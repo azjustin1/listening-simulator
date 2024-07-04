@@ -37,19 +37,17 @@
                         [ngClass]="{
                           correct:
                             mapChoiceById[content.match(inputPattern)![1]]
-                              .answer ===
-                            mapChoiceById[content.match(inputPattern)![1]]
-                              .correctAnswer
+                            | isCorrectAnswer,
                         }"
                       >
                         {{
                           mapChoiceById[content.match(inputPattern)![1]].answer
                         }}
                         @if (
-                          mapChoiceById[content.match(inputPattern)![1]]
-                            .answer !==
-                          mapChoiceById[content.match(inputPattern)![1]]
-                            .correctAnswer
+                          !(
+                            mapChoiceById[content.match(inputPattern)![1]]
+                            | isCorrectAnswer
+                          )
                         ) {
                           @if (
                             !mapChoiceById[content.match(inputPattern)![1]]
