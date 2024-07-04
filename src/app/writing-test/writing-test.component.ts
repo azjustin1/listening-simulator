@@ -144,7 +144,7 @@ export class WritingTestComponent implements OnDestroy {
   }
 
   deleteQuiz(writing: Writing) {
-    this.writingService.delete(writing.id!).subscribe(() => {
+    this.writingService.delete(writing.id).subscribe(() => {
       this.writings = filter(this.writings, (item) => writing.id !== item.id);
     });
   }

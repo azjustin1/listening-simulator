@@ -111,7 +111,7 @@ export class QuizzesComponent implements OnInit, OnDestroy {
   }
 
   deleteQuiz(deleteQuiz: Quiz) {
-    this.quizService.delete(deleteQuiz.id!).subscribe(() => {
+    this.quizService.delete(deleteQuiz.id).subscribe(() => {
       this.quizzes = filter(this.quizzes, (quiz) => deleteQuiz.id !== quiz.id);
     });
   }

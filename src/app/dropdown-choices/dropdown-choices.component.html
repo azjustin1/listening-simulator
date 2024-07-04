@@ -4,7 +4,7 @@
       @if (isEditting) {
         <angular-editor
           name="questionContent"
-          [id]="question.id!"
+          [id]="question.id"
           [config]="config"
           [(ngModel)]="question.content"
           (ngModelChange)="onPaste($event)"
@@ -50,7 +50,7 @@
                     autocomplete="off"
                     [disabled]="isReadOnly"
                     matInput
-                    [name]="choice.id!"
+                    [name]="choice.id"
                     type="text"
                     class="form-control"
                     [(ngModel)]="choice.content"
@@ -73,7 +73,7 @@
             <mat-form-field class="choice-input">
               <mat-select [(value)]="question.answer">
                 @for (choice of question.choices; track $index) {
-                  <mat-option [value]="choice.id!">{{
+                  <mat-option [value]="choice.id">{{
                     choice.content
                   }}</mat-option>
                 }
@@ -83,7 +83,7 @@
             <mat-form-field class="choice-input">
               <mat-select [(value)]="question.correctAnswer">
                 @for (choice of question.choices; track $index) {
-                  <mat-option [value]="choice.id!">{{
+                  <mat-option [value]="choice.id">{{
                     choice.content
                   }}</mat-option>
                 }

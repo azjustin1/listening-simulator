@@ -7,7 +7,6 @@ import {
   Renderer2,
   SimpleChanges,
 } from '@angular/core';
-import { debounce } from 'lodash-es';
 
 @Directive({
   selector: '[fitContentInput]',

@@ -59,17 +59,17 @@ export class LabelOnMapComponent extends AbstractQuestionComponent {
     const answer = this.question.subQuestions![questionIndex].answer;
 
     if (this.isEditting) {
-      if (!isEmpty(correctAnswer) && correctAnswer.includes(choiceId!)) {
+      if (!isEmpty(correctAnswer) && correctAnswer.includes(choiceId)) {
         this.question.subQuestions![questionIndex].correctAnswer = [];
       } else {
-        this.question.subQuestions![questionIndex].correctAnswer = [choiceId!];
+        this.question.subQuestions![questionIndex].correctAnswer = [choiceId];
       }
     }
     if (this.isTesting) {
-      if (!isEmpty(correctAnswer) && answer.includes(choiceId!)) {
+      if (!isEmpty(correctAnswer) && answer.includes(choiceId)) {
         this.question.subQuestions![questionIndex].answer = [];
       } else {
-        this.question.subQuestions![questionIndex].answer = [choiceId!];
+        this.question.subQuestions![questionIndex].answer = [choiceId];
       }
     }
   }

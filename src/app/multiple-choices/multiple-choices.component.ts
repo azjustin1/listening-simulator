@@ -44,24 +44,25 @@ export class MultipleChoicesComponent extends AbstractQuestionComponent {
     this.mapSelectedChoice[index] = !this.mapSelectedChoice[index];
 
     if (this.isEditting) {
-      if (
-        !this.question.correctAnswer?.includes(this.question.choices[index].id!)
-      ) {
-        this.question.correctAnswer.push(this.question.choices[index].id!);
+      const id = this.question.choices[index].id;
+      if (!this.question.correctAnswer?.includes(id)) {
+        this.question.correctAnswer.push(id);
       } else {
         this.question.correctAnswer = this.question.correctAnswer.filter(
-          (id) => id !== this.question.choices[index].id!,
+          (correctAnswerId) => correctAnswerId !== id,
         );
       }
     }
 
     if (this.isTesting) {
       if (isArray(this.question.answer)) {
-        if (!this.question.answer?.includes(this.question.choices[index].id!)) {
-          this.question.answer.push(this.question.choices[index].id!);
+        const id = this.question.choices[index].id;
+
+        if (!this.question.answer?.includes(id)) {
+          this.question.answer.push(id);
         } else {
           this.question.answer = this.question.answer.filter(
-            (id) => id !== this.question.choices[index].id!,
+            (answerId) => answerId !== id,
           );
         }
       }

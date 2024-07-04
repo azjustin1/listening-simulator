@@ -2,7 +2,7 @@
   <div class="description">
     @if (isEditting) {
       <angular-editor
-        [name]="question.id!"
+        [name]="question.id"
         [config]="config"
         [(ngModel)]="question.content"
         (ngModelChange)="onPaste($event)"

@@ -9,7 +9,7 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { AngularEditorConfig, UploadResponse } from '@wfpena/angular-wysiwyg';
-import { debounce, each } from 'lodash-es';
+import { debounce, each, isNull } from 'lodash-es';
 import { map } from 'rxjs';
 import { FileService } from '../app/file.service';
 import { Question } from '../common/models/question.model';
@@ -38,7 +38,7 @@ export abstract class AbstractQuestionComponent implements OnChanges {
   fileService = inject(FileService);
 
   ngOnInit(): void {
-    this.mapEdittingQuestion[this.question.id!] = false;
+    this.mapEdittingQuestion[this.question.id] = false;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -92,7 +92,7 @@ export abstract class AbstractQuestionComponent implements OnChanges {
 
   updateEdittingQuestion(status: boolean) {
     each(this.question.subQuestions, (question) => {
-      this.mapEdittingQuestion[question.id!] = status;
+      this.mapEdittingQuestion[question.id] = status;
     });
   }
 
@@ -123,7 +123,7 @@ export abstract class AbstractQuestionComponent implements OnChanges {
 
   uploadQuestionBase64Images(content: string) {
     const base64Image = this.extractBase64Image(content);
-    if (base64Image !== null && base64Image[1].startsWith('data')) {
+    if (!isNull(base64Image) && base64Image[1].startsWith('data')) {
       const imageSrc = base64Image[1];
       const fileName = `${this.question.id}_${new Date().getMilliseconds()}.png`;
       const imageFile: File = CommonUtils.base64ToFile(imageSrc, fileName);
@@ -137,8 +137,8 @@ export abstract class AbstractQuestionComponent implements OnChanges {
   }
 
   saveAllQuestion() {
-    each(this.question.subQuestions, question => {
-      this.mapEdittingQuestion[question.id!] = false;
-    })
+    each(this.question.subQuestions, (question) => {
+      this.mapEdittingQuestion[question.id] = false;
+    });
   }
 }
