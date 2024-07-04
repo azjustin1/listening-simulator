@@ -1,38 +1,28 @@
-import { CommonModule } from '@angular/common';
-import { Component, SimpleChanges } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { Component, NgModule, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { clone, each, isEmpty, mapValues, omit, toArray } from 'lodash-es';
 import { AbstractQuestionComponent } from '../../common/abstract-question.component';
 import { Choice } from '../../common/models/choice.model';
+import { CorrectAnswerPipe } from '../../common/pipes/correct-answer.pipe';
 import { CommonUtils } from '../../utils/common-utils';
 import { INPUT_PATTERN } from '../../utils/constant';
 import { ArrayContentChoice } from './array-content.pipe';
 import { FitContentDirective } from './fit-content.directive';
 import { IsInputPipe } from './is-input.pipe';
-import { MapIndexPipe } from './map-index.pipe';
-import { CorrectAnswerPipe } from '../../common/pipes/correct-answer.pipe';
 
 @Component({
   selector: 'app-fill-in-the-gap',
   standalone: true,
   imports: [
-    CommonModule,
+    NgClass,
     FormsModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatButtonModule,
     AngularEditorModule,
     MatIconModule,
-    MatCardModule,
     ArrayContentChoice,
     IsInputPipe,
-    MapIndexPipe,
     FitContentDirective,
     CorrectAnswerPipe
   ],
@@ -148,6 +138,9 @@ export class FillInTheGapComponent extends AbstractQuestionComponent {
   onDeleteText(lineIndex: number, contentIndex: number) {
     this.updateMapChoiceId(lineIndex, contentIndex);
     this.question.arrayContent![lineIndex].splice(contentIndex, 1);
+    if (isEmpty(this.question.arrayContent![lineIndex])) {
+      this.question.arrayContent![lineIndex].push('')
+    }
     this.initMapSaveText();
     this.saveAllEditting();
   }
@@ -189,7 +182,7 @@ export class FillInTheGapComponent extends AbstractQuestionComponent {
     if (IsInputPipe.prototype.transform(content)) {
       this.mapChoiceById = omit(
         this.mapChoiceById,
-        content.match(INPUT_PATTERN)![1],
+        RegExp(INPUT_PATTERN).exec(content)![1],
       );
     }
   }

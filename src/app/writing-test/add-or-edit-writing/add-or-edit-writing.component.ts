@@ -5,11 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -36,13 +33,10 @@ import { environment } from '../../../environments/environment';
   imports: [
     CommonModule,
     FormsModule,
-    MatListModule,
     MatCardModule,
     MatButtonModule,
-    MatFormFieldModule,
     MatInputModule,
     MatIconModule,
-    MatExpansionModule,
     MatTabsModule,
     AngularEditorModule,
     WritingComponent,

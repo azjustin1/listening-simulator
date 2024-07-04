@@ -1,14 +1,11 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
+import { each } from 'lodash-es';
 import { Result } from '../../../common/models/result.model';
+import { ScoreUtils } from '../../../utils/score-utils';
 import { ListeningComponent } from '../../listening/listening.component';
 import { MultipleChoicesComponent } from '../../multiple-choices/multiple-choices.component';
 import { PartNavigationComponent } from '../../part-navigation/part-navigation.component';
@@ -24,13 +21,8 @@ import { ResultService } from '../result.service';
   imports: [
     MultipleChoicesComponent,
     ShortAnswerComponent,
-    CommonModule,
-    FormsModule,
-    MatListModule,
     MatCardModule,
     MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
     MatTabsModule,
     ReadingComponent,
     ListeningComponent,
@@ -76,6 +68,7 @@ export class ResultDetailComponent {
       if (resultId) {
         this.resultService.getById(resultId).subscribe((result) => {
           this.result = result;
+          this.calculateListeningPoint();
         });
       }
     });
@@ -87,5 +80,19 @@ export class ResultDetailComponent {
 
   back() {
     this.router.navigate(['mock-test']);
+  }
+
+  private calculateListeningPoint() {
+    let correctPoint = 0;
+    let totalPoint = 0;
+    each(this.result.listeningParts, (part) => {
+      each(part.questions, (question) => {
+        const scoreResult = ScoreUtils.calculateQuestionPoint(question);
+        correctPoint += scoreResult.correct;
+        totalPoint += scoreResult.total;
+      });
+    });
+    this.result.correctListeningPoint = correctPoint;
+    this.result.totalListeningPoint = totalPoint;
   }
 }

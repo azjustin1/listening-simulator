@@ -1,13 +1,10 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { ActivatedRoute, Router } from '@angular/router';
 import { debounce, filter } from 'lodash-es';
@@ -17,8 +14,8 @@ import { ListeningComponent } from '../listening/listening.component';
 import { MultipleChoicesComponent } from '../multiple-choices/multiple-choices.component';
 import { QuizService } from '../quizzes/quizzes.service';
 import { ShortAnswerComponent } from '../short-answer/short-answer.component';
-import { ResultService } from './result.service';
 import { BandScorePipe } from './band-score.pipe';
+import { ResultService } from './result.service';
 
 @Component({
   selector: 'app-result',
@@ -26,12 +23,9 @@ import { BandScorePipe } from './band-score.pipe';
   imports: [
     MultipleChoicesComponent,
     ShortAnswerComponent,
-    CommonModule,
     FormsModule,
-    MatListModule,
     MatCardModule,
     MatButtonModule,
-    MatFormFieldModule,
     MatInputModule,
     ListeningComponent,
     MatMenuModule,

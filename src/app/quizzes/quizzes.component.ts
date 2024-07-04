@@ -1,3 +1,4 @@
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -7,18 +8,16 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { ActivatedRoute, Router } from '@angular/router';
 import { cloneDeep, debounce, filter } from 'lodash-es';
 import { Subscription } from 'rxjs';
 import { Quiz } from '../../common/models/quiz.model';
+import { CommonUtils } from '../../utils/common-utils';
 import { ConfirmDialogComponent } from '../dialog/confirm-dialog/confirm-dialog.component';
 import { FileService } from '../file.service';
 import { ListeningComponent } from '../listening/listening.component';
 import { QuizService } from './quizzes.service';
-import { CommonUtils } from '../../utils/common-utils';
-import { BreakpointObserver } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-quizzes',
@@ -26,7 +25,6 @@ import { BreakpointObserver } from '@angular/cdk/layout';
   imports: [
     CommonModule,
     FormsModule,
-    MatListModule,
     MatCardModule,
     MatButtonModule,
     MatFormFieldModule,

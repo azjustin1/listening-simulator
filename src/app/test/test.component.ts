@@ -4,9 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { each, mapValues } from 'lodash-es';
@@ -27,7 +25,6 @@ import { ReadingComponent } from '../reading/reading.component';
 import { ShortAnswerComponent } from '../short-answer/short-answer.component';
 import { WritingComponent } from '../writing/writing.component';
 import { TestService } from './test.service';
-const ID_LENGTH = 20;
 const SAVE_INTERVAL = 120000;
 
 @Component({
@@ -38,10 +35,8 @@ const SAVE_INTERVAL = 120000;
     ShortAnswerComponent,
     CommonModule,
     FormsModule,
-    MatListModule,
     MatCardModule,
     MatButtonModule,
-    MatFormFieldModule,
     MatInputModule,
     MatTabsModule,
     ListeningComponent,
