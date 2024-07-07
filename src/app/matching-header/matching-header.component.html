@@ -24,6 +24,12 @@
               (dragleave)="removeDropOver($event, question.id)"
               (drop)="onDropAnswer($event, question.id)"
             >
+              {{
+                !isTesting && !isReadOnly
+                  ? (question.correctAnswer | choiceContent: data.answers!)!
+                      .content
+                  : ""
+              }}
               <div
                 class="answer-drop"
                 [draggable]="isTesting"
@@ -40,10 +46,8 @@
                   }"
                 >
                   {{
-                    (
-                      this.data.questions[$index].answer
-                      | choiceContent: data.answers!
-                    )?.content ?? ""
+                    (question.answer | choiceContent: data.answers!)?.content ??
+                      ""
                   }}
                 </span>
 
@@ -51,10 +55,8 @@
                   <span class="correct">
                     /
                     {{
-                      (
-                        this.data.questions[$index].correctAnswer
-                        | choiceContent: data.answers!
-                      )?.content ?? ""
+                      (question.correctAnswer | choiceContent: data.answers!)
+                        ?.content ?? ""
                     }}
                   </span>
                 }
