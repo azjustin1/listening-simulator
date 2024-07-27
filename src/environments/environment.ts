@@ -1,6 +1,4 @@
-
-
 export const environment = {
     production: true,
-    api: 'http://192.168.3.147:80'
+    api: 'https://listening-simulator-1.onrender.com/'
 };
