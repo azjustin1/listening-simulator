@@ -7,6 +7,7 @@ require("dotenv").config();
 server.use(express.static(`${__dirname}/dist/browser`));
 server.use(cors({ origin: "http://localhost:4200" }));
 server.use(express.json());
+server.use('/upload', express.static(`${__dirname}/upload`))
 
 // Routers
 const emailRouter = require("./controllers/mail.controller");
