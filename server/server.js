@@ -86,6 +86,6 @@ server.get('*', function(req, res){
 const port = process.env.PORT || 3000;
 const host = process.env.HOST || "localhost";
 
-server.listen(port, host, () => {
+server.listen(port, () => {
   console.log(`Server is running at port ${host}:${port}`);
 });
