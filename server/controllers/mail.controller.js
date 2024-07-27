@@ -9,7 +9,6 @@ router.post("/send", (req, res) => {
   // Get the email details from the request body
   const { from, to, cc, subject, text } = req.body;
   // Create a transporter object
-  console.log(process.env.EMAIL);
   let transporter = nodemailer.createTransport({
     service: "gmail", // Use a specific email service provider
     host: "smtp.gmail.com",
