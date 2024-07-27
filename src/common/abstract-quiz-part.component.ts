@@ -71,7 +71,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     upload: (file: File) => {
       return this.fileService.uploadFile(file).pipe(
         map((response) => {
-          const imageUrl = `${environment.api}/api/upload/${response.fileName}`;
+          const imageUrl = `${environment.api}/api/file/upload/${response.fileName}`;
           return {
             ...response,
             body: { imageUrl: imageUrl },
