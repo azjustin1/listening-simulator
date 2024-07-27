@@ -5,7 +5,7 @@ const server = express();
 require("dotenv").config();
 
 server.use(express.static(`${__dirname}/dist/browser`));
-server.use(cors({ origin: "http://localhost:4200" }));
+server.use(cors({ origin: "*" }));
 server.use(express.json());
 server.use('/upload', express.static(`${__dirname}/upload`))
 
