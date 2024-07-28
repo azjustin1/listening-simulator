@@ -25,6 +25,7 @@ import { ReadingComponent } from '../reading/reading.component';
 import { ShortAnswerComponent } from '../short-answer/short-answer.component';
 import { WritingComponent } from '../writing/writing.component';
 import { TestService } from './test.service';
+import { FeedbackComponent } from '../feedback/feedback.component';
 const SAVE_INTERVAL = 120000;
 
 @Component({
@@ -70,6 +71,10 @@ export class TestComponent extends AddOrEditQuizComponent {
     readingParts: [],
     writingParts: [],
     isSubmit: false,
+    feedback: {
+      rating: 0,
+      content: '',
+    },
   };
   quiz: Quiz = {
     id: '',
@@ -131,6 +136,7 @@ export class TestComponent extends AddOrEditQuizComponent {
           this.mapDisablePart[this.currentTab] = false;
         }
         this.getTimeout();
+        this.showFeedbackDialog();
       });
       this.isReady = true;
       this.startAutoSave();
@@ -275,8 +281,18 @@ export class TestComponent extends AddOrEditQuizComponent {
     dialogRef.componentInstance.message = 'Submit this test?';
     dialogRef.afterClosed().subscribe((isConfirm) => {
       if (isConfirm) {
-        this.submit();
+        this.showFeedbackDialog();
       }
+    });
+  }
+
+  showFeedbackDialog() {
+    const dialogRef = this.dialog.open(FeedbackComponent, {
+      disableClose: true,
+    });
+    dialogRef.afterClosed().subscribe((feedback) => {
+      this.result.feedback = feedback;
+      this.submit();
     });
   }
 

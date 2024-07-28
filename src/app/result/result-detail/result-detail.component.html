@@ -79,6 +79,21 @@
         </mat-tab>
       </mat-tab-group>
     </div>
+
+    @if (result.feedback) {
+      <mat-card class="feedback-container">
+        <mat-card-title style="padding-left: 10rem">
+          <h2>Student Feedback</h2>
+        </mat-card-title>
+        <mat-card-content>
+          <app-feedback
+            [rating]="result.feedback.rating"
+            [content]="result.feedback.content"
+            [isReadonly]="true"
+          ></app-feedback>
+        </mat-card-content>
+      </mat-card>
+    }
   </div>
 </section>
 <button

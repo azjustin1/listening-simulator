@@ -14,6 +14,12 @@ import { ShortAnswerComponent } from '../../short-answer/short-answer.component'
 import { WritingComponent } from '../../writing/writing.component';
 import { BandScorePipe } from '../band-score.pipe';
 import { ResultService } from '../result.service';
+import { FeedbackComponent } from '../../feedback/feedback.component';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogModule,
+  MatDialogRef,
+} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-result-detail',
@@ -29,8 +35,10 @@ import { ResultService } from '../result.service';
     WritingComponent,
     BandScorePipe,
     PartNavigationComponent,
+    FeedbackComponent,
+    MatDialogModule,
   ],
-
+  providers: [{ provide: MatDialogRef, useValue: {} }],
   templateUrl: './result-detail.component.html',
   styleUrl: './result-detail.component.scss',
 })

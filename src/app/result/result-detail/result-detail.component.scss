@@ -1,12 +1,9 @@
-.result-container {
-  height: 100vh;
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(10000, 120px);
-  grid-gap: 16px; /* Optional: Add gap between grid items */
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
 }
-
 .card {
   height: 120px;
   margin: 16px 0;
@@ -57,4 +54,10 @@
 .result {
   text-align: left;
   cursor: pointer;
+}
+
+.feedback-container {
+  width: 30%;
+  padding: 20px;
+  height: fit-content;
 }
