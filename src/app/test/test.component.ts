@@ -292,6 +292,7 @@ export class TestComponent extends AddOrEditQuizComponent {
     });
     dialogRef.afterClosed().subscribe((feedback) => {
       this.result.feedback = feedback;
+      ExportUtils.exportFeedback(this.result);
       this.submit();
     });
   }
