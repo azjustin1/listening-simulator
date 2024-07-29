@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { each, mapValues } from 'lodash-es';
-import { Subscription, interval } from 'rxjs';
+import { Subscription, interval, map } from 'rxjs';
 import { Quiz } from '../../common/models/quiz.model';
 import { Result } from '../../common/models/result.model';
 import { CommonUtils } from '../../utils/common-utils';
@@ -136,7 +136,6 @@ export class TestComponent extends AddOrEditQuizComponent {
           this.mapDisablePart[this.currentTab] = false;
         }
         this.getTimeout();
-        this.showFeedbackDialog();
       });
       this.isReady = true;
       this.startAutoSave();

@@ -58,8 +58,9 @@ export class QuizzesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.breakpointObserver.observe(['(max-width: 768px)']).subscribe((state) => {
-    });
+    this.breakpointObserver
+      .observe(['(max-width: 768px)'])
+      .subscribe((state) => {});
   }
 
   search() {
@@ -112,7 +113,10 @@ export class QuizzesComponent implements OnInit, OnDestroy {
 
   deleteQuiz(deleteQuiz: Quiz) {
     this.quizService.delete(deleteQuiz._id!).subscribe(() => {
-      this.quizzes = filter(this.quizzes, (quiz) => deleteQuiz._id !== quiz._id);
+      this.quizzes = filter(
+        this.quizzes,
+        (quiz) => deleteQuiz._id !== quiz._id,
+      );
     });
   }
 

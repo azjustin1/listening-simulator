@@ -1,16 +1,10 @@
 const mongoose = require("mongoose");
+const Choice = require("./choice.model");
 
 const questionSchema = new mongoose.Schema({
   content: String,
   type: Number,
-  choices: [
-    {
-      id: String,
-      content: String,
-      index: String,
-      correctAnswer: String,
-    },
-  ],
+  choices: [Choice.schema],
   answer: String,
   correctAnswer: String,
 });
