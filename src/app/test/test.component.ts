@@ -136,7 +136,6 @@ export class TestComponent extends AddOrEditQuizComponent {
           this.mapDisablePart[this.currentTab] = false;
         }
         this.getTimeout();
-        this.showFeedbackDialog();
       });
       this.isReady = true;
       this.startAutoSave();
