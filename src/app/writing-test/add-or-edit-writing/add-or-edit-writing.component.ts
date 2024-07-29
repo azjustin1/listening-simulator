@@ -5,11 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -28,6 +25,7 @@ import { WritingService } from '../writing-test.service';
 
 import { saveAs } from 'file-saver';
 import { asBlob } from 'html-docx-js-typescript';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-add-or-edit-writing',
@@ -35,20 +33,17 @@ import { asBlob } from 'html-docx-js-typescript';
   imports: [
     CommonModule,
     FormsModule,
-    MatListModule,
     MatCardModule,
     MatButtonModule,
-    MatFormFieldModule,
     MatInputModule,
     MatIconModule,
-    MatExpansionModule,
     MatTabsModule,
     AngularEditorModule,
     WritingComponent,
   ],
   providers: [WritingService, FileService],
   templateUrl: './add-or-edit-writing.component.html',
-  styleUrl: './add-or-edit-writing.component.css',
+  styleUrl: './add-or-edit-writing.component.scss',
 })
 export class AddOrEditWritingComponent {
   state: { [key: string]: boolean } = {
@@ -63,10 +58,10 @@ export class AddOrEditWritingComponent {
     content: '',
     answer: '',
     timeout: 0,
-    imageName: '',
     wordCount: 0,
     questions: [],
     parts: [],
+    testDate: '',
   };
 
   result!: Writing;
@@ -99,7 +94,7 @@ export class AddOrEditWritingComponent {
     upload: (file: File) => {
       return this.fileService.uploadFile(file).pipe(
         map((response) => {
-          const imageUrl = `http://localhost:3000/upload/${response.fileName}`;
+          const imageUrl = `${environment.api}/upload/${response.fileName}`;
           return {
             ...response,
             body: { imageUrl: imageUrl },
@@ -183,7 +178,7 @@ export class AddOrEditWritingComponent {
     this.isReady = true;
     this.getTimeout();
     const sub = interval(1000).subscribe(() => {
-      if (this.seconds === 0) {
+      if (this.seconds < 1) {
         this.minutes--;
         this.seconds = 59;
       } else {
@@ -238,7 +233,11 @@ export class AddOrEditWritingComponent {
   }
 
   onSubmit() {
-    this.result = { ...this.result, isSubmit: true };
+    this.result = {
+      ...this.result,
+      isSubmit: true,
+      testDate: CommonUtils.getCurrentDate(),
+    };
     this.buildDownloadFile();
     this.writingService.editWritingResult(this.result).subscribe(() => {
       this.router.navigate(['writings']);
@@ -246,7 +245,7 @@ export class AddOrEditWritingComponent {
   }
 
   public buildDownloadFile(): void {
-    let htmlString = `<h1>${this.result.name}</h1><br><h2>Name: ${this.result.studentName}</h2><br><h2>Point: </h2><br>`;
+    let htmlString = `<h1>${this.result.name}</h1><br><h2>Name: ${this.result.studentName}</h2><br><h2>Date: ${CommonUtils.getCurrentDate()}</h2>`;
     each(this.result.parts, (part) => {
       htmlString =
         htmlString + part.content + '<br>' + part.answer + '<hr><br>';
@@ -271,9 +270,9 @@ export class AddOrEditWritingComponent {
       content: '',
       timeout: undefined,
       questions: [],
-      imageName: '',
       answer: '',
       wordCount: 0,
+      testDate: '',
     };
     this.data.parts?.push(newWritingParagraph);
   }

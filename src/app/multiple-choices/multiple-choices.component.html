@@ -4,7 +4,7 @@
       @if (isEditting) {
         <angular-editor
           name="questionContent"
-          [id]="question.id!"
+          [id]="question.id"
           [config]="config"
           [(ngModel)]="question.content"
           (ngModelChange)="onPaste($event)"
@@ -12,7 +12,7 @@
       } @else {
         <span [innerHTML]="question.content"> </span>
       }
-      @if (isReadOnly && question.answer === "") {
+      @if (isReadOnly && question.answer.length === 0) {
         ❌
       }
     </div>
@@ -24,16 +24,16 @@
             class="choice-index"
             [ngClass]="{
               selected: isTesting
-                ? (question.answer | correctChoice).includes(choice.id!)
-                : (question.correctAnswer | correctChoice).includes(choice.id!),
+                ? question.answer.includes(choice.id)
+                : question.correctAnswer.includes(choice.id),
               isWrong:
                 isReadOnly &&
-                (question.answer | correctChoice).includes(choice.id!) &&
-                !(question.correctAnswer | correctChoice).includes(choice.id!)
+                question.answer.includes(choice.id) &&
+                !question.correctAnswer.includes(choice.id)
             }"
             (click)="onSelectChoice($index)"
           >
-            <p>{{ CHOICE_INDEX[$index] }}</p>
+            <p>{{ CHOICE_INDEX[$index]  }} </p>
           </div>
           <div class="choice-content">
             @if (isEditting) {
@@ -42,7 +42,7 @@
                   autocomplete="off"
                   [disabled]="isReadOnly"
                   matInput
-                  [name]="choice.id!"
+                  [name]="choice.id"
                   type="text"
                   [(ngModel)]="choice.content"
                 ></textarea>

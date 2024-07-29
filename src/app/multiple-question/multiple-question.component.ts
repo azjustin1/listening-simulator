@@ -11,6 +11,7 @@ import { AbstractQuestionComponent } from '../../common/abstract-question.compon
 import { Question } from '../../common/models/question.model';
 import { CommonUtils } from '../../utils/common-utils';
 import { QuestionComponent } from '../question/question.component';
+import { QuestionType } from '../../common/enums/question-type.enum';
 
 @Component({
   selector: 'app-multiple-question',
@@ -26,7 +27,7 @@ import { QuestionComponent } from '../question/question.component';
     QuestionComponent,
   ],
   templateUrl: './multiple-question.component.html',
-  styleUrl: './multiple-question.component.css',
+  styleUrl: './multiple-question.component.scss',
 })
 export class MultipleQuestionComponent
   extends AbstractQuestionComponent
@@ -48,48 +49,61 @@ export class MultipleQuestionComponent
 
   override updateEdittingQuestion(status: boolean) {
     each(this.question.subQuestions, (question) => {
-      this.mapEdittingQuestion[question.id!] = status;
+      this.mapEdittingQuestion[question.id] = status;
     });
   }
 
   addQuestion(questionType: number) {
     const id = CommonUtils.generateRandomId();
     let newQuestion: Question = {
+      id: id,
       content: '',
       type: null,
       choices: [],
-      answer: '',
-      correctAnswer: '',
+      answer: [],
+      correctAnswer: [],
     };
     switch (questionType) {
-      case 0:
+      case QuestionType.MULTIPLE_CHOICE:
         newQuestion = {
           id: id,
           content: '',
           type: questionType,
           choices: this.defaultChoices(4),
-          answer: '',
-          correctAnswer: '',
+          answer: [],
+          correctAnswer: [],
         };
         break;
-      case 1:
+      case QuestionType.SHORT_ANSWER:
         newQuestion = {
           id: id,
           content: '',
           type: questionType,
           choices: [],
-          answer: '',
-          correctAnswer: '',
+          answer: [],
+          correctAnswer: [],
         };
         break;
-      case 3:
+      case QuestionType.DROPDOWN_ANSWER:
         newQuestion = {
           id: id,
           content: '',
           type: questionType,
           choices: this.defaultChoices(3),
-          answer: '',
-          correctAnswer: '',
+          answer: [],
+          correctAnswer: [],
+        };
+        break;
+      case QuestionType.FILL_IN_THE_GAP:
+        newQuestion = {
+          id: id,
+          content: '',
+          arrayContent: [],
+          type: questionType,
+          choices: [],
+          answer: [],
+          correctAnswer: [],
+          subQuestions: [],
         };
         break;
       default:
@@ -97,7 +111,7 @@ export class MultipleQuestionComponent
     }
     this.question.subQuestions!.push({ ...newQuestion });
     this.question = { ...this.question };
-    this.mapEdittingQuestion[id] = true;
+    this.onEditSubQuestion(id);
   }
 
   moveQuestionUp(index: number) {
@@ -133,18 +147,6 @@ export class MultipleQuestionComponent
 
   onRemoveSubQuestion(index: number) {
     this.question.subQuestions?.splice(index, 1);
-  }
-
-  defaultChoices(numberOfChocies: number) {
-    const choices = [];
-    for (let i = 0; i < numberOfChocies; i++) {
-      const choice = {
-        id: CommonUtils.generateRandomId(),
-        content: '',
-      };
-      choices.push(choice);
-    }
-    return choices;
   }
 
   saveOthersEditting() {

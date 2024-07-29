@@ -9,7 +9,9 @@ import { MatInputModule } from '@angular/material/input';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { AbstractQuestionComponent } from '../../common/abstract-question.component';
 import { FileService } from '../file.service';
-import { ChoicePipe } from './choice.pipe';
+import { isArray } from 'lodash-es';
+import { CHOICE_INDEX } from '../../utils/constant';
+import { CorrectChoicesPipe } from '../../common/pipes/correct-choices.pipe';
 @Component({
   selector: 'app-multiple-choices',
   standalone: true,
@@ -22,44 +24,17 @@ import { ChoicePipe } from './choice.pipe';
     AngularEditorModule,
     MatIconModule,
     MatCardModule,
-    ChoicePipe,
+    CorrectChoicesPipe,
   ],
   providers: [FileService],
   templateUrl: './multiple-choices.component.html',
-  styleUrl: './multiple-choices.component.css',
+  styleUrl: './multiple-choices.component.scss',
 })
 export class MultipleChoicesComponent extends AbstractQuestionComponent {
   selectedAnswer: string = '';
   mapSelectedChoice: Record<number, boolean> = {};
 
-  CHOICE_INDEX = [
-    'A',
-    'B',
-    'C',
-    'D',
-    'E',
-    'F',
-    'G',
-    'H',
-    'I',
-    'J',
-    'K',
-    'L',
-    'M',
-    'N',
-    'O',
-    'P',
-    'Q',
-    'R',
-    'S',
-    'T',
-    'U',
-    'V',
-    'W',
-    'X',
-    'Y',
-    'Z',
-  ];
+  CHOICE_INDEX: string[] = CHOICE_INDEX;
 
   onSelectChoice(index: number) {
     if (this.isReadOnly) {
@@ -69,26 +44,27 @@ export class MultipleChoicesComponent extends AbstractQuestionComponent {
     this.mapSelectedChoice[index] = !this.mapSelectedChoice[index];
 
     if (this.isEditting) {
-      if (
-        !this.question.correctAnswer?.includes(this.question.choices[index].id!)
-      ) {
-        this.question.correctAnswer += `${this.question.choices[index].id}`;
+      const id = this.question.choices[index].id;
+      if (!this.question.correctAnswer?.includes(id)) {
+        this.question.correctAnswer.push(id);
       } else {
-        this.question.correctAnswer = this.question.correctAnswer.replace(
-          `${this.question.choices[index].id}`,
-          '',
+        this.question.correctAnswer = this.question.correctAnswer.filter(
+          (correctAnswerId) => correctAnswerId !== id,
         );
       }
     }
 
     if (this.isTesting) {
-      if (!this.question.answer.includes(this.question.choices[index].id!)) {
-        this.question.answer += `${this.question.choices[index].id}`;
-      } else {
-        this.question.answer = this.question.answer?.replace(
-          `${this.question.choices[index].id}`,
-          '',
-        );
+      if (isArray(this.question.answer)) {
+        const id = this.question.choices[index].id;
+
+        if (!this.question.answer?.includes(id)) {
+          this.question.answer.push(id);
+        } else {
+          this.question.answer = this.question.answer.filter(
+            (answerId) => answerId !== id,
+          );
+        }
       }
     }
   }

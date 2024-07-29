@@ -15,7 +15,8 @@
         <b>Reading:</b> {{ result.correctReadingPoint }}/{{
           result.totalReadingPoint
         }}
-        &nbsp;&nbsp;&nbsp;&nbsp;<b>Band:</b> {{ result.correctReadingPoint | bandScore }}
+        &nbsp;&nbsp;&nbsp;&nbsp;<b>Band:</b>
+        {{ result.correctReadingPoint | bandScore }}
       </h4>
       <h4><b>Test date:</b> {{ result.testDate }}</h4>
     </div>
@@ -24,76 +25,75 @@
       <mat-tab-group animationDuration="0ms">
         <mat-tab label="Listening" style="margin-top: 16px">
           <ng-template matTabContent>
-            <mat-tab-group
-              animationDuration="0ms"
-              mat-align-tabs="center"
-              animationDuration="0ms"
-              headerPosition="below"
-            >
-              <div class="question-group">
-                @for (part of result.listeningParts; track $index) {
-                  <mat-tab>
-                    <ng-template matTabLabel="">{{ $index + 1 }}</ng-template>
-                    <app-listening
-                      [data]="part"
-                      [isReadOnly]="true"
-                    ></app-listening>
-                  </mat-tab>
-                }
-              </div>
-            </mat-tab-group>
+            @if (result.listeningParts[selectedListeningPart]) {
+              <mat-card class="question-group" appearance="outlined">
+                <mat-card-content>
+                  <app-listening
+                    [data]="result.listeningParts[selectedListeningPart]"
+                    [isReadOnly]="true"
+                  ></app-listening>
+                </mat-card-content>
+              </mat-card>
+            }
+            <app-part-navigation
+              [(selectedPart)]="selectedListeningPart"
+              [parts]="result.listeningParts"
+            ></app-part-navigation>
           </ng-template>
         </mat-tab>
         <mat-tab label="Reading">
           <ng-template matTabContent>
-            <mat-tab-group
-              animationDuration="0ms"
-              mat-align-tabs="center"
-              animationDuration="0ms"
-              headerPosition="below"
-            >
-              @for (part of result.readingParts; track $index) {
-                <mat-tab>
-                  <ng-template matTabLabel="">{{ $index + 1 }}</ng-template>
-                  <mat-card class="question-group" appearance="outlined">
-                    <mat-card-content>
-                      <app-reading
-                        [data]="part"
-                        [isReadOnly]="true"
-                      ></app-reading>
-                    </mat-card-content>
-                  </mat-card>
-                </mat-tab>
-              }
-            </mat-tab-group>
+            @if (result.readingParts[selectedReadingPart]) {
+              <mat-card class="question-group" appearance="outlined">
+                <mat-card-content>
+                  <app-reading
+                    [data]="result.readingParts[selectedReadingPart]"
+                    [isReadOnly]="true"
+                  ></app-reading>
+                </mat-card-content>
+              </mat-card>
+            }
+            <app-part-navigation
+              [(selectedPart)]="selectedReadingPart"
+              [parts]="result.readingParts"
+            ></app-part-navigation>
           </ng-template>
         </mat-tab>
         <mat-tab label="Writing">
           <ng-template matTabContent>
-            <mat-tab-group
-              animationDuration="0ms"
-              mat-align-tabs="center"
-              animationDuration="0ms"
-              headerPosition="below"
-            >
-              @for (part of result.writingParts; track $index) {
-                <mat-tab>
-                  <ng-template matTabLabel="">{{ $index + 1 }}</ng-template>
-                  <mat-card class="question-group" appearance="outlined">
-                    <mat-card-content>
-                      <app-writing
-                        [data]="part"
-                        [isReadOnly]="true"
-                      ></app-writing>
-                    </mat-card-content>
-                  </mat-card>
-                </mat-tab>
-              }
-            </mat-tab-group>
+            @if (result.writingParts[selectedWritingPart]) {
+              <mat-card class="question-group" appearance="outlined">
+                <mat-card-content>
+                  <app-writing
+                    [data]="result.writingParts[selectedWritingPart]"
+                    [isReadOnly]="true"
+                  ></app-writing>
+                </mat-card-content>
+              </mat-card>
+            }
+            <app-part-navigation
+              [(selectedPart)]="selectedWritingPart"
+              [parts]="result.writingParts"
+            ></app-part-navigation>
           </ng-template>
         </mat-tab>
       </mat-tab-group>
     </div>
+
+    @if (result.feedback) {
+      <mat-card class="feedback-container">
+        <mat-card-title style="padding-left: 10rem">
+          <h2>Student Feedback</h2>
+        </mat-card-title>
+        <mat-card-content>
+          <app-feedback
+            [rating]="result.feedback.rating"
+            [content]="result.feedback.content"
+            [isReadonly]="true"
+          ></app-feedback>
+        </mat-card-content>
+      </mat-card>
+    }
   </div>
 </section>
 <button

@@ -71,31 +71,43 @@
           <mat-icon matPrefix class="my-icon">search</mat-icon>
         </mat-form-field>
       </div>
-      <div class="container">
+      <div class="result-container">
         @for (result of writingResults; track $index) {
-          <mat-card class="card">
-            <mat-card-content class="card-content">
-              <h2 class="mat-display-2 card-content-text">
-                {{ result.studentName }}
-              </h2></mat-card-content
-            >
-            <mat-card-actions>
-              <button mat-icon-button [matMenuTriggerFor]="menu">
-                <mat-icon>more_vert</mat-icon>
-              </button>
-              <mat-menu #menu="matMenu">
-                @if (result.isSubmit) {
-                  <button mat-menu-item (click)="view(result.id)">View</button>
-                  <button mat-menu-item (click)="onDeleteResult(result)">
+          <mat-card class="result-card">
+            <mat-card-title class="card-title"
+              ><h1 class="mat-display-2" (click)="view(result.id)">
+                &nbsp;{{ result.studentName }}
+                @if (!result.isSubmit) {
+                  🔸
+                }
+              </h1>
+              <mat-card-actions>
+                <button mat-icon-button [matMenuTriggerFor]="menu">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                  @if (result.isSubmit) {
+                    <button mat-menu-item (click)="view(result.id)">
+                      View
+                    </button>
+                  } @else {
+                    <button mat-menu-item (click)="continue(result.id)">
+                      Continue
+                    </button>
+                  }
+                  <button
+                    mat-menu-item
+                    (click)="onDeleteClick(result)"
+                  >
                     Delete
                   </button>
-                } @else {
-                  <button mat-menu-item (click)="continueTest(result.id)">
-                    Continue
-                  </button>
-                }
-              </mat-menu>
-            </mat-card-actions>
+                </mat-menu>
+              </mat-card-actions>
+            </mat-card-title>
+            <mat-card-content class="card-content" (click)="view(result.id)">
+              <br />
+              <b>Test date:</b> {{ result.testDate }}
+            </mat-card-content>
           </mat-card>
         }
       </div>

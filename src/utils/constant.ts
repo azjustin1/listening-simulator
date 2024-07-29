@@ -26,3 +26,7 @@ export const CHOICE_INDEX = [
   'Y',
   'Z',
 ];
+
+export const INPUT_PATTERN = /<(.+?)>/;
+
+export const BASE64_IMAGE_REGEX = /<img[^>]+src="(data[^">]+)"/g;

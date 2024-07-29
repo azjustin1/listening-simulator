@@ -1,23 +1,17 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpEvent, HttpResponse } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class FileService {
   constructor(private httpClient: HttpClient) {}
-
-  getFile(fileName: string): Observable<any> {
-    return this.httpClient.get<any>(`/file/${fileName}`, {
-      responseType: 'blob' as 'json',
-    });
-  }
 
   uploadFile(file: File): Observable<any> {
     const formData: FormData = new FormData();
 
     formData.append('file', file);
 
-    return this.httpClient.post<any>(`/upload`, formData);
+    return this.httpClient.post<any>(`/file/upload`, formData);
   }
 
   deleteFile(fileName: string): Observable<any> {

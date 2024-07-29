@@ -4,31 +4,28 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { saveAs } from 'file-saver';
-import { asBlob } from 'html-docx-js-typescript';
-import { chunk, each, isEqual, mapValues, sortBy } from 'lodash-es';
+import { each, mapValues } from 'lodash-es';
 import { Subscription, interval } from 'rxjs';
 import { Quiz } from '../../common/models/quiz.model';
 import { Result } from '../../common/models/result.model';
 import { CommonUtils } from '../../utils/common-utils';
-import { CHOICE_INDEX } from '../../utils/constant';
+import { ExportUtils } from '../../utils/export.utils';
+import { ScoreUtils } from '../../utils/score-utils';
 import { ConfirmDialogComponent } from '../dialog/confirm-dialog/confirm-dialog.component';
-import { AnswerChoicePipe } from '../dropdown-choices/answer-choice.pipe';
 import { FileService } from '../file.service';
 import { ListeningComponent } from '../listening/listening.component';
 import { MultipleChoicesComponent } from '../multiple-choices/multiple-choices.component';
+import { PartNavigationComponent } from '../part-navigation/part-navigation.component';
 import { AddOrEditQuizComponent } from '../quizzes/add-or-edit-quiz/add-or-edit-quiz.component';
 import { QuizService } from '../quizzes/quizzes.service';
 import { ReadingComponent } from '../reading/reading.component';
 import { ShortAnswerComponent } from '../short-answer/short-answer.component';
 import { WritingComponent } from '../writing/writing.component';
 import { TestService } from './test.service';
-const ID_LENGTH = 20;
+import { FeedbackComponent } from '../feedback/feedback.component';
 const SAVE_INTERVAL = 120000;
 
 @Component({
@@ -39,22 +36,21 @@ const SAVE_INTERVAL = 120000;
     ShortAnswerComponent,
     CommonModule,
     FormsModule,
-    MatListModule,
     MatCardModule,
     MatButtonModule,
-    MatFormFieldModule,
     MatInputModule,
     MatTabsModule,
     ListeningComponent,
     ReadingComponent,
     WritingComponent,
+    PartNavigationComponent,
   ],
   providers: [QuizService, TestService],
   templateUrl: './test.component.html',
-  styleUrl: './test.component.css',
+  styleUrl: './test.component.scss',
 })
 export class TestComponent extends AddOrEditQuizComponent {
-  @ViewChild('audioPlayer') audioPlayer!: ElementRef;
+  @ViewChild('audioPlayer') audioPlayer!: ElementRef<HTMLAudioElement>;
 
   @HostListener('document:keydown.control.s', ['$event'])
   override onKeydownHandler(event: KeyboardEvent) {
@@ -75,6 +71,10 @@ export class TestComponent extends AddOrEditQuizComponent {
     readingParts: [],
     writingParts: [],
     isSubmit: false,
+    feedback: {
+      rating: 0,
+      content: '',
+    },
   };
   quiz: Quiz = {
     id: '',
@@ -88,8 +88,6 @@ export class TestComponent extends AddOrEditQuizComponent {
   seconds: number = 0;
   totalSeconds: number = 0;
   timeoutInterval!: Subscription;
-
-  subscriptions: Subscription[] = [];
 
   isReady: boolean = false;
   isStart: boolean = false;
@@ -114,6 +112,7 @@ export class TestComponent extends AddOrEditQuizComponent {
     const quizId = this.router.getCurrentNavigation()?.extras.state?.['quizId'];
     if (quizId) {
       this.quizService.getById(quizId).subscribe((quiz) => {
+        quiz.audioTime = 0;
         this.quiz = quiz;
         this.result = { ...quiz };
         this.totalSeconds = this.result.listeningTimeout! * 60;
@@ -121,10 +120,7 @@ export class TestComponent extends AddOrEditQuizComponent {
         this.getTimeout();
       });
 
-      const saveInterval = interval(SAVE_INTERVAL).subscribe(() => {
-        this.onCtrlSave();
-      });
-      this.subscriptions.push(saveInterval);
+      this.startAutoSave();
     }
 
     const testId = this.router.getCurrentNavigation()?.extras.state?.['testId'];
@@ -132,15 +128,18 @@ export class TestComponent extends AddOrEditQuizComponent {
       this.testService.getResultById(testId).subscribe((result) => {
         this.result = result;
         this.totalSeconds = this.result.listeningTimeout! * 60;
+        this.audioPlayer.nativeElement.currentTime = this.result.audioTime!;
         this.audioPlayer.nativeElement.load();
-        this.getTimeout();
         if (this.result.currentTab) {
           this.currentTab = this.result.currentTab;
           this.disableOthersTab();
           this.mapDisablePart[this.currentTab] = false;
         }
+        this.getTimeout();
+        this.showFeedbackDialog();
       });
       this.isReady = true;
+      this.startAutoSave();
     }
   }
 
@@ -149,6 +148,13 @@ export class TestComponent extends AddOrEditQuizComponent {
     if (this.timeoutInterval) {
       this.timeoutInterval.unsubscribe();
     }
+  }
+
+  startAutoSave() {
+    const saveInterval = interval(SAVE_INTERVAL).subscribe(() => {
+      this.onCtrlSave();
+    });
+    this.subscriptions.push(saveInterval);
   }
 
   onChangeTab(tab: number) {
@@ -171,17 +177,6 @@ export class TestComponent extends AddOrEditQuizComponent {
     this.seconds = this.totalSeconds % 60;
   }
 
-  onSubmitClick() {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent);
-    dialogRef.componentInstance.title = 'Information';
-    dialogRef.componentInstance.message = 'Submit this test?';
-    dialogRef.afterClosed().subscribe((isConfirm) => {
-      if (isConfirm) {
-        this.submit();
-      }
-    });
-  }
-
   onStartTest() {
     this.isReady = true;
     this.result.id = CommonUtils.generateRandomId();
@@ -192,7 +187,9 @@ export class TestComponent extends AddOrEditQuizComponent {
     this.saveTimeout();
     this.result.testDate = CommonUtils.getCurrentDate();
     this.result.currentTab = this.currentTab;
-    this.testService.saveCurrentTest(this.result).subscribe();
+    this.subscriptions.push(
+      this.testService.saveCurrentTest(this.result).subscribe(),
+    );
   }
 
   saveTimeout() {
@@ -210,144 +207,50 @@ export class TestComponent extends AddOrEditQuizComponent {
     }
   }
 
-  submit() {
-    this.audioPlayer.nativeElement.pause();
-    this.exportWriting();
-    this.calculateListeningPoint();
-    this.calculateReadingPoint();
-    this.result.isSubmit = true;
-    this.onCtrlSave();
-    this.router.navigate(['mock-test']);
-  }
-
-  exportListening() {
-    let htmlString = `<h1>${this.result.name} - Listening</h1><br><h2>Name: ${this.result.studentName}</h2><br><h2>Point: </h2><br>`;
-    each(this.result.listeningParts, (part, index) => {
-      htmlString += `<h3>Part ${index + 1}</h3><br>`;
-      each(part.questions, (question) => {
-        htmlString += `<p>${question.content ? question.content : ''}</p><br>`;
-        each(question.choices, (choice, index) => {
-          if (question.type === 0) {
-            if (
-              chunk(question.answer, ID_LENGTH)
-                .map((chunk) => chunk.join(''))
-                .includes(choice.id!)
-            ) {
-              htmlString += `<u>${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}</u><br>`;
-            } else {
-              htmlString += `${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}<br>`;
-            }
-          } else if (question.type === 3) {
-            if (question.answer === choice.content) {
-              htmlString += `${choice.content}<br>`;
-            }
-          } else {
-            htmlString += `<b>${choice.index ? choice.index : ''}</b> ${choice.answer ? choice.answer : ''}<br>`;
-          }
-        });
-      });
-      htmlString += '<hr>';
-    });
-    asBlob(htmlString).then((data: any) => {
-      saveAs(
-        data,
-        `${this.result.studentName}_Listening_${this.result.name}_${CommonUtils.getCurrentDate()}`,
-      );
-    });
-  }
-
-  exportReading() {
-    let htmlString = `<h1>${this.result.name} - Reading</h1><br><h2>Name: ${this.result.studentName}</h2><br><h2>Point: </h2><br>`;
-    each(this.result.readingParts, (part, index) => {
-      htmlString += `<h3>Part ${index + 1}</h3><br>`;
-      htmlString += `<p>${part.content}</p><br>`;
-      each(part.questions, (question) => {
-        htmlString += `<b>${question.name ? question.name : ''}<b><br>`;
-        each(question.subQuestions, (subQuestion) => {
-          htmlString += `<p>${subQuestion.content ? subQuestion.content : ''}</p><br>`;
-          if (subQuestion.type === 3) {
-            htmlString += `${AnswerChoicePipe.prototype.transform(subQuestion)}<br>`;
-          } else {
-            each(subQuestion.choices, (choice, index) => {
-              if (subQuestion.type === 0) {
-                if (
-                  chunk(subQuestion.answer, ID_LENGTH)
-                    .map((chunk) => chunk.join(''))
-                    .includes(choice.id!)
-                ) {
-                  htmlString += `<u>${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}</u><br>`;
-                } else {
-                  htmlString += `${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}<br>`;
-                }
-              } else {
-                htmlString += `<b>${choice.index ? choice.index : ''}</b> ${choice.answer ? choice.answer : ''}<br>`;
-              }
-            });
-          }
-        });
-        htmlString += '<hr>';
-      });
-    });
-    asBlob(htmlString).then((data: any) => {
-      saveAs(
-        data,
-        `${this.result.studentName}_Reading_${this.result.name}_${CommonUtils.getCurrentDate()}`,
-      );
-    });
-  }
-
-  exportWriting() {
-    let htmlString = `<h1>${this.result.name} - Writing</h1><br><h2>Name: ${this.result.studentName}</h2><br><h2>Point: </h2><br>`;
-    each(this.result.writingParts, (part) => {
-      htmlString =
-        htmlString + part.content + '<br>' + part.answer + '<hr><br>';
-    });
-
-    asBlob(htmlString).then((data: any) => {
-      saveAs(
-        data,
-        `${this.result.studentName}_Writing_${this.result.name}_${CommonUtils.getCurrentDate()}`,
-      );
-    });
-  }
-
-  onListeningStart() {
-    this.audioPlayer.nativeElement.play();
-    this.onStartPart();
-  }
-
   onStartPart() {
     if (this.currentTab === 0 && this.audioPlayer) {
       this.audioPlayer.nativeElement.play();
     }
     this.isStart = true;
+
     this.timeoutInterval = interval(1000).subscribe(() => {
-      if (this.seconds === 0) {
-        this.minutes--;
-        this.seconds = 59;
-      } else {
-        this.seconds--;
+      if (this.currentTab === 0) {
+        this.result.audioTime! += 1;
       }
+      this.calculateTime();
       if (this.minutes === 0 && this.seconds === 0) {
         if (this.currentTab === 0) {
           this.audioPlayer.nativeElement.pause();
         }
         this.timeoutInterval.unsubscribe();
-        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-          hasBackdrop: true,
-          disableClose: true,
-        });
-        dialogRef.componentInstance.title = 'Information';
-        dialogRef.componentInstance.message = "Time's up";
-        dialogRef.componentInstance.isWarning = true;
-        dialogRef.afterClosed().subscribe((isConfirm) => {
-          if (isConfirm) {
-            this.onSubmitPartClick(this.currentTab);
-            if (this.currentTab > 2) {
-              this.submit();
-            }
-          }
-        });
+        this.showSubmitDialog();
+      }
+    });
+  }
+
+  calculateTime() {
+    if (this.seconds < 1) {
+      this.minutes--;
+      this.seconds = 59;
+    } else {
+      this.seconds--;
+    }
+  }
+
+  showSubmitDialog() {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      hasBackdrop: true,
+      disableClose: true,
+    });
+    dialogRef.componentInstance.title = 'Information';
+    dialogRef.componentInstance.message = "Time's up";
+    dialogRef.componentInstance.isWarning = true;
+    dialogRef.afterClosed().subscribe((isConfirm) => {
+      if (isConfirm) {
+        this.onSubmitPartClick(this.currentTab);
+        if (this.currentTab > 2) {
+          this.submit();
+        }
       }
     });
   }
@@ -355,10 +258,10 @@ export class TestComponent extends AddOrEditQuizComponent {
   onSubmitPartClick(tab: number) {
     if (tab === 0) {
       this.audioPlayer.nativeElement.pause();
-      this.exportListening();
+      ExportUtils.exportListening(this.result);
     }
     if (tab === 1) {
-      this.exportReading();
+      ExportUtils.exportReading(this.result);
     }
     this.disableOthersTab();
     this.mapDisablePart[tab + 1] = false;
@@ -366,6 +269,44 @@ export class TestComponent extends AddOrEditQuizComponent {
     if (this.timeoutInterval) {
       this.timeoutInterval.unsubscribe();
     }
+    this.result = { ...this.result, currentTab: this.currentTab };
+    this.subscriptions.push(
+      this.testService.saveCurrentTest(this.result).subscribe(),
+    );
+  }
+
+  onSubmitClick() {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent);
+    dialogRef.componentInstance.title = 'Information';
+    dialogRef.componentInstance.message = 'Submit this test?';
+    dialogRef.afterClosed().subscribe((isConfirm) => {
+      if (isConfirm) {
+        this.showFeedbackDialog();
+      }
+    });
+  }
+
+  showFeedbackDialog() {
+    const dialogRef = this.dialog.open(FeedbackComponent, {
+      disableClose: true,
+    });
+    dialogRef.afterClosed().subscribe((feedback) => {
+      this.result.feedback = feedback;
+      ExportUtils.exportFeedback(this.result);
+      this.submit();
+    });
+  }
+
+  submit() {
+    if (!this.audioPlayer.nativeElement.paused) {
+      this.audioPlayer.nativeElement.pause();
+    }
+    ExportUtils.exportWriting(this.result);
+    this.calculateListeningPoint();
+    this.calculateReadingPoint();
+    this.result.isSubmit = true;
+    this.onCtrlSave();
+    this.router.navigate(['mock-test']);
   }
 
   private disableOthersTab() {
@@ -377,50 +318,9 @@ export class TestComponent extends AddOrEditQuizComponent {
     let totalPoint = 0;
     each(this.result.listeningParts, (part) => {
       each(part.questions, (question) => {
-        switch (question.type) {
-          case 0:
-            // Multiple choices
-            totalPoint++;
-            if (
-              question.answer !== '' &&
-              isEqual(
-                sortBy(
-                  chunk(question.answer, ID_LENGTH).map((chunk) =>
-                    chunk.join(''),
-                  ),
-                ),
-                sortBy(
-                  chunk(question.correctAnswer, ID_LENGTH).map((chunk) =>
-                    chunk.join(''),
-                  ),
-                ),
-              )
-            ) {
-              correctPoint++;
-            }
-            break;
-          case 1:
-            // Short answer
-            each(question.choices, (choice) => {
-              totalPoint++;
-              if (
-                choice.answer !== '' &&
-                (choice.answer?.trim() === choice.correctAnswer?.trim() ||
-                  choice.correctAnswer?.split('/').includes(choice.answer!))
-              ) {
-                correctPoint++;
-              }
-            });
-            break;
-          case 3:
-            totalPoint++;
-            if (question.correctAnswer === question.answer) {
-              correctPoint++;
-            }
-            break;
-          default:
-            break;
-        }
+        const scoreResult = ScoreUtils.calculateQuestionPoint(question);
+        correctPoint += scoreResult.correct;
+        totalPoint += scoreResult.total;
       });
     });
     this.result.correctListeningPoint = correctPoint;
@@ -431,54 +331,21 @@ export class TestComponent extends AddOrEditQuizComponent {
     let correctPoint = 0;
     let totalPoint = 0;
     each(this.result.readingParts, (part) => {
-      each(part.questions, (question) => {
-        each(question.subQuestions, (subQuestion) => {
-          switch (subQuestion.type) {
-            case 0:
-              // Multiple choices
-              totalPoint++;
-              if (
-                subQuestion.answer !== '' &&
-                isEqual(
-                  sortBy(
-                    chunk(question.answer, ID_LENGTH).map((chunk) =>
-                      chunk.join(''),
-                    ),
-                  ),
-                  sortBy(
-                    chunk(question.correctAnswer, ID_LENGTH).map((chunk) =>
-                      chunk.join(''),
-                    ),
-                  ),
-                )
-              ) {
-                correctPoint++;
-              }
-              break;
-            case 1:
-              // Short answer
-              each(subQuestion.choices, (choice) => {
-                totalPoint++;
-                if (
-                  choice.answer !== '' &&
-                  (choice.answer?.trim() === choice.correctAnswer?.trim() ||
-                    choice.correctAnswer?.split('/').includes(choice.answer!))
-                ) {
-                  correctPoint++;
-                }
-              });
-              break;
-            case 3:
-              totalPoint++;
-              if (question.answer === question.correctAnswer) {
-                correctPoint++;
-              }
-              break;
-            default:
-              break;
-          }
+      if (part.isMatchHeader) {
+        each(part.questions, (question) => {
+          totalPoint++;
+          const score = ScoreUtils.forDropdown(question);
+          correctPoint += score.correct;
         });
-      });
+      } else {
+        each(part.questions, (question) => {
+          each(question.subQuestions, (subQuestion) => {
+            const scoreResult = ScoreUtils.calculateQuestionPoint(subQuestion);
+            correctPoint += scoreResult.correct;
+            totalPoint += scoreResult.total;
+          });
+        });
+      }
     });
     this.result.correctReadingPoint = correctPoint;
     this.result.totalReadingPoint = totalPoint;

@@ -1,13 +1,13 @@
 import { Choice } from './choice.model';
 
 export interface Question {
-  id?: string;
+  id: string;
   name?: string;
   content?: string;
+  arrayContent?: string[][];
   type?: number | null;
   choices: Choice[];
-  answer: string;
-  correctAnswer: string;
-  imageName?: string;
+  answer: string[] | string;
+  correctAnswer: string[];
   subQuestions?: Question[];
 }

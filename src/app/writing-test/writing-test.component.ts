@@ -31,7 +31,7 @@ import { WritingService } from './writing-test.service';
   ],
   providers: [WritingService],
   templateUrl: './writing-test.component.html',
-  styleUrl: './writing-test.component.css',
+  styleUrl: './writing-test.component.scss',
 })
 export class WritingTestComponent implements OnDestroy {
   writings: Writing[] = [];
@@ -89,7 +89,7 @@ export class WritingTestComponent implements OnDestroy {
     });
   }
 
-  continueTest(resultId: string) {
+  continue(resultId: string) {
     this.router.navigate(['continue-test-writing', resultId], {
       state: { isTesting: true, resultId: resultId },
     });
@@ -144,7 +144,7 @@ export class WritingTestComponent implements OnDestroy {
   }
 
   deleteQuiz(writing: Writing) {
-    this.writingService.delete(writing.id!).subscribe(() => {
+    this.writingService.delete(writing.id).subscribe(() => {
       this.writings = filter(this.writings, (item) => writing.id !== item.id);
     });
   }

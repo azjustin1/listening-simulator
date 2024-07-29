@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { AbstractQuestionComponent } from '../../common/abstract-question.component';
 import { FileService } from '../file.service';
+import { CorrectAnswerPipe } from '../../common/pipes/correct-answer.pipe';
 
 @Component({
   selector: 'app-short-answer',
@@ -22,10 +23,11 @@ import { FileService } from '../file.service';
     AngularEditorModule,
     MatIconModule,
     MatCardModule,
+    CorrectAnswerPipe,
   ],
   providers: [FileService],
   templateUrl: './short-answer.component.html',
-  styleUrl: './short-answer.component.css',
+  styleUrl: './short-answer.component.scss',
 })
 export class ShortAnswerComponent extends AbstractQuestionComponent {
   @Input() hasIndex: boolean = true;

@@ -10,4 +10,10 @@ export interface Result extends Quiz {
   quizId: string;
   isSubmit: boolean;
   currentTab?: number;
+  feedback?: Feedback;
+}
+
+export interface Feedback {
+  rating: number;
+  content: string;
 }

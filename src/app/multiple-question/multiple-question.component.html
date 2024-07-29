@@ -34,20 +34,20 @@
         <app-question
           [question]="subQuestion"
           [isSaved]="isSaved"
-          [isEditting]="mapEdittingQuestion[subQuestion.id!]"
+          [isEditting]="mapEdittingQuestion[subQuestion.id]"
           [isReadOnly]="isReadOnly"
           [isTesting]="isTesting"
         ></app-question>
       </div>
       @if (!isSaved && !isTesting && !isReadOnly) {
         <div class="actions">
-          @if (mapEdittingQuestion[subQuestion.id!]) {
+          @if (mapEdittingQuestion[subQuestion.id]) {
             <button
               mat-button
               color="primary"
               type="button"
               class="btn btn-danger"
-              (click)="onSaveSubQuestion(subQuestion.id!)"
+              (click)="onSaveSubQuestion(subQuestion.id)"
             >
               <mat-icon>save</mat-icon>
             </button>
@@ -57,7 +57,7 @@
               color="primary"
               type="button"
               class="btn btn-danger"
-              (click)="onEditSubQuestion(subQuestion.id!)"
+              (click)="onEditSubQuestion(subQuestion.id)"
             >
               <mat-icon>edit</mat-icon>
             </button>
@@ -125,6 +125,13 @@
         (click)="addQuestion(3)"
       >
         <mat-icon>add</mat-icon> Dropdown Choices
+      </button>
+      <button
+        class="add-question-button"
+        mat-raised-button
+        (click)="addQuestion(5)"
+      >
+        <mat-icon>add</mat-icon> Fill In The Gap
       </button>
     </div>
   }

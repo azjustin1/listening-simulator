@@ -2,17 +2,20 @@ import { HttpResponse } from '@angular/common/http';
 import {
   Component,
   EventEmitter,
+  inject,
   Input,
   OnChanges,
   Output,
   SimpleChanges,
 } from '@angular/core';
 import { AngularEditorConfig, UploadResponse } from '@wfpena/angular-wysiwyg';
-import { debounce, each } from 'lodash-es';
+import { debounce, each, isNull } from 'lodash-es';
 import { map } from 'rxjs';
 import { FileService } from '../app/file.service';
 import { Question } from '../common/models/question.model';
 import { CommonUtils } from '../utils/common-utils';
+import { environment } from '../environments/environment';
+import { BASE64_IMAGE_REGEX } from '../utils/constant';
 
 @Component({
   template: '',
@@ -27,16 +30,15 @@ export abstract class AbstractQuestionComponent implements OnChanges {
 
   @Output() onSave = new EventEmitter();
   @Output() onEdit = new EventEmitter();
-  @Output() onRemove = new EventEmitter();
 
   onPaste = debounce((event) => this.uploadQuestionBase64Images(event), 1000);
 
   mapEdittingQuestion: Record<string, boolean> = {};
 
-  constructor(private fileService: FileService) {}
+  fileService = inject(FileService);
 
   ngOnInit(): void {
-    this.mapEdittingQuestion[this.question.id!] = false;
+    this.mapEdittingQuestion[this.question.id] = false;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -66,7 +68,7 @@ export abstract class AbstractQuestionComponent implements OnChanges {
     upload: (file: File) => {
       return this.fileService.uploadFile(file).pipe(
         map((response) => {
-          const imageUrl = `http://localhost:3000/upload/${response.fileName}`;
+          const imageUrl = `${environment.api}/upload/${response.fileName}`;
           return {
             ...response,
             body: { imageUrl: imageUrl },
@@ -76,9 +78,21 @@ export abstract class AbstractQuestionComponent implements OnChanges {
     },
   };
 
+  defaultChoices(numberOfChocies: number) {
+    const choices = [];
+    for (let i = 0; i < numberOfChocies; i++) {
+      const choice = {
+        id: CommonUtils.generateRandomId(),
+        content: '',
+      };
+      choices.push(choice);
+    }
+    return choices;
+  }
+
   updateEdittingQuestion(status: boolean) {
     each(this.question.subQuestions, (question) => {
-      this.mapEdittingQuestion[question.id!] = status;
+      this.mapEdittingQuestion[question.id] = status;
     });
   }
 
@@ -87,9 +101,6 @@ export abstract class AbstractQuestionComponent implements OnChanges {
   }
   onEditQuestion() {
     this.onEdit.emit();
-  }
-  removeQuestion() {
-    this.onRemove.emit();
   }
 
   addChoice() {
@@ -105,23 +116,29 @@ export abstract class AbstractQuestionComponent implements OnChanges {
   }
 
   extractBase64Image(content: string) {
-    const regex = /<img[^>]+src="([^">]+)"/g;
+    const regex = BASE64_IMAGE_REGEX;
     const match = regex.exec(content);
     return match;
   }
 
   uploadQuestionBase64Images(content: string) {
     const base64Image = this.extractBase64Image(content);
-    if (base64Image !== null && base64Image[1].startsWith('data')) {
+    if (!isNull(base64Image) && base64Image[1].startsWith('data')) {
       const imageSrc = base64Image[1];
       const fileName = `${this.question.id}_${new Date().getMilliseconds()}.png`;
       const imageFile: File = CommonUtils.base64ToFile(imageSrc, fileName);
       this.fileService.uploadFile(imageFile).subscribe((response) => {
         this.question.content = this.question.content?.replace(
           `"${imageSrc}"`,
-          `"http://localhost:3000/upload/${response.fileName}" width="100%"`,
+          `"${environment.api}/upload/${response.fileName}" width="100%"`,
         );
       });
     }
+  }
+
+  saveAllQuestion() {
+    each(this.question.subQuestions, (question) => {
+      this.mapEdittingQuestion[question.id] = false;
+    });
   }
 }

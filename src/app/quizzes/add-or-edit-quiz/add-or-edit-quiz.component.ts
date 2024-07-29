@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, HostListener, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,20 +6,21 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
-import { MatStepperModule } from '@angular/material/stepper';
-import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
+import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { each, size } from 'lodash-es';
+import { each, isEmpty, size } from 'lodash-es';
 import { Subscription } from 'rxjs';
+import { AbstractPart } from '../../../common/models/abstract-part.model';
 import { Listening } from '../../../common/models/listening.model';
 import { Quiz } from '../../../common/models/quiz.model';
 import { Reading } from '../../../common/models/reading.model';
 import { Writing } from '../../../common/models/writing.model';
+import { environment } from '../../../environments/environment';
 import { CommonUtils } from '../../../utils/common-utils';
 import { ConfirmDialogComponent } from '../../dialog/confirm-dialog/confirm-dialog.component';
 import { FileService } from '../../file.service';
 import { ListeningComponent } from '../../listening/listening.component';
+import { PartNavigationComponent } from '../../part-navigation/part-navigation.component';
 import { ReadingComponent } from '../../reading/reading.component';
 import { WritingComponent } from '../../writing/writing.component';
 import { QuizService } from '../quizzes.service';
@@ -29,23 +29,21 @@ import { QuizService } from '../quizzes.service';
   selector: 'app-add-or-edit-quiz',
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
-    MatListModule,
     MatCardModule,
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
     MatTabsModule,
-    MatStepperModule,
     ListeningComponent,
     ReadingComponent,
     WritingComponent,
+    PartNavigationComponent,
   ],
   providers: [QuizService, FileService],
   templateUrl: './add-or-edit-quiz.component.html',
-  styleUrl: './add-or-edit-quiz.component.css',
+  styleUrl: './add-or-edit-quiz.component.scss',
 })
 export class AddOrEditQuizComponent implements OnDestroy {
   selectedFile!: File;
@@ -66,8 +64,9 @@ export class AddOrEditQuizComponent implements OnDestroy {
   selectedListeningPart = 0;
   selectedReadingPart = 0;
   selectedWritingPart = 0;
+  selectedPart!: AbstractPart;
 
-  subscription: Subscription[] = [];
+  subscriptions: Subscription[] = [];
 
   @HostListener('document:keydown.control.s', ['$event'])
   onKeydownHandler(event: KeyboardEvent) {
@@ -84,22 +83,21 @@ export class AddOrEditQuizComponent implements OnDestroy {
     this.route.paramMap.subscribe((paramMap: any) => {
       const quizId = paramMap.get('quizId');
       if (quizId) {
-        const sub = this.quizService.getById(quizId).subscribe((quiz: any) => {
-          this.currentQuiz = quiz;
-          this.generateListeningEdittingPartMap(
-            this.currentQuiz.listeningParts,
-          );
-          this.generateReadingEdittingPartMap(this.currentQuiz.readingParts);
-          this.generateWritingEdittingPartMap(this.currentQuiz.writingParts);
-        });
-        this.subscription.push(sub);
+        this.subscriptions.push(
+          this.quizService.getById(quizId).subscribe((quiz: any) => {
+            this.generateListeningEdittingPartMap(quiz.listeningParts);
+            this.generateReadingEdittingPartMap(quiz.readingParts);
+            this.generateWritingEdittingPartMap(quiz.writingParts);
+            this.currentQuiz = quiz;
+          }),
+        );
       }
     });
   }
 
   onFileSelected(event: any) {
-    if (this.currentQuiz.audioUrl || this.currentQuiz.audioUrl !== '') {
-      this.deleteFile(this.currentQuiz.audioUrl!);
+    if (!isEmpty(this.currentQuiz.audioName)) {
+      this.deleteFile(this.currentQuiz.audioName!);
     }
     this.selectedFile = event.target.files[0] ?? null;
     this.uploadFile();
@@ -107,19 +105,20 @@ export class AddOrEditQuizComponent implements OnDestroy {
 
   deleteFile(fileName: string) {
     const deleteSub = this.fileService.deleteFile(fileName).subscribe();
-    this.subscription.push(deleteSub);
+    this.subscriptions.push(deleteSub);
   }
 
   uploadFile() {
     const uploadSub = this.fileService
       .uploadFile(this.selectedFile)
       .subscribe((res) => {
-        this.subscription.push(uploadSub);
+        this.subscriptions.push(uploadSub);
         if (res) {
-          this.currentQuiz.audioUrl = `http://localhost:3000/upload/${res.fileName}`;
+          this.currentQuiz.audioName = res.fileName;
+          this.currentQuiz.audioUrl = `${environment.api}/upload/${res.fileName}`;
         }
       });
-    this.subscription.push(uploadSub);
+    this.subscriptions.push(uploadSub);
   }
 
   generateListeningEdittingPartMap(listeningParts: Listening[]) {
@@ -159,21 +158,24 @@ export class AddOrEditQuizComponent implements OnDestroy {
       questions: [],
       audioName: '',
       wordCount: 0,
+      testDate: '',
     };
     this.mapSavedPart['listening'][size(this.mapSavedPart['listening'])] =
       false;
     this.currentQuiz.listeningParts.push(newListeningPart);
   }
 
-  onAddReadingParagraph() {
+  onAddReadingParagraph(isMatchHeader: boolean) {
     const id = CommonUtils.generateRandomId();
     const newReadingParagraph: Reading = {
       id: id,
       content: '',
       timeout: undefined,
       questions: [],
-      imageName: '',
       wordCount: 0,
+      isMatchHeader: isMatchHeader,
+      answers: [],
+      testDate: '',
     };
     this.mapSavedPart['reading'][size(this.mapSavedPart['reading'])] = false;
     this.currentQuiz.readingParts.push(newReadingParagraph);
@@ -186,9 +188,9 @@ export class AddOrEditQuizComponent implements OnDestroy {
       content: '',
       timeout: undefined,
       questions: [],
-      imageName: '',
       answer: '',
       wordCount: 0,
+      testDate: '',
     };
     this.mapSavedPart['writing'][size(this.mapSavedPart['writing'])] = false;
     if (!this.currentQuiz.writingParts) {
@@ -198,8 +200,8 @@ export class AddOrEditQuizComponent implements OnDestroy {
     this.selectedWritingPart++;
   }
 
-  onTabChange(key: string, event: MatTabChangeEvent) {
-    this.mapSavedPart[key][event.index] = true;
+  onTabChange(key: string, index: number) {
+    this.mapSavedPart[key][index] = true;
   }
 
   onSavePart(key: string, index: number) {
@@ -258,11 +260,11 @@ export class AddOrEditQuizComponent implements OnDestroy {
       observer = this.quizService.create(quiz);
     }
     const sub = observer.subscribe();
-    this.subscription.push(sub);
+    this.subscriptions.push(sub);
   }
 
   ngOnDestroy(): void {
-    this.subscription.forEach((sub) => {
+    this.subscriptions.forEach((sub) => {
       sub.unsubscribe();
     });
   }

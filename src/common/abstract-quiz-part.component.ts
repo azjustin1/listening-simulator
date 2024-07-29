@@ -2,18 +2,21 @@ import { HttpResponse } from '@angular/common/http';
 import {
   Component,
   EventEmitter,
+  inject,
   Input,
   OnChanges,
   OnDestroy,
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { AngularEditorConfig, UploadResponse } from '@wfpena/angular-wysiwyg';
-import { clone, cloneDeep, debounce, each, mapValues } from 'lodash-es';
+import { clone, cloneDeep, debounce, each, isNull, mapValues } from 'lodash-es';
 import { map, Subscription } from 'rxjs';
 import { FileService } from '../app/file.service';
+import { environment } from '../environments/environment';
 import { CommonUtils } from '../utils/common-utils';
+import { BASE64_IMAGE_REGEX } from '../utils/constant';
+import { QuestionType } from './enums/question-type.enum';
 import { AbstractPart } from './models/abstract-part.model';
 import { Question } from './models/question.model';
 
@@ -24,6 +27,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
   implements OnChanges, OnDestroy
 {
   @Input() data!: T;
+  @Output() dataChange = new EventEmitter();
   @Input() isTesting: boolean = false;
   @Input() isEditting: boolean = false;
   @Input() isReadOnly: boolean = false;
@@ -33,11 +37,12 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
   @Output() onTimeout = new EventEmitter();
 
   currentQuestion: Question = {
+    id: '',
     content: '',
     type: null,
     choices: [],
-    answer: '',
-    correctAnswer: '',
+    answer: [],
+    correctAnswer: [],
   };
   mapQuestionEditting: Record<string, boolean> = {};
   subscriptions: Subscription[] = [];
@@ -66,7 +71,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     upload: (file: File) => {
       return this.fileService.uploadFile(file).pipe(
         map((response) => {
-          const imageUrl = `http://localhost:3000/upload/${response.fileName}`;
+          const imageUrl = `${environment.api}/api/file/upload/${response.fileName}`;
           return {
             ...response,
             body: { imageUrl: imageUrl },
@@ -78,10 +83,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
 
   wordCount: number = 0;
 
-  constructor(
-    protected fileService: FileService,
-    private dialog: MatDialog,
-  ) {}
+  fileService = inject(FileService);
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isSaved']?.currentValue) {
@@ -116,48 +118,72 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     return choices;
   }
 
-  addQuestion(questionType: number) {
+  addQuestion(type: number) {
     const id = CommonUtils.generateRandomId();
-    switch (questionType) {
-      case 0:
+    switch (type) {
+      case QuestionType.MULTIPLE_CHOICE:
         this.currentQuestion = {
           id: id,
           content: '',
-          type: questionType,
+          type: type,
           choices: this.defaultChoices(4),
-          answer: '',
-          correctAnswer: '',
+          answer: [],
+          correctAnswer: [],
         };
         break;
-      case 1:
+      case QuestionType.SHORT_ANSWER:
         this.currentQuestion = {
           id: id,
           content: '',
-          type: questionType,
+          type: type,
           choices: [],
-          answer: '',
-          correctAnswer: '',
+          answer: [],
+          correctAnswer: [],
         };
         break;
-      case 2:
+      case QuestionType.MULTIPLE_QUESTIONS:
         this.currentQuestion = {
           id: id,
           content: '',
-          type: questionType,
+          type: type,
           choices: [],
-          answer: '',
-          correctAnswer: '',
+          answer: [],
+          correctAnswer: [],
           subQuestions: [],
         };
         break;
-      case 3:
+      case QuestionType.DROPDOWN_ANSWER:
         this.currentQuestion = {
           id: id,
           content: '',
-          type: questionType,
+          type: type,
           choices: this.defaultChoices(3),
-          answer: '',
-          correctAnswer: '',
+          answer: [],
+          correctAnswer: [],
+        };
+        break;
+      case QuestionType.LABEL_ON_MAP:
+        this.currentQuestion = {
+          id: id,
+          content: '',
+          type: type,
+          choices: this.defaultChoices(4),
+          answer: [],
+          correctAnswer: [],
+          subQuestions: [],
+        };
+        break;
+      case QuestionType.FILL_IN_THE_GAP:
+      case QuestionType.MATCHING_HEADER:
+        this.currentQuestion = {
+          id: id,
+          content: '',
+          arrayContent: [],
+          type: type,
+          choices: [],
+          answer: [],
+          correctAnswer: [],
+          subQuestions: [],
         };
         break;
       default:
@@ -165,7 +191,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     }
     this.data.questions.push({ ...this.currentQuestion });
     this.data = { ...this.data };
-    this.mapQuestionEditting[id] = true;
+    this.onEditQuestion(id);
   }
 
   onSaveQuestion(id: string) {
@@ -210,7 +236,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
   }
 
   extractBase64Image(content: string) {
-    const regex = /<img[^>]+src="([^">]+)"/g;
+    const regex = BASE64_IMAGE_REGEX;
     const match = regex.exec(content);
     return match;
   }
@@ -227,16 +253,14 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
 
   uploadQuestionBase64Images(content: string) {
     const base64Image = this.extractBase64Image(content);
-    if (base64Image !== null && base64Image[1].startsWith('data')) {
+    if (!isNull(base64Image) && base64Image[1].startsWith('data')) {
       const imageSrc = base64Image[1];
       const fileName = `${this.data.id}_${new Date().getMilliseconds()}.png`;
       const imageFile: File = CommonUtils.base64ToFile(imageSrc, fileName);
       this.fileService.uploadFile(imageFile).subscribe((response) => {
-        const imageName = response.fileName;
-        this.data.imageName = imageName;
         this.data.content = this.data.content?.replace(
           `"${imageSrc}"`,
-          `"http://localhost:3000/upload/${response.fileName}" width="100%"`,
+          `"${environment.api}/upload/${response.fileName}" width="100%"`,
         );
       });
     }

@@ -18,6 +18,7 @@
 
   <div class="form-group">
     <mat-tab-group animationDuration="0ms">
+      <!-- Listening -->
       <mat-tab label="Listening">
         <ng-template matTabContent>
           <div class="timeout">
@@ -44,7 +45,6 @@
                   type="button"
                   mat-raised-button
                   (click)="fileInput.click()"
-                  style="margin-right: 16px"
                 >
                   Audio File <mat-icon>upload</mat-icon>
                 </button>
@@ -56,71 +56,74 @@
                   type="file"
                   id="file"
                 />
-                <span class="file-name">{{
-                  selectedFile ? selectedFile.name : this.currentQuiz.audioUrl
-                }}</span>
+                <span class="file-name">&nbsp;{{ currentQuiz.audioName }}</span>
               </div>
             </div>
           </div>
-          <mat-tab-group
-            animationDuration="0ms"
-            mat-align-tabs="center"
-            animationDuration="0ms"
-            headerPosition="below"
-            [(selectedIndex)]="selectedWritingPart"
-            (selectedTabChange)="onTabChange('writing', $event)"
-          >
-            @for (part of currentQuiz.listeningParts; track $index) {
-              <mat-tab>
-                <ng-template matTabLabel="">{{ $index + 1 }}</ng-template>
-                <div>
-                  <app-listening
-                    [data]="part"
-                    [isSaved]="mapSavedPart['listening'][$index]!"
-                  ></app-listening>
-                </div>
-                <div class="actions">
-                  @if (mapSavedPart["listening"][$index]) {
-                    <button
-                      mat-button
-                      color="primary"
-                      type="button"
-                      class="btn btn-danger"
-                      (click)="onEditClick('listening', $index)"
-                    >
-                      <mat-icon>edit</mat-icon> Edit part
-                    </button>
-                  } @else {
-                    <button
-                      mat-button
-                      color="primary"
-                      type="button"
-                      class="btn btn-danger"
-                      (click)="onSavePart('listening', $index)"
-                    >
-                      <mat-icon>save</mat-icon> Save
-                    </button>
-                  }
-                  <button
-                    mat-button
-                    color="warn"
-                    type="button"
-                    class="btn btn-danger"
-                    (click)="removeListeningPart($index)"
-                  >
-                    <mat-icon>delete</mat-icon> Remove part
-                  </button>
-                </div>
-              </mat-tab>
-            }
-          </mat-tab-group>
+
+          @if (currentQuiz.listeningParts[selectedListeningPart]) {
+            <mat-card appearance="outlined">
+              <mat-card-content>
+                <app-listening
+                  [(data)]="currentQuiz.listeningParts[selectedListeningPart]"
+                  [isSaved]="mapSavedPart['listening'][selectedListeningPart]!"
+                ></app-listening>
+              </mat-card-content>
+            </mat-card>
+          }
+          @if (currentQuiz.listeningParts.length > 0) {
+            <div class="actions">
+              @if (mapSavedPart["listening"][selectedListeningPart]) {
+                <button
+                  mat-button
+                  color="primary"
+                  type="button"
+                  class="btn btn-danger"
+                  (click)="onEditClick('listening', selectedListeningPart)"
+                >
+                  <mat-icon>edit</mat-icon> Edit part
+                </button>
+              } @else {
+                <button
+                  mat-button
+                  color="primary"
+                  type="button"
+                  class="btn btn-danger"
+                  (click)="onSavePart('listening', selectedListeningPart)"
+                >
+                  <mat-icon>save</mat-icon> Save
+                </button>
+              }
+              <button
+                mat-button
+                color="warn"
+                type="button"
+                class="btn btn-danger"
+                (click)="removeListeningPart(selectedListeningPart)"
+              >
+                <mat-icon>delete</mat-icon> Remove part
+              </button>
+            </div>
+          }
+
+          <app-part-navigation
+            [(selectedPart)]="selectedListeningPart"
+            [parts]="currentQuiz.listeningParts"
+            (onPartChange)="onTabChange('listening', $event)"
+          ></app-part-navigation>
           <div class="add-button">
-            <button mat-button color="primary" (click)="onAddListeningPart()">
-              <mat-icon>add</mat-icon> Add part
+            <button
+              mat-raised-button
+              color="black"
+              (click)="onAddListeningPart()"
+            >
+              <mat-icon>add</mat-icon> Add Part
             </button>
           </div>
         </ng-template>
       </mat-tab>
+
+      <!-- Reading -->
       <mat-tab label="Reading">
         <ng-template matTabContent>
           <div class="timeout">
@@ -141,73 +144,66 @@
               </mat-form-field>
             }
           </div>
-          <mat-tab-group
-            animationDuration="0ms"
-            mat-align-tabs="center"
-            animationDuration="0ms"
-            headerPosition="below"
-            [(selectedIndex)]="selectedWritingPart"
-            (selectedTabChange)="onTabChange('reading', $event)"
-          >
-            @for (part of currentQuiz.readingParts; track $index) {
-              <mat-tab>
-                <ng-template matTabLabel="">{{ $index + 1 }}</ng-template>
-                <mat-card class="part-card" appearance="outlined">
-                  <mat-card-content>
-                    <div class="reading-container">
-                      <app-reading
-                        [data]="part"
-                        [isSaved]="mapSavedPart['reading'][$index]!"
-                      ></app-reading>
-                      <div class="actions">
-                        @if (mapSavedPart["reading"][$index]) {
-                          <button
-                            mat-button
-                            color="primary"
-                            type="button"
-                            class="btn btn-danger"
-                            (click)="onEditClick('reading', $index)"
-                          >
-                            <mat-icon>edit</mat-icon> Edit part
-                          </button>
-                        } @else {
-                          <button
-                            mat-button
-                            color="primary"
-                            type="button"
-                            class="btn btn-danger"
-                            (click)="onSavePart('reading', $index)"
-                          >
-                            <mat-icon>save</mat-icon> Save
-                          </button>
-                        }
-                        <button
-                          mat-button
-                          color="warn"
-                          type="button"
-                          class="btn btn-danger"
-                          (click)="removeReadingPart($index)"
-                        >
-                          <mat-icon>delete</mat-icon> Remove part
-                        </button>
-                      </div>
-                    </div>
-                  </mat-card-content>
-                </mat-card>
-              </mat-tab>
-            }
-          </mat-tab-group>
+          <mat-card class="part-card" appearance="outlined">
+            <mat-card-content>
+              <app-reading
+                [data]="currentQuiz.readingParts[selectedReadingPart]"
+                [isSaved]="mapSavedPart['reading'][selectedReadingPart]!"
+              ></app-reading>
+            </mat-card-content>
+          </mat-card>
+          @if (currentQuiz.readingParts.length > 0) {
+            <div class="actions">
+              @if (mapSavedPart["reading"][selectedReadingPart]) {
+                <button
+                  mat-button
+                  color="primary"
+                  type="button"
+                  class="btn btn-danger"
+                  (click)="onEditClick('reading', selectedReadingPart)"
+                >
+                  <mat-icon>edit</mat-icon> Edit part
+                </button>
+              } @else {
+                <button
+                  mat-button
+                  color="primary"
+                  type="button"
+                  class="btn btn-danger"
+                  (click)="onSavePart('reading', selectedReadingPart)"
+                >
+                  <mat-icon>save</mat-icon> Save
+                </button>
+              }
+              <button
+                mat-button
+                color="warn"
+                type="button"
+                class="btn btn-danger"
+                (click)="removeReadingPart(selectedReadingPart)"
+              >
+                <mat-icon>delete</mat-icon> Remove part
+              </button>
+            </div>
+          }
+
+          <app-part-navigation
+            [(selectedPart)]="selectedReadingPart"
+            [parts]="currentQuiz.readingParts"
+            (onPartChange)="onTabChange('reading', $event)"
+          ></app-part-navigation>
           <div class="add-button">
-            <button
-              mat-button
-              color="primary"
-              (click)="onAddReadingParagraph()"
-            >
-              <mat-icon>add</mat-icon> Add part
+            <button mat-raised-button (click)="onAddReadingParagraph(false)">
+              <mat-icon>add</mat-icon> Add Part
+            </button>
+            <button mat-raised-button (click)="onAddReadingParagraph(true)">
+              <mat-icon>add</mat-icon> Add Matching Headings
             </button>
           </div>
         </ng-template>
       </mat-tab>
+
+      <!-- Writeing -->
       <mat-tab label="Writing">
         <ng-template matTabContent>
           <div class="timeout">
@@ -228,67 +224,60 @@
               </mat-form-field>
             }
           </div>
-          <mat-tab-group
-            animationDuration="0ms"
-            mat-align-tabs="center"
-            animationDuration="0ms"
-            headerPosition="below"
-            [(selectedIndex)]="selectedWritingPart"
-            (selectedTabChange)="onTabChange('writing', $event)"
-          >
-            @for (part of currentQuiz.writingParts; track $index) {
-              <mat-tab>
-                <ng-template matTabLabel="">{{ $index + 1 }}</ng-template>
-                <mat-card style="margin-bottom: 16px" appearance="outlined">
-                  <mat-card-content>
-                    <app-writing
-                      [data]="part"
-                      [isSaved]="mapSavedPart['writing'][$index]!"
-                    ></app-writing>
-                    <div class="actions">
-                      @if (mapSavedPart["writing"][$index]) {
-                        <button
-                          mat-button
-                          color="primary"
-                          type="button"
-                          class="btn btn-danger"
-                          (click)="onEditClick('writing', $index)"
-                        >
-                          <mat-icon>edit</mat-icon> Edit part
-                        </button>
-                      } @else {
-                        <button
-                          mat-button
-                          color="primary"
-                          type="button"
-                          class="btn btn-danger"
-                          (click)="onSavePart('writing', $index)"
-                        >
-                          <mat-icon>save</mat-icon> Save part
-                        </button>
-                      }
-                      <button
-                        mat-button
-                        color="warn"
-                        type="button"
-                        class="btn btn-danger"
-                        (click)="removeWritingPart($index)"
-                      >
-                        <mat-icon>delete</mat-icon> Remove part
-                      </button>
-                    </div>
-                  </mat-card-content>
-                </mat-card>
-              </mat-tab>
+          @if (currentQuiz.writingParts[selectedWritingPart]) {
+            <mat-card appearance="outlined">
+              <mat-card-content>
+                <app-writing
+                  [data]="currentQuiz.writingParts[selectedWritingPart]"
+                  [isSaved]="mapSavedPart['writing'][selectedWritingPart]!"
+                ></app-writing>
+              </mat-card-content>
+            </mat-card>
+            @if (currentQuiz.writingParts.length > 0) {
+              <div class="actions">
+                @if (mapSavedPart["writing"][selectedWritingPart]) {
+                  <button
+                    mat-button
+                    color="primary"
+                    type="button"
+                    class="btn btn-danger"
+                    (click)="onEditClick('writing', selectedWritingPart)"
+                  >
+                    <mat-icon>edit</mat-icon> Edit part
+                  </button>
+                } @else {
+                  <button
+                    mat-button
+                    color="primary"
+                    type="button"
+                    class="btn btn-danger"
+                    (click)="onSavePart('writing', selectedWritingPart)"
+                  >
+                    <mat-icon>save</mat-icon> Save part
+                  </button>
+                }
+                <button
+                  mat-button
+                  color="warn"
+                  type="button"
+                  class="btn btn-danger"
+                  (click)="removeWritingPart(selectedWritingPart)"
+                >
+                  <mat-icon>delete</mat-icon> Remove part
+                </button>
+              </div>
             }
-          </mat-tab-group>
+          }
+
+          <app-part-navigation
+            [(selectedPart)]="selectedWritingPart"
+            [parts]="currentQuiz.writingParts"
+            (onPartChange)="onTabChange('writing', $event)"
+          ></app-part-navigation>
+
           <div class="add-button">
-            <button
-              mat-button
-              color="primary"
-              (click)="onAddWritingParagraph()"
-            >
-              <mat-icon>add</mat-icon> Add part
+            <button mat-raised-button (click)="onAddWritingParagraph()">
+              <mat-icon>add</mat-icon> Add Part
             </button>
           </div>
         </ng-template>
