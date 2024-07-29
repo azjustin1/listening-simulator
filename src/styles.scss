@@ -1,6 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
 @use "@angular/material" as mat;
 
+@font-face {
+  font-family: Inter;
+  src: url(./assets/fonts/inter.ttf) format("truetype");
+}
 @include mat.core();
 
 // Define a dark theme
@@ -13,7 +17,9 @@ $dark-theme: mat.define-theme(
   )
 );
 
-$my-typography: mat.m2-define-typography-config();
+$my-typography: mat.m2-define-typography-config(
+  $font-family: "Inter, Arial, Helvetica, sans-serif"
+);
 $myapp-theme-primary: mat.m2-define-palette(mat.$m2-green-palette);
 $myapp-theme-accent: mat.m2-define-palette(mat.$m2-orange-palette);
 $myapp-theme-warn: mat.m2-define-palette(mat.$m2-red-palette);
@@ -39,13 +45,10 @@ html {
 html,
 body {
   height: 100vh;
+  font-family: Inter, Arial, Helvetica, sans-serif;
 }
 body {
   margin: 0;
-}
-
-* {
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 :root {
