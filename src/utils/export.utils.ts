@@ -1,15 +1,15 @@
+import { Document, Packer, Paragraph, TextRun } from 'docx';
 import { saveAs } from 'file-saver';
 import { asBlob } from 'html-docx-js-typescript';
 import { each, findIndex, isEmpty } from 'lodash-es';
 import { IsInputPipe } from '../app/fill-in-the-gap/is-input.pipe';
+import { ChoiceContentPipe } from '../app/matching-header/choice-content.pipe';
 import { QuestionType } from '../common/enums/question-type.enum';
 import { Question } from '../common/models/question.model';
 import { Result } from '../common/models/result.model';
-import { CHOICE_INDEX, INPUT_PATTERN } from './constant';
-import { CommonUtils } from './common-utils';
 import { AnswerChoicePipe } from '../common/pipes/answer-choice.pipe';
-import { ChoiceContentPipe } from '../app/matching-header/choice-content.pipe';
-
+import { CommonUtils } from './common-utils';
+import { CHOICE_INDEX, INPUT_PATTERN } from './constant';
 export class ExportUtils {
   static exportQuestion(question: Question): string {
     let htmlString = '';
@@ -148,13 +148,63 @@ export class ExportUtils {
 
   static exportFeedback(result: Result) {
     let htmlString = '';
-    if (result.feedback) {
-      htmlString += `<h1>Bảng đánh giá</h1> <br> Tên học viên: ${result.studentName} <br> Đánh giá: ${result.feedback?.rating}/5 <br>`;
-      if (result.feedback.rating < 4) {
-        htmlString += `Góp ý: ${result.feedback?.content}`;
-      }
-      this.exportFile(result, htmlString, 'Đánh giá');
-    }
+    const font = 'Calibri';
+    const doc = new Document({
+      sections: [
+        {
+          children: [
+            new Paragraph({
+              text: 'Bảng đánh giá',
+              heading: 'Heading1',
+            }),
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: `Tên học viên: `,
+                  font: font,
+                }),
+                new TextRun({
+                  text: result.studentName,
+                  font: font,
+                }),
+              ],
+            }),
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: `Đánh giá: `,
+                  font: font,
+                }),
+                new TextRun({
+                  text: `${result.feedback?.rating.toString()}/5`,
+                  font: font,
+                }),
+              ],
+            }),
+            result.feedback?.rating! < 4
+              ? new Paragraph({
+                  children: [
+                    new TextRun({
+                      text: 'Góp ý: ',
+                      font: font,
+                    }),
+                    new TextRun({
+                      text: result.feedback?.content,
+                      font: font,
+                    }),
+                  ],
+                })
+              : new Paragraph({}),
+          ],
+        },
+      ],
+    });
+    Packer.toBlob(doc).then((blob) => {
+      saveAs(
+        blob,
+        `${result.studentName}_Đánh giá_${result.name}_${CommonUtils.getCurrentDate()}${result.studentName}_${result.name}_${CommonUtils.getCurrentDate()}`,
+      );
+    });
   }
 
   static exportFile(result: Result, htmlString: string, part: string) {
