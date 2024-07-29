@@ -148,8 +148,13 @@ export class ExportUtils {
 
   static exportFeedback(result: Result) {
     let htmlString = '';
-    htmlString += `<h1>Bảng đánh giá</h1> <br> Tên học viên: ${result.studentName} <br> Đánh giá: ${result.feedback?.rating}/5 <br> Góp ý: ${result.feedback?.content}`;
-    this.exportFile(result, htmlString, 'Đánh giá');
+    if (result.feedback) {
+      htmlString += `<h1>Bảng đánh giá</h1> <br> Tên học viên: ${result.studentName} <br> Đánh giá: ${result.feedback?.rating}/5 <br>`;
+      if (result.feedback.rating < 4) {
+        htmlString += `Góp ý: ${result.feedback?.content}`;
+      }
+      this.exportFile(result, htmlString, 'Đánh giá');
+    }
   }
 
   static exportFile(result: Result, htmlString: string, part: string) {
