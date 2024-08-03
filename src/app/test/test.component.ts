@@ -222,7 +222,7 @@ export class TestComponent extends AddOrEditQuizComponent {
           this.audioPlayer.nativeElement.pause();
         }
         this.timeoutInterval.unsubscribe();
-        this.showSubmitDialog();
+        this.showTimeOutDialog();
       }
     });
   }
@@ -236,7 +236,7 @@ export class TestComponent extends AddOrEditQuizComponent {
     }
   }
 
-  showSubmitDialog() {
+  showTimeOutDialog() {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       hasBackdrop: true,
       disableClose: true,
@@ -246,25 +246,31 @@ export class TestComponent extends AddOrEditQuizComponent {
     dialogRef.componentInstance.isWarning = true;
     dialogRef.afterClosed().subscribe((isConfirm) => {
       if (isConfirm) {
-        this.onSubmitPartClick(this.currentTab);
-        if (this.currentTab > 2) {
-          this.submit();
-        }
+        this.updateTab();
+        this.afterSubmit();
       }
     });
   }
 
-  onSubmitPartClick(tab: number) {
-    if (tab === 0) {
+  updateTab() {
+    this.disableOthersTab();
+    this.mapDisablePart[this.currentTab + 1] = false;
+    this.currentTab = this.currentTab + 1;
+  }
+
+  afterSubmit() {
+    if (this.currentTab === 1) {
       this.audioPlayer.nativeElement.pause();
       ExportUtils.exportListening(this.result);
     }
-    if (tab === 1) {
+    if (this.currentTab === 2) {
       ExportUtils.exportReading(this.result);
     }
-    this.disableOthersTab();
-    this.mapDisablePart[tab + 1] = false;
-    this.currentTab = tab + 1;
+
+    if (this.currentTab === 3) {
+      ExportUtils.exportWriting(this.result);
+      this.showFeedbackDialog();
+    }
     if (this.timeoutInterval) {
       this.timeoutInterval.unsubscribe();
     }
@@ -274,13 +280,18 @@ export class TestComponent extends AddOrEditQuizComponent {
     );
   }
 
-  onSubmitClick() {
+  onSubmitPartClick() {
+    this.showSubmitDialog();
+  }
+
+  showSubmitDialog() {
     const dialogRef = this.dialog.open(ConfirmDialogComponent);
     dialogRef.componentInstance.title = 'Information';
     dialogRef.componentInstance.message = 'Submit this test?';
     dialogRef.afterClosed().subscribe((isConfirm) => {
       if (isConfirm) {
-        this.showFeedbackDialog();
+        this.updateTab();
+        this.afterSubmit();
       }
     });
   }
@@ -300,7 +311,6 @@ export class TestComponent extends AddOrEditQuizComponent {
     if (!this.audioPlayer.nativeElement.paused) {
       this.audioPlayer.nativeElement.pause();
     }
-    ExportUtils.exportWriting(this.result);
     this.calculateListeningPoint();
     this.calculateReadingPoint();
     this.result.isSubmit = true;

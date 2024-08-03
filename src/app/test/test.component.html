@@ -78,7 +78,7 @@
             type="button"
             color="primary"
             class="btn submit-button"
-            (click)="onSubmitPartClick(currentTab)"
+            (click)="onSubmitPartClick()"
             [disabled]="!isStart"
           >
             Submit
@@ -110,7 +110,7 @@
             type="button"
             color="primary"
             class="btn submit-button"
-            (click)="onSubmitPartClick(currentTab)"
+            (click)="onSubmitPartClick()"
             [disabled]="!isStart"
           >
             Submit
@@ -145,7 +145,7 @@
         class="submit-button"
         mat-raised-button
         color="primary"
-        (click)="onSubmitClick()"
+        (click)="onSubmitPartClick()"
         [disabled]="!isStart"
       >
         Submit

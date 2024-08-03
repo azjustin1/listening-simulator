@@ -68,7 +68,7 @@ export class ReadingComponent
 
   override ngOnChanges(changes: SimpleChanges): void {
     super.ngOnChanges(changes);
-    if (changes['data']) {
+    if (changes['data'] && this.data) {
       this.answers.set(this.data.answers!);
     }
   }
