@@ -109,7 +109,7 @@ export class ExportUtils {
   static exportMultipleChoices(question: Question) {
     let htmlString = '';
     each(question.choices, (choice, index) => {
-      if (question.answer.includes(choice.id)) {
+      if (question.answer && question.answer.includes(choice.id)) {
         htmlString += `<u>${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}</u><br>`;
       } else {
         htmlString += `${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}<br>`;
