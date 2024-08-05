@@ -1,10 +1,10 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -13,11 +13,15 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { cloneDeep, debounce, filter } from 'lodash-es';
 import { Subscription } from 'rxjs';
 import { Quiz } from '../../common/models/quiz.model';
+import { Folder } from '../../common/models/folder.model';
 import { CommonUtils } from '../../utils/common-utils';
 import { ConfirmDialogComponent } from '../dialog/confirm-dialog/confirm-dialog.component';
 import { FileService } from '../file.service';
 import { ListeningComponent } from '../listening/listening.component';
+import { AddOrEditFolderComponent } from './add-or-edit-folder/add-or-edit-folder.component';
 import { QuizService } from './quizzes.service';
+import { FolderService } from '../folder/folder.service';
+import { FolderComponent } from '../folder/folder.component';
 
 @Component({
   selector: 'app-quizzes',
@@ -32,34 +36,42 @@ import { QuizService } from './quizzes.service';
     ListeningComponent,
     MatIconModule,
     MatMenuModule,
+    MatDialogModule,
+    FolderComponent,
   ],
-  providers: [QuizService, FileService],
+  providers: [QuizService, FileService, FolderService],
   templateUrl: './quizzes.component.html',
   styleUrl: './quizzes.component.scss',
 })
 export class QuizzesComponent implements OnInit, OnDestroy {
   quizzes: Quiz[] = [];
+  folders: Folder[] = [];
   searchString: string = '';
 
   onSearch = debounce(() => this.search(), 500);
 
   subscription: Subscription[] = [];
-
   constructor(
     private quizService: QuizService,
     private route: ActivatedRoute,
     private router: Router,
     private dialog: MatDialog,
     private breakpointObserver: BreakpointObserver,
+    private dialogRef: MatDialog,
+    private folderService: FolderService,
   ) {
-    this.quizService.getAll().subscribe((quizzes) => {
-      this.quizzes = quizzes;
+    // this.quizService.getAll().subscribe((quizzes) => {
+    //   this.quizzes = quizzes;
+    // });
+    this.folderService.getFolders().subscribe((folders) => {
+      this.folders = folders;
     });
   }
 
   ngOnInit(): void {
-    this.breakpointObserver.observe(['(max-width: 768px)']).subscribe((state) => {
-    });
+    this.breakpointObserver
+      .observe(['(max-width: 768px)'])
+      .subscribe((state) => {});
   }
 
   search() {
@@ -78,6 +90,19 @@ export class QuizzesComponent implements OnInit, OnDestroy {
 
   addNewQuiz() {
     this.router.navigate(['add-quiz']);
+  }
+
+  onAddFolderClick() {
+    const dialogRef = this.dialog.open(AddOrEditFolderComponent);
+    dialogRef.afterClosed().subscribe((folder) => {
+      this.folderService.createFolder(folder).subscribe((res: any) => {
+        console.log(res);
+      });
+    });
+  }
+
+  onDeleteFolder(id: string) {
+    this.folders = filter(this.folders, folder => folder.id !== id);
   }
 
   edit(id: string) {

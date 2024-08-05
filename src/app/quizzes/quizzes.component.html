@@ -1,41 +1,36 @@
 <div class="actions">
-  <button style="height: 56px;" mat-raised-button color="primary" (click)="addNewQuiz()">
-    Add New Test
+  <button class="actions__button" mat-raised-button color="primary" (click)="addNewQuiz()">
+    <mat-icon>add</mat-icon>
+    Test
   </button>
-  <mat-form-field>
-    <input
-      autocomplete="off"
-      placeholder="Search"
-      matInput
-      name="searchQuiz"
-      type="search"
-      class="form-control"
-      id="searchQuiz"
-      [(ngModel)]="searchString"
-      (ngModelChange)="onSearch()"
-    />
-    <mat-icon matPrefix class="my-icon">search</mat-icon>
-  </mat-form-field>
+  <button class="actions__button" mat-raised-button (click)="onAddFolderClick()">
+    <mat-icon>add</mat-icon>
+    <mat-icon>folder</mat-icon>
+
+  </button>
 </div>
 <div class="container">
-  @for (quiz of quizzes; track $index) {
-    <mat-card class="card">
-      <mat-card-content class="card-content">
-        <h2 class="mat-display-2 card-content-text">
-          {{ quiz.name }}
-        </h2>
-      </mat-card-content>
-      <mat-card-actions>
-        <button mat-icon-button [matMenuTriggerFor]="menu">
-          <mat-icon>more_vert</mat-icon>
-        </button>
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="test(quiz.id)">Test</button>
-          <button mat-menu-item (click)="edit(quiz.id)">Edit</button>
-          <button mat-menu-item (click)="duplicate(quiz)">Duplicate</button>
-          <button mat-menu-item (click)="onDeleteClick(quiz)">Delete</button>
-        </mat-menu>
-      </mat-card-actions>
-    </mat-card>
+  <!-- @for (quiz of quizzes; track $index) {
+  <mat-card class="card">
+    <mat-card-content class="card-content">
+      <h2 class="mat-display-2 card-content-text">
+        {{ quiz.name }}
+      </h2>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="test(quiz.id)">Test</button>
+        <button mat-menu-item (click)="edit(quiz.id)">Edit</button>
+        <button mat-menu-item (click)="duplicate(quiz)">Duplicate</button>
+        <button mat-menu-item (click)="onDeleteClick(quiz)">Delete</button>
+      </mat-menu>
+    </mat-card-actions>
+  </mat-card>
+  } -->
+  @for (folder of folders; track $index) {
+  <app-folder [folder]="folder"></app-folder>
   }
 </div>
