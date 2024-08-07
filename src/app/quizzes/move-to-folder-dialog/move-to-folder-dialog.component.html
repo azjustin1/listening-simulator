@@ -1,7 +1,10 @@
 <h2 mat-dialog-title>Move to folder</h2>
 <form [formGroup]="folderForm" (ngSubmit)="onSubmit()">
   <mat-dialog-content>
-    <mat-radio-group formControlName="selectedFolder">
+    <mat-radio-group class="select-folder-container" formControlName="selectedFolder">
+      <mat-radio-button color="primary" [value]="undefined">
+        Root
+      </mat-radio-button>
       @for (folder of folders | async; track $index) {
       <mat-radio-button color="primary" [value]="folder">
         {{ folder.name }}

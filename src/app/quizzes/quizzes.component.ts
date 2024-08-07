@@ -1,6 +1,13 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  computed,
+  OnDestroy,
+  OnInit,
+  signal,
+  WritableSignal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -10,10 +17,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { ActivatedRoute, Router } from '@angular/router';
-import { cloneDeep, debounce } from 'lodash-es';
-import { Subscription, filter } from 'rxjs';
+import { cloneDeep, debounce, each, map } from 'lodash-es';
+import { Subscription } from 'rxjs';
 import { Folder } from '../../common/models/folder.model';
 import { Quiz } from '../../common/models/quiz.model';
+import { SelectedPipe } from '../../common/pipes/selected.pipe';
 import { CommonUtils } from '../../utils/common-utils';
 import { ConfirmDialogComponent } from '../dialog/confirm-dialog/confirm-dialog.component';
 import { FileService } from '../file.service';
@@ -23,6 +31,7 @@ import { ListeningComponent } from '../listening/listening.component';
 import { AddOrEditFolderComponent } from './add-or-edit-folder/add-or-edit-folder.component';
 import { MoveToFolderDialogComponent } from './move-to-folder-dialog/move-to-folder-dialog.component';
 import { QuizService } from './quizzes.service';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-quizzes',
@@ -38,7 +47,9 @@ import { QuizService } from './quizzes.service';
     MatIconModule,
     MatMenuModule,
     MatDialogModule,
+    MatCheckboxModule,
     FolderComponent,
+    SelectedPipe,
   ],
   providers: [QuizService, FileService, FolderService],
   templateUrl: './quizzes.component.html',
@@ -48,17 +59,22 @@ export class QuizzesComponent implements OnInit, OnDestroy {
   quizzes: Quiz[] = [];
   folders: Folder[] = [];
   searchString: string = '';
+  selectedQuizzes: WritableSignal<Quiz[]> = signal([]);
+  isEmptySelectedQuiz = computed(() => {
+    return this.selectedQuizzes().length === 0;
+  });
 
   onSearch = debounce(() => this.search(), 500);
 
   subscription: Subscription[] = [];
+  isMultipleSelection = false;
+
   constructor(
     private quizService: QuizService,
     private route: ActivatedRoute,
     private router: Router,
     private dialog: MatDialog,
     private breakpointObserver: BreakpointObserver,
-    private dialogRef: MatDialog,
     private folderService: FolderService,
   ) {
     const folderId = this.route.snapshot.params['folderId'];
@@ -72,11 +88,11 @@ export class QuizzesComponent implements OnInit, OnDestroy {
       this.folderService.getFolders().subscribe((folders) => {
         this.folders = folders;
       });
-      this.quizService
-        .getAll()
-        .subscribe((quizzes) => {
-          this.quizzes = quizzes.filter((quiz: any) => quiz.folderId === null);
-        });
+      this.quizService.getAll().subscribe((quizzes) => {
+        this.quizzes = quizzes.filter(
+          (quiz: any) => quiz.folderId === null || quiz.folderId === undefined,
+        );
+      });
     }
   }
 
@@ -111,6 +127,24 @@ export class QuizzesComponent implements OnInit, OnDestroy {
     });
   }
 
+  onClickMultipleChoice() {
+    this.isMultipleSelection = true;
+  }
+
+  onCancelMultipleChoice() {
+    this.isMultipleSelection = false;
+  }
+
+  onSelectQuiz(isSelect: boolean, selectedQuiz: Quiz) {
+    if (isSelect) {
+      this.selectedQuizzes.update((quizzes) => [...quizzes, selectedQuiz]);
+    } else {
+      this.selectedQuizzes.update((quizzes) =>
+        quizzes.filter((quiz) => quiz.id !== selectedQuiz.id),
+      );
+    }
+  }
+
   saveOrUpdateFolder(folder: Folder) {
     if (folder.id) {
       this.folderService.updateFolder(folder.id, folder).subscribe((folder) => {
@@ -127,6 +161,7 @@ export class QuizzesComponent implements OnInit, OnDestroy {
   }
 
   onDuplicateFolder() {}
+
   onDeleteFolder(deletedFolder: Folder) {
     this.folders = this.folders.filter(
       (folder) => folder.id !== deletedFolder.id,
@@ -137,19 +172,25 @@ export class QuizzesComponent implements OnInit, OnDestroy {
     this.router.navigate(['edit-quiz', id]);
   }
 
-  onMoveQuizClick(quiz: Quiz) {
+  onMoveQuizClick(quizzes: Quiz[]) {
     this.dialog
       .open(MoveToFolderDialogComponent)
       .afterClosed()
       .subscribe((folder: Folder) => {
-        quiz = { ...quiz, folderId: folder.id };
-        this.moveQuizToFolder(quiz);
+        quizzes = map(quizzes, (quiz) => {
+          return { ...quiz, folderId: folder ? folder.id : undefined };
+        });
+        this.moveQuizToFolder(quizzes);
       });
   }
 
-  moveQuizToFolder(movedQuiz: Quiz) {
-    this.quizService.edit(movedQuiz).subscribe((movedQuiz) => {
-      this.quizzes = this.quizzes.filter((quiz) => quiz.id !== movedQuiz.id);
+  moveQuizToFolder(movedQuizzes: Quiz[]) {
+    this.isMultipleSelection = false;
+    this.selectedQuizzes.set([]);
+    each(movedQuizzes, (quiz) => {
+      this.quizService.edit(quiz).subscribe((movedQuiz) => {
+        this.quizzes = this.quizzes.filter((quiz) => quiz.id !== movedQuiz.id);
+      });
     });
   }
 
