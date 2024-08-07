@@ -10,14 +10,17 @@ server.use(express.json());
 server.use("/upload", express.static(`${__dirname}/upload`));
 
 // Routers
+const router = jsonServer.router("db.json");
 const emailRouter = require("./routes/mail.router");
 const fileRouter = require("./routes/file.router");
 const folderRouter = require("./routes/folder.router");
+const quizRouter = require("./routes/quiz.router");
 
 server.use("/api/file", fileRouter);
 server.use("/api/mail", emailRouter);
-server.use("/api/folder", folderRouter);
-server.use("/api", jsonServer.router("db.json"));
+server.use("/api/folders", folderRouter);
+server.use("/api/quizzes", quizRouter);
+server.use("/api", router);
 server.get("*", function (req, res) {
   res.sendFile(__dirname + "/dist/browser/index.html");
 });
