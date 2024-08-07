@@ -10,11 +10,11 @@
   </button>
 </div>
 <div class="container">
-  <!-- @for (quiz of quizzes; track $index) {
+  @for (quiz of quizzes; track $index) {
   <mat-card class="card">
     <mat-card-content class="card-content">
       <h2 class="mat-display-2 card-content-text">
-        {{ quiz.name }}
+        <mat-icon class="article-icon">article</mat-icon> {{ quiz.name }}
       </h2>
     </mat-card-content>
     <mat-card-actions>
@@ -24,13 +24,15 @@
       <mat-menu #menu="matMenu">
         <button mat-menu-item (click)="test(quiz.id)">Test</button>
         <button mat-menu-item (click)="edit(quiz.id)">Edit</button>
+        <button mat-menu-item (click)="onMoveQuizClick(quiz)">Move</button>
         <button mat-menu-item (click)="duplicate(quiz)">Duplicate</button>
         <button mat-menu-item (click)="onDeleteClick(quiz)">Delete</button>
       </mat-menu>
     </mat-card-actions>
   </mat-card>
-  } -->
+  }
   @for (folder of folders; track $index) {
-  <app-folder [folder]="folder"></app-folder>
+  <app-folder [folder]="folder" (onUpdate)="saveOrUpdateFolder($event)"
+    (onDelete)="onDeleteFolder($event)"></app-folder>
   }
 </div>

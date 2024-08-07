@@ -21,7 +21,7 @@ export class FolderService {
   }
 
   updateFolder(id: string, folder: Folder): Observable<Folder> {
-    return this.http.put<Folder>(`${this.apiUrl}/${id}`, folder);
+    return this.http.put<Folder>(`/folders/${id}`, folder);
   }
 
   deleteFolder(id: string): Observable<Folder> {

@@ -1,7 +1,7 @@
 <mat-card class="card">
-  <mat-card-content class="card-content">
+  <mat-card-content class="card-content" (click)="goToFolder(folder.id!)">
     <h2 class="mat-display-2 card-content-text">
-      {{ folder.name }}
+      <mat-icon class="folder-icon">folder</mat-icon>{{ folder.name }}
     </h2>
   </mat-card-content>
   <mat-card-actions>
@@ -9,9 +9,8 @@
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="onEditClick(folder.id)">Edit</button>
-      <button mat-menu-item (click)="onDuplicateClick(folder.id)">Duplicate</button>
-      <button mat-menu-item (click)="onDeleteClick(folder.id)">Delete</button>
+      <button mat-menu-item (click)="onEditClick(folder)">Edit</button>
+      <button mat-menu-item (click)="onDeleteClick(folder)">Delete</button>
     </mat-menu>
   </mat-card-actions>
 </mat-card>

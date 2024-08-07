@@ -15,6 +15,10 @@ export class QuizService {
     return this.httpClient.get(`/quizzes?name_like=${name}`);
   }
 
+  getAllQuizzesByFolderId(folderId: string): Observable<Quiz[]> {
+    return this.httpClient.get<Quiz[]>(`/quizzes?folderId=${folderId}`);
+  }
+
   getById(id: number): Observable<any> {
     return this.httpClient.get(`/quizzes/${id}`);
   }

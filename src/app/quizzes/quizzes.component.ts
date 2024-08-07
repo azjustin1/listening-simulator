@@ -1,6 +1,6 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -10,18 +10,19 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { ActivatedRoute, Router } from '@angular/router';
-import { cloneDeep, debounce, filter } from 'lodash-es';
-import { Subscription } from 'rxjs';
-import { Quiz } from '../../common/models/quiz.model';
+import { cloneDeep, debounce } from 'lodash-es';
+import { Subscription, filter } from 'rxjs';
 import { Folder } from '../../common/models/folder.model';
+import { Quiz } from '../../common/models/quiz.model';
 import { CommonUtils } from '../../utils/common-utils';
 import { ConfirmDialogComponent } from '../dialog/confirm-dialog/confirm-dialog.component';
 import { FileService } from '../file.service';
+import { FolderComponent } from '../folder/folder.component';
+import { FolderService } from '../folder/folder.service';
 import { ListeningComponent } from '../listening/listening.component';
 import { AddOrEditFolderComponent } from './add-or-edit-folder/add-or-edit-folder.component';
+import { MoveToFolderDialogComponent } from './move-to-folder-dialog/move-to-folder-dialog.component';
 import { QuizService } from './quizzes.service';
-import { FolderService } from '../folder/folder.service';
-import { FolderComponent } from '../folder/folder.component';
 
 @Component({
   selector: 'app-quizzes',
@@ -60,12 +61,23 @@ export class QuizzesComponent implements OnInit, OnDestroy {
     private dialogRef: MatDialog,
     private folderService: FolderService,
   ) {
-    // this.quizService.getAll().subscribe((quizzes) => {
-    //   this.quizzes = quizzes;
-    // });
-    this.folderService.getFolders().subscribe((folders) => {
-      this.folders = folders;
-    });
+    const folderId = this.route.snapshot.params['folderId'];
+    if (folderId) {
+      this.quizService
+        .getAllQuizzesByFolderId(folderId)
+        .subscribe((quizzes) => {
+          this.quizzes = quizzes;
+        });
+    } else {
+      this.folderService.getFolders().subscribe((folders) => {
+        this.folders = folders;
+      });
+      this.quizService
+        .getAll()
+        .subscribe((quizzes) => {
+          this.quizzes = quizzes.filter((quiz: any) => quiz.folderId === null);
+        });
+    }
   }
 
   ngOnInit(): void {
@@ -95,18 +107,50 @@ export class QuizzesComponent implements OnInit, OnDestroy {
   onAddFolderClick() {
     const dialogRef = this.dialog.open(AddOrEditFolderComponent);
     dialogRef.afterClosed().subscribe((folder) => {
-      this.folderService.createFolder(folder).subscribe((res: any) => {
-        console.log(res);
-      });
+      this.saveOrUpdateFolder(folder);
     });
   }
 
-  onDeleteFolder(id: string) {
-    this.folders = filter(this.folders, folder => folder.id !== id);
+  saveOrUpdateFolder(folder: Folder) {
+    if (folder.id) {
+      this.folderService.updateFolder(folder.id, folder).subscribe((folder) => {
+        this.folders = this.folders.map((f) =>
+          f.id === folder.id ? folder : f,
+        );
+      });
+    } else {
+      folder = { ...folder, id: CommonUtils.generateRandomId() };
+      this.folderService.createFolder(folder).subscribe((res: any) => {
+        this.folders = [...this.folders, res];
+      });
+    }
+  }
+
+  onDuplicateFolder() {}
+  onDeleteFolder(deletedFolder: Folder) {
+    this.folders = this.folders.filter(
+      (folder) => folder.id !== deletedFolder.id,
+    );
   }
 
   edit(id: string) {
     this.router.navigate(['edit-quiz', id]);
+  }
+
+  onMoveQuizClick(quiz: Quiz) {
+    this.dialog
+      .open(MoveToFolderDialogComponent)
+      .afterClosed()
+      .subscribe((folder: Folder) => {
+        quiz = { ...quiz, folderId: folder.id };
+        this.moveQuizToFolder(quiz);
+      });
+  }
+
+  moveQuizToFolder(movedQuiz: Quiz) {
+    this.quizService.edit(movedQuiz).subscribe((movedQuiz) => {
+      this.quizzes = this.quizzes.filter((quiz) => quiz.id !== movedQuiz.id);
+    });
   }
 
   duplicate(quiz: Quiz) {
@@ -137,7 +181,7 @@ export class QuizzesComponent implements OnInit, OnDestroy {
 
   deleteQuiz(deleteQuiz: Quiz) {
     this.quizService.delete(deleteQuiz.id).subscribe(() => {
-      this.quizzes = filter(this.quizzes, (quiz) => deleteQuiz.id !== quiz.id);
+      this.quizzes = this.quizzes.filter((quiz) => quiz.id !== deleteQuiz.id);
     });
   }
 

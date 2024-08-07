@@ -18,6 +18,12 @@
   white-space: nowrap;
 }
 
+.article-icon {
+  line-height: 2rem;
+  padding-right: 1rem;
+  color: var(--success-color);
+}
+
 .actions {
   display: flex;
   margin: 16px 0;
