@@ -94,9 +94,12 @@ export class QuizzesComponent implements OnDestroy {
         this.folders = folders;
       });
       this.quizService.getAll().subscribe((quizzes) => {
-        this.quizzes = quizzes.filter(
-          (quiz: any) => quiz.folderId === null || quiz.folderId === undefined,
-        );
+        this.quizzes = quizzes
+          .filter(
+            (quiz: any) =>
+              quiz.folderId === null || quiz.folderId === undefined,
+          )
+          .sort((a: Quiz, b: Quiz) => a.order! - b.order!);
       });
     }
   }
@@ -106,10 +109,7 @@ export class QuizzesComponent implements OnDestroy {
     setTimeout(() => {
       this.quizService
         .updateIndex(this.quizzes.map((quiz) => quiz.id))
-        .subscribe((quizzes) => {
-          console.log(quizzes.map(quiz => quiz.name))
-          this.quizzes = quizzes;
-        });
+        .subscribe();
     }, 500);
   }
 
