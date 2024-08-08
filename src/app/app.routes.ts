@@ -16,8 +16,16 @@ export const routes: Routes = [
   { path: 'result-writing/:id', component: AddOrEditWritingComponent },
   { path: 'edit-writing/:id', component: AddOrEditWritingComponent },
   { path: 'test-writing/:id', component: AddOrEditWritingComponent },
-  { path: 'continue-test-writing/:testId', component: AddOrEditWritingComponent },
+  {
+    path: 'continue-test-writing/:testId',
+    component: AddOrEditWritingComponent,
+  },
   { path: 'mock-test', component: MockTestComponent },
+  {
+    path: 'mock-test/:folderId',
+    loadChildren: () =>
+      import('./quizzes/quizzes.routes').then((m) => m.routes),
+  },
   { path: 'add-quiz', component: AddOrEditQuizComponent },
   { path: 'edit-quiz/:quizId', component: AddOrEditQuizComponent },
   { path: 'test/:resultId', component: TestComponent },

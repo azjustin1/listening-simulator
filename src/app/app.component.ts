@@ -2,11 +2,12 @@ import { Component, inject } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { QuizService } from './quizzes/quizzes.service';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, MatToolbarModule, RouterModule],
+  imports: [RouterOutlet, MatToolbarModule, RouterModule, NgxSpinnerModule],
   providers: [QuizService],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
