@@ -1,23 +1,28 @@
-import { BreakpointObserver } from '@angular/cdk/layout';
+import {
+  CdkDrag,
+  CdkDragDrop,
+  CdkDropList,
+  moveItemInArray,
+} from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import {
   Component,
   computed,
   OnDestroy,
-  OnInit,
   signal,
   WritableSignal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { ActivatedRoute, Router } from '@angular/router';
-import { cloneDeep, debounce, each, map } from 'lodash-es';
+import { cloneDeep, debounce } from 'lodash-es';
 import { Subscription } from 'rxjs';
 import { Folder } from '../../common/models/folder.model';
 import { Quiz } from '../../common/models/quiz.model';
@@ -31,7 +36,6 @@ import { ListeningComponent } from '../listening/listening.component';
 import { AddOrEditFolderComponent } from './add-or-edit-folder/add-or-edit-folder.component';
 import { MoveToFolderDialogComponent } from './move-to-folder-dialog/move-to-folder-dialog.component';
 import { QuizService } from './quizzes.service';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-quizzes',
@@ -50,12 +54,14 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatCheckboxModule,
     FolderComponent,
     SelectedPipe,
+    CdkDropList,
+    CdkDrag,
   ],
   providers: [QuizService, FileService, FolderService],
   templateUrl: './quizzes.component.html',
   styleUrl: './quizzes.component.scss',
 })
-export class QuizzesComponent implements OnInit, OnDestroy {
+export class QuizzesComponent implements OnDestroy {
   quizzes: Quiz[] = [];
   folders: Folder[] = [];
   searchString: string = '';
@@ -74,7 +80,6 @@ export class QuizzesComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private dialog: MatDialog,
-    private breakpointObserver: BreakpointObserver,
     private folderService: FolderService,
   ) {
     const folderId = this.route.snapshot.params['folderId'];
@@ -96,10 +101,16 @@ export class QuizzesComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit(): void {
-    this.breakpointObserver
-      .observe(['(max-width: 768px)'])
-      .subscribe((state) => {});
+  drop(event: CdkDragDrop<Quiz[]>) {
+    moveItemInArray(this.quizzes, event.previousIndex, event.currentIndex);
+    setTimeout(() => {
+      this.quizService
+        .updateIndex(this.quizzes.map((quiz) => quiz.id))
+        .subscribe((quizzes) => {
+          console.log(quizzes.map(quiz => quiz.name))
+          this.quizzes = quizzes;
+        });
+    }, 500);
   }
 
   search() {
@@ -187,11 +198,13 @@ export class QuizzesComponent implements OnInit, OnDestroy {
   moveQuizToFolder(movedQuizzes: string[], folderId: string | undefined) {
     this.isMultipleSelection = false;
     this.selectedQuizzes.set([]);
-    this.quizService.updateMany(movedQuizzes, folderId).subscribe((quizzes) => {
-      this.quizzes = this.quizzes.filter(
-        (quiz) => !quizzes.map((q) => q.id).includes(quiz.id),
-      );
-    });
+    this.quizService
+      .moveToFolder(movedQuizzes, folderId)
+      .subscribe((quizzes) => {
+        this.quizzes = this.quizzes.filter(
+          (quiz) => !quizzes.map((q) => q.id).includes(quiz.id),
+        );
+      });
   }
 
   duplicate(quiz: Quiz) {

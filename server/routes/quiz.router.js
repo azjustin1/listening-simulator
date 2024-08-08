@@ -4,7 +4,7 @@ const jsonServer = require("json-server");
 
 const router = express.Router();
 
-router.patch("/update", (req, res) => {
+router.patch("/move", (req, res) => {
   const jsonServerDB = jsonServer.router("db.json").db;
   const db = jsonServerDB.getState();
   const quizIds = req.body.quizIds;
@@ -27,7 +27,32 @@ router.patch("/update", (req, res) => {
   res.jsonp(quizzes);
 });
 
-router.patch("/update-folder", (req, res) => {
+router.patch("/update-index", async (req, res) => {
+  const jsonServerDB = jsonServer.router("db.json").db;
+  const db = jsonServerDB.getState();
+  const quizIds = req.body.quizIds;
+
+  let quizzes = db.quizzes.filter((item) => quizIds.includes(item.id));
+
+  // Update the items in the database
+  quizzes.forEach((update) => {
+    const index = db.quizzes.findIndex((item) => item.id === update.id);
+    if (index !== -1) {
+      db.quizzes[index] = {
+        ...db.quizzes[index],
+        order: quizIds.findIndex((id) => id === db.quizzes[index].id),
+      };
+    }
+  });
+
+  // Save the updated database
+  await jsonServerDB.write(db);
+
+  // Return the updated items
+  res.jsonp(quizzes.sort((a, b) => a.order - b.order));
+});
+
+router.patch("/init-folder", (req, res) => {
   let db = JSON.parse(fs.readFileSync("db.json", "utf8"));
   // Update the items in the database
   db.quizzes = db.quizzes.map((quiz) => {

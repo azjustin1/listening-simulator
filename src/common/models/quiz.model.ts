@@ -15,4 +15,5 @@ export interface Quiz {
   readingParts: Reading[];
   writingParts: Writing[];
   folderId?: string | null;
+  order?: number;
 }

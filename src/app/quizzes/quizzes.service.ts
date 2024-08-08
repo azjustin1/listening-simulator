@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { Quiz } from '../../common/models/quiz.model';
 
 @Injectable()
@@ -16,7 +16,11 @@ export class QuizService {
   }
 
   getAllQuizzesByFolderId(folderId: string): Observable<Quiz[]> {
-    return this.httpClient.get<Quiz[]>(`/quizzes?folderId=${folderId}`);
+    return this.httpClient.get<Quiz[]>(`/quizzes?folderId=${folderId}`).pipe(
+      tap((results: Quiz[]) => {
+        results.sort((a, b) => a.order! - b.order!);
+      }),
+    );
   }
 
   getById(id: number): Observable<any> {
@@ -31,12 +35,22 @@ export class QuizService {
     return this.httpClient.put(`/quizzes/${quiz.id}`, quiz);
   }
 
-  updateMany(quizIds: string[], folderId: string | undefined): Observable<Quiz[]> {
+  updateIndex(quizIds: string[]) {
     const requestBody = {
       quizIds: quizIds,
-      folderId: folderId
-    }
-    return this.httpClient.patch<Quiz[]>('/quizz/update', requestBody);
+    };
+    return this.httpClient.patch<Quiz[]>('/quizz/update-index', requestBody);
+  }
+
+  moveToFolder(
+    quizIds: string[],
+    folderId: string | undefined,
+  ): Observable<Quiz[]> {
+    const requestBody = {
+      quizIds: quizIds,
+      folderId: folderId,
+    };
+    return this.httpClient.patch<Quiz[]>('/quizz/move', requestBody);
   }
 
   delete(quizId: string): Observable<any> {
