@@ -7,13 +7,16 @@ const router = express.Router();
 router.patch("/update", (req, res) => {
   const jsonServerDB = jsonServer.router("db.json").db;
   const db = jsonServerDB.getState();
-  const updates = req.body;
+  const quizIds = req.body.quizIds;
+  const folderId = req.body.folderId;
+
+  let quizzes = db.quizzes.filter((item) => quizIds.includes(item.id));
 
   // Update the items in the database
-  updates.forEach((update) => {
+  quizzes.forEach((update) => {
     const index = db.quizzes.findIndex((item) => item.id === update.id);
     if (index !== -1) {
-      db.quizzes[index] = { ...db.quizzes[index], ...update };
+      db.quizzes[index] = { ...db.quizzes[index], folderId: folderId };
     }
   });
 
@@ -21,7 +24,7 @@ router.patch("/update", (req, res) => {
   jsonServerDB.write(db);
 
   // Return the updated items
-  res.jsonp(updates);
+  res.jsonp(quizzes);
 });
 
 router.patch("/update-folder", (req, res) => {
@@ -31,8 +34,8 @@ router.patch("/update-folder", (req, res) => {
     return { ...quiz, folderId: null };
   });
 
-   // Save the updated database
-   fs.writeFileSync("db.json", JSON.stringify(db, null, 2));
+  // Save the updated database
+  fs.writeFileSync("db.json", JSON.stringify(db, null, 2));
 
   // Return the updated items
   res.status(200).send(db.quizzes);

@@ -177,20 +177,20 @@ export class QuizzesComponent implements OnInit, OnDestroy {
       .open(MoveToFolderDialogComponent)
       .afterClosed()
       .subscribe((folder: Folder) => {
-        quizzes = map(quizzes, (quiz) => {
-          return { ...quiz, folderId: folder ? folder.id : undefined };
-        });
-        this.moveQuizToFolder(quizzes);
+        this.moveQuizToFolder(
+          quizzes.map((quiz) => quiz.id),
+          folder ? folder.id : undefined,
+        );
       });
   }
 
-  moveQuizToFolder(movedQuizzes: Quiz[]) {
+  moveQuizToFolder(movedQuizzes: string[], folderId: string | undefined) {
     this.isMultipleSelection = false;
     this.selectedQuizzes.set([]);
-    each(movedQuizzes, (quiz) => {
-      this.quizService.edit(quiz).subscribe((movedQuiz) => {
-        this.quizzes = this.quizzes.filter((quiz) => quiz.id !== movedQuiz.id);
-      });
+    this.quizService.updateMany(movedQuizzes, folderId).subscribe((quizzes) => {
+      this.quizzes = this.quizzes.filter(
+        (quiz) => !quizzes.map((q) => q.id).includes(quiz.id),
+      );
     });
   }
 

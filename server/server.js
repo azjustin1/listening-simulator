@@ -2,6 +2,8 @@ const express = require("express");
 const jsonServer = require("json-server");
 const cors = require("cors");
 const server = express();
+const path = require("path");
+const fs = require("fs");
 require("dotenv").config();
 
 server.use(express.static(`${__dirname}/dist/browser`));
@@ -11,18 +13,24 @@ server.use("/upload", express.static(`${__dirname}/upload`));
 
 // Routers
 const router = jsonServer.router("db.json");
-const systemRouter = require('./routes/system.router')
+// const systemRouter = require('./routes/system.router')
 const emailRouter = require("./routes/mail.router");
 const fileRouter = require("./routes/file.router");
 const folderRouter = require("./routes/folder.router");
 const quizRouter = require("./routes/quiz.router");
 
-server.use("/api/system", systemRouter);
+// server.use("/api/system", systemRouter);
 server.use("/api/file", fileRouter);
 server.use("/api/mail", emailRouter);
 server.use("/api/folders", folderRouter);
 server.use("/api/quizz", quizRouter);
 server.use("/api", router);
+const dbPath = "db.json";
+fs.watchFile(dbPath, (curr, prev) => {
+  console.log("db.json file changed. Reloading database...");
+  router.db.read();
+});
+
 server.get("*", function (req, res) {
   res.sendFile(__dirname + "/dist/browser/index.html");
 });

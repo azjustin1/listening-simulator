@@ -31,8 +31,12 @@ export class QuizService {
     return this.httpClient.put(`/quizzes/${quiz.id}`, quiz);
   }
 
-  updateMany(quizzes: Quiz[]): Observable<Quiz[]> {
-    return this.httpClient.patch<Quiz[]>('/quizzes/update', quizzes);
+  updateMany(quizIds: string[], folderId: string | undefined): Observable<Quiz[]> {
+    const requestBody = {
+      quizIds: quizIds,
+      folderId: folderId
+    }
+    return this.httpClient.patch<Quiz[]>('/quizz/update', requestBody);
   }
 
   delete(quizId: string): Observable<any> {
