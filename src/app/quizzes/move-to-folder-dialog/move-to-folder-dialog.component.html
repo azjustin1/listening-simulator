@@ -2,10 +2,12 @@
 <form [formGroup]="folderForm" (ngSubmit)="onSubmit()">
   <mat-dialog-content>
     <mat-radio-group class="select-folder-container" formControlName="selectedFolder">
-      <mat-radio-button color="primary" [value]="undefined">
+      @if (folderId) {
+      <mat-radio-button color="primary" [value]="rootFolder">
         Root
       </mat-radio-button>
-      @for (folder of folders | async; track $index) {
+      }
+      @for (folder of folders; track $index) {
       <mat-radio-button color="primary" [value]="folder">
         {{ folder.name }}
       </mat-radio-button>
@@ -13,10 +15,10 @@
     </mat-radio-group>
   </mat-dialog-content>
   <mat-dialog-actions class="actions">
-    <button mat-raised-button color="primary" type="submit">
+    <button mat-raised-button color="primary" [disabled]="folderForm.get('selectedFolder')?.value === null">
       Select
     </button>
-    <button mat-button color="warn" type="button" mat-dialog-close>
+    <button mat-button color="warn" type="button" (click)="onClose()">
       Cancel
     </button>
   </mat-dialog-actions>

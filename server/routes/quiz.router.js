@@ -3,10 +3,11 @@ const fs = require("fs");
 const jsonServer = require("json-server");
 
 const router = express.Router();
+const dbPath = "db.json";
 
-router.patch("/move", (req, res) => {
-  const jsonServerDB = jsonServer.router("db.json").db;
-  const db = jsonServerDB.getState();
+router.patch("/move", async (req, res) => {
+  const dbServer = jsonServer.router(dbPath);
+  const db = dbServer.db.getState();
   const quizIds = req.body.quizIds;
   const folderId = req.body.folderId;
 
@@ -21,10 +22,10 @@ router.patch("/move", (req, res) => {
   });
 
   // Save the updated database
-  jsonServerDB.write(db);
-
-  // Return the updated items
-  res.jsonp(quizzes);
+  dbServer.db.write(db);
+  setTimeout(() => {
+    res.jsonp(quizzes);
+  }, 1000);
 });
 
 router.patch("/update-index", async (req, res) => {

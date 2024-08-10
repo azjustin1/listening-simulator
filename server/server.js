@@ -16,13 +16,11 @@ const router = jsonServer.router("db.json");
 const systemRouter = require('./routes/system.router')
 const emailRouter = require("./routes/mail.router");
 const fileRouter = require("./routes/file.router");
-const folderRouter = require("./routes/folder.router");
 const quizRouter = require("./routes/quiz.router");
 
-// server.use("/api/system", systemRouter);
+server.use("/api/system", systemRouter);
 server.use("/api/file", fileRouter);
 server.use("/api/mail", emailRouter);
-server.use("/api/folders", folderRouter);
 server.use("/api/quizz", quizRouter);
 server.use("/api/system", systemRouter);
 server.use("/api", router);
