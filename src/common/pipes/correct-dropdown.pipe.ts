@@ -9,12 +9,13 @@ import { AbstractAnswerPipe } from './abstract-answer.pipe';
 })
 export class CorrectDropdownPipe extends AbstractAnswerPipe {
   override transform(question: Question, ...args: any[]): any {
-    if (isString(question.answer)) {
-      return question.correctAnswer.includes(question.answer);
+    if (isString(question.answer) && isString(question.correctAnswer)) {
+      return question.answer === question.correctAnswer;
     }
 
     return (
-      !isEmpty(question.answer) && question.answer === question.correctAnswer
+      !isEmpty(question.answer) &&
+      question.correctAnswer.includes(question.answer as string)
     );
   }
 }
