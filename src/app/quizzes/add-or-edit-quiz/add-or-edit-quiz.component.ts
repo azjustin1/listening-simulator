@@ -205,6 +205,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
   }
 
   onSavePart(key: string, index: number) {
+    this.saveOrEditQuiz(this.currentQuiz);
     this.saveAllEdittingPart(key);
     if (this.mapSavedPart[key] !== undefined) {
       this.mapSavedPart[key][index] = true;

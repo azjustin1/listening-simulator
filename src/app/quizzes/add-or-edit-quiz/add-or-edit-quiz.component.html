@@ -67,6 +67,7 @@
                 <app-listening
                   [(data)]="currentQuiz.listeningParts[selectedListeningPart]"
                   [isSaved]="mapSavedPart['listening'][selectedListeningPart]!"
+                  (onSave)="saveOrEditQuiz(currentQuiz)"
                 ></app-listening>
               </mat-card-content>
             </mat-card>

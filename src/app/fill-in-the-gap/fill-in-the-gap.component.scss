@@ -32,7 +32,6 @@
 .question__text.edit:hover {
   height: 20px;
   background: grey;
-  padding: 0 10px;
 }
 
 .question-input {
@@ -48,6 +47,11 @@
 
 .text-container__button {
   align-self: center;
+  margin-left: 10px;
+}
+
+.add-btn {
+  margin-right: 10px;
 }
 
 .form-control {
@@ -72,7 +76,19 @@
   color: var(--success-color);
 }
 
+.line-actions {
+  display: flex;
+  align-items: center;
+}
+
+.line-btn {
+  margin: 10px 10px 10px 0;
+}
+
+.line-btn__icon {
+  margin-top: 0.2rem;
+}
+
 input {
   min-width: max-content;
-  
 }

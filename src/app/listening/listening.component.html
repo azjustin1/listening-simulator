@@ -32,6 +32,7 @@
             [isEditting]="mapQuestionEditting[question.id]"
             [isReadOnly]="isReadOnly"
             [isTesting]="isTesting"
+            (onSave)="onSaveClick()"
           ></app-question>
           <div class="actions">
             @if (!isSaved && !isTesting && !isReadOnly) {

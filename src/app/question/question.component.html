@@ -6,6 +6,7 @@
         [isReadOnly]="isReadOnly"
         [isEditting]="isEditting"
         [isTesting]="isTesting"
+        (onSave)="onSaveQuestion()"
       ></app-multiple-choices>
     </div>
   }
@@ -16,6 +17,7 @@
         [isReadOnly]="isReadOnly"
         [isEditting]="isEditting"
         [isTesting]="isTesting"
+        (onSave)="onSaveQuestion()"
       ></app-short-answer>
     </div>
   }
@@ -26,6 +28,7 @@
         [isReadOnly]="isReadOnly"
         [isEditting]="isEditting"
         [isTesting]="isTesting"
+        (onSave)="onSaveQuestion()"
       ></app-dropdown-choices>
     </div>
   }
@@ -36,6 +39,7 @@
         [isReadOnly]="isReadOnly"
         [isEditting]="isEditting"
         [isTesting]="isTesting"
+        (onSave)="onSaveQuestion()"
       ></app-label-on-map>
     </div>
   }
@@ -45,6 +49,7 @@
       [isReadOnly]="isReadOnly"
       [isEditting]="isEditting"
       [isTesting]="isTesting"
+      (onSave)="onSaveQuestion()"
     >
     </app-fill-in-the-gap>
   }

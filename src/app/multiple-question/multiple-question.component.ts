@@ -154,4 +154,8 @@ export class MultipleQuestionComponent
       this.mapEdittingQuestion[key] = false;
     }
   }
+
+  onSaveClick() {
+    this.onSave.emit();
+  }
 }

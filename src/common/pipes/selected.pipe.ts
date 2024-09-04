@@ -8,7 +8,6 @@ import { Quiz } from '../models/quiz.model';
 export class SelectedPipe implements PipeTransform {
   @Input() quizzes: Quiz[] = [];
   transform(value: string, ...args: any[]): any {
-    console.log(this.quizzes.map((quiz) => quiz.id).includes(value.trim()))
     return this.quizzes.map((quiz) => quiz.id).includes(value.trim());
   }
 }

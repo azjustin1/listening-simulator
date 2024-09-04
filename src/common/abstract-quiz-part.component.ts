@@ -35,6 +35,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
   @Input() isStart: boolean = false;
   @Output() onStartChange = new EventEmitter();
   @Output() onTimeout = new EventEmitter();
+  @Output() onSave = new EventEmitter();
 
   currentQuestion: Question = {
     id: '',
@@ -196,6 +197,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
 
   onSaveQuestion(id: string) {
     this.mapQuestionEditting[id] = false;
+    this.onSave.emit();
   }
 
   onEditQuestion(id: string) {
@@ -207,12 +209,14 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     const tempQuestion = clone(this.data.questions[index - 1]);
     this.data.questions[index - 1] = this.data.questions[index];
     this.data.questions[index] = tempQuestion;
+    this.onSave.emit();
   }
 
   moveQuestionDown(index: number) {
     const tempQuestion = clone(this.data.questions[index + 1]);
     this.data.questions[index + 1] = this.data.questions[index];
     this.data.questions[index] = tempQuestion;
+    this.onSave.emit();
   }
 
   duplicateQuestion(question: Question) {
@@ -223,6 +227,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
       content: `Copy of ${cloneQuestion.content}`,
     };
     this.data.questions.push(cloneQuestion);
+    this.onSave.emit();
   }
 
   removeQuestion(questionIdex: number) {
@@ -264,5 +269,9 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
         );
       });
     }
+  }
+
+  onSaveClick() {
+    this.onSave.emit();
   }
 }

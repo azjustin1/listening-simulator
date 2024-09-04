@@ -3,7 +3,15 @@ import { Component, NgModule, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
-import { clone, each, isEmpty, mapValues, omit, toArray } from 'lodash-es';
+import {
+  clone,
+  each,
+  filter,
+  isEmpty,
+  mapValues,
+  omit,
+  toArray,
+} from 'lodash-es';
 import { AbstractQuestionComponent } from '../../common/abstract-question.component';
 import { Choice } from '../../common/models/choice.model';
 import { CorrectAnswerPipe } from '../../common/pipes/correct-answer.pipe';
@@ -24,7 +32,7 @@ import { IsInputPipe } from './is-input.pipe';
     ArrayContentChoice,
     IsInputPipe,
     FitContentDirective,
-    CorrectAnswerPipe
+    CorrectAnswerPipe,
   ],
   templateUrl: './fill-in-the-gap.component.html',
   styleUrl: './fill-in-the-gap.component.scss',
@@ -77,11 +85,27 @@ export class FillInTheGapComponent extends AbstractQuestionComponent {
   }
 
   onDeleteLine(lineIndex: number) {
+    const inputId = this.getInputId(this.question.arrayContent![lineIndex])[0];
+    if (inputId) {
+      this.question.choices = filter(
+        this.question.choices,
+        (choice) => choice.id !== inputId,
+      );
+    }
     each(this.question.arrayContent![lineIndex], (content, contentIndex) => {
       this.updateMapChoiceId(lineIndex, contentIndex);
     });
     this.question.arrayContent!.splice(lineIndex, 1);
     this.initMapSaveText();
+  }
+
+  private getInputId(line: string[]) {
+    return line
+      .map((item) => {
+        const match = item.match(INPUT_PATTERN);
+        return match ? match[1] : null;
+      })
+      .filter(Boolean);
   }
 
   moveLineUp(index: number) {
@@ -133,16 +157,18 @@ export class FillInTheGapComponent extends AbstractQuestionComponent {
     ) {
       this.question.choices = toArray(this.mapChoiceById);
     }
+    this.onSave.emit();
   }
 
   onDeleteText(lineIndex: number, contentIndex: number) {
     this.updateMapChoiceId(lineIndex, contentIndex);
     this.question.arrayContent![lineIndex].splice(contentIndex, 1);
     if (isEmpty(this.question.arrayContent![lineIndex])) {
-      this.question.arrayContent![lineIndex].push('')
+      this.question.arrayContent![lineIndex].push('');
     }
     this.initMapSaveText();
     this.saveAllEditting();
+    this.onSave.emit();
   }
 
   addInput(lineIndex: number, contentIndex: number) {
@@ -175,6 +201,7 @@ export class FillInTheGapComponent extends AbstractQuestionComponent {
 
   onSaveInput(lineIndex: number, contentIndex: number) {
     this.mapSaveTextByIndex[lineIndex][contentIndex] = true;
+    this.onSave.emit();
   }
 
   private updateMapChoiceId(lineIndex: number, contentIndex: number) {

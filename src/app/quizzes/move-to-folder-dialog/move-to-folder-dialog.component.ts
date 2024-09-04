@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, inject, Inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Inject, Input } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -33,7 +33,7 @@ import { FolderService } from '../../folder/folder.service';
   templateUrl: './move-to-folder-dialog.component.html',
   styleUrl: './move-to-folder-dialog.component.scss',
 })
-export class MoveToFolderDialogComponent implements OnInit {
+export class MoveToFolderDialogComponent {
   @Input() folderId = '';
   folders!: Folder[];
   folderForm!: FormGroup;
@@ -55,9 +55,6 @@ export class MoveToFolderDialogComponent implements OnInit {
     this.folderService.getFolders().subscribe((folders) => {
       this.folders = folders.filter((folder) => folder.id !== this.folderId);
     });
-  }
-  ngOnInit(): void {
-    console.log(this.folderId);
   }
 
   onSubmit(): void {
