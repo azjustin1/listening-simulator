@@ -190,6 +190,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
       default:
         break;
     }
+    console.log(this.data)
     this.data.questions.push({ ...this.currentQuestion });
     this.data = { ...this.data };
     this.onEditQuestion(id);

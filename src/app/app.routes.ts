@@ -8,6 +8,8 @@ import { ResultComponent } from './result/result.component';
 import { TestComponent } from './test/test.component';
 import { WritingTestComponent } from './writing-test/writing-test.component';
 import { AddOrEditWritingComponent } from './writing-test/add-or-edit-writing/add-or-edit-writing.component';
+import { SelfReadingComponent } from './self-learning/self-reading/self-reading.component';
+import { SelfReadingDetailComponent } from './self-learning/self-reading-detail/self-reading-detail.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -35,4 +37,9 @@ export const routes: Routes = [
   { path: 'reading/:quizId', component: ReadingComponent },
   { path: 'results', component: ResultComponent, outlet: 'home' },
   { path: 'result-detail/:resultId', component: ResultDetailComponent },
+  { path: 'self-learning/teacher', component: SelfReadingComponent },
+  {
+    path: 'self-learning/teacher/:readingId',
+    component: SelfReadingDetailComponent,
+  },
 ];
