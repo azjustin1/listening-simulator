@@ -17,12 +17,16 @@
   box-sizing: content-box;
 }
 
+.heading-container {
+  max-height: 27rem;
+  overflow-y: scroll;
+}
+
 .paragraph {
   margin: 0 0 16px 0;
 }
 
 .container--right {
-  padding: 10px;
   width: calc(100vw / 2 - 60px);
 }
 
@@ -37,7 +41,7 @@
 
 .answer-content {
   width: 25rem;
-  height: 50px;
+  height: max-content;
 }
 
 .input-reading {
