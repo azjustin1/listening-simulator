@@ -41,6 +41,11 @@ server.get("*", function (req, res) {
   res.sendFile(__dirname + "/dist/browser/index.html");
 });
 
+(async () => {
+  await dbConfig();
+  // Rest of your application code
+})();
+
 const port = process.env.PORT || 3000;
 const host = process.env.HOST || "localhost";
 

@@ -34,11 +34,11 @@
             @if (result.isSubmit) {
               <button mat-menu-item (click)="view(result.id)">View</button>
             } @else {
-              <button mat-menu-item (click)="continue(result.id)">
+              <button mat-menu-item (click)="continue(result._id!)">
                 Continue
               </button>
             }
-            <button mat-menu-item (click)="onDeleteResultClick(result.id)">
+            <button mat-menu-item (click)="onDeleteResultClick(result._id!)">
               Delete
             </button>
           </mat-menu>

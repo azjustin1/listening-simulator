@@ -1,15 +1,12 @@
 const mongoose = require("mongoose");
 
-// Define the Choice interface
-const ChoiceSchema = new mongoose.Schema({
-  id: { type: String },
-  content: { type: String },
-  index: { type: String },
-  order: { type: Number },
-  answer: { type: String },
-  correactAnswer: { type: String },
+const choiceSchema = new mongoose.Schema({
+  id: String,
+  content: String,
+  index: String,
+  correctAnswer: String,
+  answer: String,
+  order: Number
 });
-
-const Choice = mongoose.model("Choice", ChoiceSchema);
-
-module.exports = { ChoiceSchema, Choice };
+const Choice = mongoose.model("Choice", choiceSchema);
+module.exports = Choice;

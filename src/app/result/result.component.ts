@@ -89,7 +89,7 @@ export class ResultComponent {
 
   deleteResult(resultId: string) {
     this.resultService.deleteById(resultId).subscribe(() => {
-      this.results = filter(this.results, (result) => result.id !== resultId);
+      this.results = filter(this.results, (result) => result._id !== resultId);
     });
   }
 

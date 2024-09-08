@@ -33,7 +33,7 @@ export class QuizService {
   }
 
   edit(quiz: Quiz): Observable<any> {
-    return this.httpClient.put(`/quizzes/${quiz.id}`, quiz);
+    return this.httpClient.put(`/quizzes/${quiz._id}`, quiz);
   }
 
   updateIndex(quizIds: string[]) {
