@@ -8,7 +8,6 @@ const fs = require("fs");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     let uploadDir = path.join(__dirname, '../upload');
-    console.log(uploadDir);
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
@@ -38,7 +37,6 @@ router.post("/upload", upload.single("file"), (req, res) => {
 router.get("/:filename", (req, res) => {
   const filename = req.params.filename;
   const filePath = path.join(__dirname, "../upload", filename);
-  console.log(filePath)
   // Check if the file exists
   if (fs.existsSync(filePath)) {
     // Set the appropriate headers for file download

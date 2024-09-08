@@ -5,8 +5,6 @@ const jsonServer = require("json-server");
 const router = express.Router();
 const dbPath = "db.json";
 
-
-
 router.patch("/move", async (req, res) => {
   const dbServer = jsonServer.router(dbPath);
   const db = dbServer.db.getState();

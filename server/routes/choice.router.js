@@ -18,7 +18,6 @@ router.post("/", async (req, res) => {
     );
     res.status(201).send(savedChoice);
   } catch (error) {
-    console.log(error);
     res.status(400).send(error);
   }
 });

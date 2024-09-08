@@ -1,8 +1,8 @@
 const express = require("express");
 const SelfReading = require("../models/self-reading.model");
-const Question = require("../models/question.model");
-const { isEmpty, each } = require("lodash");
-const { Choice } = require("../models/choice.model");
+const { Question, SubQuestion } = require("../models/question.model");
+const { isEmpty } = require("lodash");
+const Choice = require("../models/choice.model");
 
 const router = express.Router();
 
@@ -21,26 +21,50 @@ router.post("/", async (req, res) => {
 });
 
 router.post("/sub-questions", async (req, res) => {
-  const { questionId, subQuestion } = req.body;
+  let { questionId, subQuestion } = req.body;
   try {
-    const newQuestion = new Question(subQuestion);
-    const savedSubQuestion = await newQuestion.save();
+    let choices = [];
+    if (!isEmpty(subQuestion.choices)) {
+      choices = await Choice.insertMany(subQuestion.choices);
+      subQuestion = { ...subQuestion, choices: choices };
+    }
+    const newSubQuestion = new SubQuestion(subQuestion);
+    const savedSubQuestion = await newSubQuestion.save();
     const question = await Question.findById(questionId);
     question.subQuestions = [...question.subQuestions, savedSubQuestion];
     await question.save();
     res.status(201).send(savedSubQuestion);
   } catch (error) {
-    console.log(error);
     res.status(400).send(error);
   }
 });
 
 router.patch("/", async (req, res) => {
   const question = req.body;
-  console.log(question)
   try {
-    const updateQuestion = await Question.updateOne(
-      { _id: question._id },
+    const updateQuestion = await Question.findById(question._id);
+
+    if (!updateQuestion) {
+      res.status(404).send("Not found");
+    }
+
+    // if (!isEmpty(updateQuestion.choices)) {
+    //   await updateQuestion.choices.map(async (choice) => {
+    //     return Choice.updateOne({ _id: choice._id, choice });
+    //   });
+    // }
+
+    res.status(200).send(updateQuestion);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
+router.patch("/sub-questions", async (req, res) => {
+  const question = req.body;
+  try {
+    const updateQuestion = await SubQuestion.findByIdAndUpdate(
+      question._id,
       question,
     );
 
@@ -48,17 +72,15 @@ router.patch("/", async (req, res) => {
       res.status(404).send("Not found");
     }
 
-    if (!isEmpty(updateQuestion.choices)) {
-      const choiceUpdates = updateQuestion.choices.map(async (choice) => {
-        return Choice.updateOne({ _id: choice._id, choice });
+    if (!isEmpty(question.choices)) {
+      question.choices.map(async (choice) => {
+        await Choice.findByIdAndUpdate(choice._id, choice);
       });
-      console.log(choiceUpdates)
-      await Promise.all(choiceUpdates);
     }
 
     res.status(200).send(updateQuestion);
   } catch (error) {
-    res.status(400).send(error);
+    res.status(400).json({ error: error.message });
   }
 });
 

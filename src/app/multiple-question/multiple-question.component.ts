@@ -139,8 +139,7 @@ export class MultipleQuestionComponent
   }
 
   onSaveSubQuestion(subQuestion: Question) {
-    console.log(subQuestion)
-    this.questionService.updateQuestion(subQuestion).subscribe((resp) => {
+    this.questionService.updateSubQuestion(subQuestion).subscribe((resp) => {
       if (resp) {
         subQuestion = { ...resp };
         this.mapEdittingQuestion[subQuestion._id!] = false;

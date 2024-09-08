@@ -25,7 +25,7 @@ const selfReadingRouter = require("./routes/self-reading.router");
 server.use("/api/system", systemRouter);
 server.use("/api/file", fileRouter);
 server.use("/api/mail", emailRouter);
-server.use("/api/quizz", quizRouter);
+server.use("/api/quizzes", quizRouter);
 server.use("/api/system", systemRouter);
 server.use("/api/self-reading", selfReadingRouter);
 server.use("/api/questions", questionRouter);
@@ -40,11 +40,6 @@ fs.watchFile(dbPath, (curr, prev) => {
 server.get("*", function (req, res) {
   res.sendFile(__dirname + "/dist/browser/index.html");
 });
-
-(async () => {
-  await dbConfig();
-  // Rest of your application code
-})();
 
 const port = process.env.PORT || 3000;
 const host = process.env.HOST || "localhost";

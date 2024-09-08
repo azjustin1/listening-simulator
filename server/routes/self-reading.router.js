@@ -20,7 +20,6 @@ router.post("/", async (req, res) => {
     const savedReadingTest = await newReadingTest.save();
     res.status(201).send(savedReadingTest);
   } catch (error) {
-    console.log(error);
     res.status(400).send(error);
   }
 });
@@ -57,9 +56,9 @@ router.get("/:id", async (req, res) => {
       populate: [
         {
           path: "subQuestions",
-          popuplate: {
-            path: "choices",
-          },
+          populate: {
+            path: "choices"
+          }
         },
         { path: "choices" },
       ],
@@ -70,8 +69,7 @@ router.get("/:id", async (req, res) => {
     }
     res.status(200).send(selfReading);
   } catch (error) {
-    console.log(error);
-    res.status(500).send(error);
+    res.status(500).json(error);
   }
 });
 

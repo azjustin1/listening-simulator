@@ -19,6 +19,10 @@ export class QuestionService {
     return this.httpClient.patch<Question>('/questions', question);
   }
 
+  updateSubQuestion(subQuestion: Question): Observable<Question> {
+    return this.httpClient.patch<Question>('/questions/sub-questions', subQuestion);
+  }
+
   addSubQuestion(questionId: string, subQuestion: Question) {
     const requestBody = {
       questionId,
