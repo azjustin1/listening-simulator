@@ -82,24 +82,24 @@ export class MatchingHeaderComponent
 
   initMapEditAnswer() {
     each(this.data.answers, (answer) => {
-      this.mapEdittingById[answer.id] = false;
-      this.mapAnswerById[answer.id] = answer;
+      this.mapEdittingById[answer._id!] = false;
+      this.mapAnswerById[answer._id!] = answer;
     });
     each(this.data.questions, (question) => {
-      this.mapEdittingById[question.id] = false;
+      this.mapEdittingById[question._id!] = false;
     });
   }
 
   remapDroppedAnswers() {
     const answerIds = map(this.data.questions, (question) => question.answer);
     this.answers = sortBy(
-      filter(this.answers, (answer) => !answerIds.includes(answer.id)),
+      filter(this.answers, (answer) => !answerIds.includes(answer._id!)),
     );
   }
 
   removeDuplicateChoiceInOthers(choice: Choice) {
     each(this.data.questions, (question) => {
-      if (question.answer && question.answer === choice.id) {
+      if (question.answer && question.answer === choice._id!) {
         question.answer = '';
       }
     });
@@ -108,7 +108,6 @@ export class MatchingHeaderComponent
   addParagraph() {
     const id = CommonUtils.generateRandomId();
     const newQuestion: Question = {
-      id: id,
       content: '',
       type: QuestionType.MATCHING_HEADER,
       choices: [],
@@ -127,7 +126,7 @@ export class MatchingHeaderComponent
   }
 
   removeParagraph(index: number) {
-    this.removeMapEdittingId(this.data.questions[index].id);
+    this.removeMapEdittingId(this.data.questions[index]._id!);
     this.data.questions.splice(index, 1);
   }
 
@@ -146,7 +145,7 @@ export class MatchingHeaderComponent
   }
 
   removeAnswer(index: number) {
-    this.removeMapEdittingId(this.data.answers![index].id);
+    this.removeMapEdittingId(this.data.answers![index]._id!);
     this.data.answers?.splice(index, 1);
   }
 
@@ -185,12 +184,12 @@ export class MatchingHeaderComponent
     if (choice) {
       this.removeDuplicateChoiceInOthers(choice);
       each(this.data.questions, (question) => {
-        if (question.id === questionId) {
-          question.answer = choice.id;
+        if (question._id! === questionId) {
+          question.answer = choice._id!;
         }
       });
 
-      this.answers = filter(this.data.answers, (a) => a.id !== choice.id);
+      this.answers = filter(this.data.answers, (a) => a._id! !== choice._id!);
       this.removeDropOverClass(questionId);
       this.remapDroppedAnswers();
     }
@@ -214,11 +213,11 @@ export class MatchingHeaderComponent
     );
     if (answer) {
       each(this.data.questions, (question) => {
-        if (question.answer === answer.id) {
+        if (question.answer === answer._id!) {
           question.answer = '';
         }
       });
-      if (!map(this.answers, (answer) => answer.id).includes(answer.id)) {
+      if (!map(this.answers, (answer) => answer._id!).includes(answer._id!)) {
         this.answers.push(answer);
         this.answers = sortBy(this.answers, ['id']);
       }

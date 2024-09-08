@@ -46,7 +46,7 @@ export abstract class AbstractQuestionComponent
   choiceService = inject(ChoiceService);
 
   ngOnInit(): void {
-    this.mapEdittingQuestion[this.question.id] = false;
+    this.mapEdittingQuestion[this.question._id!] = false;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -105,11 +105,12 @@ export abstract class AbstractQuestionComponent
 
   updateEdittingQuestion(status: boolean) {
     each(this.question.subQuestions, (question) => {
-      this.mapEdittingQuestion[question.id] = status;
+      this.mapEdittingQuestion[question._id!] = status;
     });
   }
 
   onSaveQuestion() {
+    console.log(this.question)
     this.subscriptions.add(
       this.questionService.updateQuestion(this.question).subscribe((resp) => {
         if (resp) {
@@ -132,11 +133,10 @@ export abstract class AbstractQuestionComponent
     };
     this.subscriptions.add(
       this.choiceService
-        .addChoice(this.question._id!, newChoice)
+        .addChoice(questionId, newChoice)
         .subscribe((resp) => {
           if (resp) {
-            this.question = { ...this.question, choices: [] };
-            this.question.choices.push(resp);
+            this.question.choices = [...this.question.choices, resp];
           }
         }),
     );
@@ -156,7 +156,7 @@ export abstract class AbstractQuestionComponent
     const base64Image = this.extractBase64Image(content);
     if (!isNull(base64Image) && base64Image[1].startsWith('data')) {
       const imageSrc = base64Image[1];
-      const fileName = `${this.question.id}_${new Date().getMilliseconds()}.png`;
+      const fileName = `${this.question._id!}_${new Date().getMilliseconds()}.png`;
       const imageFile: File = CommonUtils.base64ToFile(imageSrc, fileName);
       this.fileService.uploadFile(imageFile).subscribe((response) => {
         this.question.content = this.question.content?.replace(
@@ -169,7 +169,7 @@ export abstract class AbstractQuestionComponent
 
   saveAllQuestion() {
     each(this.question.subQuestions, (question) => {
-      this.mapEdittingQuestion[question.id] = false;
+      this.mapEdittingQuestion[question._id!] = false;
     });
   }
 }

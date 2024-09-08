@@ -44,7 +44,6 @@ export class LabelOnMapComponent extends AbstractQuestionComponent {
       choices = [...lastQuestion.choices];
     }
     this.question.subQuestions?.push({
-      id: CommonUtils.generateRandomId(),
       content: '',
       type: questionType,
       choices: choices,

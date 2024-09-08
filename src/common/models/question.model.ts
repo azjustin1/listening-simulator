@@ -2,7 +2,6 @@ import { Choice } from './choice.model';
 
 export interface Question {
   _id?: string;
-  id: string;
   name?: string;
   content?: string;
   arrayContent?: string[][];

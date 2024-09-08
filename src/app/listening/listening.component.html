@@ -29,14 +29,14 @@
           <app-question
             [question]="question"
             [isSaved]="isSaved"
-            [isEditting]="mapQuestionEditting[question.id]"
+            [isEditting]="mapQuestionEditting[question._id!]"
             [isReadOnly]="isReadOnly"
             [isTesting]="isTesting"
             (onSave)="onSaveClick()"
           ></app-question>
           <div class="actions">
             @if (!isSaved && !isTesting && !isReadOnly) {
-              @if (mapQuestionEditting[question.id]) {
+              @if (mapQuestionEditting[question._id!]) {
                 <button
                   mat-button
                   color="primary"
@@ -52,7 +52,7 @@
                   color="primary"
                   type="button"
                   class="btn btn-danger"
-                  (click)="onEditQuestion(question.id)"
+                  (click)="onEditQuestion(question._id!)"
                 >
                   <mat-icon>edit</mat-icon>
                 </button>

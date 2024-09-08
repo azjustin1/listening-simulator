@@ -63,7 +63,6 @@ export class MultipleQuestionComponent
   addSubQuestion(questionType: number) {
     const id = CommonUtils.generateRandomId();
     let newQuestion: Question = {
-      id: id,
       content: '',
       type: null,
       choices: [],
@@ -73,7 +72,6 @@ export class MultipleQuestionComponent
     switch (questionType) {
       case QuestionType.MULTIPLE_CHOICE:
         newQuestion = {
-          id: id,
           content: '',
           type: questionType,
           choices: this.defaultChoices(4),
@@ -83,7 +81,6 @@ export class MultipleQuestionComponent
         break;
       case QuestionType.SHORT_ANSWER:
         newQuestion = {
-          id: id,
           content: '',
           type: questionType,
           choices: [],
@@ -93,7 +90,6 @@ export class MultipleQuestionComponent
         break;
       case QuestionType.DROPDOWN_ANSWER:
         newQuestion = {
-          id: id,
           content: '',
           type: questionType,
           choices: this.defaultChoices(3),
@@ -103,7 +99,6 @@ export class MultipleQuestionComponent
         break;
       case QuestionType.FILL_IN_THE_GAP:
         newQuestion = {
-          id: id,
           content: '',
           arrayContent: [],
           type: questionType,
@@ -139,6 +134,7 @@ export class MultipleQuestionComponent
   }
 
   onSaveSubQuestion(subQuestion: Question) {
+    console.log(subQuestion)
     this.questionService.updateSubQuestion(subQuestion).subscribe((resp) => {
       if (resp) {
         subQuestion = { ...resp };
@@ -156,7 +152,6 @@ export class MultipleQuestionComponent
     let cloneQuestion = cloneDeep(question);
     cloneQuestion = {
       ...cloneQuestion,
-      id: CommonUtils.generateRandomId(),
       content: `Copy of ${cloneQuestion.content}`,
     };
     this.question.subQuestions!.push(cloneQuestion);

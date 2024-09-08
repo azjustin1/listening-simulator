@@ -4,7 +4,7 @@
       <angular-editor
         class="editor"
         name="questionContent"
-        [id]="question.id"
+        [id]="question._id!"
         [(ngModel)]="question.content"
         (ngModelChange)="onPaste($event)"
         [config]="config"
@@ -63,26 +63,26 @@
                 @if (!isTesting) {
                   @if (isReadOnly) {
                     @if (
-                      (question.answer.includes(choice.id) &&
-                        question.correctAnswer.includes(choice.id)) ||
-                      question.correctAnswer.includes(choice.id)
+                      (question.answer.includes(choice._id!) &&
+                        question.correctAnswer.includes(choice._id!)) ||
+                      question.correctAnswer.includes(choice._id!)
                     ) {
                       <mat-icon color="primary">check</mat-icon>
                     }
 
                     @if (
-                      question.answer.includes(choice.id) &&
-                      !question.correctAnswer.includes(choice.id)
+                      question.answer.includes(choice._id!) &&
+                      !question.correctAnswer.includes(choice._id!)
                     ) {
                       <mat-icon color="warn">clear</mat-icon>
                     }
                   } @else {
-                    @if (question.correctAnswer.includes(choice.id)) {
+                    @if (question.correctAnswer.includes(choice._id!)) {
                       <mat-icon color="primary">check</mat-icon>
                     }
                   }
                 } @else {
-                  @if (question.answer.includes(choice.id)) {
+                  @if (question.answer.includes(choice._id!)) {
                     <mat-icon color="primary">check</mat-icon>
                   }
                 }

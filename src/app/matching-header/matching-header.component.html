@@ -6,11 +6,11 @@
           @if (!isTesting && !isReadOnly && !isSaved) {
             <mat-form-field style="width: 100%">
               <mat-select
-                [disabled]="!mapEdittingById[question.id]"
+                [disabled]="!mapEdittingById[question._id!]"
                 [(ngModel)]="question.correctAnswer"
               >
                 @for (answer of data.answers; track $index) {
-                  <mat-option [value]="answer.id">
+                  <mat-option [value]="answer._id!">
                     {{ answer.content }}
                   </mat-option>
                 }
@@ -18,11 +18,11 @@
             </mat-form-field>
           } @else {
             <div
-              [id]="question.id"
+              [id]="question._id!"
               class="answer-drop-container"
-              (dragover)="onDragOver($event, question.id)"
-              (dragleave)="removeDropOver($event, question.id)"
-              (drop)="onDropAnswer($event, question.id)"
+              (dragover)="onDragOver($event, question._id!)"
+              (dragleave)="removeDropOver($event, question._id!)"
+              (drop)="onDropAnswer($event, question._id!)"
             >
               {{
                 !isTesting && !isReadOnly
@@ -65,11 +65,11 @@
           }
         </div>
         <div class="input-reading">
-          @if (mapEdittingById[question.id]) {
+          @if (mapEdittingById[question._id!]) {
             <angular-editor
               class="editor"
               name="questionContent"
-              [id]="question.id"
+              [id]="question._id!"
               [(ngModel)]="question.content"
               (ngModelChange)="onPaste($event)"
               [config]="config"
@@ -88,10 +88,10 @@
             <button
               mat-button
               color="primary"
-              (click)="editContent(question.id)"
+              (click)="editContent(question._id!)"
             >
               <mat-icon>
-                @if (mapEdittingById[question.id]) {
+                @if (mapEdittingById[question._id!]) {
                   save
                 } @else {
                   edit
@@ -134,7 +134,7 @@
       <h2>List of Headings</h2>
       @for (answer of answers; track $index) {
         <div class="answer">
-          @if (mapEdittingById[answer.id]) {
+          @if (mapEdittingById[answer._id!]) {
             <mat-form-field class="heading-input">
               <mat-label>Content</mat-label>
               <textarea matInput [(ngModel)]="answer.content"></textarea>
@@ -143,7 +143,7 @@
             <mat-card
               class="answer"
               [draggable]="isTesting"
-              (dragstart)="onDragStart($event, answer.id)"
+              (dragstart)="onDragStart($event, answer._id!)"
             >
               <mat-card-content>
                 {{ answer.content }}
@@ -155,10 +155,10 @@
               <button
                 mat-button
                 color="primary"
-                (click)="editContent(answer.id)"
+                (click)="editContent(answer._id!)"
               >
                 <mat-icon>
-                  @if (mapEdittingById[answer.id]) {
+                  @if (mapEdittingById[answer._id!]) {
                     save
                   } @else {
                     edit

@@ -44,7 +44,6 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
   questionService = inject(QuestionService);
 
   currentQuestion: Question = {
-    id: '',
     content: '',
     type: null,
     choices: [],
@@ -131,7 +130,6 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     switch (type) {
       case QuestionType.MULTIPLE_CHOICE:
         this.currentQuestion = {
-          id: id,
           content: '',
           type: type,
           choices: this.defaultChoices(4),
@@ -141,7 +139,6 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
         break;
       case QuestionType.SHORT_ANSWER:
         this.currentQuestion = {
-          id: id,
           content: '',
           type: type,
           choices: [],
@@ -151,7 +148,6 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
         break;
       case QuestionType.MULTIPLE_QUESTIONS:
         this.currentQuestion = {
-          id: id,
           content: '',
           type: type,
           choices: [],
@@ -162,7 +158,6 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
         break;
       case QuestionType.DROPDOWN_ANSWER:
         this.currentQuestion = {
-          id: id,
           content: '',
           type: type,
           choices: this.defaultChoices(3),
@@ -172,7 +167,6 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
         break;
       case QuestionType.LABEL_ON_MAP:
         this.currentQuestion = {
-          id: id,
           content: '',
           type: type,
           choices: this.defaultChoices(4),
@@ -184,7 +178,6 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
       case QuestionType.FILL_IN_THE_GAP:
       case QuestionType.MATCHING_HEADER:
         this.currentQuestion = {
-          id: id,
           content: '',
           arrayContent: [],
           type: type,
@@ -233,7 +226,6 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     let cloneQuestion = cloneDeep(question);
     cloneQuestion = {
       ...cloneQuestion,
-      id: CommonUtils.generateRandomId(),
       content: `Copy of ${cloneQuestion.content}`,
     };
     this.data.questions.push(cloneQuestion);

@@ -1,7 +1,6 @@
 const express = require("express");
-const SelfReading = require("../models/self-reading.model");
-const Question = require("../models/question.model");
-const { Choice } = require("../models/choice.model");
+const { Question } = require("../models/question.model");
+const Choice = require("../models/choice.model");
 
 const router = express.Router();
 
@@ -12,13 +11,11 @@ router.post("/", async (req, res) => {
     const newChoice = new Choice(choice);
     const savedChoice = await newChoice.save();
 
-    await Question.updateOne(
-      { _id: questionId },
-      { choices: [savedChoice] },
-    );
+    await Question.updateOne({ _id: questionId }, { choices: [savedChoice] });
     res.status(201).send(savedChoice);
   } catch (error) {
-    res.status(400).send(error);
+    console.log(error);
+    res.status(400).json({ error: error.message });
   }
 });
 

@@ -62,7 +62,7 @@ export class ReadingComponent
   ngOnInit(): void {
     if (this.data) {
       each(this.data.questions, (question) => {
-        this.mapSavedQuestion[question.id] = true;
+        this.mapSavedQuestion[question._id!] = true;
       });
     }
   }
@@ -75,7 +75,7 @@ export class ReadingComponent
   }
 
   getChoiceById(id: string, choices: Choice[]) {
-    return choices.find((choice) => choice.id === id);
+    return choices.find((choice) => choice._id! === id);
   }
 
   override onSaveQuestion(question: Question): void {
