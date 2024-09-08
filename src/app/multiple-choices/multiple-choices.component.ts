@@ -47,7 +47,7 @@ console.log(this.question.choices)
     this.mapSelectedChoice[index] = !this.mapSelectedChoice[index];
 
     if (this.isEditting) {
-      const id = this.question.choices[index].id;
+      const id = this.question.choices[index]._id!;
       if (!this.question.correctAnswer?.includes(id)) {
         this.question.correctAnswer.push(id);
       } else {
@@ -59,7 +59,7 @@ console.log(this.question.choices)
 
     if (this.isTesting) {
       if (isArray(this.question.answer)) {
-        const id = this.question.choices[index].id;
+        const id = this.question.choices[index]._id!;
 
         if (!this.question.answer?.includes(id)) {
           this.question.answer.push(id);

@@ -20,16 +20,16 @@
           ) {
             <app-multiple-question
               [question]="question"
-              [isEditting]="mapQuestionEditting[question._id!!]"
+              [isEditting]="mapQuestionEditting[question._id!]"
               [isReadOnly]="isReadOnly"
               [isTesting]="isTesting"
-              [isSaved]="mapSavedQuestion[question._id!!]"
+              [isSaved]="mapSavedQuestion[question._id!]"
               (onSave)="onSaveQuestion(question)"
-              (onEdit)="onEditQuestion(question._id!!)"
+              (onEdit)="onEditQuestion(question._id!)"
             ></app-multiple-question>
             @if (!isSaved && !isTesting && !isReadOnly) {
               <div class="actions">
-                @if (mapQuestionEditting[question._id!!]) {
+                @if (mapQuestionEditting[question._id!]) {
                   <button
                     mat-button
                     color="primary"
