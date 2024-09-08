@@ -24,6 +24,8 @@ import { PartNavigationComponent } from '../../part-navigation/part-navigation.c
 import { ReadingComponent } from '../../reading/reading.component';
 import { WritingComponent } from '../../writing/writing.component';
 import { QuizService } from '../quizzes.service';
+import { QuestionService } from '../../question/question.service';
+import { ChoiceService } from '../../question/choice.service';
 
 @Component({
   selector: 'app-add-or-edit-quiz',
@@ -41,7 +43,7 @@ import { QuizService } from '../quizzes.service';
     WritingComponent,
     PartNavigationComponent,
   ],
-  providers: [QuizService, FileService],
+  providers: [QuizService, FileService, QuestionService, ChoiceService],
   templateUrl: './add-or-edit-quiz.component.html',
   styleUrl: './add-or-edit-quiz.component.scss',
 })
