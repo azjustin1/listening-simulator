@@ -25,6 +25,7 @@ import { MatchingHeaderComponent } from '../matching-header/matching-header.comp
 import { MultipleQuestionComponent } from '../multiple-question/multiple-question.component';
 import { QuestionComponent } from '../question/question.component';
 import { ReadingService } from './reading.service';
+import { Question } from '../../common/models/question.model';
 
 @Component({
   selector: 'app-reading',
@@ -77,9 +78,9 @@ export class ReadingComponent
     return choices.find((choice) => choice.id === id);
   }
 
-  override onSaveQuestion(id: string): void {
-    super.onSaveQuestion(id);
-    this.mapSavedQuestion[id] = true;
+  override onSaveQuestion(question: Question): void {
+    super.onSaveQuestion(question);
+    this.mapSavedQuestion[question._id!] = true;
   }
 
   override onEditQuestion(id: string): void {

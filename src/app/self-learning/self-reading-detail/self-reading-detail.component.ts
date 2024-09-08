@@ -17,6 +17,9 @@ import { ReadingComponent } from '../../reading/reading.component';
 import { Reading } from '../../../common/models/reading.model';
 import { ActivatedRoute } from '@angular/router';
 import { isEmpty } from 'lodash-es';
+import { QuestionService } from '../../question/question.service';
+import { Question } from '../../../common/models/question.model';
+import { ChoiceService } from '../../question/choice.service';
 
 @Component({
   selector: 'app-self-reading-detail',
@@ -36,7 +39,7 @@ import { isEmpty } from 'lodash-es';
     MatSlideToggleModule,
     MatchingHeaderComponent,
   ],
-  providers: [SelfReadingService],
+  providers: [SelfReadingService, QuestionService, ChoiceService],
   templateUrl: './self-reading-detail.component.html',
   styleUrl: './self-reading-detail.component.scss',
 })
@@ -65,7 +68,13 @@ export class SelfReadingDetailComponent extends ReadingComponent {
 
   saveReading() {
     this.selfReadingService.createSelfReading(this.data).subscribe((res) => {
-      this.data = { ...res };
+      this.data = { ...this.data, questions: res.questions };
+    });
+  }
+
+  override onSaveQuestion(question: Question): void {
+    this.questionService.updateQuestion(question).subscribe((resp) => {
+      super.onSaveQuestion(resp);
     });
   }
 }

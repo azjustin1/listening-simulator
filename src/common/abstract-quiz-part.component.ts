@@ -19,6 +19,9 @@ import { BASE64_IMAGE_REGEX } from '../utils/constant';
 import { QuestionType } from './enums/question-type.enum';
 import { AbstractPart } from './models/abstract-part.model';
 import { Question } from './models/question.model';
+import { QuizService } from '../app/quizzes/quizzes.service';
+import { QuestionService } from '../app/question/question.service';
+import { Choice } from './models/choice.model';
 
 @Component({
   template: '',
@@ -36,6 +39,9 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
   @Output() onStartChange = new EventEmitter();
   @Output() onTimeout = new EventEmitter();
   @Output() onSave = new EventEmitter();
+
+  quizService = inject(QuizService);
+  questionService = inject(QuestionService);
 
   currentQuestion: Question = {
     id: '',
@@ -110,9 +116,10 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
   defaultChoices(numberOfChocies: number) {
     const choices = [];
     for (let i = 0; i < numberOfChocies; i++) {
-      const choice = {
+      const choice: Choice = {
         id: CommonUtils.generateRandomId(),
         content: '',
+        order: choices.length,
       };
       choices.push(choice);
     }
@@ -190,14 +197,16 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
       default:
         break;
     }
-    console.log(this.data)
-    this.data.questions.push({ ...this.currentQuestion });
-    this.data = { ...this.data };
-    this.onEditQuestion(id);
+    this.questionService
+      .addQuestion(this.data._id!, this.currentQuestion)
+      .subscribe((resp: Question) => {
+        this.data = { ...this.data, questions: [...this.data.questions, resp] };
+        this.onEditQuestion(resp._id!);
+      });
   }
 
-  onSaveQuestion(id: string) {
-    this.mapQuestionEditting[id] = false;
+  onSaveQuestion(question: Question) {
+    this.mapQuestionEditting[question._id!] = false;
     this.onSave.emit();
   }
 

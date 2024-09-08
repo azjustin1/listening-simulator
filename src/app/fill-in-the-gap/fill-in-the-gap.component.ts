@@ -172,12 +172,13 @@ export class FillInTheGapComponent extends AbstractQuestionComponent {
   }
 
   addInput(lineIndex: number, contentIndex: number) {
-    const newChoice = {
+    const newChoice: Choice = {
       id: CommonUtils.generateRandomId(),
       content: '',
+      order: lineIndex + 1,
     };
     this.question.choices.push(newChoice);
-    this.mapChoiceById[newChoice.id] = newChoice;
+    this.mapChoiceById[newChoice._id!] = newChoice;
     this.question.arrayContent![lineIndex] = [
       ...CommonUtils.pushAtIndex(
         this.question.arrayContent![lineIndex],

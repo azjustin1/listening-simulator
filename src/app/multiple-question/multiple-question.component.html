@@ -27,14 +27,14 @@
   <div class="sub-question-group">
     @for (
       subQuestion of question.subQuestions;
-      track subQuestion.id;
+      track subQuestion._id!;
       let subQuestionIndex = $index
     ) {
       <div class="question">
         <app-question
           [question]="subQuestion"
           [isSaved]="isSaved"
-          [isEditting]="mapEdittingQuestion[subQuestion.id]"
+          [isEditting]="mapEdittingQuestion[subQuestion._id!]"
           [isReadOnly]="isReadOnly"
           [isTesting]="isTesting"
           (onSave)="onSaveClick()"
@@ -42,13 +42,13 @@
       </div>
       @if (!isSaved && !isTesting && !isReadOnly) {
         <div class="actions">
-          @if (mapEdittingQuestion[subQuestion.id]) {
+          @if (mapEdittingQuestion[subQuestion._id!]) {
             <button
               mat-button
               color="primary"
               type="button"
               class="btn btn-danger"
-              (click)="onSaveSubQuestion(subQuestion.id)"
+              (click)="onSaveSubQuestion(subQuestion)"
             >
               <mat-icon>save</mat-icon>
             </button>
@@ -58,7 +58,7 @@
               color="primary"
               type="button"
               class="btn btn-danger"
-              (click)="onEditSubQuestion(subQuestion.id)"
+              (click)="onEditSubQuestion(subQuestion._id!)"
             >
               <mat-icon>edit</mat-icon>
             </button>
@@ -109,28 +109,28 @@
       <button
         class="add-question-button"
         mat-raised-button
-        (click)="addQuestion(0)"
+        (click)="addSubQuestion(0)"
       >
         <mat-icon>add</mat-icon> Multiple Choices
       </button>
       <button
         class="add-question-button"
         mat-raised-button
-        (click)="addQuestion(1)"
+        (click)="addSubQuestion(1)"
       >
         <mat-icon>add</mat-icon> Short Answer
       </button>
       <button
         class="add-question-button"
         mat-raised-button
-        (click)="addQuestion(3)"
+        (click)="addSubQuestion(3)"
       >
         <mat-icon>add</mat-icon> Dropdown Choices
       </button>
       <button
         class="add-question-button"
         mat-raised-button
-        (click)="addQuestion(5)"
+        (click)="addSubQuestion(5)"
       >
         <mat-icon>add</mat-icon> Fill In The Gap
       </button>

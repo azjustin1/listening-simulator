@@ -50,7 +50,7 @@
                     autocomplete="off"
                     [disabled]="isReadOnly"
                     matInput
-                    [name]="choice.id"
+                    [name]="choice._id!"
                     type="text"
                     class="form-control"
                     [(ngModel)]="choice.content"
@@ -99,7 +99,7 @@
         color="primary"
         type="button"
         class="btn btn-primary"
-        (click)="addChoice()"
+        (click)="addChoice(question._id!)"
       >
         <mat-icon>add</mat-icon>
         More option

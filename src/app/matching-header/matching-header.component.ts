@@ -139,6 +139,7 @@ export class MatchingHeaderComponent
     const newAnswer: Choice = {
       id: id,
       content: '',
+      order: this.data.answers.length + 1,
     };
     this.data.answers?.push(newAnswer);
     this.mapEdittingById[id] = true;

@@ -5,22 +5,28 @@ import {
   inject,
   Input,
   OnChanges,
+  OnDestroy,
   Output,
   SimpleChanges,
 } from '@angular/core';
 import { AngularEditorConfig, UploadResponse } from '@wfpena/angular-wysiwyg';
 import { debounce, each, isNull } from 'lodash-es';
-import { map } from 'rxjs';
+import { map, Subscription } from 'rxjs';
 import { FileService } from '../app/file.service';
 import { Question } from '../common/models/question.model';
 import { CommonUtils } from '../utils/common-utils';
 import { environment } from '../environments/environment';
 import { BASE64_IMAGE_REGEX } from '../utils/constant';
+import { QuestionService } from '../app/question/question.service';
+import { ChoiceService } from '../app/question/choice.service';
+import { Choice } from './models/choice.model';
 
 @Component({
   template: '',
 })
-export abstract class AbstractQuestionComponent implements OnChanges {
+export abstract class AbstractQuestionComponent
+  implements OnChanges, OnDestroy
+{
   @Input() question!: Question;
   @Input() isSaved: boolean = false;
   @Input() isEditting: boolean = false;
@@ -32,10 +38,12 @@ export abstract class AbstractQuestionComponent implements OnChanges {
   @Output() onEdit = new EventEmitter();
 
   onPaste = debounce((event) => this.uploadQuestionBase64Images(event), 1000);
-
+  subscriptions: Subscription = new Subscription();
   mapEdittingQuestion: Record<string, boolean> = {};
 
   fileService = inject(FileService);
+  questionService = inject(QuestionService);
+  choiceService = inject(ChoiceService);
 
   ngOnInit(): void {
     this.mapEdittingQuestion[this.question.id] = false;
@@ -45,6 +53,10 @@ export abstract class AbstractQuestionComponent implements OnChanges {
     if (changes['isSaved']?.currentValue) {
       this.isEditting = false;
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   config: AngularEditorConfig = {
@@ -81,9 +93,10 @@ export abstract class AbstractQuestionComponent implements OnChanges {
   defaultChoices(numberOfChocies: number) {
     const choices = [];
     for (let i = 0; i < numberOfChocies; i++) {
-      const choice = {
+      const choice: Choice = {
         id: CommonUtils.generateRandomId(),
         content: '',
+        order: choices.length,
       };
       choices.push(choice);
     }
@@ -97,18 +110,36 @@ export abstract class AbstractQuestionComponent implements OnChanges {
   }
 
   onSaveQuestion() {
-    this.onSave.emit();
+    this.subscriptions.add(
+      this.questionService.updateQuestion(this.question).subscribe((resp) => {
+        if (resp) {
+          this.question = { ...resp };
+          this.onSave.emit();
+        }
+      }),
+    );
   }
   onEditQuestion() {
     this.onEdit.emit();
   }
 
-  addChoice() {
-    this.question.choices.push({
-      id: CommonUtils.generateRandomId(),
+  addChoice(questionId: string) {
+    const newChoice: Choice = {
+      id: '',
       content: '',
       index: '',
-    });
+      order: this.question.choices ? this.question.choices.length + 1 : 0,
+    };
+    this.subscriptions.add(
+      this.choiceService
+        .addChoice(this.question._id!, newChoice)
+        .subscribe((resp) => {
+          if (resp) {
+            this.question = { ...this.question, choices: [] };
+            this.question.choices.push(resp);
+          }
+        }),
+    );
   }
 
   removeChoice(index: number) {

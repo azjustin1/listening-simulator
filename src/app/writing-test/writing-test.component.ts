@@ -133,7 +133,7 @@ export class WritingTestComponent implements OnDestroy {
     dialogRef.componentInstance.message = 'Confirm to delete this?';
     dialogRef.afterClosed().subscribe((isConfirm) => {
       if (isConfirm) {
-        this.writingService.deleteResult(result.id).subscribe(() => {
+        this.writingService.deleteResult(result.id!).subscribe(() => {
           this.writingResults = filter(
             this.writingResults,
             (r) => result.id !== r.id,
@@ -144,7 +144,7 @@ export class WritingTestComponent implements OnDestroy {
   }
 
   deleteQuiz(writing: Writing) {
-    this.writingService.delete(writing.id).subscribe(() => {
+    this.writingService.delete(writing.id!).subscribe(() => {
       this.writings = filter(this.writings, (item) => writing.id !== item.id);
     });
   }

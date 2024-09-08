@@ -2,13 +2,14 @@ const mongoose = require("mongoose");
 
 // Define the Choice interface
 const ChoiceSchema = new mongoose.Schema({
-  id: { type: String, required: true },
-  content: { type: String, required: true },
-  index: { type: String, required: false },
-  answer: { type: String, required: false },
-  correctAnswer: { type: String, required: false },
+  id: { type: String },
+  content: { type: String },
+  index: { type: String },
+  order: { type: Number },
+  answer: { type: String },
+  correactAnswer: { type: String },
 });
 
 const Choice = mongoose.model("Choice", ChoiceSchema);
 
-module.exports = Choice;
+module.exports = { ChoiceSchema, Choice };

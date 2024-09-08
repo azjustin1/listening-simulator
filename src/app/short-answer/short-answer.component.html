@@ -31,7 +31,7 @@
       <div class="form-group">
         @if (isEditting) {
           <angular-editor
-            [name]="question.id"
+            [name]="question._id!"
             [config]="config"
             [(ngModel)]="question.content"
             (ngModelChange)="onPaste($event)"
@@ -49,7 +49,7 @@
               <textarea
                 autocomplete="off"
                 matInput
-                [name]="$index.toString()"
+                [name]="choice._id!"
                 type="text"
                 class="form-control"
                 [(ngModel)]="choice.index"
@@ -60,7 +60,7 @@
               <textarea
                 autocomplete="off"
                 matInput
-                [name]="choice.id"
+                [name]="choice._id!"
                 type="text"
                 class="form-control"
                 [(ngModel)]="choice.correctAnswer"
@@ -76,7 +76,7 @@
                 <input
                   autocomplete="off"
                   matInput
-                  [name]="choice.id"
+                  [name]="choice._id!"
                   type="text"
                   class="form-control"
                   [(ngModel)]="choice.answer"
@@ -111,7 +111,7 @@
         type="button"
         class="btn btn-primary"
         style="margin-top: 16px"
-        (click)="addChoice()"
+        (click)="addChoice(question._id!)"
       >
         <mat-icon>add</mat-icon>
         More option

@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { Quiz } from '../../common/models/quiz.model';
+import { Question } from '../../common/models/question.model';
 
 @Injectable()
 export class QuizService {

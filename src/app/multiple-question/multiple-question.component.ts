@@ -1,4 +1,10 @@
-import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -33,6 +39,7 @@ export class MultipleQuestionComponent
   extends AbstractQuestionComponent
   implements OnInit, OnChanges
 {
+  @Input() quizId?: string;
   override ngOnInit(): void {
     super.ngOnInit();
     each(this.question.subQuestions, (question) => {
@@ -49,11 +56,11 @@ export class MultipleQuestionComponent
 
   override updateEdittingQuestion(status: boolean) {
     each(this.question.subQuestions, (question) => {
-      this.mapEdittingQuestion[question.id] = status;
+      this.mapEdittingQuestion[question._id!] = status;
     });
   }
 
-  addQuestion(questionType: number) {
+  addSubQuestion(questionType: number) {
     const id = CommonUtils.generateRandomId();
     let newQuestion: Question = {
       id: id,
@@ -109,9 +116,14 @@ export class MultipleQuestionComponent
       default:
         break;
     }
-    this.question.subQuestions!.push({ ...newQuestion });
-    this.question = { ...this.question };
-    this.onEditSubQuestion(id);
+    this.subscriptions.add(
+      this.questionService
+        .addSubQuestion(this.question._id!, newQuestion)
+        .subscribe((resp) => {
+          this.question.subQuestions!.push({ ...newQuestion });
+          this.onEditSubQuestion(resp._id!);
+        }),
+    );
   }
 
   moveQuestionUp(index: number) {
@@ -126,8 +138,14 @@ export class MultipleQuestionComponent
     this.question.subQuestions![index] = tempQuestion;
   }
 
-  onSaveSubQuestion(id: string) {
-    this.mapEdittingQuestion[id] = false;
+  onSaveSubQuestion(subQuestion: Question) {
+    console.log(subQuestion)
+    this.questionService.updateQuestion(subQuestion).subscribe((resp) => {
+      if (resp) {
+        subQuestion = { ...resp };
+        this.mapEdittingQuestion[subQuestion._id!] = false;
+      }
+    });
   }
 
   onEditSubQuestion(id: string) {

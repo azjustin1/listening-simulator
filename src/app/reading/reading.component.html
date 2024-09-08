@@ -15,27 +15,27 @@
           @if (data) {
             @for (
               question of data.questions;
-              track question.id;
+              track question._id!;
               let questionIndex = $index
             ) {
               <app-multiple-question
                 [question]="question"
-                [isEditting]="mapQuestionEditting[question.id]"
+                [isEditting]="mapQuestionEditting[question._id!]"
                 [isReadOnly]="isReadOnly"
                 [isTesting]="isTesting"
-                [isSaved]="mapSavedQuestion[question.id]"
-                (onSave)="onSaveQuestion(question.id)"
-                (onEdit)="onEditQuestion(question.id)"
+                [isSaved]="mapSavedQuestion[question.id!]"
+                (onSave)="onSaveQuestion(question)"
+                (onEdit)="onEditQuestion(question._id!)"
               ></app-multiple-question>
               @if (!isSaved && !isTesting && !isReadOnly) {
                 <div class="actions">
-                  @if (mapQuestionEditting[question.id]) {
+                  @if (mapQuestionEditting[question.id!]) {
                     <button
                       mat-button
                       color="primary"
                       type="button"
                       class="btn btn-danger"
-                      (click)="onSaveQuestion(question.id)"
+                      (click)="onSaveQuestion(question)"
                     >
                       <mat-icon>save</mat-icon>
                     </button>
@@ -45,7 +45,7 @@
                       color="primary"
                       type="button"
                       class="btn btn-danger"
-                      (click)="onEditQuestion(question.id)"
+                      (click)="onEditQuestion(question.id!)"
                     >
                       <mat-icon>edit</mat-icon>
                     </button>
@@ -110,7 +110,7 @@
           <angular-editor
             class="editor"
             name="questionContent"
-            [id]="data.id"
+            [id]="data._id!"
             [(ngModel)]="data.content"
             (ngModelChange)="onPaste($event)"
             [config]="config"

@@ -1,5 +1,24 @@
-@for (test of readingTests; track $index) {
-<div (click)="editTest(test._id!)">
-  <h1>{{test.name}}</h1>
-</div>
+@if (isTeacher()) {
+  <button mat-raised-button color="primary" (click)="onAddNewTest()">
+    Add new test
+  </button>
 }
+<div class="container">
+  @for (test of readingTests; track $index) {
+    <mat-card class="card">
+      <mat-card-content class="card-content">
+        <h1>{{ test.name }}</h1>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="takeTest(test._id!)">Test</button>
+          <button mat-menu-item (click)="editTest(test._id!)">Edit</button>
+          <button mat-menu-item (click)="onDeleteTest(test)">Delete</button>
+        </mat-menu>
+      </mat-card-actions>
+    </mat-card>
+  }
+</div>

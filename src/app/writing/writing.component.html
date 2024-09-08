@@ -4,7 +4,7 @@
       <angular-editor
         name="reading-question"
         class="editor"
-        [id]="data.id"
+        [id]="data.id!"
         [config]="config"
         [(ngModel)]="data.content"
         (ngModelChange)="onPaste($event)"

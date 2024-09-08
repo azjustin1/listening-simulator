@@ -31,6 +31,9 @@ import { CorrectChoicesPipe } from '../../common/pipes/correct-choices.pipe';
   styleUrl: './multiple-choices.component.scss',
 })
 export class MultipleChoicesComponent extends AbstractQuestionComponent {
+contentChange($event: any) {
+console.log(this.question.choices)
+}
   selectedAnswer: string = '';
   mapSelectedChoice: Record<number, boolean> = {};
 

@@ -38,8 +38,8 @@
                 <mat-icon>more_vert</mat-icon>
               </button>
               <mat-menu #menu="matMenu">
-                <button mat-menu-item (click)="test(writing.id)">Test</button>
-                <button mat-menu-item (click)="edit(writing.id)">Edit</button>
+                <button mat-menu-item (click)="test(writing.id!)">Test</button>
+                <button mat-menu-item (click)="edit(writing.id!)">Edit</button>
                 <button mat-menu-item (click)="duplicate(writing)">
                   Duplicate
                 </button>
@@ -75,7 +75,7 @@
         @for (result of writingResults; track $index) {
           <mat-card class="result-card">
             <mat-card-title class="card-title"
-              ><h1 class="mat-display-2" (click)="view(result.id)">
+              ><h1 class="mat-display-2" (click)="view(result.id!)">
                 &nbsp;{{ result.studentName }}
                 @if (!result.isSubmit) {
                   🔸
@@ -87,11 +87,11 @@
                 </button>
                 <mat-menu #menu="matMenu">
                   @if (result.isSubmit) {
-                    <button mat-menu-item (click)="view(result.id)">
+                    <button mat-menu-item (click)="view(result.id!)">
                       View
                     </button>
                   } @else {
-                    <button mat-menu-item (click)="continue(result.id)">
+                    <button mat-menu-item (click)="continue(result.id!)">
                       Continue
                     </button>
                   }
@@ -104,7 +104,7 @@
                 </mat-menu>
               </mat-card-actions>
             </mat-card-title>
-            <mat-card-content class="card-content" (click)="view(result.id)">
+            <mat-card-content class="card-content" (click)="view(result.id!)">
               <br />
               <b>Test date:</b> {{ result.testDate }}
             </mat-card-content>

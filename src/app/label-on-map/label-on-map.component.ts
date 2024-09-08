@@ -80,6 +80,9 @@ export class LabelOnMapComponent extends AbstractQuestionComponent {
     const newChoice = {
       id: CommonUtils.generateRandomId(),
       content: '',
+      order: this.question.subQuestions?.length
+        ? 0
+        : this.question.subQuestions?.length! + 1,
     };
     each(this.question.subQuestions, (question) => {
       question.choices.push(newChoice);

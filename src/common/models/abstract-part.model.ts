@@ -1,7 +1,8 @@
 import { Question } from './question.model';
 
 export interface AbstractPart {
-  id: string;
+  _id?: string;
+  id?: string;
   content: string;
   timeout: number | undefined;
   questions: Question[];

@@ -4,7 +4,7 @@
       @if (isEditting) {
         <angular-editor
           name="questionContent"
-          [id]="question.id"
+          [id]="question._id!"
           [config]="config"
           [(ngModel)]="question.content"
           (ngModelChange)="onPaste($event)"
@@ -29,11 +29,11 @@
               isWrong:
                 isReadOnly &&
                 question.answer.includes(choice.id) &&
-                !question.correctAnswer.includes(choice.id)
+                !question.correctAnswer.includes(choice.id),
             }"
             (click)="onSelectChoice($index)"
           >
-            <p>{{ CHOICE_INDEX[$index]  }} </p>
+            <p>{{ CHOICE_INDEX[$index] }}</p>
           </div>
           <div class="choice-content">
             @if (isEditting) {
@@ -42,8 +42,9 @@
                   autocomplete="off"
                   [disabled]="isReadOnly"
                   matInput
-                  [name]="choice.id"
+                  [name]="choice._id!"
                   type="text"
+                  (ngModelChange)="contentChange($event)"
                   [(ngModel)]="choice.content"
                 ></textarea>
               </mat-form-field>
@@ -69,7 +70,7 @@
         color="primary"
         type="button"
         class="btn btn-primary"
-        (click)="addChoice()"
+        (click)="addChoice(question._id!)"
       >
         <mat-icon>add</mat-icon>
         More option
