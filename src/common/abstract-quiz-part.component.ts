@@ -232,7 +232,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     this.onSave.emit();
   }
 
-  removeQuestion(questionIdex: number) {
+  removeQuestion(questionId: string, questionIdex: number) {
     this.data.questions.splice(questionIdex, 1);
   }
 

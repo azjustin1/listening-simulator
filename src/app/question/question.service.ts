@@ -15,14 +15,6 @@ export class QuestionService {
     return this.httpClient.post<Question>('/questions', requestBody);
   }
 
-  updateQuestion(question: Question): Observable<Question> {
-    return this.httpClient.patch<Question>('/questions', question);
-  }
-
-  updateSubQuestion(subQuestion: Question): Observable<Question> {
-    return this.httpClient.patch<Question>('/questions/sub-questions', subQuestion);
-  }
-
   addSubQuestion(questionId: string, subQuestion: Question) {
     const requestBody = {
       questionId,
@@ -33,5 +25,24 @@ export class QuestionService {
       '/questions/sub-questions',
       requestBody,
     );
+  }
+
+  updateQuestion(question: Question): Observable<Question> {
+    return this.httpClient.patch<Question>('/questions', question);
+  }
+
+  updateSubQuestion(subQuestion: Question): Observable<Question> {
+    return this.httpClient.patch<Question>(
+      '/questions/sub-questions',
+      subQuestion,
+    );
+  }
+
+  deleteQuestion(questionId: string): Observable<boolean> {
+    return this.httpClient.delete<boolean>(`/questions/${questionId}`);
+  }
+
+  deleteSubQuestion(subQuestionId: string): Observable<any> {
+    return this.httpClient.delete(`/questions/sub-questions/${subQuestionId}`);
   }
 }

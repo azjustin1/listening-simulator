@@ -7,11 +7,15 @@ import { Observable } from 'rxjs';
 export class ChoiceService {
   constructor(private httpClient: HttpClient) {}
 
-  addChoice(questionId: string, choice: Choice): Observable<Choice> {
+  create(questionId: string, choice: Choice): Observable<Choice> {
     const requestBody = {
       questionId,
       choice,
     };
     return this.httpClient.post<Choice>('/choices', requestBody);
+  }
+
+  delete(choiceId: string): Observable<boolean> {
+    return this.httpClient.delete<boolean>(`/choices/${choiceId}`);
   }
 }

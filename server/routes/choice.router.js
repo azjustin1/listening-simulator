@@ -37,4 +37,17 @@ router.patch("/", async (req, res) => {
   }
 });
 
+router.delete("/:id", async (req, res) => {
+  try {
+    const choiceId = req.params.id;
+    await Choice.findOneAndDelete({
+      _id: choiceId,
+    });
+    res.status(200).send({ questionId: choiceId });
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: error.message });
+  }
+});
+
 module.exports = router;

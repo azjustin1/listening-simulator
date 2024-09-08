@@ -77,4 +77,10 @@ export class SelfReadingDetailComponent extends ReadingComponent {
       super.onSaveQuestion(resp);
     });
   }
+
+  override removeQuestion(questionId: string, questionIdex: number): void {
+    this.questionService.deleteQuestion(questionId).subscribe(() => {
+      this.data.questions.splice(questionIdex, 1);
+    });
+  }
 }

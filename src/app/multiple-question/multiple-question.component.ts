@@ -12,7 +12,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { clone, cloneDeep, each, mapValues } from 'lodash-es';
+import { clone, cloneDeep, each, filter, mapValues } from 'lodash-es';
 import { AbstractQuestionComponent } from '../../common/abstract-question.component';
 import { Question } from '../../common/models/question.model';
 import { CommonUtils } from '../../utils/common-utils';
@@ -61,7 +61,6 @@ export class MultipleQuestionComponent
   }
 
   addSubQuestion(questionType: number) {
-    const id = CommonUtils.generateRandomId();
     let newQuestion: Question = {
       content: '',
       type: null,
@@ -115,7 +114,7 @@ export class MultipleQuestionComponent
       this.questionService
         .addSubQuestion(this.question._id!, newQuestion)
         .subscribe((resp) => {
-          this.question.subQuestions!.push({ ...newQuestion });
+          this.question.subQuestions!.push({ ...resp });
           this.onEditSubQuestion(resp._id!);
         }),
     );
@@ -134,7 +133,6 @@ export class MultipleQuestionComponent
   }
 
   onSaveSubQuestion(subQuestion: Question) {
-    console.log(subQuestion)
     this.questionService.updateSubQuestion(subQuestion).subscribe((resp) => {
       if (resp) {
         subQuestion = { ...resp };
@@ -157,8 +155,15 @@ export class MultipleQuestionComponent
     this.question.subQuestions!.push(cloneQuestion);
   }
 
-  onRemoveSubQuestion(index: number) {
-    this.question.subQuestions?.splice(index, 1);
+  onRemoveSubQuestion(questionId: string, index: number) {
+    this.subscriptions.add(
+      this.questionService.deleteSubQuestion(questionId).subscribe((res) => {
+        this.question.subQuestions = filter(
+          this.question.subQuestions,
+          (subQuestion) => subQuestion._id != res.questionId,
+        );
+      }),
+    );
   }
 
   saveOthersEditting() {

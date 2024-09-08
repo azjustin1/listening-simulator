@@ -84,4 +84,33 @@ router.patch("/sub-questions", async (req, res) => {
   }
 });
 
+router.delete("/:id", async (req, res) => {
+  try {
+    const questionId = req.params.id;
+    const question = await Question.findById(questionId);
+    if (!question) {
+      res.status(404).send("Not found");
+    }
+    await Question.findOneAndDelete({
+      _id: questionId,
+      subQuestions: question.subQuestions,
+    });
+    res.status(200).send({ questionId });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.delete("/sub-questions/:id", async (req, res) => {
+  try {
+    const questionId = req.params.id;
+    await SubQuestion.findOneAndDelete({
+      _id: questionId,
+    });
+    res.status(200).send({ questionId });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 module.exports = router;

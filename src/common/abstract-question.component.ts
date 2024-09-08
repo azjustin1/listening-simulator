@@ -133,7 +133,7 @@ export abstract class AbstractQuestionComponent
     };
     this.subscriptions.add(
       this.choiceService
-        .addChoice(questionId, newChoice)
+        .create(questionId, newChoice)
         .subscribe((resp) => {
           if (resp) {
             this.question.choices = [...this.question.choices, resp];
@@ -142,8 +142,10 @@ export abstract class AbstractQuestionComponent
     );
   }
 
-  removeChoice(index: number) {
-    this.question.choices.splice(index, 1);
+  removeChoice(choiceId: string, index: number) {
+    this.choiceService.delete(choiceId).subscribe(() => {
+      this.question.choices.splice(index, 1);
+    })
   }
 
   extractBase64Image(content: string) {
