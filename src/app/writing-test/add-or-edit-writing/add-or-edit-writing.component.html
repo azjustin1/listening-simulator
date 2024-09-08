@@ -51,51 +51,49 @@
           @for (part of data.parts; track $index) {
             <mat-tab>
               <ng-template matTabLabel="">{{ $index + 1 }}</ng-template>
-              <mat-card style="margin-bottom: 16px" appearance="outlined">
-                <mat-card-content>
-                  <app-writing
-                    [data]="part"
-                    [isSaved]="mapSavedPart[$index]!"
-                    [isEditting]="state['isEditting']"
-                    [isTesting]="state['isTesting']"
-                    [isReadOnly]="state['isReadOnly']"
-                  ></app-writing>
-                  @if (state["isEditting"]) {
-                    <div class="actions">
-                      @if (mapSavedPart[$index]) {
-                        <button
-                          mat-button
-                          color="primary"
-                          type="button"
-                          class="btn btn-danger"
-                          (click)="onEditClick($index)"
-                        >
-                          <mat-icon>edit</mat-icon> Edit part
-                        </button>
-                      } @else {
-                        <button
-                          mat-button
-                          color="primary"
-                          type="button"
-                          class="btn btn-danger"
-                          (click)="onSavePart($index)"
-                        >
-                          <mat-icon>save</mat-icon> Save part
-                        </button>
-                      }
+              <div style="margin-bottom: 10px">
+                <app-writing
+                  [data]="part"
+                  [isSaved]="mapSavedPart[$index]!"
+                  [isEditting]="state['isEditting']"
+                  [isTesting]="state['isTesting']"
+                  [isReadOnly]="state['isReadOnly']"
+                ></app-writing>
+                @if (state["isEditting"]) {
+                  <div class="actions">
+                    @if (mapSavedPart[$index]) {
                       <button
                         mat-button
-                        color="warn"
+                        color="primary"
                         type="button"
                         class="btn btn-danger"
-                        (click)="remove($index)"
+                        (click)="onEditClick($index)"
                       >
-                        <mat-icon>delete</mat-icon> Remove part
+                        <mat-icon>edit</mat-icon> Edit part
                       </button>
-                    </div>
-                  }
-                </mat-card-content>
-              </mat-card>
+                    } @else {
+                      <button
+                        mat-button
+                        color="primary"
+                        type="button"
+                        class="btn btn-danger"
+                        (click)="onSavePart($index)"
+                      >
+                        <mat-icon>save</mat-icon> Save part
+                      </button>
+                    }
+                    <button
+                      mat-button
+                      color="warn"
+                      type="button"
+                      class="btn btn-danger"
+                      (click)="remove($index)"
+                    >
+                      <mat-icon>delete</mat-icon> Remove part
+                    </button>
+                  </div>
+                }
+              </div>
             </mat-tab>
           }
         </mat-tab-group>

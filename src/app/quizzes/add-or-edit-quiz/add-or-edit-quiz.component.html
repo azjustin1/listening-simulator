@@ -62,15 +62,11 @@
           </div>
 
           @if (currentQuiz.listeningParts[selectedListeningPart]) {
-            <mat-card appearance="outlined">
-              <mat-card-content>
-                <app-listening
-                  [(data)]="currentQuiz.listeningParts[selectedListeningPart]"
-                  [isSaved]="mapSavedPart['listening'][selectedListeningPart]!"
-                  (onSave)="saveOrEditQuiz(currentQuiz)"
-                ></app-listening>
-              </mat-card-content>
-            </mat-card>
+            <app-listening
+              [(data)]="currentQuiz.listeningParts[selectedListeningPart]"
+              [isSaved]="mapSavedPart['listening'][selectedListeningPart]!"
+              (onSave)="saveOrEditQuiz(currentQuiz)"
+            ></app-listening>
           }
           @if (currentQuiz.listeningParts.length > 0) {
             <div class="actions">
@@ -145,14 +141,10 @@
               </mat-form-field>
             }
           </div>
-          <mat-card class="part-card" appearance="outlined">
-            <mat-card-content>
-              <app-reading
-                [data]="currentQuiz.readingParts[selectedReadingPart]"
-                [isSaved]="mapSavedPart['reading'][selectedReadingPart]!"
-              ></app-reading>
-            </mat-card-content>
-          </mat-card>
+          <app-reading
+            [data]="currentQuiz.readingParts[selectedReadingPart]"
+            [isSaved]="mapSavedPart['reading'][selectedReadingPart]!"
+          ></app-reading>
           @if (currentQuiz.readingParts.length > 0) {
             <div class="actions">
               @if (mapSavedPart["reading"][selectedReadingPart]) {
@@ -226,14 +218,10 @@
             }
           </div>
           @if (currentQuiz.writingParts[selectedWritingPart]) {
-            <mat-card appearance="outlined">
-              <mat-card-content>
-                <app-writing
-                  [data]="currentQuiz.writingParts[selectedWritingPart]"
-                  [isSaved]="mapSavedPart['writing'][selectedWritingPart]!"
-                ></app-writing>
-              </mat-card-content>
-            </mat-card>
+            <app-writing
+              [data]="currentQuiz.writingParts[selectedWritingPart]"
+              [isSaved]="mapSavedPart['writing'][selectedWritingPart]!"
+            ></app-writing>
             @if (currentQuiz.writingParts.length > 0) {
               <div class="actions">
                 @if (mapSavedPart["writing"][selectedWritingPart]) {

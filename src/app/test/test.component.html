@@ -57,16 +57,14 @@
       <mat-tab label="Listening" [disabled]="mapDisablePart[0]">
         <ng-template matTabContent>
           @if (isStart) {
-            <mat-card class="question-group" appearance="outlined">
-              <mat-card-content>
-                <app-listening
-                  [data]="result.listeningParts[selectedListeningPart]"
-                  [isTesting]="true"
-                  [isStart]="isStart"
-                  (onStartChange)="onStartPart()"
-                ></app-listening>
-              </mat-card-content>
-            </mat-card>
+            <div class="question-group">
+              <app-listening
+                [data]="result.listeningParts[selectedListeningPart]"
+                [isTesting]="true"
+                [isStart]="isStart"
+                (onStartChange)="onStartPart()"
+              ></app-listening>
+            </div>
           }
           <app-part-navigation
             [(selectedPart)]="selectedListeningPart"
@@ -89,16 +87,14 @@
       <mat-tab label="Reading" [disabled]="mapDisablePart[1]">
         <ng-template matTabContent>
           @if (isStart) {
-            <mat-card class="question-group" appearance="outlined">
-              <mat-card-content>
-                <app-reading
-                  [data]="result.readingParts[selectedReadingPart]"
-                  [isTesting]="true"
-                  [isStart]="isStart"
-                  (onStartChange)="onStartPart()"
-                ></app-reading
-              ></mat-card-content>
-            </mat-card>
+            <div class="question-group">
+              <app-reading
+                [data]="result.readingParts[selectedReadingPart]"
+                [isTesting]="true"
+                [isStart]="isStart"
+                (onStartChange)="onStartPart()"
+              ></app-reading>
+            </div>
           }
           <app-part-navigation
             [(selectedPart)]="selectedReadingPart"
@@ -121,16 +117,14 @@
       <mat-tab label="Writing" [disabled]="mapDisablePart[2]">
         <ng-template matTabContent>
           @if (isStart && result.writingParts[selectedWritingPart]) {
-            <mat-card class="question-group" appearance="outlined">
-              <mat-card-content>
-                <app-writing
-                  [data]="result.writingParts[selectedWritingPart]"
-                  [isTesting]="true"
-                  [isStart]="isStart"
-                  (onStartChange)="onStartPart()"
-                ></app-writing
-              ></mat-card-content>
-            </mat-card>
+            <div class="question-group">
+              <app-writing
+                [data]="result.writingParts[selectedWritingPart]"
+                [isTesting]="true"
+                [isStart]="isStart"
+                (onStartChange)="onStartPart()"
+              ></app-writing>
+            </div>
           }
           <app-part-navigation
             [(selectedPart)]="selectedWritingPart"
