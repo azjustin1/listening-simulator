@@ -42,17 +42,11 @@ router.post("/sub-questions", async (req, res) => {
 router.patch("/", async (req, res) => {
   const question = req.body;
   try {
-    const updateQuestion = await Question.findById(question._id);
+    const updateQuestion = await Question.findByIdAndUpdate(question._id, question);
 
     if (!updateQuestion) {
       res.status(404).send("Not found");
     }
-
-    // if (!isEmpty(updateQuestion.choices)) {
-    //   await updateQuestion.choices.map(async (choice) => {
-    //     return Choice.updateOne({ _id: choice._id, choice });
-    //   });
-    // }
 
     res.status(200).send(updateQuestion);
   } catch (error) {
