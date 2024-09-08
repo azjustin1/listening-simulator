@@ -16,7 +16,7 @@ import { SelfReadingService } from '../self-reading/self-reading.service';
 import { ReadingComponent } from '../../reading/reading.component';
 import { Reading } from '../../../common/models/reading.model';
 import { ActivatedRoute } from '@angular/router';
-import { isEmpty } from 'lodash-es';
+import { each, isEmpty } from 'lodash-es';
 import { QuestionService } from '../../question/question.service';
 import { Question } from '../../../common/models/question.model';
 import { ChoiceService } from '../../question/choice.service';
@@ -62,6 +62,9 @@ export class SelfReadingDetailComponent extends ReadingComponent {
     if (!isEmpty(readingId)) {
       this.selfReadingService.getSelfReadingById(readingId).subscribe((res) => {
         this.data = res;
+        each(this.data.questions, (question) => {
+          this.mapSavedQuestion[question._id!] = true;
+        });
       });
     }
   }
