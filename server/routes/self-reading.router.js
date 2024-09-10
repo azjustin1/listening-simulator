@@ -24,20 +24,6 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.post("/questions", async (req, res) => {
-  const { quizId, question } = req.body;
-  try {
-    const newQuestion = new Question(question);
-    const savedQuestion = await newQuestion.save();
-    const quiz = await SelfReading.findById(quizId);
-    quiz.questions = [...quiz.questions, savedQuestion];
-    await quiz.save();
-    res.status(201).send(savedQuestion);
-  } catch (error) {
-    res.status(400).send(error);
-  }
-});
-
 // Read all SelfReadings
 router.get("/", async (req, res) => {
   try {
@@ -57,8 +43,8 @@ router.get("/:id", async (req, res) => {
         {
           path: "subQuestions",
           populate: {
-            path: "choices"
-          }
+            path: "choices",
+          },
         },
         { path: "choices" },
       ],
@@ -73,41 +59,19 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// Add a question to a SelfReading
-router.post("/:id/questions", async (req, res) => {
-  try {
-    const selfReading = await SelfReading.findById(req.params.id);
-    if (!selfReading) {
-      return res.status(404).send();
-    }
-
-    const newQuestion = new Question({
-      ...req.body,
-      selfReading: selfReading._id,
-    });
-    await newQuestion.save();
-
-    selfReading.questions.push(newQuestion._id);
-    await selfReading.save();
-
-    res.status(201).send(newQuestion);
-  } catch (error) {
-    res.status(400).send(error);
-  }
-});
-
 // Update a SelfReading by ID
-router.patch("/:id", async (req, res) => {
+router.patch("/", async (req, res) => {
+  const selfReading = req.body;
   try {
-    const selfReading = await SelfReading.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true },
+    const existedSelfReading = await SelfReading.findByIdAndUpdate(
+      selfReading._id,
+      selfReading,
+      { runValidators: true },
     );
-    if (!selfReading) {
+    if (!existedSelfReading) {
       return res.status(404).send();
     }
-    res.send(selfReading);
+    res.send(existedSelfReading);
   } catch (error) {
     res.status(400).send(error);
   }

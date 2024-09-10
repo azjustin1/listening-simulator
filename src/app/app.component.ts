@@ -15,8 +15,6 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 export class AppComponent {
   title = 'listening-simulator';
 
-  quizService: QuizService = inject(QuizService);
-
   constructor() {
     window.addEventListener('keydown', function (e) {
       if (e.key === 'F3' || (e.ctrlKey && e.key === 'f')) {
@@ -26,6 +24,5 @@ export class AppComponent {
         e.preventDefault();
       }
     });
-    this.quizService.getAll().subscribe();
   }
 }

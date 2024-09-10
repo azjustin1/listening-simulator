@@ -93,12 +93,12 @@ export class ExportUtils {
     let htmlString = '';
     each(question.subQuestions, (question) => {
       findIndex(question.choices, (choie) => {
-        return question.answer.includes(choie.id);
+        return question.answer.includes(choie._id!);
       });
       htmlString += `${question.content} ${
         CHOICE_INDEX[
           findIndex(question.choices, (choie) =>
-            question.answer.includes(choie.id),
+            question.answer.includes(choie._id!),
           )
         ]
       } ${AnswerChoicePipe.prototype.transform(question)}<br>`;
@@ -109,7 +109,7 @@ export class ExportUtils {
   static exportMultipleChoices(question: Question) {
     let htmlString = '';
     each(question.choices, (choice, index) => {
-      if (question.answer && question.answer.includes(choice.id)) {
+      if (question.answer && question.answer.includes(choice._id!)) {
         htmlString += `<u>${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}</u><br>`;
       } else {
         htmlString += `${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}<br>`;
@@ -136,7 +136,7 @@ export class ExportUtils {
     each(question.arrayContent, (line) => {
       each(line, (content) => {
         if (IsInputPipe.prototype.transform(content)) {
-          htmlString += ` <b>${question.choices.find((choice) => choice.id === inputPattern.exec(content)![1])?.answer}</b> `;
+          htmlString += ` <b>${question.choices.find((choice) => choice._id! === inputPattern.exec(content)![1])?.answer}</b> `;
         } else {
           htmlString += `${content}`;
         }

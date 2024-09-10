@@ -57,7 +57,6 @@ export class ReadingComponent
   mapSavedQuestion: Record<string, boolean> = {};
   answers: WritableSignal<Choice[]> = signal([]);
 
-  subscription: Subscription[] = [];
 
   ngOnInit(): void {
     if (this.data) {

@@ -18,4 +18,8 @@ export class SelfReadingService {
   createSelfReading(reading: Reading): Observable<Reading> {
     return this.httpClient.post<Reading>('/self-reading', reading);
   }
+
+  updateSelfReading(reading: Reading): Observable<Reading> {
+    return this.httpClient.patch<Reading>('/self-reading', reading);
+  }
 }

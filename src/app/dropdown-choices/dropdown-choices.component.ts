@@ -6,13 +6,14 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatRadioModule } from '@angular/material/radio';
-import { MatSelectModule } from '@angular/material/select';
+import { MatRadioChange, MatRadioModule } from '@angular/material/radio';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { AbstractQuestionComponent } from '../../common/abstract-question.component';
 import { CorrectAnswerChoicePipe } from '../../common/pipes/correct-answer-choice.pipe';
 import { CorrectDropdownPipe } from '../../common/pipes/correct-dropdown.pipe';
 import { AnswerChoicePipe } from '../../common/pipes/answer-choice.pipe';
+import { Choice } from '../../common/models/choice.model';
 @Component({
   selector: 'app-dropdown-choices',
   standalone: true,
@@ -34,4 +35,12 @@ import { AnswerChoicePipe } from '../../common/pipes/answer-choice.pipe';
   templateUrl: './dropdown-choices.component.html',
   styleUrl: './dropdown-choices.component.scss',
 })
-export class DropdownChoicesComponent extends AbstractQuestionComponent {}
+export class DropdownChoicesComponent extends AbstractQuestionComponent {
+  onSelectChange(event: MatSelectChange) {
+    this.question.answer = [event.value];
+  }
+
+  onSelectCorrectAnswer(event: MatRadioChange) {
+    this.question.correctAnswer = [event.value];
+  }
+}

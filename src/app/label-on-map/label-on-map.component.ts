@@ -54,7 +54,7 @@ export class LabelOnMapComponent extends AbstractQuestionComponent {
 
   onRowClick(questionIndex: number, choiceIndex: number) {
     const choiceId =
-      this.question.subQuestions![questionIndex].choices[choiceIndex].id;
+      this.question.subQuestions![questionIndex].choices[choiceIndex]._id!;
     const correctAnswer =
       this.question.subQuestions![questionIndex].correctAnswer;
     const answer = this.question.subQuestions![questionIndex].answer;

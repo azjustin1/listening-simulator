@@ -20,6 +20,7 @@ import { INPUT_PATTERN } from '../../utils/constant';
 import { ArrayContentChoice } from './array-content.pipe';
 import { FitContentDirective } from './fit-content.directive';
 import { IsInputPipe } from './is-input.pipe';
+import { ChoiceService } from '../question/choice.service';
 
 @Component({
   selector: 'app-fill-in-the-gap',
@@ -70,7 +71,7 @@ export class FillInTheGapComponent extends AbstractQuestionComponent {
 
   initChoiceContent() {
     each(this.question.choices, (choice) => {
-      this.mapChoiceById[choice.id] = choice;
+      this.mapChoiceById[choice._id!] = choice;
     });
   }
 
@@ -89,7 +90,7 @@ export class FillInTheGapComponent extends AbstractQuestionComponent {
     if (inputId) {
       this.question.choices = filter(
         this.question.choices,
-        (choice) => choice.id !== inputId,
+        (choice) => choice._id !== inputId,
       );
     }
     each(this.question.arrayContent![lineIndex], (content, contentIndex) => {
@@ -173,22 +174,49 @@ export class FillInTheGapComponent extends AbstractQuestionComponent {
 
   addInput(lineIndex: number, contentIndex: number) {
     const newChoice: Choice = {
-      id: CommonUtils.generateRandomId(),
       content: '',
       order: lineIndex + 1,
     };
-    this.question.choices.push(newChoice);
-    this.mapChoiceById[newChoice._id!] = newChoice;
-    this.question.arrayContent![lineIndex] = [
-      ...CommonUtils.pushAtIndex(
-        this.question.arrayContent![lineIndex],
-        contentIndex,
-        `<${newChoice.id}>`,
-      ),
-    ];
-    this.saveAllEditting();
-    this.mapSaveTextByIndex[lineIndex][contentIndex] = false;
-    this.mapShowActionByIndex[lineIndex][contentIndex] = true;
+
+    this.choiceService.create(this.question, newChoice).subscribe((choice) => {
+      this.question.choices.push(choice);
+      this.mapChoiceById[choice._id!] = choice;
+      this.question.arrayContent![lineIndex] = [
+        ...CommonUtils.pushAtIndex(
+          this.question.arrayContent![lineIndex],
+          contentIndex,
+          `<${choice._id}>`,
+        ),
+      ];
+      this.subscriptions.add(
+        this.questionService.updateSubQuestion(this.question).subscribe(),
+      );
+      this.saveAllEditting();
+      this.mapSaveTextByIndex[lineIndex][contentIndex] = false;
+      this.mapShowActionByIndex[lineIndex][contentIndex] = true;
+    });
+  }
+
+  saveInput(lineIndex: number, contentIndex: number) {
+    const matchInput = RegExp(INPUT_PATTERN).exec(
+      this.question.arrayContent![lineIndex][contentIndex],
+    );
+    if (matchInput) {
+      const choice = this.mapChoiceById[matchInput[1]];
+      this.subscriptions.add(this.choiceService.update(choice).subscribe());
+    }
+  }
+
+  deleteInput(lineIndex: number, contentIndex: number) {
+    const matchInput = RegExp(INPUT_PATTERN).exec(
+      this.question.arrayContent![lineIndex][contentIndex],
+    );
+    if (matchInput) {
+      const choice = this.mapChoiceById[matchInput[1]];
+      this.subscriptions.add(
+        this.choiceService.delete(choice._id!).subscribe(),
+      );
+    }
   }
 
   onEditInput(lineIndex: number, contentIndex: number) {

@@ -94,7 +94,6 @@ export abstract class AbstractQuestionComponent
     const choices = [];
     for (let i = 0; i < numberOfChocies; i++) {
       const choice: Choice = {
-        id: CommonUtils.generateRandomId(),
         content: '',
         order: choices.length,
       };
@@ -110,7 +109,7 @@ export abstract class AbstractQuestionComponent
   }
 
   onSaveQuestion() {
-    console.log(this.question)
+    console.log(this.question);
     this.subscriptions.add(
       this.questionService.updateQuestion(this.question).subscribe((resp) => {
         if (resp) {
@@ -124,28 +123,25 @@ export abstract class AbstractQuestionComponent
     this.onEdit.emit();
   }
 
-  addChoice(questionId: string) {
+  addChoice(question: Question) {
     const newChoice: Choice = {
-      id: '',
       content: '',
       index: '',
       order: this.question.choices ? this.question.choices.length + 1 : 0,
     };
     this.subscriptions.add(
-      this.choiceService
-        .create(questionId, newChoice)
-        .subscribe((resp) => {
-          if (resp) {
-            this.question.choices = [...this.question.choices, resp];
-          }
-        }),
+      this.choiceService.create(question, newChoice).subscribe((resp) => {
+        if (resp) {
+          this.question.choices = [...this.question.choices, resp];
+        }
+      }),
     );
   }
 
   removeChoice(choiceId: string, index: number) {
     this.choiceService.delete(choiceId).subscribe(() => {
       this.question.choices.splice(index, 1);
-    })
+    });
   }
 
   extractBase64Image(content: string) {
@@ -163,7 +159,7 @@ export abstract class AbstractQuestionComponent
       this.fileService.uploadFile(imageFile).subscribe((response) => {
         this.question.content = this.question.content?.replace(
           `"${imageSrc}"`,
-          `"${environment.api}/upload/${response.fileName}" width="100%"`,
+          response.fileName,
         );
       });
     }

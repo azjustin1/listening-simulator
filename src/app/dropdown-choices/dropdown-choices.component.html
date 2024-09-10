@@ -39,10 +39,11 @@
             <div class="choice">
               <div class="form-group">
                 <mat-radio-group
-                  [(ngModel)]="question.correctAnswer"
+                  [value]="question.correctAnswer[0]"
+                  (change)="onSelectCorrectAnswer($event)"
                   name="correctAnswer"
                 >
-                  <mat-radio-button color="primary" [value]="choice.id">
+                  <mat-radio-button color="primary" [value]="choice._id">
                   </mat-radio-button>
                 </mat-radio-group>
                 <mat-form-field class="choice-input">
@@ -73,7 +74,7 @@
             <mat-form-field class="choice-input">
               <mat-select [(value)]="question.answer">
                 @for (choice of question.choices; track $index) {
-                  <mat-option [value]="choice.id">{{
+                  <mat-option [value]="choice._id">{{
                     choice.content
                   }}</mat-option>
                 }
@@ -81,9 +82,13 @@
             </mat-form-field>
           } @else {
             <mat-form-field class="choice-input">
-              <mat-select [(value)]="question.correctAnswer">
+              <mat-select
+                [disabled]="!isEditting"
+                [(value)]="question.correctAnswer[0]"
+                (selectionChange)="onSelectChange($event)"
+              >
                 @for (choice of question.choices; track $index) {
-                  <mat-option [value]="choice.id">{{
+                  <mat-option [value]="choice._id">{{
                     choice.content
                   }}</mat-option>
                 }
@@ -99,7 +104,7 @@
         color="primary"
         type="button"
         class="btn btn-primary"
-        (click)="addChoice(question._id!)"
+        (click)="addChoice(question)"
       >
         <mat-icon>add</mat-icon>
         More option

@@ -51,7 +51,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     correctAnswer: [],
   };
   mapQuestionEditting: Record<string, boolean> = {};
-  subscriptions: Subscription[] = [];
+  subscriptions: Subscription = new Subscription();
 
   onPaste = debounce((event) => this.uploadQuestionBase64Images(event), 1000);
 
@@ -98,9 +98,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
   }
 
   ngOnDestroy(): void {
-    each(this.subscriptions, (sub) => {
-      sub.unsubscribe();
-    });
+    this.subscriptions.unsubscribe();
   }
 
   onStart() {
@@ -116,7 +114,6 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     const choices = [];
     for (let i = 0; i < numberOfChocies; i++) {
       const choice: Choice = {
-        id: CommonUtils.generateRandomId(),
         content: '',
         order: choices.length,
       };
@@ -267,7 +264,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
       this.fileService.uploadFile(imageFile).subscribe((response) => {
         this.data.content = this.data.content?.replace(
           `"${imageSrc}"`,
-          `"${environment.api}/upload/${response.fileName}" width="100%"`,
+          response.fileName,
         );
       });
     }

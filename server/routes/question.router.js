@@ -35,6 +35,7 @@ router.post("/sub-questions", async (req, res) => {
     await question.save();
     res.status(201).send(savedSubQuestion);
   } catch (error) {
+    console.log(error)
     res.status(400).send(error);
   }
 });

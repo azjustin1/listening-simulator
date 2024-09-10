@@ -3,6 +3,7 @@ const { flatMap } = require("lodash");
 
 const subQuestionSchema = new mongoose.Schema({
   content: String,
+  arrayContent: [[String]],
   type: Number,
   name: String,
   choices: [{ type: mongoose.Schema.Types.ObjectId, ref: "Choice" }],
@@ -59,6 +60,7 @@ const SubQuestion = mongoose.model("SubQuestion", subQuestionSchema);
 
 const questionSchema = new mongoose.Schema({
   content: String,
+  arrayContent: [[String]],
   type: Number,
   name: String,
   choices: [{ type: mongoose.Schema.Types.ObjectId, ref: "Choice" }],

@@ -8,7 +8,7 @@ import { Question } from '../../common/models/question.model';
 export class CorrectAnswerChoicePipe implements PipeTransform {
   transform(question: Question, ...args: any[]): any {
     const selectedChoice = question.choices.find(
-      (choice) => choice.id === question.correctAnswer.toString(),
+      (choice) => choice._id! === question.correctAnswer.toString(),
     );
     if (selectedChoice) {
       return selectedChoice.content;

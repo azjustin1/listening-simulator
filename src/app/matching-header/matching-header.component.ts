@@ -136,7 +136,6 @@ export class MatchingHeaderComponent
     }
     const id = CommonUtils.generateRandomId();
     const newAnswer: Choice = {
-      id: id,
       content: '',
       order: this.data.answers.length + 1,
     };

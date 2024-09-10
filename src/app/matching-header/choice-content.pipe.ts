@@ -8,6 +8,6 @@ import { Choice } from '../../common/models/choice.model';
 })
 export class ChoiceContentPipe implements PipeTransform {
   transform(answer: string | string[], answers: Choice[]): Choice | undefined {
-    return find(answers, (item) => !isEmpty(answer) && item.id === answer);
+    return find(answers, (item) => !isEmpty(answer) && item._id! === answer);
   }
 }

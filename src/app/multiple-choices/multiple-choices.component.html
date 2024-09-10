@@ -44,7 +44,6 @@
                   matInput
                   [name]="choice._id!"
                   type="text"
-                  (ngModelChange)="contentChange($event)"
                   [(ngModel)]="choice.content"
                 ></textarea>
               </mat-form-field>
@@ -70,7 +69,7 @@
         color="primary"
         type="button"
         class="btn btn-primary"
-        (click)="addChoice(question._id!)"
+        (click)="addChoice(question)"
       >
         <mat-icon>add</mat-icon>
         More option

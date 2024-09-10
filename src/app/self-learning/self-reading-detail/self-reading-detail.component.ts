@@ -15,11 +15,12 @@ import { QuestionComponent } from '../../question/question.component';
 import { SelfReadingService } from '../self-reading/self-reading.service';
 import { ReadingComponent } from '../../reading/reading.component';
 import { Reading } from '../../../common/models/reading.model';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { each, isEmpty } from 'lodash-es';
 import { QuestionService } from '../../question/question.service';
 import { Question } from '../../../common/models/question.model';
 import { ChoiceService } from '../../question/choice.service';
+import { Observable, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-self-reading-detail',
@@ -56,6 +57,7 @@ export class SelfReadingDetailComponent extends ReadingComponent {
   override isEditting: boolean = true;
   selfReadingService = inject(SelfReadingService);
   route = inject(ActivatedRoute);
+  router = inject(Router);
 
   override ngOnInit(): void {
     const readingId = this.route.snapshot.params['readingId'];
@@ -70,9 +72,19 @@ export class SelfReadingDetailComponent extends ReadingComponent {
   }
 
   saveReading() {
-    this.selfReadingService.createSelfReading(this.data).subscribe((res) => {
-      this.data = { ...this.data, questions: res.questions };
-    });
+    let observer: Observable<Reading>;
+    if (this.data._id) {
+      observer = this.selfReadingService.updateSelfReading(this.data);
+    } else {
+      observer = this.selfReadingService.createSelfReading(this.data);
+    }
+
+    this.subscriptions.add(
+      observer.subscribe((res) => {
+        this.data = { ...this.data, questions: res.questions };
+        this.router.navigate(['self-learning/teacher']);
+      }),
+    );
   }
 
   override onSaveQuestion(question: Question): void {

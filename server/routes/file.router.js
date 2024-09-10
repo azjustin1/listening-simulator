@@ -4,10 +4,11 @@ require("dotenv").config();
 const path = require("path");
 const multer = require("multer");
 const fs = require("fs");
+const cloudinary = require("cloudinary");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    let uploadDir = path.join(__dirname, '../upload');
+    let uploadDir = path.join(__dirname, "../upload");
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
@@ -27,12 +28,53 @@ router.post("/upload", upload.single("file"), (req, res) => {
   // Access uploaded file information using req.file
   if (req.file) {
     // File was uploaded successfully
-    res.status(200).send({ fileName: req.file.filename });
+    cloudinary.v2.config({
+      cloud_name: "gymmerify",
+      api_key: process.env.CLOUDINARY_KEY,
+      api_secret: process.env.CLOUDINARY_SECRET,
+    });
+    const path = req.file.path;
+    cloudinary.uploader.upload(path, async (image) => {
+      if (!image) {
+        return res.status(400).send("Upload failed");
+      }
+      // remove file from server if don't remove it will save image in server folder
+      fs.unlinkSync(path);
+      return res.status(200).send({ fileName: image.url });
+    });
   } else {
     // No file was uploaded or an error occurred
     res.status(400).send("No file uploaded or an error occurred.");
   }
 });
+
+// router.post("/upload", (req, res) => {
+//   const upload = multer({ storage }).single("recfile");
+//   upload(req, res, function (err) {
+//     if (err instanceof multer.MulterError) {
+//       console.log(err)
+//       return res.status(500).json(err);
+//     } else if (err) {
+//       console.log(err)
+//       return res.status(500).json(err);
+//     }
+//     // SEND FILE TO CLOUDINARY
+//     cloudinary.v2.config({
+//       cloud_name: "gymmerify",
+//       api_key: process.env.CLOUDINARY_KEY,
+//       api_secret: process.env.CLOUDINARY_SECRET,
+//     });
+//     const path = req.file.path;
+//     cloudinary.uploader.upload(path, async (image) => {
+//       if (!image) {
+//         return res.status(400).send("Upload failed");
+//       }
+//       // remove file from server if don't remove it will save image in server folder
+//       fs.unlinkSync(path);
+//       return res.status(200).send({fileName: image.url});
+//     });
+//   });
+// });
 
 router.get("/:filename", (req, res) => {
   const filename = req.params.filename;
