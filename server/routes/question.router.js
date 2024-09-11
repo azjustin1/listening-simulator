@@ -35,7 +35,7 @@ router.post("/sub-questions", async (req, res) => {
     await question.save();
     res.status(201).send(savedSubQuestion);
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(400).send(error);
   }
 });
@@ -43,14 +43,23 @@ router.post("/sub-questions", async (req, res) => {
 router.patch("/", async (req, res) => {
   const question = req.body;
   try {
-    const updateQuestion = await Question.findByIdAndUpdate(question._id, question);
+    const updateQuestion = await Question.findByIdAndUpdate(
+      question._id,
+      question,
+    );
 
-    if (!updateQuestion) {
-      res.status(404).send("Not found");
+    if (updateQuestion == null) {
+      const updateSubQuestion = await SubQuestion.findByIdAndUpdate(
+        question._id,
+        question,
+      );
+      res.status(200).send(updateSubQuestion);
+    } else {
+      res.status(200).send(updateQuestion);
     }
 
-    res.status(200).send(updateQuestion);
   } catch (error) {
+    console.log(error);
     res.status(400).send(error);
   }
 });
@@ -63,7 +72,7 @@ router.patch("/sub-questions", async (req, res) => {
       question,
     );
 
-    if (!updateQuestion) {
+    if (updateQuestion == null) {
       res.status(404).send("Not found");
     }
 
