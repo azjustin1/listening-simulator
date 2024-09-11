@@ -31,8 +31,13 @@
 
   <mat-card class="timer">
     <mat-card-content>
-      <h2>{{ minutes }}:{{ seconds | number: "2.0" }}</h2></mat-card-content
-    >
+      <h2>
+        <app-timer
+          [(time)]="testTime"
+          [interval]="testTimeoutInterval!"
+          (onTimeout)="onTestTimeout()"
+        ></app-timer></h2
+    ></mat-card-content>
   </mat-card>
   @if (
     isReady &&
@@ -48,6 +53,11 @@
     >
       Start
     </button>
+    &nbsp;<app-timer
+      [(time)]="startTime"
+      [interval]="startTimeoutInterval!"
+      (onTimeout)="onStartTimeOut()"
+    ></app-timer>
     <mat-tab-group
       animationDuration="0ms"
       (selectedIndexChange)="onChangeTab($event)"
