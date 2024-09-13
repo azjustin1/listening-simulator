@@ -109,16 +109,15 @@ export abstract class AbstractQuestionComponent
   }
 
   onSaveQuestion() {
-    console.log(this.question);
     this.subscriptions.add(
       this.questionService.updateQuestion(this.question).subscribe((resp) => {
         if (resp) {
           this.question = { ...resp };
-          this.onSave.emit();
         }
       }),
     );
   }
+
   onEditQuestion() {
     this.onEdit.emit();
   }

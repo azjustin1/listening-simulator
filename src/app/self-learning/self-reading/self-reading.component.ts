@@ -68,7 +68,10 @@ export class SelfReadingComponent {
     this.router.navigate(['/self-learning/teacher', testId]);
   }
 
-  takeTest(testId: string) {}
+  takeTest(testId: string) {
+    this.router.navigate(['/self-learning/test', testId]);
+
+  }
 
   onDeleteTest(test: Reading) {}
 }

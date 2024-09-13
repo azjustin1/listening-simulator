@@ -17,15 +17,14 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { each } from 'lodash-es';
-import { Subscription } from 'rxjs';
 import { AbstractQuizPartComponent } from '../../common/abstract-quiz-part.component';
 import { Choice } from '../../common/models/choice.model';
+import { Question } from '../../common/models/question.model';
 import { Reading } from '../../common/models/reading.model';
 import { MatchingHeaderComponent } from '../matching-header/matching-header.component';
 import { MultipleQuestionComponent } from '../multiple-question/multiple-question.component';
 import { QuestionComponent } from '../question/question.component';
 import { ReadingService } from './reading.service';
-import { Question } from '../../common/models/question.model';
 
 @Component({
   selector: 'app-reading',
@@ -56,7 +55,6 @@ export class ReadingComponent
   @Input() isMatchingHeader = false;
   mapSavedQuestion: Record<string, boolean> = {};
   answers: WritableSignal<Choice[]> = signal([]);
-
 
   ngOnInit(): void {
     if (this.data) {

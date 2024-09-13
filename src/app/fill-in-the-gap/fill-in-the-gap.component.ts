@@ -158,7 +158,9 @@ export class FillInTheGapComponent extends AbstractQuestionComponent {
     ) {
       this.question.choices = toArray(this.mapChoiceById);
     }
-    this.onSave.emit();
+    this.questionService.updateQuestion(this.question).subscribe((resp) => {
+      this.question.arrayContent = resp.arrayContent;
+    });
   }
 
   onDeleteText(lineIndex: number, contentIndex: number) {
@@ -203,7 +205,11 @@ export class FillInTheGapComponent extends AbstractQuestionComponent {
     );
     if (matchInput) {
       const choice = this.mapChoiceById[matchInput[1]];
-      this.subscriptions.add(this.choiceService.update(choice).subscribe());
+      this.subscriptions.add(
+        this.choiceService.update(choice).subscribe(() => {
+          this.mapSaveTextByIndex[lineIndex][contentIndex] = true;
+        }),
+      );
     }
   }
 

@@ -196,8 +196,12 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
   }
 
   onSaveQuestion(question: Question) {
-    this.mapQuestionEditting[question._id!] = false;
-    this.onSave.emit();
+    this.subscriptions.add(
+      this.questionService.updateQuestion(question).subscribe(resp => {
+        this.mapQuestionEditting[resp._id!] = false;
+        this.onSave.emit();
+      }),
+    );
   }
 
   onEditQuestion(id: string) {
@@ -223,6 +227,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     let cloneQuestion = cloneDeep(question);
     cloneQuestion = {
       ...cloneQuestion,
+      _id: '',
       content: `Copy of ${cloneQuestion.content}`,
     };
     this.data.questions.push(cloneQuestion);

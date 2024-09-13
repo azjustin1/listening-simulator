@@ -10,6 +10,7 @@ import { WritingTestComponent } from './writing-test/writing-test.component';
 import { AddOrEditWritingComponent } from './writing-test/add-or-edit-writing/add-or-edit-writing.component';
 import { SelfReadingComponent } from './self-learning/self-reading/self-reading.component';
 import { SelfReadingDetailComponent } from './self-learning/self-reading-detail/self-reading-detail.component';
+import { SelfReadingTestComponent } from './self-learning/self-reading-test/self-reading-test.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -38,8 +39,17 @@ export const routes: Routes = [
   { path: 'results', component: ResultComponent, outlet: 'home' },
   { path: 'result-detail/:resultId', component: ResultDetailComponent },
   { path: 'self-learning/teacher', component: SelfReadingComponent },
+  { path: 'self-learning/student', component: SelfReadingComponent },
   {
     path: 'self-learning/teacher/:readingId',
     component: SelfReadingDetailComponent,
+  },
+  {
+    path: 'self-learning/student/:readingId',
+    component: SelfReadingDetailComponent,
+  },
+  {
+    path: 'self-learning/test/:readingId',
+    component: SelfReadingTestComponent,
   },
 ];

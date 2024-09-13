@@ -12,12 +12,13 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { clone, cloneDeep, each, filter, mapValues } from 'lodash-es';
+import { clone, cloneDeep, each, filter, mapValues, omit } from 'lodash-es';
 import { AbstractQuestionComponent } from '../../common/abstract-question.component';
 import { Question } from '../../common/models/question.model';
 import { CommonUtils } from '../../utils/common-utils';
 import { QuestionComponent } from '../question/question.component';
 import { QuestionType } from '../../common/enums/question-type.enum';
+import { Choice } from '../../common/models/choice.model';
 
 @Component({
   selector: 'app-multiple-question',
@@ -150,9 +151,21 @@ export class MultipleQuestionComponent
     let cloneQuestion = cloneDeep(question);
     cloneQuestion = {
       ...cloneQuestion,
+      _id: undefined,
       content: `Copy of ${cloneQuestion.content}`,
+      choices: question.choices.map((choice) =>
+        omit(choice, ['_id', '__v']),
+      ) as Choice[],
     };
-    this.question.subQuestions!.push(cloneQuestion);
+
+    this.subscriptions.add(
+      this.questionService
+        .addSubQuestion(this.question._id!, cloneQuestion)
+        .subscribe((resp) => {
+          console.log(resp)
+          this.question.subQuestions!.push(resp);
+        }),
+    );
   }
 
   onRemoveSubQuestion(questionId: string, index: number) {

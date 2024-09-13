@@ -10,19 +10,18 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
-import { each, isEmpty } from 'lodash-es';
-import { Observable } from 'rxjs';
-import { Reading } from '../../../common/models/reading.model';
+import { isEmpty } from 'lodash';
 import { MatchingHeaderComponent } from '../../matching-header/matching-header.component';
 import { MultipleQuestionComponent } from '../../multiple-question/multiple-question.component';
-import { ChoiceService } from '../../question/choice.service';
 import { QuestionComponent } from '../../question/question.component';
-import { QuestionService } from '../../question/question.service';
 import { ReadingComponent } from '../../reading/reading.component';
 import { SelfReadingService } from '../self-reading/self-reading.service';
+import { ChoiceService } from '../../question/choice.service';
+import { QuestionService } from '../../question/question.service';
+import { Reading } from '../../../common/models/reading.model';
 
 @Component({
-  selector: 'app-self-reading-detail',
+  selector: 'app-self-reading-test',
   standalone: true,
   imports: [
     FormsModule,
@@ -40,10 +39,11 @@ import { SelfReadingService } from '../self-reading/self-reading.service';
     MatchingHeaderComponent,
   ],
   providers: [SelfReadingService, QuestionService, ChoiceService],
-  templateUrl: './self-reading-detail.component.html',
-  styleUrl: './self-reading-detail.component.scss',
+
+  templateUrl: './self-reading-test.component.html',
+  styleUrl: './self-reading-test.component.scss',
 })
-export class SelfReadingDetailComponent extends ReadingComponent {
+export class SelfReadingTestComponent extends ReadingComponent {
   override data: Reading = {
     id: '',
     name: '',
@@ -53,50 +53,23 @@ export class SelfReadingDetailComponent extends ReadingComponent {
     timeout: 0,
     wordCount: 0,
   };
-  override isEditting: boolean = true;
-  selfReadingService = inject(SelfReadingService);
   route = inject(ActivatedRoute);
   router = inject(Router);
-  isReady = false;
+  selfReadingService = inject(SelfReadingService);
 
-  override ngOnInit(): void {
+  constructor() {
+    super();
+    this.isTesting = true;
     const readingId = this.route.snapshot.params['readingId'];
     this.isTesting = this.router.url.includes('test');
-    
+
     if (!isEmpty(readingId)) {
       this.selfReadingService.getSelfReadingById(readingId).subscribe((res) => {
         this.data = res;
-        
-        each(this.data.questions, (question) => {
-          this.mapSavedQuestion[question._id!] = true;
-        });
       });
     }
   }
-
-  saveReading() {
-    let observer: Observable<Reading>;
-    if (this.data._id) {
-      observer = this.selfReadingService.updateSelfReading(this.data);
-    } else {
-      observer = this.selfReadingService.createSelfReading(this.data);
-    }
-
-    this.subscriptions.add(
-      observer.subscribe((res) => {
-        this.data = { ...this.data, questions: res.questions };
-        this.router.navigate(['self-learning/teacher']);
-      }),
-    );
-  }
-
-  override removeQuestion(questionId: string, questionIdex: number): void {
-    this.subscriptions.add(this.questionService.deleteQuestion(questionId).subscribe(() => {
-      this.data.questions.splice(questionIdex, 1);
-    }));
-  }
-
-  onStartTest() {
-    this.isReady = true;
+  submit() {
+    console.log(this.data)
   }
 }

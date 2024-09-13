@@ -1,7 +1,7 @@
 const express = require("express");
 const SelfReading = require("../models/self-reading.model");
 const { Question, SubQuestion } = require("../models/question.model");
-const { isEmpty } = require("lodash");
+const { isEmpty, omit } = require("lodash");
 const Choice = require("../models/choice.model");
 
 const router = express.Router();
@@ -49,15 +49,11 @@ router.patch("/", async (req, res) => {
     );
 
     if (updateQuestion == null) {
-      const updateSubQuestion = await SubQuestion.findByIdAndUpdate(
-        question._id,
-        question,
-      );
-      res.status(200).send(updateSubQuestion);
+      await SubQuestion.findByIdAndUpdate(question._id, question);
+      res.status(200).send(question);
     } else {
-      res.status(200).send(updateQuestion);
+      res.status(200).send(question);
     }
-
   } catch (error) {
     console.log(error);
     res.status(400).send(error);

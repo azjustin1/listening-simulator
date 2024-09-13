@@ -6,4 +6,5 @@ export interface Reading extends AbstractPart {
   name?: string;
   isMatchHeader?: boolean;
   answers?: Choice[];
+  studentName?: string;
 }
