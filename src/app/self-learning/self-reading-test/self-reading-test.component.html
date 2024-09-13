@@ -17,12 +17,16 @@
       <mat-label>Student Email</mat-label>
       <input matInput formControlName="studentEmail" />
       @if (
-        testForm.get("studentEmail")?.hasError("required") ||
-        (testForm.get("studentEmail")?.invalid &&
+        testForm.get("studentEmail")?.hasError("required") &&
+        testForm.get("studentEmail")?.invalid &&
           (testForm.get("studentEmail")?.touched ||
-            testForm.get("studentEmail")?.dirty))
+            testForm.get("studentEmail")?.dirty)
       ) {
         <mat-error> Email is required. </mat-error>
+      }
+
+      @if (testForm.get("studentEmail")?.hasError("email")) {
+        <mat-error> Invalid email. </mat-error>
       }
     </mat-form-field>
   </div>
@@ -142,7 +146,13 @@
     </div>
   }
 
-  <button mat-raised-button class="submit-button" type="submit" color="primary">
+  <button
+    [disabled]="testForm.invalid"
+    mat-raised-button
+    class="submit-button"
+    type="submit"
+    color="primary"
+  >
     Submit
   </button>
 </form>

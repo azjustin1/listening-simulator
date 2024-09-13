@@ -72,7 +72,7 @@ export class SelfReadingTestComponent extends ReadingComponent {
     super();
     this.testForm = this.formBuilder.group({
       studentName: ['', Validators.required],
-      studentEmail: ['', Validators.required],
+      studentEmail: ['', [Validators.required, Validators.email]],
     });
     this.isTesting = true;
     const readingId = this.route.snapshot.params['readingId'];
