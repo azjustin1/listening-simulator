@@ -5,6 +5,7 @@ const path = require("path");
 const multer = require("multer");
 const fs = require("fs");
 const cloudinary = require("cloudinary");
+const puppeteer = require("puppeteer");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -48,33 +49,36 @@ router.post("/upload", upload.single("file"), (req, res) => {
   }
 });
 
-// router.post("/upload", (req, res) => {
-//   const upload = multer({ storage }).single("recfile");
-//   upload(req, res, function (err) {
-//     if (err instanceof multer.MulterError) {
-//       console.log(err)
-//       return res.status(500).json(err);
-//     } else if (err) {
-//       console.log(err)
-//       return res.status(500).json(err);
-//     }
-//     // SEND FILE TO CLOUDINARY
-//     cloudinary.v2.config({
-//       cloud_name: "gymmerify",
-//       api_key: process.env.CLOUDINARY_KEY,
-//       api_secret: process.env.CLOUDINARY_SECRET,
-//     });
-//     const path = req.file.path;
-//     cloudinary.uploader.upload(path, async (image) => {
-//       if (!image) {
-//         return res.status(400).send("Upload failed");
-//       }
-//       // remove file from server if don't remove it will save image in server folder
-//       fs.unlinkSync(path);
-//       return res.status(200).send({fileName: image.url});
-//     });
-//   });
-// });
+router.post("/generate-pdf", async (req, res) => {
+  try {
+    const htmlString = req.body.html; // Get HTML string from request body
+    const outputDir = path.join(__dirname, "../upload");
+    const outputPath = path.join(outputDir, "output.pdf");
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox"],
+    });
+    const page = await browser.newPage();
+
+    await page.setContent(htmlString); // Set the HTML content
+    console.log(console.log(htmlString, page));
+    await page.pdf({
+      path: outputPath, // Save as output.pdf
+      format: "A4", // Paper format
+      printBackground: true, // Print background graphics
+    });
+
+    await browser.close();
+
+    res.download(outputPath, "output.pdf", (err) => {
+      if (err) {
+        console.error("Error sending PDF:", err);
+      }
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 router.get("/:filename", (req, res) => {
   const filename = req.params.filename;

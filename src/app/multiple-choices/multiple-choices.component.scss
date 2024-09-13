@@ -1,41 +1,36 @@
+.choice {
+  display: flex;
+  align-items: center;
+  margin: 1rem 0;
+}
+
 .choice-index {
-  width: 30px;
-  height: 30px;
+  width: 3rem;
+  height: 3rem;
+  line-height: 3rem;
+  margin-bottom: 1rem;
   background-color: #d8d2d2;
-  border-radius: 15px;
+  border-radius: 50%;
   text-align: center;
-  line-height: 30px;
   cursor: pointer;
-  margin: 16px 10px 0 0;
-}
-
-.choice-group {
-  margin: 16px 0 0 0;
-}
-
-.question-text {
-  width: 100%;
-  height: fit-content;
-  line-height: 60px;
 }
 
 .choice-index.selected {
   background: var(--success-color);
-  color: #fff
+  color: #fff;
 }
 
 .choice-index.isWrong {
   background: var(--danger-color);
-  color: #fff
+  color: #fff;
 }
 
 .choice-content {
   margin-left: 10px;
+  line-height: 4rem;
 }
 
-.choice {
-  display: flex;
-  align-items: start;
+.question-text {
   width: 100%;
 }
 

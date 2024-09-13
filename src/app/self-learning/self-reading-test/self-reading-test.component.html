@@ -1,123 +1,148 @@
-<div class="reading-info">
-  <mat-form-field>
-    <mat-label>Test name</mat-label>
-    <input matInput [(ngModel)]="data.name" />
-  </mat-form-field>
-</div>
-@if (data) {
-  <div class="container">
-    <div class="question-group">
-      <mat-accordion>
-        @if (data) {
-          @for (
-            question of data.questions;
-            track question._id!;
-            let questionIndex = $index
-          ) {
-            <app-multiple-question
-              [question]="question"
-              [isEditting]="mapQuestionEditting[question._id!]"
-              [isReadOnly]="isReadOnly"
-              [isTesting]="isTesting"
-              [isSaved]="mapSavedQuestion[question._id!]"
-              (onSave)="onSaveQuestion(question)"
-              (onEdit)="onEditQuestion(question._id!)"
-            ></app-multiple-question>
-            @if (!isSaved && !isTesting && !isReadOnly) {
-              <div class="actions">
-                @if (mapQuestionEditting[question._id!]) {
-                  <button
-                    mat-button
-                    color="primary"
-                    type="button"
-                    class="btn btn-danger"
-                    (click)="onSaveQuestion(question)"
-                  >
-                    <mat-icon>save</mat-icon>
-                  </button>
-                } @else {
-                  <button
-                    mat-button
-                    color="primary"
-                    type="button"
-                    class="btn btn-danger"
-                    (click)="onEditQuestion(question._id!)"
-                  >
-                    <mat-icon>edit</mat-icon>
-                  </button>
-                }
-                <button
-                  mat-button
-                  type="button"
-                  class="btn btn-danger"
-                  (click)="duplicateQuestion(question)"
-                >
-                  <mat-icon>content_copy</mat-icon>
-                </button>
-                <button
-                  mat-button
-                  color="warn"
-                  type="button"
-                  class="btn btn-danger"
-                  (click)="removeQuestion(question._id!, questionIndex)"
-                >
-                  <mat-icon>delete</mat-icon>
-                </button>
-                @if (questionIndex !== 0) {
-                  <button
-                    mat-button
-                    type="button"
-                    class="btn btn-danger"
-                    (click)="moveQuestionUp(questionIndex)"
-                  >
-                    <mat-icon>arrow_upward</mat-icon>
-                  </button>
-                }
-                @if (questionIndex !== data.questions.length - 1) {
+<form [formGroup]="testForm" (ngSubmit)="submit()">
+  <h1>{{ data.name }}</h1>
+  <div class="student-info">
+    <mat-form-field>
+      <mat-label>Student Name</mat-label>
+      <input matInput formControlName="studentName" />
+      @if (
+        testForm.get("studentName")?.hasError("required") ||
+        (testForm.get("studentName")?.invalid &&
+          (testForm.get("studentName")?.touched ||
+            testForm.get("studentName")?.dirty))
+      ) {
+        <mat-error> Name is required. </mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Student Email</mat-label>
+      <input matInput formControlName="studentEmail" />
+      @if (
+        testForm.get("studentEmail")?.hasError("required") ||
+        (testForm.get("studentEmail")?.invalid &&
+          (testForm.get("studentEmail")?.touched ||
+            testForm.get("studentEmail")?.dirty))
+      ) {
+        <mat-error> Email is required. </mat-error>
+      }
+    </mat-form-field>
+  </div>
+  @if (data) {
+    <div class="container">
+      <div class="question-group">
+        <mat-accordion>
+          @if (data) {
+            @for (
+              question of data.questions;
+              track question._id!;
+              let questionIndex = $index
+            ) {
+              <app-multiple-question
+                [question]="question"
+                [isEditting]="mapQuestionEditting[question._id!]"
+                [isReadOnly]="isReadOnly"
+                [isTesting]="isTesting"
+                [isSaved]="mapSavedQuestion[question._id!]"
+                (onSave)="onSaveQuestion(question)"
+                (onEdit)="onEditQuestion(question._id!)"
+              ></app-multiple-question>
+              @if (!isSaved && !isTesting && !isReadOnly) {
+                <div class="actions">
+                  @if (mapQuestionEditting[question._id!]) {
+                    <button
+                      mat-button
+                      color="primary"
+                      type="button"
+                      class="btn btn-danger"
+                      (click)="onSaveQuestion(question)"
+                    >
+                      <mat-icon>save</mat-icon>
+                    </button>
+                  } @else {
+                    <button
+                      mat-button
+                      color="primary"
+                      type="button"
+                      class="btn btn-danger"
+                      (click)="onEditQuestion(question._id!)"
+                    >
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                  }
                   <button
                     mat-button
                     type="button"
                     class="btn btn-danger"
-                    (click)="moveQuestionDown(questionIndex)"
+                    (click)="duplicateQuestion(question)"
                   >
-                    <mat-icon>arrow_downward</mat-icon>
+                    <mat-icon>content_copy</mat-icon>
                   </button>
-                }
-              </div>
+                  <button
+                    mat-button
+                    color="warn"
+                    type="button"
+                    class="btn btn-danger"
+                    (click)="removeQuestion(question._id!, questionIndex)"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                  @if (questionIndex !== 0) {
+                    <button
+                      mat-button
+                      type="button"
+                      class="btn btn-danger"
+                      (click)="moveQuestionUp(questionIndex)"
+                    >
+                      <mat-icon>arrow_upward</mat-icon>
+                    </button>
+                  }
+                  @if (questionIndex !== data.questions.length - 1) {
+                    <button
+                      mat-button
+                      type="button"
+                      class="btn btn-danger"
+                      (click)="moveQuestionDown(questionIndex)"
+                    >
+                      <mat-icon>arrow_downward</mat-icon>
+                    </button>
+                  }
+                </div>
+              }
             }
           }
+        </mat-accordion>
+        @if (!isSaved && !isTesting && !isReadOnly) {
+          <div class="add-question">
+            <button
+              mat-button
+              type="button"
+              class="btn btn-danger"
+              (click)="addQuestion(2)"
+            >
+              <mat-icon>add</mat-icon> Add question
+            </button>
+          </div>
         }
-      </mat-accordion>
-      @if (!isSaved && !isTesting && !isReadOnly) {
-        <div class="add-question">
-          <button
-            mat-button
-            type="button"
-            class="btn btn-danger"
-            (click)="addQuestion(2)"
-          >
-            <mat-icon>add</mat-icon> Add question
-          </button>
-        </div>
-      }
-    </div>
-    <div class="input-reading">
-      @if (!isSaved && !isReadOnly && !isTesting) {
-        <angular-editor
-          class="editor"
-          name="questionContent"
-          [id]="data._id!"
-          [(ngModel)]="data.content"
-          (ngModelChange)="onPaste($event)"
-          [config]="config"
-        ></angular-editor>
-      } @else {
-        @if (data) {
-          <span class="reading-content" [innerHTML]="data.content"></span>
+      </div>
+      <div class="input-reading">
+        @if (!isSaved && !isReadOnly && !isTesting) {
+          <angular-editor
+            class="editor"
+            name="questionContent"
+            [id]="data._id!"
+            [(ngModel)]="data.content"
+            (ngModelChange)="onPaste($event)"
+            [config]="config"
+          ></angular-editor>
+        } @else {
+          @if (data) {
+            <span class="reading-content" [innerHTML]="data.content"></span>
+          }
         }
-      }
+      </div>
     </div>
-  </div>
-}
+  }
 
-<button mat-raised-button class="submit-button" color="primary" (click)="submit()">Submit</button>
+  <button mat-raised-button class="submit-button" type="submit" color="primary">
+    Submit
+  </button>
+</form>

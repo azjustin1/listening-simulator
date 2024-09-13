@@ -10,10 +10,11 @@ import { Result } from '../common/models/result.model';
 import { AnswerChoicePipe } from '../common/pipes/answer-choice.pipe';
 import { CommonUtils } from './common-utils';
 import { CHOICE_INDEX, INPUT_PATTERN } from './constant';
+import { Reading } from '../common/models/reading.model';
 export class ExportUtils {
   static exportQuestion(question: Question): string {
     let htmlString = '';
-    htmlString += `<p>${question.content ? question.content : ''}</p><br>`;
+    htmlString += `<p><b>${question.content ? question.content : ''}</b></p>`;
     switch (question.type) {
       case QuestionType.MULTIPLE_CHOICE:
         htmlString += this.exportMultipleChoices(question);
@@ -79,6 +80,59 @@ export class ExportUtils {
     this.exportFile(result, htmlString, 'Reading');
   }
 
+  static exportSelfReading(reading: Reading) {
+    let htmlString = `
+      <html>
+      <head>
+        <style>
+          .choice {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            margin: 1rem 0;
+          }
+          .choice-index {
+            width: 3rem;
+            background-color: #d8d2d2;
+            border-radius: 50%;
+            text-align: center;
+            cursor: pointer;
+          }
+          .choice-index.selected {
+            background: #4caf50;
+            color: #fff;
+          }
+          .choice-content {
+            margin-left: 10px;
+          }
+          .question-text {
+            width: 100%;
+            height: fit-content;
+          }
+          .answer-input {
+            padding: 0 1rem;
+            border: 1px solid black;
+          }
+        </style>
+      </head>
+      <body>
+      <h1>${reading.name} - Reading</h1><h2>Name: ${reading.studentName}</h2>`;
+
+    htmlString += `${reading.content}`;
+    each(reading.questions, (question) => {
+      htmlString += `<b>${question.name ? question.name : ''}</b>`;
+      each(question.subQuestions, (subQuestion) => {
+        htmlString += this.exportQuestion(subQuestion);
+      });
+      htmlString += '<hr>';
+    });
+    htmlString += `
+    </body>
+    </html>
+    `;
+    return htmlString;
+  }
+
   static exportWriting(result: Result) {
     let htmlString = `<h1>${result.name} - Writing</h1><br><h2>Name: ${result.studentName}</h2><br><h2>Point: </h2><br>`;
     each(result.writingParts, (part) => {
@@ -109,10 +163,32 @@ export class ExportUtils {
   static exportMultipleChoices(question: Question) {
     let htmlString = '';
     each(question.choices, (choice, index) => {
-      if (question.answer && question.answer.includes(choice._id!)) {
-        htmlString += `<u>${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}</u><br>`;
+      if (question.answer?.includes(choice._id!)) {
+        htmlString += `
+        <div class="choice">
+          <div class="choice-index selected">
+            <p>${CHOICE_INDEX[index]}</p>
+          </div>
+          <div class="choice-content">
+            <p class="question-text">
+              ${choice.content ? choice.content : ''}
+            </p>
+          </div>
+        </div>
+        `;
       } else {
-        htmlString += `${CHOICE_INDEX[index]}. ${choice.content ? choice.content : ''}<br>`;
+        htmlString += `
+         <div class="choice">
+          <div class="choice-index">
+            <p>${CHOICE_INDEX[index]}</p>
+          </div>
+          <div class="choice-content">
+            <p class="question-text">
+              ${choice.content ? choice.content : ''}
+            </p>
+          </div>
+        </div>
+        `;
       }
     });
     return htmlString;
@@ -121,13 +197,13 @@ export class ExportUtils {
   static exportShortAnswer(question: Question) {
     let htmlString = '';
     each(question.choices, (choice, index) => {
-      htmlString += `<b>${choice.index ? choice.index : ''}</b> ${choice.answer ? choice.answer : ''}<br>`;
+      htmlString += `<div><b>${choice.index ? choice.index : ''}</b> <span class="answer-input">${choice.answer ? choice.answer : ''}</span></div>`;
     });
     return htmlString;
   }
 
   static exportDropDownChoice(question: Question) {
-    return `${AnswerChoicePipe.prototype.transform(question)}<br>`;
+    return `<b>Answer</b>: ${AnswerChoicePipe.prototype.transform(question)}`;
   }
 
   static exportFillInTheGap(question: Question) {
@@ -136,12 +212,13 @@ export class ExportUtils {
     each(question.arrayContent, (line) => {
       each(line, (content) => {
         if (IsInputPipe.prototype.transform(content)) {
-          htmlString += ` <b>${question.choices.find((choice) => choice._id! === inputPattern.exec(content)![1])?.answer}</b> `;
+          htmlString += `
+            <span class="answer-input">${question.choices.find((choice) => choice._id! === inputPattern.exec(content)![1])?.answer}</span> 
+          `;
         } else {
           htmlString += `${content}`;
         }
       });
-      htmlString += '<br>';
     });
     return htmlString;
   }
