@@ -8,7 +8,7 @@ const dbConfig = require("./configs/db.config");
 require("dotenv").config();
 
 server.use(cors());
-server.use(morgan());
+server.use(morgan('combine'));
 server.use(express.json());
 server.use("/upload", express.static(`${__dirname}/upload`));
 

@@ -61,7 +61,6 @@ router.post("/generate-pdf", async (req, res) => {
     const page = await browser.newPage();
 
     await page.setContent(htmlString); // Set the HTML content
-    console.log(console.log(htmlString, page));
     await page.pdf({
       path: outputPath, // Save as output.pdf
       format: "A4", // Paper format
