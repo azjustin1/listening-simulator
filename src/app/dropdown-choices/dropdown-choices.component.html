@@ -1,7 +1,7 @@
 <form>
   <div class="question-group">
     <div class="form-group">
-      @if (isEditting) {
+      @if (isEditing) {
         <angular-editor
           name="questionContent"
           [id]="question.id"
@@ -34,7 +34,7 @@
           }
         </div>
       } @else {
-        @if (isEditting) {
+        @if (isEditing) {
           @for (choice of question.choices; track $index) {
             <div class="choice">
               <div class="form-group">
@@ -93,7 +93,7 @@
         }
       }
     </div>
-    @if (isEditting) {
+    @if (isEditing) {
       <button
         mat-button
         color="primary"

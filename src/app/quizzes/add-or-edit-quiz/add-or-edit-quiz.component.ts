@@ -10,7 +10,6 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { each, isEmpty, size } from 'lodash-es';
 import { Subscription } from 'rxjs';
-import { AbstractPart } from '../../../common/models/abstract-part.model';
 import { Listening } from '../../../common/models/listening.model';
 import { Quiz } from '../../../common/models/quiz.model';
 import { Reading } from '../../../common/models/reading.model';
@@ -64,12 +63,11 @@ export class AddOrEditQuizComponent implements OnDestroy {
   selectedListeningPart = 0;
   selectedReadingPart = 0;
   selectedWritingPart = 0;
-  selectedPart!: AbstractPart;
 
   subscriptions: Subscription[] = [];
 
   @HostListener('document:keydown.control.s', ['$event'])
-  onKeydownHandler(event: KeyboardEvent) {
+  onKeydownHandler() {
     this.saveOrEditQuiz(this.currentQuiz);
   }
 
@@ -85,9 +83,9 @@ export class AddOrEditQuizComponent implements OnDestroy {
       if (quizId) {
         this.subscriptions.push(
           this.quizService.getById(quizId).subscribe((quiz: any) => {
-            this.generateListeningEdittingPartMap(quiz.listeningParts);
-            this.generateReadingEdittingPartMap(quiz.readingParts);
-            this.generateWritingEdittingPartMap(quiz.writingParts);
+            this.generateListeningEditingPartMap(quiz.listeningParts);
+            this.generateReadingEditingPartMap(quiz.readingParts);
+            this.generateWritingEditingPartMap(quiz.writingParts);
             this.currentQuiz = quiz;
           }),
         );
@@ -121,29 +119,29 @@ export class AddOrEditQuizComponent implements OnDestroy {
     this.subscriptions.push(uploadSub);
   }
 
-  generateListeningEdittingPartMap(listeningParts: Listening[]) {
+  generateListeningEditingPartMap(listeningParts: Listening[]) {
     if (listeningParts.length === 0) {
       this.mapSavedPart['listening'][0] = true;
     }
-    each(listeningParts, (part, index: number) => {
+    each(listeningParts, (_part, index: number) => {
       this.mapSavedPart['listening'][index] = true;
     });
   }
 
-  generateReadingEdittingPartMap(readingParts: Reading[]) {
+  generateReadingEditingPartMap(readingParts: Reading[]) {
     if (readingParts.length === 0) {
       this.mapSavedPart['reading'][0] = true;
     }
-    each(readingParts, (part, index: number) => {
+    each(readingParts, (_part, index: number) => {
       this.mapSavedPart['reading'][index] = true;
     });
   }
 
-  generateWritingEdittingPartMap(writingParts: Writing[]) {
+  generateWritingEditingPartMap(writingParts: Writing[]) {
     if (writingParts.length === 0) {
       this.mapSavedPart['writing'][0] = true;
     }
-    each(writingParts, (part, index: number) => {
+    each(writingParts, (_part, index: number) => {
       this.mapSavedPart['writing'][index] = true;
     });
   }
@@ -206,7 +204,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
 
   onSavePart(key: string, index: number) {
     this.saveOrEditQuiz(this.currentQuiz);
-    this.saveAllEdittingPart(key);
+    this.saveAllEditingPart(key);
     if (this.mapSavedPart[key] !== undefined) {
       this.mapSavedPart[key][index] = true;
     }
@@ -214,12 +212,12 @@ export class AddOrEditQuizComponent implements OnDestroy {
 
   onEditClick(key: string, index: number) {
     if (this.mapSavedPart[key] !== undefined) {
-      this.saveAllEdittingPart(key);
+      this.saveAllEditingPart(key);
       this.mapSavedPart[key][index] = false;
     }
   }
 
-  saveAllEdittingPart(key: string) {
+  saveAllEditingPart(key: string) {
     for (const index in this.mapSavedPart[key]) {
       this.mapSavedPart[key][index] = true;
     }
@@ -248,7 +246,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
       dialogRef.componentInstance.isWarning = true;
     } else {
       this.saveOrEditQuiz(this.currentQuiz);
-      this.router.navigate(['/mock-test']);
+      this.router.navigate(['/mock-test']).then(() => {});
     }
   }
 

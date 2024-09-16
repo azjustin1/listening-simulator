@@ -29,7 +29,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
   @Input() data!: T;
   @Output() dataChange = new EventEmitter();
   @Input() isTesting: boolean = false;
-  @Input() isEditting: boolean = false;
+  @Input() isEditing: boolean = false;
   @Input() isReadOnly: boolean = false;
   @Input() isSaved: boolean = false;
   @Input() isStart: boolean = false;
@@ -96,11 +96,6 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     each(this.subscriptions, (sub) => {
       sub.unsubscribe();
     });
-  }
-
-  onStart() {
-    this.isStart = true;
-    this.onStartChange.emit();
   }
 
   onWritingChange(value: string) {
@@ -241,19 +236,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
   }
 
   extractBase64Image(content: string) {
-    const regex = BASE64_IMAGE_REGEX;
-    const match = regex.exec(content);
-    return match;
-  }
-
-  updateQuizContent(newSrc: string) {
-    const imageUrl = this.extractBase64Image(this.data.content);
-    if (imageUrl !== null) {
-      const imageSrc = imageUrl[1];
-      this.data.content = this.data.content?.replace(imageSrc, newSrc);
-    } else {
-      this.data.content = `<img src="${newSrc}" />`;
-    }
+    return BASE64_IMAGE_REGEX.exec(content);
   }
 
   uploadQuestionBase64Images(content: string) {

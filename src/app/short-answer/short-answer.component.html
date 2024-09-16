@@ -29,7 +29,7 @@
   } @else {
     <div class="question-group">
       <div class="form-group">
-        @if (isEditting) {
+        @if (isEditing) {
           <angular-editor
             [name]="question.id"
             [config]="config"
@@ -43,7 +43,7 @@
 
       <div class="choice-group">
         @for (choice of question.choices; track $index) {
-          @if (isEditting) {
+          @if (isEditing) {
             <mat-form-field class="choice-index">
               <mat-label>Question</mat-label>
               <textarea
@@ -92,7 +92,7 @@
             }
           }
           <button
-            *ngIf="isEditting"
+            *ngIf="isEditing"
             mat-button
             color="warn"
             type="button"
@@ -105,7 +105,7 @@
       </div>
 
       <button
-        *ngIf="isEditting"
+        *ngIf="isEditing"
         mat-button
         color="primary"
         type="button"

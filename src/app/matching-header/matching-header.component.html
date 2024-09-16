@@ -6,7 +6,7 @@
           @if (!isTesting && !isReadOnly && !isSaved) {
             <mat-form-field style="width: 100%">
               <mat-select
-                [disabled]="!mapEdittingById[question.id]"
+                [disabled]="!mapEditingById[question.id]"
                 [(ngModel)]="question.correctAnswer"
               >
                 @for (answer of data.answers; track $index) {
@@ -65,7 +65,7 @@
           }
         </div>
         <div class="input-reading">
-          @if (mapEdittingById[question.id]) {
+          @if (mapEditingById[question.id]) {
             <angular-editor
               class="editor"
               name="questionContent"
@@ -91,7 +91,7 @@
               (click)="editContent(question.id)"
             >
               <mat-icon>
-                @if (mapEdittingById[question.id]) {
+                @if (mapEditingById[question.id]) {
                   save
                 } @else {
                   edit
@@ -134,7 +134,7 @@
       <div class="heading-container" [style.maxHeight]="isSaved ? '27rem' : '19rem'">
         @for (answer of answers; track $index) {
           <div class="answer">
-            @if (mapEdittingById[answer.id]) {
+            @if (mapEditingById[answer.id]) {
               <mat-form-field class="heading-input">
                 <mat-label>Content</mat-label>
                 <textarea matInput [(ngModel)]="answer.content"></textarea>
@@ -158,7 +158,7 @@
                   (click)="editContent(answer.id)"
                 >
                   <mat-icon>
-                    @if (mapEdittingById[answer.id]) {
+                    @if (mapEditingById[answer.id]) {
                       save
                     } @else {
                       edit

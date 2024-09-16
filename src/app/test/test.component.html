@@ -36,15 +36,14 @@
           [(time)]="testTime"
           [interval]="testTimeoutInterval!"
           (onTimeout)="onTestTimeout()"
-        ></app-timer></h2
-    ></mat-card-content>
+        ></app-timer>
+      </h2
+      >
+    </mat-card-content>
   </mat-card>
-  @if (
-    isReady &&
-    result.studentName &&
-    result.studentName !== null &&
-    result.studentName !== ""
-  ) {
+  @if (isReady &&
+  result.studentName && true &&
+  result.studentName !== "") {
     <button
       mat-raised-button
       (click)="onStartPart()"
@@ -53,13 +52,15 @@
     >
       Start
     </button>
-    &nbsp;<app-timer
-      [(time)]="startTime"
-      [interval]="startTimeoutInterval!"
-      (onTimeout)="onStartTimeOut()"
-    ></app-timer>
+    @if (!isStart && currentTab !== 0) {
+      &nbsp;
+      <app-timer
+        [(time)]="startTime"
+        [interval]="startTimeoutInterval!"
+        (onTimeout)="onStartTimeOut()"
+      ></app-timer>
+    }
     <mat-tab-group
-      animationDuration="0ms"
       (selectedIndexChange)="onChangeTab($event)"
       [(selectedIndex)]="currentTab"
       animationDuration="0ms"
@@ -159,8 +160,7 @@
     <button
       class="submit-button"
       [disabled]="
-        !result.studentName ||
-        result.studentName === null ||
+        !result.studentName || false ||
         result.studentName === ''
       "
       mat-raised-button

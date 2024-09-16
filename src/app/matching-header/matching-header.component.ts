@@ -47,7 +47,6 @@ const CONTAINER_RIGHT_ID = 'container-right';
     MatCardModule,
     AngularEditorModule,
     MultipleQuestionComponent,
-    MatchingHeaderComponent,
     DragDropModule,
     ChoiceContentPipe,
   ],
@@ -59,7 +58,7 @@ export class MatchingHeaderComponent
   implements OnInit
 {
   @Input() answers: Choice[] = [];
-  mapEdittingById: Record<string, boolean> = {};
+  mapEditingById: Record<string, boolean> = {};
   mapAnswerById: Record<string, Choice> = {};
 
   ngOnInit(): void {
@@ -76,17 +75,17 @@ export class MatchingHeaderComponent
     }
 
     if (changes['isSaved']?.currentValue) {
-      this.saveAllEditting();
+      this.saveAllEditing();
     }
   }
 
   initMapEditAnswer() {
     each(this.data.answers, (answer) => {
-      this.mapEdittingById[answer.id] = false;
+      this.mapEditingById[answer.id] = false;
       this.mapAnswerById[answer.id] = answer;
     });
     each(this.data.questions, (question) => {
-      this.mapEdittingById[question.id] = false;
+      this.mapEditingById[question.id] = false;
     });
   }
 
@@ -116,18 +115,18 @@ export class MatchingHeaderComponent
       correctAnswer: [],
     };
     this.data.questions.push(newQuestion);
-    this.mapEdittingById[id] = true;
+    this.mapEditingById[id] = true;
   }
 
   editContent(id: string) {
-    if (!this.mapEdittingById[id]) {
-      this.saveAllEditting();
+    if (!this.mapEditingById[id]) {
+      this.saveAllEditing();
     }
-    this.mapEdittingById[id] = !this.mapEdittingById[id];
+    this.mapEditingById[id] = !this.mapEditingById[id];
   }
 
   removeParagraph(index: number) {
-    this.removeMapEdittingId(this.data.questions[index].id);
+    this.removeMapEditingId(this.data.questions[index].id);
     this.data.questions.splice(index, 1);
   }
 
@@ -141,20 +140,20 @@ export class MatchingHeaderComponent
       content: '',
     };
     this.data.answers?.push(newAnswer);
-    this.mapEdittingById[id] = true;
+    this.mapEditingById[id] = true;
   }
 
   removeAnswer(index: number) {
-    this.removeMapEdittingId(this.data.answers![index].id);
+    this.removeMapEditingId(this.data.answers![index].id);
     this.data.answers?.splice(index, 1);
   }
 
-  private removeMapEdittingId(id: string) {
-    this.mapEdittingById = omit(this.mapEdittingById, id);
+  private removeMapEditingId(id: string) {
+    this.mapEditingById = omit(this.mapEditingById, id);
   }
 
-  private saveAllEditting() {
-    this.mapEdittingById = mapValues(this.mapEdittingById, () => false);
+  private saveAllEditing() {
+    this.mapEditingById = mapValues(this.mapEditingById, () => false);
   }
 
   onDragStart(event: DragEvent, answerId: string) {

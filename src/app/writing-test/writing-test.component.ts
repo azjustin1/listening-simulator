@@ -80,7 +80,7 @@ export class WritingTestComponent implements OnDestroy {
   }
 
   addNewQuiz() {
-    this.router.navigate(['add-writing'], { state: { isEditting: true } });
+    this.router.navigate(['add-writing'], { state: { isEditing: true } });
   }
 
   view(id: string) {
@@ -96,7 +96,7 @@ export class WritingTestComponent implements OnDestroy {
   }
 
   edit(id: string) {
-    this.router.navigate(['edit-writing', id], { state: { isEditting: true } });
+    this.router.navigate(['edit-writing', id], { state: { isEditing: true } });
   }
 
   duplicate(writing: Writing) {

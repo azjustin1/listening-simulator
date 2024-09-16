@@ -8,7 +8,7 @@
 <div class="container">
   <div class="question-group">
     <div class="writing-info">
-      @if (state["isEditting"]) {
+      @if (state["isEditing"]) {
         <mat-form-field>
           <mat-label>Name</mat-label>
           <input matInput [(ngModel)]="data.name" />
@@ -41,9 +41,8 @@
         </div>
       }
 
-      @if (isReady || state["isReadOnly"] || state["isEditting"]) {
+      @if (isReady || state["isReadOnly"] || state["isEditing"]) {
         <mat-tab-group
-          animationDuration="0ms"
           mat-align-tabs="center"
           animationDuration="0ms"
           headerPosition="below"
@@ -55,11 +54,11 @@
                 <app-writing
                   [data]="part"
                   [isSaved]="mapSavedPart[$index]!"
-                  [isEditting]="state['isEditting']"
+                  [isEditing]="state['isEditing']"
                   [isTesting]="state['isTesting']"
                   [isReadOnly]="state['isReadOnly']"
                 ></app-writing>
-                @if (state["isEditting"]) {
+                @if (state["isEditing"]) {
                   <div class="actions">
                     @if (mapSavedPart[$index]) {
                       <button
@@ -98,7 +97,7 @@
           }
         </mat-tab-group>
       }
-      @if (state["isEditting"]) {
+      @if (state["isEditing"]) {
         <div class="add-button">
           <button mat-button color="primary" (click)="onAddPart()">
             <mat-icon>add</mat-icon> Add Part
@@ -106,7 +105,7 @@
         </div>
       }
     </div>
-    @if (state["isEditting"]) {
+    @if (state["isEditing"]) {
       <div class="save-button">
         <button mat-raised-button color="primary" (click)="onSaveClick()">
           Save and Quit

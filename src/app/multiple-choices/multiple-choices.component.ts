@@ -43,7 +43,7 @@ export class MultipleChoicesComponent extends AbstractQuestionComponent {
 
     this.mapSelectedChoice[index] = !this.mapSelectedChoice[index];
 
-    if (this.isEditting) {
+    if (this.isEditing) {
       const id = this.question.choices[index].id;
       if (!this.question.correctAnswer?.includes(id)) {
         this.question.correctAnswer.push(id);

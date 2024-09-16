@@ -60,7 +60,7 @@ export class LabelOnMapComponent extends AbstractQuestionComponent {
       this.question.subQuestions![questionIndex].correctAnswer;
     const answer = this.question.subQuestions![questionIndex].answer;
 
-    if (this.isEditting) {
+    if (this.isEditing) {
       if (!isEmpty(correctAnswer) && correctAnswer.includes(choiceId)) {
         this.question.subQuestions![questionIndex].correctAnswer = [];
       } else {

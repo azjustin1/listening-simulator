@@ -3,9 +3,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { each } from 'lodash-es';
 import { Result } from '../../../common/models/result.model';
-import { ScoreUtils } from '../../../utils/score-utils';
 import { ListeningComponent } from '../../listening/listening.component';
 import { MultipleChoicesComponent } from '../../multiple-choices/multiple-choices.component';
 import { PartNavigationComponent } from '../../part-navigation/part-navigation.component';
@@ -15,11 +13,7 @@ import { WritingComponent } from '../../writing/writing.component';
 import { BandScorePipe } from '../band-score.pipe';
 import { ResultService } from '../result.service';
 import { FeedbackComponent } from '../../feedback/feedback.component';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogModule,
-  MatDialogRef,
-} from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-result-detail',
@@ -76,31 +70,12 @@ export class ResultDetailComponent {
       if (resultId) {
         this.resultService.getById(resultId).subscribe((result) => {
           this.result = result;
-          this.calculateListeningPoint();
         });
       }
     });
   }
 
-  printPage() {
-    window.print();
-  }
-
   back() {
-    this.router.navigate(['mock-test']);
-  }
-
-  private calculateListeningPoint() {
-    let correctPoint = 0;
-    let totalPoint = 0;
-    each(this.result.listeningParts, (part) => {
-      each(part.questions, (question) => {
-        const scoreResult = ScoreUtils.calculateQuestionPoint(question);
-        correctPoint += scoreResult.correct;
-        totalPoint += scoreResult.total;
-      });
-    });
-    this.result.correctListeningPoint = correctPoint;
-    this.result.totalListeningPoint = totalPoint;
+    this.router.navigate(['mock-test']).then(() => {});
   }
 }

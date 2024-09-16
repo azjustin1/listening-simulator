@@ -12,7 +12,7 @@ import { AngularEditorConfig, UploadResponse } from '@wfpena/angular-wysiwyg';
 import { debounce, each, isNull } from 'lodash-es';
 import { map } from 'rxjs';
 import { FileService } from '../app/file.service';
-import { Question } from '../common/models/question.model';
+import { Question } from './models/question.model';
 import { CommonUtils } from '../utils/common-utils';
 import { environment } from '../environments/environment';
 import { BASE64_IMAGE_REGEX } from '../utils/constant';
@@ -23,7 +23,7 @@ import { BASE64_IMAGE_REGEX } from '../utils/constant';
 export abstract class AbstractQuestionComponent implements OnChanges {
   @Input() question!: Question;
   @Input() isSaved: boolean = false;
-  @Input() isEditting: boolean = false;
+  @Input() isEditing: boolean = false;
   @Input() isReadOnly: boolean = false;
   @Input() isTesting: boolean = false;
   @Input() isExpand: boolean = true;
@@ -33,17 +33,17 @@ export abstract class AbstractQuestionComponent implements OnChanges {
 
   onPaste = debounce((event) => this.uploadQuestionBase64Images(event), 1000);
 
-  mapEdittingQuestion: Record<string, boolean> = {};
+  mapEditingQuestion: Record<string, boolean> = {};
 
   fileService = inject(FileService);
 
   ngOnInit(): void {
-    this.mapEdittingQuestion[this.question.id] = false;
+    this.mapEditingQuestion[this.question.id] = false;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isSaved']?.currentValue) {
-      this.isEditting = false;
+      this.isEditing = false;
     }
   }
 
@@ -78,9 +78,9 @@ export abstract class AbstractQuestionComponent implements OnChanges {
     },
   };
 
-  defaultChoices(numberOfChocies: number) {
+  defaultChoices(numberOfChoices: number) {
     const choices = [];
-    for (let i = 0; i < numberOfChocies; i++) {
+    for (let i = 0; i < numberOfChoices; i++) {
       const choice = {
         id: CommonUtils.generateRandomId(),
         content: '',
@@ -90,17 +90,14 @@ export abstract class AbstractQuestionComponent implements OnChanges {
     return choices;
   }
 
-  updateEdittingQuestion(status: boolean) {
+  updateEditingQuestion(status: boolean) {
     each(this.question.subQuestions, (question) => {
-      this.mapEdittingQuestion[question.id] = status;
+      this.mapEditingQuestion[question.id] = status;
     });
   }
 
   onSaveQuestion() {
     this.onSave.emit();
-  }
-  onEditQuestion() {
-    this.onEdit.emit();
   }
 
   addChoice() {
@@ -116,9 +113,7 @@ export abstract class AbstractQuestionComponent implements OnChanges {
   }
 
   extractBase64Image(content: string) {
-    const regex = BASE64_IMAGE_REGEX;
-    const match = regex.exec(content);
-    return match;
+    return BASE64_IMAGE_REGEX.exec(content);
   }
 
   uploadQuestionBase64Images(content: string) {
@@ -134,11 +129,5 @@ export abstract class AbstractQuestionComponent implements OnChanges {
         );
       });
     }
-  }
-
-  saveAllQuestion() {
-    each(this.question.subQuestions, (question) => {
-      this.mapEdittingQuestion[question.id] = false;
-    });
   }
 }

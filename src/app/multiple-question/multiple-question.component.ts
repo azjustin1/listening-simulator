@@ -36,20 +36,20 @@ export class MultipleQuestionComponent
   override ngOnInit(): void {
     super.ngOnInit();
     each(this.question.subQuestions, (question) => {
-      this.updateEdittingQuestion(false);
+      this.updateEditingQuestion(false);
     });
   }
 
   override ngOnChanges(changes: SimpleChanges): void {
     super.ngOnChanges(changes);
     if (changes['isSaved']?.currentValue) {
-      mapValues(this.mapEdittingQuestion, () => false);
+      mapValues(this.mapEditingQuestion, () => false);
     }
   }
 
-  override updateEdittingQuestion(status: boolean) {
+  override updateEditingQuestion(status: boolean) {
     each(this.question.subQuestions, (question) => {
-      this.mapEdittingQuestion[question.id] = status;
+      this.mapEditingQuestion[question.id] = status;
     });
   }
 
@@ -127,12 +127,12 @@ export class MultipleQuestionComponent
   }
 
   onSaveSubQuestion(id: string) {
-    this.mapEdittingQuestion[id] = false;
+    this.mapEditingQuestion[id] = false;
   }
 
   onEditSubQuestion(id: string) {
     this.saveOthersEditting();
-    this.mapEdittingQuestion[id] = true;
+    this.mapEditingQuestion[id] = true;
   }
 
   duplicateQuestion(question: Question) {
@@ -150,8 +150,8 @@ export class MultipleQuestionComponent
   }
 
   saveOthersEditting() {
-    for (const key in this.mapEdittingQuestion) {
-      this.mapEdittingQuestion[key] = false;
+    for (const key in this.mapEditingQuestion) {
+      this.mapEditingQuestion[key] = false;
     }
   }
 
