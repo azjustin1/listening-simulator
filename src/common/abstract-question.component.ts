@@ -17,8 +17,8 @@ import { Question } from '../common/models/question.model';
 import { CommonUtils } from '../utils/common-utils';
 import { environment } from '../environments/environment';
 import { BASE64_IMAGE_REGEX } from '../utils/constant';
-import { QuestionService } from '../app/question/question.service';
-import { ChoiceService } from '../app/question/choice.service';
+import { QuestionService } from '../app/modules/question/question.service';
+import { ChoiceService } from '../app/modules/question/choice.service';
 import { Choice } from './models/choice.model';
 
 @Component({

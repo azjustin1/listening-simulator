@@ -19,8 +19,8 @@ import { BASE64_IMAGE_REGEX } from '../utils/constant';
 import { QuestionType } from './enums/question-type.enum';
 import { AbstractPart } from './models/abstract-part.model';
 import { Question } from './models/question.model';
-import { QuizService } from '../app/quizzes/quizzes.service';
-import { QuestionService } from '../app/question/question.service';
+import { QuizService } from '../app/modules/quizzes/quizzes.service';
+import { QuestionService } from '../app/modules/question/question.service';
 import { Choice } from './models/choice.model';
 
 @Component({

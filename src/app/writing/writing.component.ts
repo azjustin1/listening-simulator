@@ -9,8 +9,8 @@ import {
 } from '@wfpena/angular-wysiwyg';
 import { AbstractQuizPartComponent } from '../../common/abstract-quiz-part.component';
 import { Writing } from '../../common/models/writing.model';
-import { MultipleChoicesComponent } from '../multiple-choices/multiple-choices.component';
-import { ShortAnswerComponent } from '../short-answer/short-answer.component';
+import { MultipleChoicesComponent } from '../modules/question/multiple-choices/multiple-choices.component';
+import { ShortAnswerComponent } from '../modules/question/short-answer/short-answer.component';
 
 @Component({
   selector: 'app-writing',

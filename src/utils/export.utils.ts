@@ -2,8 +2,8 @@ import { Document, Packer, Paragraph, TextRun } from 'docx';
 import { saveAs } from 'file-saver';
 import { asBlob } from 'html-docx-js-typescript';
 import { each, findIndex, isEmpty } from 'lodash-es';
-import { IsInputPipe } from '../app/fill-in-the-gap/is-input.pipe';
-import { ChoiceContentPipe } from '../app/matching-header/choice-content.pipe';
+import { IsInputPipe } from '../app/modules/question/fill-in-the-gap/is-input.pipe';
+import { ChoiceContentPipe } from '../app/modules/question/matching-header/choice-content.pipe';
 import { QuestionType } from '../common/enums/question-type.enum';
 import { Question } from '../common/models/question.model';
 import { Result } from '../common/models/result.model';
@@ -213,7 +213,7 @@ export class ExportUtils {
       each(line, (content) => {
         if (IsInputPipe.prototype.transform(content)) {
           htmlString += `
-            <span class="answer-input">${question.choices.find((choice) => choice._id! === inputPattern.exec(content)![1])?.answer}</span> 
+            <span class="answer-input">${question.choices.find((choice) => choice._id! === inputPattern.exec(content)![1])?.answer}</span>
           `;
         } else {
           htmlString += `${content}`;

@@ -21,9 +21,9 @@ import { AbstractQuizPartComponent } from '../../common/abstract-quiz-part.compo
 import { Choice } from '../../common/models/choice.model';
 import { Question } from '../../common/models/question.model';
 import { Reading } from '../../common/models/reading.model';
-import { MatchingHeaderComponent } from '../matching-header/matching-header.component';
-import { MultipleQuestionComponent } from '../multiple-question/multiple-question.component';
-import { QuestionComponent } from '../question/question.component';
+import { MatchingHeaderComponent } from '../modules/question/matching-header/matching-header.component';
+import { MultipleQuestionComponent } from '../modules/question/multiple-question/multiple-question.component';
+import { QuestionComponent } from '../modules/question/question.component';
 import { ReadingService } from './reading.service';
 
 @Component({

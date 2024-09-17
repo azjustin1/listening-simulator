@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule, RouterOutlet } from '@angular/router';
-import { QuizService } from './quizzes/quizzes.service';
+import { QuizService } from './modules/quizzes/quizzes.service';
 import { NgxSpinnerModule } from 'ngx-spinner';
 
 @Component({

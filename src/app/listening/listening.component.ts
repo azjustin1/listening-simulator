@@ -10,7 +10,7 @@ import { Subscription } from 'rxjs';
 import { AbstractQuizPartComponent } from '../../common/abstract-quiz-part.component';
 import { Listening } from '../../common/models/listening.model';
 import { FileService } from '../file.service';
-import { QuestionComponent } from '../question/question.component';
+import { QuestionComponent } from '../modules/question/question.component';
 import { ListeningService } from './listening.service';
 
 @Component({
