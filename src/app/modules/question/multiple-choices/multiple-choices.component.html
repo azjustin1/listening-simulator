@@ -1,7 +1,7 @@
 <form>
   <div class="question-group">
     <div class="form-group">
-      @if (isEditting) {
+      @if (isEditing) {
         <angular-editor
           name="questionContent"
           [id]="question._id!"
@@ -36,7 +36,7 @@
             <p>{{ CHOICE_INDEX[$index] }}</p>
           </div>
           <div>
-            @if (isEditting) {
+            @if (isEditing) {
               <mat-form-field style="margin-left: .5rem">
                 <textarea
                   autocomplete="off"
@@ -63,7 +63,7 @@
         </div>
       }
     </div>
-    @if (isEditting) {
+    @if (isEditing) {
       <button
         mat-button
         color="primary"

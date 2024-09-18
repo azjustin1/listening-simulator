@@ -44,7 +44,7 @@ export class MultipleQuestionComponent
   override ngOnInit(): void {
     super.ngOnInit();
     each(this.question.subQuestions, (question) => {
-      this.updateEdittingQuestion(false);
+      this.updateEditingQuestion(false);
     });
   }
 
@@ -55,7 +55,7 @@ export class MultipleQuestionComponent
     }
   }
 
-  override updateEdittingQuestion(status: boolean) {
+  override updateEditingQuestion(status: boolean) {
     each(this.question.subQuestions, (question) => {
       this.mapEdittingQuestion[question._id!] = status;
     });

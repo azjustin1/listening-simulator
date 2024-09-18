@@ -7,7 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { each, mapValues } from 'lodash-es';
+import { clone, each, mapValues } from "lodash-es";
 import { Subscription, interval, map } from 'rxjs';
 import { Quiz } from '../../../common/models/quiz.model';
 import { Result } from '../../../common/models/result.model';
@@ -26,7 +26,13 @@ import { ShortAnswerComponent } from '../question/short-answer/short-answer.comp
 import { WritingComponent } from '../part/writing/writing.component';
 import { TestService } from './test.service';
 import { FeedbackComponent } from './feedback/feedback.component';
+import { Time, TimerComponent } from "../../shared/components/timer/timer.component";
 const SAVE_INTERVAL = 120000;
+const SECOND_INTERVAL = 1000;
+const DEFAULT_START_TIMEOUT = {
+  minutes: 5,
+  seconds: 0,
+};
 
 @Component({
   selector: 'app-test',
@@ -44,6 +50,7 @@ const SAVE_INTERVAL = 120000;
     ReadingComponent,
     WritingComponent,
     PartNavigationComponent,
+    TimerComponent,
   ],
   providers: [QuizService, TestService],
   templateUrl: './test.component.html',
@@ -53,7 +60,7 @@ export class TestComponent extends AddOrEditQuizComponent {
   @ViewChild('audioPlayer') audioPlayer!: ElementRef<HTMLAudioElement>;
 
   @HostListener('document:keydown.control.s', ['$event'])
-  override onKeydownHandler(event: KeyboardEvent) {
+  override onKeydownHandler() {
     this.onCtrlSave();
   }
 
@@ -84,10 +91,15 @@ export class TestComponent extends AddOrEditQuizComponent {
     writingParts: [],
   };
 
-  minutes: number = 0;
-  seconds: number = 0;
+  testTime: Time = {
+    minutes: 0,
+    seconds: 0,
+  };
+  startTime: Time = clone(DEFAULT_START_TIMEOUT);
   totalSeconds: number = 0;
-  timeoutInterval!: Subscription;
+  testTimeoutIntervalSub!: Subscription;
+  testTimeoutInterval: number = 0;
+  startTimeoutInterval: number = SECOND_INTERVAL;
 
   isReady: boolean = false;
   isStart: boolean = false;
@@ -117,7 +129,7 @@ export class TestComponent extends AddOrEditQuizComponent {
         this.result = { ...quiz };
         this.totalSeconds = this.result.listeningTimeout! * 60;
         this.audioPlayer.nativeElement.load();
-        this.getTimeout();
+        this.getTestTimeout();
       });
 
       this.startAutoSave();
@@ -135,7 +147,7 @@ export class TestComponent extends AddOrEditQuizComponent {
           this.disableOthersTab();
           this.mapDisablePart[this.currentTab] = false;
         }
-        this.getTimeout();
+        this.getTestTimeout();
       });
       this.isReady = true;
       this.startAutoSave();
@@ -144,8 +156,8 @@ export class TestComponent extends AddOrEditQuizComponent {
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
-    if (this.timeoutInterval) {
-      this.timeoutInterval.unsubscribe();
+    if (this.testTimeoutIntervalSub) {
+      this.testTimeoutIntervalSub.unsubscribe();
     }
   }
 
@@ -159,10 +171,10 @@ export class TestComponent extends AddOrEditQuizComponent {
   onChangeTab(tab: number) {
     this.currentTab = tab;
     this.isStart = false;
-    this.getTimeout();
+    this.getTestTimeout();
   }
 
-  getTimeout() {
+  getTestTimeout() {
     if (this.currentTab === 0) {
       this.totalSeconds = this.result.listeningTimeout! * 60;
     }
@@ -172,8 +184,10 @@ export class TestComponent extends AddOrEditQuizComponent {
     if (this.currentTab === 2) {
       this.totalSeconds = this.result.writingTimeout! * 60;
     }
-    this.minutes = Math.floor(this.totalSeconds / 60);
-    this.seconds = this.totalSeconds % 60;
+    this.testTime = {
+      minutes: Math.floor(this.totalSeconds / 60),
+      seconds: this.totalSeconds % 60,
+    };
   }
 
   onStartTest() {
@@ -192,7 +206,7 @@ export class TestComponent extends AddOrEditQuizComponent {
   }
 
   saveTimeout() {
-    const timeout = this.minutes + this.seconds / 60;
+    const timeout = this.testTime.minutes + this.testTime.seconds / 60;
     if (this.currentTab === 0) {
       this.result.listeningTimeout = timeout;
     }
@@ -208,32 +222,16 @@ export class TestComponent extends AddOrEditQuizComponent {
 
   onStartPart() {
     if (this.currentTab === 0 && this.audioPlayer) {
-      this.audioPlayer.nativeElement.play();
+      this.audioPlayer.nativeElement.play().then(() => {});
     }
     this.isStart = true;
-
-    this.timeoutInterval = interval(1000).subscribe(() => {
+    this.startTimeoutInterval = 0;
+    this.testTimeoutInterval = SECOND_INTERVAL;
+    this.testTimeoutIntervalSub = interval(SECOND_INTERVAL).subscribe(() => {
       if (this.currentTab === 0) {
         this.result.audioTime! += 1;
       }
-      this.calculateTime();
-      if (this.minutes === 0 && this.seconds === 0) {
-        if (this.currentTab === 0) {
-          this.audioPlayer.nativeElement.pause();
-        }
-        this.timeoutInterval.unsubscribe();
-        this.showTimeOutDialog();
-      }
     });
-  }
-
-  calculateTime() {
-    if (this.seconds < 1) {
-      this.minutes--;
-      this.seconds = 59;
-    } else {
-      this.seconds--;
-    }
   }
 
   showTimeOutDialog() {
@@ -253,9 +251,27 @@ export class TestComponent extends AddOrEditQuizComponent {
   }
 
   updateTab() {
+    this.startTimeoutInterval = SECOND_INTERVAL;
+    this.startTime = clone(DEFAULT_START_TIMEOUT);
+    this.testTimeoutInterval = 0;
     this.disableOthersTab();
     this.mapDisablePart[this.currentTab + 1] = false;
     this.currentTab = this.currentTab + 1;
+  }
+
+  onTestTimeout() {
+    this.testTimeoutInterval = 0;
+    if (this.currentTab === 0) {
+      this.audioPlayer.nativeElement.pause();
+    }
+    this.testTimeoutIntervalSub.unsubscribe();
+    this.showTimeOutDialog();
+  }
+
+  onStartTimeOut() {
+    this.startTimeoutInterval = 0;
+    this.isStart = true;
+    this.testTimeoutInterval = SECOND_INTERVAL;
   }
 
   afterSubmit() {
@@ -271,8 +287,8 @@ export class TestComponent extends AddOrEditQuizComponent {
       ExportUtils.exportWriting(this.result);
       this.showFeedbackDialog();
     }
-    if (this.timeoutInterval) {
-      this.timeoutInterval.unsubscribe();
+    if (this.testTimeoutIntervalSub) {
+      this.testTimeoutIntervalSub.unsubscribe();
     }
     this.result = { ...this.result, currentTab: this.currentTab };
     this.subscriptions.push(
@@ -302,7 +318,6 @@ export class TestComponent extends AddOrEditQuizComponent {
     });
     dialogRef.afterClosed().subscribe((feedback) => {
       this.result.feedback = feedback;
-      ExportUtils.exportFeedback(this.result);
       this.submit();
     });
   }

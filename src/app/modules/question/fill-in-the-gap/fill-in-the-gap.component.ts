@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, NgModule, SimpleChanges } from '@angular/core';
+import { Component, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
@@ -43,12 +43,11 @@ export class FillInTheGapComponent extends AbstractQuestionComponent {
   mapSaveTextByIndex: Record<number, Record<number, boolean>> = {};
   mapChoiceById: Record<string, Choice> = {};
   mapShowActionByIndex: Record<number, Record<number, boolean>> = {};
-  showTextActions = false;
 
   override ngOnChanges(changes: SimpleChanges): void {
     super.ngOnChanges(changes);
-    if (!changes['isEditting']?.currentValue) {
-      this.saveAllEditting();
+    if (!changes['isEditing']?.currentValue) {
+      this.saveAllEditing();
     }
   }
 
@@ -62,7 +61,7 @@ export class FillInTheGapComponent extends AbstractQuestionComponent {
     each(this.question.arrayContent, (line, lineIndex) => {
       this.mapSaveTextByIndex[lineIndex] = {};
       this.mapShowActionByIndex[lineIndex] = {};
-      each(line, (content, contentIndex) => {
+      each(line, (_content, contentIndex) => {
         this.mapSaveTextByIndex[lineIndex][contentIndex] = true;
         this.mapShowActionByIndex[lineIndex][contentIndex] = false;
       });
@@ -93,7 +92,7 @@ export class FillInTheGapComponent extends AbstractQuestionComponent {
         (choice) => choice._id !== inputId,
       );
     }
-    each(this.question.arrayContent![lineIndex], (content, contentIndex) => {
+    each(this.question.arrayContent![lineIndex], (_content, contentIndex) => {
       this.updateMapChoiceId(lineIndex, contentIndex);
     });
     this.question.arrayContent!.splice(lineIndex, 1);
@@ -131,16 +130,16 @@ export class FillInTheGapComponent extends AbstractQuestionComponent {
         '',
       ),
     ];
-    this.saveAllEditting();
+    this.saveAllEditing();
     this.mapSaveTextByIndex[lineIndex][contentIndex] = false;
     this.mapShowActionByIndex[lineIndex][contentIndex] = true;
   }
 
   onEditText(lineIndex: number, contentIndex: number) {
-    if (!this.isEditting) {
+    if (!this.isEditing) {
       return;
     }
-    this.saveAllEditting();
+    this.saveAllEditing();
     this.mapSaveTextByIndex[lineIndex][contentIndex] = false;
   }
 
@@ -170,7 +169,7 @@ export class FillInTheGapComponent extends AbstractQuestionComponent {
       this.question.arrayContent![lineIndex].push('');
     }
     this.initMapSaveText();
-    this.saveAllEditting();
+    this.saveAllEditing();
     this.onSave.emit();
   }
 
@@ -193,7 +192,7 @@ export class FillInTheGapComponent extends AbstractQuestionComponent {
       this.subscriptions.add(
         this.questionService.updateSubQuestion(this.question).subscribe(),
       );
-      this.saveAllEditting();
+      this.saveAllEditing();
       this.mapSaveTextByIndex[lineIndex][contentIndex] = false;
       this.mapShowActionByIndex[lineIndex][contentIndex] = true;
     });
@@ -226,17 +225,12 @@ export class FillInTheGapComponent extends AbstractQuestionComponent {
   }
 
   onEditInput(lineIndex: number, contentIndex: number) {
-    if (!this.isEditting) {
+    if (!this.isEditing) {
       return;
     }
-    this.saveAllEditting();
+    this.saveAllEditing();
     this.mapSaveTextByIndex[lineIndex][contentIndex] = false;
     this.mapShowActionByIndex[lineIndex][contentIndex] = true;
-  }
-
-  onSaveInput(lineIndex: number, contentIndex: number) {
-    this.mapSaveTextByIndex[lineIndex][contentIndex] = true;
-    this.onSave.emit();
   }
 
   private updateMapChoiceId(lineIndex: number, contentIndex: number) {
@@ -249,7 +243,7 @@ export class FillInTheGapComponent extends AbstractQuestionComponent {
     }
   }
 
-  private saveAllEditting() {
+  private saveAllEditing() {
     this.mapSaveTextByIndex = {
       ...mapValues(this.mapSaveTextByIndex, (line) => {
         return { ...mapValues(line, () => true) };

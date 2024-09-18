@@ -53,7 +53,6 @@ export class SelfReadingDetailComponent extends ReadingComponent {
     timeout: 0,
     wordCount: 0,
   };
-  override isEditting: boolean = true;
   selfReadingService = inject(SelfReadingService);
   route = inject(ActivatedRoute);
   router = inject(Router);

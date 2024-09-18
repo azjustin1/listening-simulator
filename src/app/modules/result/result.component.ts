@@ -16,6 +16,7 @@ import { QuizService } from '../quizzes/quizzes.service';
 import { ShortAnswerComponent } from '../question/short-answer/short-answer.component';
 import { BandScorePipe } from './band-score.pipe';
 import { ResultService } from './result.service';
+import { InputPasswordDialogComponent } from "../../dialog/input-password-dialog/input-password-dialog.component";
 
 @Component({
   selector: 'app-result',
@@ -63,7 +64,12 @@ export class ResultComponent {
   }
 
   view(id: string) {
-    this.router.navigate([`result-detail`, id]);
+    const dialogRef = this.dialog.open(InputPasswordDialogComponent);
+    dialogRef.afterClosed().subscribe((isMatch) => {
+      if (isMatch) {
+        this.router.navigate([`result-detail`, id]);
+      }
+    });
   }
 
   continue(id: string) {

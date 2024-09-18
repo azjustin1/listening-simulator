@@ -8,7 +8,7 @@
 <div class="container">
   <div class="question-group">
     <div class="writing-info">
-      @if (state["isEditting"]) {
+      @if (state["isEditing"]) {
         <mat-form-field>
           <mat-label>Name</mat-label>
           <input matInput [(ngModel)]="data.name" />
@@ -41,9 +41,8 @@
         </div>
       }
 
-      @if (isReady || state["isReadOnly"] || state["isEditting"]) {
+      @if (isReady || state["isReadOnly"] || state["isEditing"]) {
         <mat-tab-group
-          animationDuration="0ms"
           mat-align-tabs="center"
           animationDuration="0ms"
           headerPosition="below"
@@ -51,56 +50,54 @@
           @for (part of data.parts; track $index) {
             <mat-tab>
               <ng-template matTabLabel="">{{ $index + 1 }}</ng-template>
-              <mat-card style="margin-bottom: 16px" appearance="outlined">
-                <mat-card-content>
-                  <app-writing
-                    [data]="part"
-                    [isSaved]="mapSavedPart[$index]!"
-                    [isEditting]="state['isEditting']"
-                    [isTesting]="state['isTesting']"
-                    [isReadOnly]="state['isReadOnly']"
-                  ></app-writing>
-                  @if (state["isEditting"]) {
-                    <div class="actions">
-                      @if (mapSavedPart[$index]) {
-                        <button
-                          mat-button
-                          color="primary"
-                          type="button"
-                          class="btn btn-danger"
-                          (click)="onEditClick($index)"
-                        >
-                          <mat-icon>edit</mat-icon> Edit part
-                        </button>
-                      } @else {
-                        <button
-                          mat-button
-                          color="primary"
-                          type="button"
-                          class="btn btn-danger"
-                          (click)="onSavePart($index)"
-                        >
-                          <mat-icon>save</mat-icon> Save part
-                        </button>
-                      }
+              <div style="margin-bottom: 10px">
+                <app-writing
+                  [data]="part"
+                  [isSaved]="mapSavedPart[$index]!"
+                  [isEditing]="state['isEditing']"
+                  [isTesting]="state['isTesting']"
+                  [isReadOnly]="state['isReadOnly']"
+                ></app-writing>
+                @if (state["isEditing"]) {
+                  <div class="actions">
+                    @if (mapSavedPart[$index]) {
                       <button
                         mat-button
-                        color="warn"
+                        color="primary"
                         type="button"
                         class="btn btn-danger"
-                        (click)="remove($index)"
+                        (click)="onEditClick($index)"
                       >
-                        <mat-icon>delete</mat-icon> Remove part
+                        <mat-icon>edit</mat-icon> Edit part
                       </button>
-                    </div>
-                  }
-                </mat-card-content>
-              </mat-card>
+                    } @else {
+                      <button
+                        mat-button
+                        color="primary"
+                        type="button"
+                        class="btn btn-danger"
+                        (click)="onSavePart($index)"
+                      >
+                        <mat-icon>save</mat-icon> Save part
+                      </button>
+                    }
+                    <button
+                      mat-button
+                      color="warn"
+                      type="button"
+                      class="btn btn-danger"
+                      (click)="remove($index)"
+                    >
+                      <mat-icon>delete</mat-icon> Remove part
+                    </button>
+                  </div>
+                }
+              </div>
             </mat-tab>
           }
         </mat-tab-group>
       }
-      @if (state["isEditting"]) {
+      @if (state["isEditing"]) {
         <div class="add-button">
           <button mat-button color="primary" (click)="onAddPart()">
             <mat-icon>add</mat-icon> Add Part
@@ -108,7 +105,7 @@
         </div>
       }
     </div>
-    @if (state["isEditting"]) {
+    @if (state["isEditing"]) {
       <div class="save-button">
         <button mat-raised-button color="primary" (click)="onSaveClick()">
           Save and Quit

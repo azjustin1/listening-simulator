@@ -13,19 +13,16 @@ import {
   standalone: true,
 })
 export class FitContentDirective implements OnChanges {
-  private originalWidth: number;
   private minWidth = 200;
   @Input() content = '';
 
   constructor(
     private element: ElementRef,
     private renderer: Renderer2,
-  ) {
-    this.originalWidth = this.element.nativeElement.offsetWidth;
-  }
+  ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['isEditting']) {
+    if (changes['isEditing']) {
       this.setInputWidth();
     }
   }

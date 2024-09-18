@@ -7,7 +7,7 @@
         [isSaved]="isSaved"
         [isReadOnly]="isReadOnly"
         [isTesting]="isTesting"
-        [isEditting]="isEditting"
+        [isEditing]="isEditing"
       ></app-matching-header>
     } @else {
       <div class="question-group">
@@ -20,7 +20,7 @@
             ) {
               <app-multiple-question
                 [question]="question"
-                [isEditting]="mapQuestionEditting[question._id!]"
+                [isEditing]="mapQuestionEditting[question._id!]"
                 [isReadOnly]="isReadOnly"
                 [isTesting]="isTesting"
                 [isSaved]="mapSavedQuestion[question._id!]"

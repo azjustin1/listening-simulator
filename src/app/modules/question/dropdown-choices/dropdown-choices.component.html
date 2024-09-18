@@ -1,7 +1,7 @@
 <form>
   <div class="question-group">
     <div class="form-group">
-      @if (isEditting) {
+      @if (isEditing) {
         <angular-editor
           name="questionContent"
           [id]="question._id!"
@@ -34,7 +34,7 @@
           }
         </div>
       } @else {
-        @if (isEditting) {
+        @if (isEditing) {
           @for (choice of question.choices; track $index) {
             <div class="choice">
               <div class="form-group">
@@ -83,7 +83,7 @@
           } @else {
             <mat-form-field class="choice-input">
               <mat-select
-                [disabled]="!isEditting"
+                [disabled]="!isEditing"
                 [(value)]="question.correctAnswer[0]"
                 (selectionChange)="onSelectChange($event)"
               >
@@ -98,7 +98,7 @@
         }
       }
     </div>
-    @if (isEditting) {
+    @if (isEditing) {
       <button
         mat-button
         color="primary"

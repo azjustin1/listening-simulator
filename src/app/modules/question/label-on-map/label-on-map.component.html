@@ -1,6 +1,6 @@
 <div class="container">
   <div class="question">
-    @if (isEditting) {
+    @if (isEditing) {
       <angular-editor
         class="editor"
         name="questionContent"
@@ -23,13 +23,13 @@
             <th>{{ choiceIndexs[$index] }}</th>
           }
 
-          @if (isEditting) {
+          @if (isEditing) {
             <th>
               <mat-icon color="warn" (click)="onRemoveColumn()">clear</mat-icon>
             </th>
           }
           @if (
-            isEditting &&
+            isEditing &&
             question.subQuestions &&
             question.subQuestions.length > 0
           ) {
@@ -45,7 +45,7 @@
         ) {
           <tr>
             <td>
-              @if (isEditting) {
+              @if (isEditing) {
                 <input matInput type="text" [(ngModel)]="question.content" />
               } @else {
                 {{ question.content }}
@@ -89,7 +89,7 @@
               </td>
             }
           </tr>
-          @if (isEditting) {
+          @if (isEditing) {
             <button
               mat-icon-button
               type="button"
@@ -104,7 +104,7 @@
       </table>
     }
 
-    @if (isEditting) {
+    @if (isEditing) {
       <button
         mat-button
         color="primary"

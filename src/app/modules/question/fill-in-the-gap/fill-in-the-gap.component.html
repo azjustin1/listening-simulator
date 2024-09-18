@@ -1,6 +1,6 @@
 <div class="container">
   <div class="description">
-    @if (isEditting) {
+    @if (isEditing) {
       <angular-editor
         [name]="question._id!"
         [config]="config"
@@ -28,7 +28,7 @@
                 ) {
                   <div
                     class="choice-content"
-                    [ngClass]="{ edit: isEditting }"
+                    [ngClass]="{ edit: isEditing }"
                     (click)="onEditInput(lineIndex, contentIndex)"
                   >
                     @if (isReadOnly) {
@@ -83,7 +83,7 @@
                   />
                 } @else {
                   @if (
-                    isEditting &&
+                    isEditing &&
                     mapShowActionByIndex[lineIndex][contentIndex] &&
                     contentIndex === 0
                   ) {
@@ -114,7 +114,7 @@
                   />
 
                   @if (
-                    isEditting && mapShowActionByIndex[lineIndex][contentIndex]
+                    isEditing && mapShowActionByIndex[lineIndex][contentIndex]
                   ) {
                     <div class="text-container__button">
                       <button
@@ -162,7 +162,7 @@
                 @if (mapSaveTextByIndex[lineIndex][contentIndex]) {
                   <div
                     class="question__text"
-                    [ngClass]="{ edit: isEditting }"
+                    [ngClass]="{ edit: isEditing }"
                     (click)="onEditText(lineIndex, contentIndex)"
                   >
                     {{
@@ -231,7 +231,7 @@
           }
         </div>
         <div class="line-actions">
-          @if (isEditting) {
+          @if (isEditing) {
             <button
               mat-button
               class="line-btn"
@@ -271,7 +271,7 @@
           }
         </div>
       }
-      @if (question.arrayContent.length === 0 && isEditting) {
+      @if (question.arrayContent.length === 0 && isEditing) {
         <button
           mat-button
           class="line-btn"

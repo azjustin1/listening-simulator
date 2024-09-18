@@ -48,7 +48,7 @@ import { environment } from '../../../../environments/environment';
 export class AddOrEditWritingComponent {
   state: { [key: string]: boolean } = {
     isSaved: false,
-    isEditting: false,
+    isEditing: false,
     isTesting: false,
     isReadOnly: false,
   };
@@ -111,7 +111,7 @@ export class AddOrEditWritingComponent {
     if (this.state['isTesting']) {
       this.onCtrlSave();
     }
-    if (this.state['isEditting']) {
+    if (this.state['isEditing']) {
       this.saveOrEdit(this.data);
     }
   }
@@ -141,7 +141,7 @@ export class AddOrEditWritingComponent {
     this.route.paramMap.subscribe((paramMap: any) => {
       const id = paramMap.get('id');
       if (id) {
-        if (this.state['isEditting'] || this.state['isTesting']) {
+        if (this.state['isEditing'] || this.state['isTesting']) {
           const sub = this.writingService
             .getById(id)
             .subscribe((writing: any) => {

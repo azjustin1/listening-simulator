@@ -6,24 +6,24 @@
 .container--left {
   flex-direction: column;
   gap: 16px;
-  width: calc(100vw / 2 - 60px);
   overflow-y: scroll;
 }
 
 .container--left,
 .container--right {
   max-height: calc(100vh - 450px);
+  width: calc(100vw / 2 - 60px);
+
   padding-right: 17px;
   box-sizing: content-box;
 }
 
-.paragraph {
-  margin: 0 0 16px 0;
+.heading-container {
+  overflow-y: scroll;
 }
 
-.container--right {
-  padding: 10px;
-  width: calc(100vw / 2 - 60px);
+.paragraph {
+  margin: 0 0 10px 0;
 }
 
 .add-answer-button {
@@ -37,7 +37,6 @@
 
 .answer-content {
   width: 25rem;
-  height: 50px;
 }
 
 .input-reading {
@@ -55,8 +54,8 @@
 }
 
 .answer-drop-container {
-  height: 25px;
-  line-height: 30px;
+  height: 2rem;
+  line-height: 2rem;
   padding: 10px;
   margin: 0 0 10px 0;
   border: 1px solid black;
@@ -82,5 +81,5 @@
 }
 
 .description {
-  margin: 0 0 16px 0;
+  margin: 0 0 10px 0;
 }

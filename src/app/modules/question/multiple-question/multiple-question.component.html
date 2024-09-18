@@ -6,7 +6,7 @@
   </mat-expansion-panel-header>
   <div class="form-group question-name">
     @if (!isSaved && !isReadOnly && !isTesting) {
-      @if (isEditting) {
+      @if (isEditing) {
         <mat-form-field style="width: 100%">
           <mat-label>Question Name</mat-label>
           <textarea
@@ -34,7 +34,7 @@
         <app-question
           [question]="subQuestion"
           [isSaved]="isSaved"
-          [isEditting]="mapEdittingQuestion[subQuestion._id!]"
+          [isEditing]="mapEdittingQuestion[subQuestion._id!]"
           [isReadOnly]="isReadOnly"
           [isTesting]="isTesting"
           (onSave)="onSaveClick()"
@@ -104,7 +104,7 @@
       }
     }
   </div>
-  @if (isEditting) {
+  @if (isEditing) {
     <div class="question-type-container">
       <button
         class="add-question-button"

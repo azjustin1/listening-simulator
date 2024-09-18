@@ -26,14 +26,12 @@
         <mat-tab label="Listening" style="margin-top: 16px">
           <ng-template matTabContent>
             @if (result.listeningParts[selectedListeningPart]) {
-              <mat-card class="question-group" appearance="outlined">
-                <mat-card-content>
-                  <app-listening
-                    [data]="result.listeningParts[selectedListeningPart]"
-                    [isReadOnly]="true"
-                  ></app-listening>
-                </mat-card-content>
-              </mat-card>
+              <div class="question-group">
+                <app-listening
+                  [data]="result.listeningParts[selectedListeningPart]"
+                  [isReadOnly]="true"
+                ></app-listening>
+              </div>
             }
             <app-part-navigation
               [(selectedPart)]="selectedListeningPart"
@@ -44,14 +42,12 @@
         <mat-tab label="Reading">
           <ng-template matTabContent>
             @if (result.readingParts[selectedReadingPart]) {
-              <mat-card class="question-group" appearance="outlined">
-                <mat-card-content>
-                  <app-reading
-                    [data]="result.readingParts[selectedReadingPart]"
-                    [isReadOnly]="true"
-                  ></app-reading>
-                </mat-card-content>
-              </mat-card>
+              <div class="question-group">
+                <app-reading
+                  [data]="result.readingParts[selectedReadingPart]"
+                  [isReadOnly]="true"
+                ></app-reading>
+              </div>
             }
             <app-part-navigation
               [(selectedPart)]="selectedReadingPart"
@@ -62,14 +58,12 @@
         <mat-tab label="Writing">
           <ng-template matTabContent>
             @if (result.writingParts[selectedWritingPart]) {
-              <mat-card class="question-group" appearance="outlined">
-                <mat-card-content>
-                  <app-writing
-                    [data]="result.writingParts[selectedWritingPart]"
-                    [isReadOnly]="true"
-                  ></app-writing>
-                </mat-card-content>
-              </mat-card>
+              <div class="question-group">
+                <app-writing
+                  [data]="result.writingParts[selectedWritingPart]"
+                  [isReadOnly]="true"
+                ></app-writing>
+              </div>
             }
             <app-part-navigation
               [(selectedPart)]="selectedWritingPart"

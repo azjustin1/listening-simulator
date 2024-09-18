@@ -27,11 +27,13 @@ import { QuestionService } from '../../question/question.service';
 import { Reading } from '../../../../common/models/reading.model';
 import { ExportUtils } from '../../../../utils/export.utils';
 import { FileService } from '../../../file.service';
+import { CommonModule } from "@angular/common";
 
 @Component({
   selector: 'app-self-reading-test',
   standalone: true,
   imports: [
+    CommonModule,
     FormsModule,
     MatCardModule,
     MatButtonModule,
@@ -68,6 +70,7 @@ export class SelfReadingTestComponent extends ReadingComponent {
   route = inject(ActivatedRoute);
   router = inject(Router);
   selfReadingService = inject(SelfReadingService);
+
   constructor() {
     super();
     this.testForm = this.formBuilder.group({
@@ -84,6 +87,7 @@ export class SelfReadingTestComponent extends ReadingComponent {
       });
     }
   }
+
   submit() {
     if (this.testForm.valid) {
       const htmlString = ExportUtils.exportSelfReading(this.data);

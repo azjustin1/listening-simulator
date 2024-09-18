@@ -4,29 +4,25 @@
     <mat-form-field>
       <mat-label>Student Name</mat-label>
       <input matInput formControlName="studentName" />
-      @if (
-        testForm.get("studentName")?.hasError("required") ||
-        (testForm.get("studentName")?.invalid &&
-          (testForm.get("studentName")?.touched ||
-            testForm.get("studentName")?.dirty))
-      ) {
-        <mat-error> Name is required. </mat-error>
+      @if (testForm.get("studentName")?.hasError("required") ||
+      (testForm.get("studentName")?.invalid &&
+        (testForm.get("studentName")?.touched ||
+          testForm.get("studentName")?.dirty))) {
+        <mat-error> Name is required.</mat-error>
       }
     </mat-form-field>
     <mat-form-field>
       <mat-label>Student Email</mat-label>
       <input matInput formControlName="studentEmail" />
-      @if (
-        testForm.get("studentEmail")?.hasError("required") &&
-        testForm.get("studentEmail")?.invalid &&
-          (testForm.get("studentEmail")?.touched ||
-            testForm.get("studentEmail")?.dirty)
-      ) {
-        <mat-error> Email is required. </mat-error>
+      @if (testForm.get("studentEmail")?.hasError("required") &&
+      testForm.get("studentEmail")?.invalid &&
+      (testForm.get("studentEmail")?.touched ||
+        testForm.get("studentEmail")?.dirty)) {
+        <mat-error> Email is required.</mat-error>
       }
 
       @if (testForm.get("studentEmail")?.hasError("email")) {
-        <mat-error> Invalid email. </mat-error>
+        <mat-error> Invalid email.</mat-error>
       }
     </mat-form-field>
   </div>
@@ -35,14 +31,11 @@
       <div class="question-group">
         <mat-accordion>
           @if (data) {
-            @for (
-              question of data.questions;
+            @for (question of data.questions;
               track question._id!;
-              let questionIndex = $index
-            ) {
+              let questionIndex = $index) {
               <app-multiple-question
                 [question]="question"
-                [isEditting]="mapQuestionEditting[question._id!]"
                 [isReadOnly]="isReadOnly"
                 [isTesting]="isTesting"
                 [isSaved]="mapSavedQuestion[question._id!]"
@@ -122,7 +115,8 @@
               class="btn btn-danger"
               (click)="addQuestion(2)"
             >
-              <mat-icon>add</mat-icon> Add question
+              <mat-icon>add</mat-icon>
+              Add question
             </button>
           </div>
         }

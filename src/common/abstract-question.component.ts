@@ -13,7 +13,7 @@ import { AngularEditorConfig, UploadResponse } from '@wfpena/angular-wysiwyg';
 import { debounce, each, isNull } from 'lodash-es';
 import { map, Subscription } from 'rxjs';
 import { FileService } from '../app/file.service';
-import { Question } from '../common/models/question.model';
+import { Question } from './models/question.model';
 import { CommonUtils } from '../utils/common-utils';
 import { environment } from '../environments/environment';
 import { BASE64_IMAGE_REGEX } from '../utils/constant';
@@ -29,7 +29,7 @@ export abstract class AbstractQuestionComponent
 {
   @Input() question!: Question;
   @Input() isSaved: boolean = false;
-  @Input() isEditting: boolean = false;
+  @Input() isEditing: boolean = false;
   @Input() isReadOnly: boolean = false;
   @Input() isTesting: boolean = false;
   @Input() isExpand: boolean = true;
@@ -51,7 +51,7 @@ export abstract class AbstractQuestionComponent
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isSaved']?.currentValue) {
-      this.isEditting = false;
+      this.isEditing = false;
     }
   }
 
@@ -90,9 +90,9 @@ export abstract class AbstractQuestionComponent
     },
   };
 
-  defaultChoices(numberOfChocies: number) {
+  defaultChoices(numberOfChoices: number) {
     const choices = [];
-    for (let i = 0; i < numberOfChocies; i++) {
+    for (let i = 0; i < numberOfChoices; i++) {
       const choice: Choice = {
         content: '',
         order: choices.length,
@@ -102,7 +102,7 @@ export abstract class AbstractQuestionComponent
     return choices;
   }
 
-  updateEdittingQuestion(status: boolean) {
+  updateEditingQuestion(status: boolean) {
     each(this.question.subQuestions, (question) => {
       this.mapEdittingQuestion[question._id!] = status;
     });
@@ -144,9 +144,7 @@ export abstract class AbstractQuestionComponent
   }
 
   extractBase64Image(content: string) {
-    const regex = BASE64_IMAGE_REGEX;
-    const match = regex.exec(content);
-    return match;
+    return BASE64_IMAGE_REGEX.exec(content);
   }
 
   uploadQuestionBase64Images(content: string) {
