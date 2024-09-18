@@ -4,6 +4,13 @@
   width: 100%;
 }
 
+.timer {
+  position: fixed;
+  top: 0;
+  left: calc(100vw / 2);
+  z-index: 100;
+}
+
 .student-info {
   display: flex;
   flex-direction: column;

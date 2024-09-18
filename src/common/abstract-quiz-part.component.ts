@@ -98,7 +98,9 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
+    if (this.subscriptions) {
+      this.subscriptions.unsubscribe();
+    }
   }
 
   onWritingChange(value: string) {
@@ -192,7 +194,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
 
   onSaveQuestion(question: Question) {
     this.subscriptions.add(
-      this.questionService.updateQuestion(question).subscribe(resp => {
+      this.questionService.updateQuestion(question).subscribe((resp) => {
         this.mapQuestionEditting[resp._id!] = false;
         this.onSave.emit();
       }),

@@ -1,3 +1,17 @@
+<mat-card class="timer">
+  <mat-card-content>
+    <h2>
+      <app-timer
+        [(time)]="testTime"
+        [interval]="testTimeoutInterval!"
+        (onTimeout)="onTestTimeout()"
+      ></app-timer>
+    </h2
+    >
+  </mat-card-content>
+</mat-card>
+
+
 <form [formGroup]="testForm" (ngSubmit)="submit()">
   <h1>{{ data.name }}</h1>
   <div class="student-info">
@@ -26,7 +40,8 @@
       }
     </mat-form-field>
   </div>
-  @if (data) {
+
+  @if (isStart && data) {
     <div class="container">
       <div class="question-group">
         <mat-accordion>
@@ -139,14 +154,24 @@
       </div>
     </div>
   }
-
-  <button
-    [disabled]="testForm.invalid"
-    mat-raised-button
-    class="submit-button"
-    type="submit"
-    color="primary"
-  >
-    Submit
-  </button>
+  @if (isStart) {
+    <button
+      mat-raised-button
+      class="submit-button"
+      type="submit"
+      color="primary"
+    >
+      Submit
+    </button>
+  } @else {
+    <button
+      [disabled]="testForm.invalid"
+      mat-raised-button
+      (click)="onStart()"
+      class="submit-button"
+      color="primary"
+    >
+      Start
+    </button>
+  }
 </form>

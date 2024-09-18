@@ -71,10 +71,6 @@ export class ReadingComponent
     }
   }
 
-  getChoiceById(id: string, choices: Choice[]) {
-    return choices.find((choice) => choice._id! === id);
-  }
-
   override onSaveQuestion(question: Question): void {
     super.onSaveQuestion(question);
     this.mapSavedQuestion[question._id!] = true;
@@ -83,12 +79,5 @@ export class ReadingComponent
   override onEditQuestion(id: string): void {
     super.onEditQuestion(id);
     this.mapSavedQuestion[id] = false;
-  }
-
-  removeSubQuesiton(questionIndex: number, subQuestionIndex: number) {
-    this.data.questions[questionIndex].subQuestions!.splice(
-      subQuestionIndex,
-      1,
-    );
   }
 }

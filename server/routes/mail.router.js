@@ -44,8 +44,6 @@ router.post("/self-reading", async (req, res) => {
       return res.status(400).json({ error: "PDF file not found" });
     }
 
-    console.log(pdfPath)
-
     // Set up email data
     const mailOptions = {
       from: "azjustin3@gmail.com",
