@@ -17,7 +17,7 @@
           <button mat-menu-item (click)="takeTest(test._id!)">Test</button>
           @if (isTeacher()) {
             <button mat-menu-item (click)="editTest(test._id!)">Edit</button>
-            <button mat-menu-item (click)="onDeleteTest(test)">Delete</button>
+            <button mat-menu-item (click)="onDeleteTest(test._id!)">Delete</button>
           }
         </mat-menu>
       </mat-card-actions>

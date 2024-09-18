@@ -1,0 +1,41 @@
+<!-- login.component.html -->
+<div class="login-container">
+  <mat-card style="display: flex; flex-direction: column">
+    <mat-card-title>
+      <h1 class="form-header">
+        Login
+      </h1>
+    </mat-card-title>
+    <mat-card-content class="card-content">
+      <form class="form-container" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <mat-form-field class="form-field">
+          <mat-label>Username</mat-label>
+          <input matInput formControlName="username" required />
+          @if (loginForm.get('username')?.hasError('required')) {
+            <mat-error>
+              Username is required
+            </mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field class="form-field">
+          <mat-label>Password</mat-label>
+          <input matInput type="password" formControlName="password" required />
+          @if (loginForm.get('password')?.hasError('required')) {
+            <mat-error>
+              Password is required
+            </mat-error>
+          }
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid">Login</button>
+
+        @if (this.errorMessage !== '') {
+          <mat-error style="margin-top: 1rem">
+            {{ this.errorMessage }}
+          </mat-error>
+        }
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

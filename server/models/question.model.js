@@ -15,7 +15,8 @@ const subQuestionSchema = new mongoose.Schema({
 subQuestionSchema.pre("findOneAndDelete", async function (next) {
   try {
     const questionId = this.getFilter()["_id"];
-    const subQuestion = await SubQuestion.findById(questionId).select("choices");
+    const subQuestion =
+      await SubQuestion.findById(questionId).select("choices");
     // Delete all choices
     await mongoose.model("Choice").deleteMany({
       _id: { $in: subQuestion.choices },
@@ -40,9 +41,9 @@ subQuestionSchema.pre("findOneAndDelete", async function (next) {
 
 subQuestionSchema.pre("deleteMany", async function (next) {
   try {
-    const allSubQuestions = await SubQuestion.find(this.getFilter()).select({
-      choices: 1,
-    });
+    const allSubQuestions = await SubQuestion.find(this.getFilter()).select(
+      "choices",
+    );
     const allChoices = flatMap(
       allSubQuestions.map((subQuestion) => subQuestion.choices),
     );
@@ -77,6 +78,24 @@ questionSchema.pre("findOneAndDelete", async function (next) {
       _id: { $in: subQuestions },
     });
 
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
+questionSchema.pre("deleteMany", async function (next) {
+  try {
+    const allQuestions = await Question.find(this.getFilter()).select(
+      "subQuestions",
+    );
+    const allSubQuestions = flatMap(
+      allQuestions.map((question) => question.subQuestions),
+    );
+
+    await SubQuestion.deleteMany({
+      _id: { $in: allSubQuestions },
+    });
     next();
   } catch (error) {
     next(error);

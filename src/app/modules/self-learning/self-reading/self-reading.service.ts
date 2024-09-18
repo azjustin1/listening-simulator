@@ -22,4 +22,8 @@ export class SelfReadingService {
   updateSelfReading(reading: Reading): Observable<Reading> {
     return this.httpClient.patch<Reading>('/self-reading', reading);
   }
+
+  deleteSeflReading(id: string): Observable<boolean> {
+    return this.httpClient.delete<boolean>(`/self-reading/${id}`);
+  }
 }

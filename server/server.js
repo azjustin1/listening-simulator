@@ -1,19 +1,33 @@
+require("dotenv").config();
 const express = require("express");
+const session = require("express-session");
 const jsonServer = require("json-server");
 const cors = require("cors");
 const morgan = require("morgan");
 const server = express();
 const fs = require("fs");
 const dbConfig = require("./configs/db.config");
-require("dotenv").config();
+const passport = require("passport");
+const passportConfig = require("./configs/passport.config");
 
 server.use(cors());
-server.use(morgan('combine'));
+server.use(morgan("tiny"));
 server.use(express.json());
 server.use("/upload", express.static(`${__dirname}/upload`));
+server.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: true,
+    saveUninitialized: true,
+  }),
+);
+server.use(passport.initialize());
+server.use(passport.session());
+passportConfig(passport);
 
 // Routers
 const router = jsonServer.router("db.json");
+const authRouter = require("./routes/auth.router");
 const systemRouter = require("./routes/system.router");
 const emailRouter = require("./routes/mail.router");
 const fileRouter = require("./routes/file.router");
@@ -22,6 +36,7 @@ const questionRouter = require("./routes/question.router");
 const choiceRouter = require("./routes/choice.router");
 const selfReadingRouter = require("./routes/self-reading.router");
 
+server.use("/api/auth", authRouter);
 server.use("/api/system", systemRouter);
 server.use("/api/file", fileRouter);
 server.use("/api/mail", emailRouter);

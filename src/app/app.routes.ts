@@ -11,9 +11,12 @@ import { AddOrEditWritingComponent } from './modules/writing-test/add-or-edit-wr
 import { SelfReadingComponent } from './modules/self-learning/self-reading/self-reading.component';
 import { SelfReadingDetailComponent } from './modules/self-learning/self-reading-detail/self-reading-detail.component';
 import { SelfReadingTestComponent } from './modules/self-learning/self-reading-test/self-reading-test.component';
+import { teacherGuard } from './guards/teacher.guard';
+import { LoginPageComponent } from './modules/login-page/login-page.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
+  { path: 'login', component: LoginPageComponent },
   { path: 'writings', component: WritingTestComponent },
   { path: 'add-writing', component: AddOrEditWritingComponent },
   { path: 'result-writing/:id', component: AddOrEditWritingComponent },
@@ -38,7 +41,11 @@ export const routes: Routes = [
   { path: 'reading/:quizId', component: ReadingComponent },
   { path: 'results', component: ResultComponent, outlet: 'home' },
   { path: 'result-detail/:resultId', component: ResultDetailComponent },
-  { path: 'self-learning/teacher', component: SelfReadingComponent },
+  {
+    path: 'self-learning/teacher',
+    component: SelfReadingComponent,
+    canActivate: [teacherGuard],
+  },
   { path: 'self-learning/student', component: SelfReadingComponent },
   {
     path: 'self-learning/teacher/:readingId',

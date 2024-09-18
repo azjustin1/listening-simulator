@@ -1,11 +1,12 @@
 const express = require("express");
+const passport = require("passport");
 const router = express.Router();
 
 const SelfReading = require("../models/self-reading.model");
 const Question = require("../models/question.model");
 
 // Create a new SelfReading
-router.post("/", async (req, res) => {
+router.post("/", passport.authenticate("jwt"), async (req, res) => {
   try {
     const readingTest = req.body;
     if (readingTest._id) {
@@ -25,7 +26,7 @@ router.post("/", async (req, res) => {
 });
 
 // Read all SelfReadings
-router.get("/", async (req, res) => {
+router.get("/", passport.authenticate("jwt"), async (req, res) => {
   try {
     const selfReadings = await SelfReading.find();
     res.status(200).send(selfReadings);
@@ -60,7 +61,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // Update a SelfReading by ID
-router.patch("/", async (req, res) => {
+router.patch("/", passport.authenticate("jwt"), async (req, res) => {
   const selfReading = req.body;
   try {
     const existedSelfReading = await SelfReading.findByIdAndUpdate(
@@ -78,32 +79,12 @@ router.patch("/", async (req, res) => {
 });
 
 // Delete a SelfReading by ID
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", passport.authenticate("jwt"), async (req, res) => {
   try {
-    const selfReading = await SelfReading.findByIdAndDelete(req.params.id);
-    if (!selfReading) {
-      return res.status(404).send();
-    }
-    res.status(204).send();
-  } catch (error) {
-    res.status(500).send(error);
-  }
-});
-
-// Delete a question by ID
-router.delete("/questions/:questionId", async (req, res) => {
-  try {
-    const question = await Question.findByIdAndDelete(req.params.questionId);
-    if (!question) {
-      return res.status(404).send();
-    }
-
-    await SelfReading.updateMany(
-      { questions: question._id },
-      { $pull: { questions: question._id } },
-    );
-
-    res.status(204).send();
+    const selfReading = await SelfReading.findOneAndDelete({
+      _id: req.params.id,
+    });
+    res.status(200).send(true);
   } catch (error) {
     res.status(500).send(error);
   }

@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -18,6 +18,9 @@ import { QuestionComponent } from '../../question/question.component';
 import { SelfReadingService } from './self-reading.service';
 import { QuestionService } from '../../question/question.service';
 import { ChoiceService } from '../../question/choice.service';
+import { filter } from 'lodash-es';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../../../shared/components/dialogs/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-self-reading',
@@ -42,16 +45,20 @@ import { ChoiceService } from '../../question/choice.service';
   templateUrl: './self-reading.component.html',
   styleUrl: './self-reading.component.scss',
 })
-export class SelfReadingComponent {
+export class SelfReadingComponent implements OnInit {
   isTeacher = signal(false);
   readingTests: Reading[] = [];
 
   selfReadingService = inject(SelfReadingService);
   router = inject(Router);
   route = inject(ActivatedRoute);
+  dialog = inject(MatDialog);
 
   constructor() {
     this.isTeacher.set(this.router.url.includes('teacher'));
+  }
+
+  ngOnInit() {
     this.selfReadingService.getAllSelfReading().subscribe((res) => {
       this.readingTests = res;
     });
@@ -70,8 +77,23 @@ export class SelfReadingComponent {
 
   takeTest(testId: string) {
     this.router.navigate(['/self-learning/test', testId]);
-
   }
 
-  onDeleteTest(test: Reading) {}
+  onDeleteTest(testId: string) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent);
+    dialogRef.componentInstance.title = 'Warning';
+    dialogRef.componentInstance.message = 'Delete this test?';
+    dialogRef.afterClosed().subscribe((isConfirm) => {
+      if (isConfirm) {
+        this.selfReadingService.deleteSeflReading(testId).subscribe((resp) => {
+          if (resp) {
+            this.readingTests = filter(
+              this.readingTests,
+              (test) => test._id !== testId,
+            );
+          }
+        });
+      }
+    });
+  }
 }

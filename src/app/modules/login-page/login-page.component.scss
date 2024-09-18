@@ -1,0 +1,22 @@
+.login-container {
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-header {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem
+}
+
+.form-field:last-of-type {
+  margin: 1rem 0;
+}
