@@ -32,7 +32,7 @@ import { ConfirmDialogComponent } from '../../shared/components/dialogs/confirm-
 import { FileService } from '../../file.service';
 import { FolderComponent } from '../../shared/components/folder/folder.component';
 import { FolderService } from '../../shared/components/folder/folder.service';
-import { ListeningComponent } from '../../listening/listening.component';
+import { ListeningComponent } from '../part/listening/listening.component';
 import { AddOrEditFolderComponent } from './add-or-edit-folder/add-or-edit-folder.component';
 import { MoveToFolderDialogComponent } from '../../shared/components/dialogs/move-to-folder-dialog/move-to-folder-dialog.component';
 import { QuizService } from './quizzes.service';

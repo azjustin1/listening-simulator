@@ -10,7 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { debounce, filter } from 'lodash-es';
 import { Result } from '../../../common/models/result.model';
 import { ConfirmDialogComponent } from '../../shared/components/dialogs/confirm-dialog/confirm-dialog.component';
-import { ListeningComponent } from '../../listening/listening.component';
+import { ListeningComponent } from '../part/listening/listening.component';
 import { MultipleChoicesComponent } from '../question/multiple-choices/multiple-choices.component';
 import { QuizService } from '../quizzes/quizzes.service';
 import { ShortAnswerComponent } from '../question/short-answer/short-answer.component';

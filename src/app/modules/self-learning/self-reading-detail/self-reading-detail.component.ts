@@ -18,7 +18,7 @@ import { MultipleQuestionComponent } from '../../question/multiple-question/mult
 import { ChoiceService } from '../../question/choice.service';
 import { QuestionComponent } from '../../question/question.component';
 import { QuestionService } from '../../question/question.service';
-import { ReadingComponent } from '../../../reading/reading.component';
+import { ReadingComponent } from '../../part/reading/reading.component';
 import { SelfReadingService } from '../self-reading/self-reading.service';
 
 @Component({

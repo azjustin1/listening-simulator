@@ -7,10 +7,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Subscription } from 'rxjs';
-import { AbstractQuizPartComponent } from '../../common/abstract-quiz-part.component';
-import { Listening } from '../../common/models/listening.model';
-import { FileService } from '../file.service';
-import { QuestionComponent } from '../modules/question/question.component';
+import { AbstractQuizPartComponent } from '../../../../common/abstract-quiz-part.component';
+import { Listening } from '../../../../common/models/listening.model';
+import { FileService } from '../../../file.service';
+import { QuestionComponent } from '../../question/question.component';
 import { ListeningService } from './listening.service';
 
 @Component({

@@ -20,7 +20,7 @@ import { Writing } from '../../../../common/models/writing.model';
 import { CommonUtils } from '../../../../utils/common-utils';
 import { ConfirmDialogComponent } from '../../../shared/components/dialogs/confirm-dialog/confirm-dialog.component';
 import { FileService } from '../../../file.service';
-import { WritingComponent } from '../../../writing/writing.component';
+import { WritingComponent } from '../../part/writing/writing.component';
 import { WritingService } from '../writing-test.service';
 
 import { saveAs } from 'file-saver';

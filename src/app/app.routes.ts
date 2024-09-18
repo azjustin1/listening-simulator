@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { HomeComponent } from './modules/home/home.component';
 import { MockTestComponent } from './mock-test/mock-test.component';
 import { AddOrEditQuizComponent } from './modules/quizzes/add-or-edit-quiz/add-or-edit-quiz.component';
-import { ReadingComponent } from './reading/reading.component';
+import { ReadingComponent } from './modules/part/reading/reading.component';
 import { ResultDetailComponent } from './modules/result/result-detail/result-detail.component';
 import { ResultComponent } from './modules/result/result.component';
 import { TestComponent } from './modules/test/test.component';

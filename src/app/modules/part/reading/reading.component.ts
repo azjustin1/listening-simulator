@@ -17,13 +17,13 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { each } from 'lodash-es';
-import { AbstractQuizPartComponent } from '../../common/abstract-quiz-part.component';
-import { Choice } from '../../common/models/choice.model';
-import { Question } from '../../common/models/question.model';
-import { Reading } from '../../common/models/reading.model';
-import { MatchingHeaderComponent } from '../modules/question/matching-header/matching-header.component';
-import { MultipleQuestionComponent } from '../modules/question/multiple-question/multiple-question.component';
-import { QuestionComponent } from '../modules/question/question.component';
+import { AbstractQuizPartComponent } from '../../../../common/abstract-quiz-part.component';
+import { Choice } from '../../../../common/models/choice.model';
+import { Question } from '../../../../common/models/question.model';
+import { Reading } from '../../../../common/models/reading.model';
+import { MatchingHeaderComponent } from '../../question/matching-header/matching-header.component';
+import { MultipleQuestionComponent } from '../../question/multiple-question/multiple-question.component';
+import { QuestionComponent } from '../../question/question.component';
 import { ReadingService } from './reading.service';
 
 @Component({

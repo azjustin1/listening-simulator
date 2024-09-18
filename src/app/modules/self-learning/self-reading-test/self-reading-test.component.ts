@@ -20,7 +20,7 @@ import { isEmpty } from 'lodash';
 import { MatchingHeaderComponent } from '../../question/matching-header/matching-header.component';
 import { MultipleQuestionComponent } from '../../question/multiple-question/multiple-question.component';
 import { QuestionComponent } from '../../question/question.component';
-import { ReadingComponent } from '../../../reading/reading.component';
+import { ReadingComponent } from '../../part/reading/reading.component';
 import { SelfReadingService } from '../self-reading/self-reading.service';
 import { ChoiceService } from '../../question/choice.service';
 import { QuestionService } from '../../question/question.service';
