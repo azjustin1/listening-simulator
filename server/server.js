@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const session = require("express-session");
+const MemoryStore = require('memorystore')(session)
 const cors = require("cors");
 const morgan = require("morgan");
 const dbConfig = require("./configs/db.config");
@@ -19,6 +20,12 @@ server.use(
     secret: process.env.SESSION_SECRET,
     resave: true,
     saveUninitialized: true,
+    store: new MemoryStore({
+      checkPeriod: process.env.COOKIE_EXPIRED_TIME
+    }),
+    cookie: {
+      maxAge: 8640000,
+    },
   }),
 );
 server.use(passport.initialize());
