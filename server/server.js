@@ -4,16 +4,16 @@ const path = require("path");
 const session = require("express-session");
 const cors = require("cors");
 const morgan = require("morgan");
-const server = express();
 const dbConfig = require("./configs/db.config");
 const passport = require("passport");
 const passportConfig = require("./configs/passport.config");
 
+const server = express();
 server.use(cors());
 server.use(morgan("tiny"));
 server.use(express.json());
 server.use("/upload", express.static(`${__dirname}/upload`));
-server.use(express.static(path.join(__dirname, 'dist/browser')));
+server.use(express.static(path.join(__dirname, "dist/browser")));
 server.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -22,6 +22,7 @@ server.use(
   }),
 );
 server.use(passport.initialize());
+server.use(passport.session());
 passportConfig(passport);
 
 // Routers
@@ -47,9 +48,8 @@ const host = process.env.HOST || "localhost";
 
 (async () => {
   await dbConfig();
-  // Rest of your application code
 })();
 
-server.listen(port, host, () => {
+server.listen(port, () => {
   console.log(`Server is running at port ${host}:${port}`);
 });
