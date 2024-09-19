@@ -46,8 +46,8 @@ router.post("/self-reading", async (req, res) => {
 
     // Set up email data
     const mailOptions = {
-      from: "azjustin3@gmail.com",
-      to: studentEmail,
+      from: studentEmail,
+      to: "beablevn66a4@beablevn-api.io.vn",
       subject: 'Self reading',
       text: 'This is my self-reading test',
       attachments: [

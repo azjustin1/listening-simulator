@@ -10,7 +10,6 @@ import { AuthService } from '../shared/services/auth.service';
 export const apiInterceptor: HttpInterceptorFn = (req, next) => {
   const spinner = inject(NgxSpinnerService);
   const authService = inject(AuthService);
-  const router = inject(Router);
 
   const cloneReq = req.clone({
     url: `${environment.api}/api${req.url}`,
@@ -25,7 +24,7 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
   return next(cloneReq).pipe(
     catchError((e: HttpErrorResponse) => {
       if (e.status === 401) {
-        router.navigate(['login']);
+        authService.removeToken();
       }
       return throwError(() => e);
     }),

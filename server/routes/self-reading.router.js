@@ -3,7 +3,6 @@ const passport = require("passport");
 const router = express.Router();
 
 const SelfReading = require("../models/self-reading.model");
-const Question = require("../models/question.model");
 
 // Create a new SelfReading
 router.post("/", passport.authenticate("jwt"), async (req, res) => {
@@ -26,7 +25,7 @@ router.post("/", passport.authenticate("jwt"), async (req, res) => {
 });
 
 // Read all SelfReadings
-router.get("/", passport.authenticate("jwt"), async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const selfReadings = await SelfReading.find();
     res.status(200).send(selfReadings);

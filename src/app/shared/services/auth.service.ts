@@ -43,4 +43,8 @@ export class AuthService {
   setToken(token: string) {
     sessionStorage.setItem('token', token);
   }
+
+  removeToken() {
+    sessionStorage.removeItem('token');
+  }
 }

@@ -21,6 +21,7 @@
             <app-multiple-question
               [question]="question"
               [isReadOnly]="isReadOnly"
+              [isEditing]="mapQuestionEditting[question._id!]"
               [isTesting]="isTesting"
               [isSaved]="mapSavedQuestion[question._id!]"
               (onSave)="onSaveQuestion(question)"
