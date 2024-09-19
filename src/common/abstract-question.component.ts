@@ -15,7 +15,6 @@ import { map, Subscription } from 'rxjs';
 import { FileService } from '../app/file.service';
 import { Question } from './models/question.model';
 import { CommonUtils } from '../utils/common-utils';
-import { environment } from '../environments/environment';
 import { BASE64_IMAGE_REGEX } from '../utils/constant';
 import { QuestionService } from '../app/modules/question/question.service';
 import { ChoiceService } from '../app/modules/question/choice.service';
@@ -80,7 +79,7 @@ export abstract class AbstractQuestionComponent
     upload: (file: File) => {
       return this.fileService.uploadFile(file).pipe(
         map((response) => {
-          const imageUrl = `${environment.api}/upload/${response.fileName}`;
+          const imageUrl = `${response.fileName}`;
           return {
             ...response,
             body: { imageUrl: imageUrl },
