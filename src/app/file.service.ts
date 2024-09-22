@@ -14,6 +14,16 @@ export class FileService {
     return this.httpClient.post<any>(`/file/upload`, formData);
   }
 
+  generatePdfFile(type: string, htmlString: string, studentName: string, quizName: string) {
+    const requestBody = {
+      type,
+      htmlString,
+      studentName,
+      quizName,
+    };
+    return this.httpClient.post('/file/generate-pdf', requestBody);
+  }
+
   deleteFile(fileName: string): Observable<any> {
     return this.httpClient.delete<any>(`/file/${fileName}`, {
       responseType: 'json',

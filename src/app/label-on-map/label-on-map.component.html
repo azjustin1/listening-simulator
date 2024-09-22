@@ -54,11 +54,11 @@
             @for (
               choice of question.choices;
               track $index;
-              let choicIndex = $index
+              let choiceIndex = $index
             ) {
               <td
                 class="choice-item"
-                (click)="onRowClick(questionIndex, choicIndex)"
+                (click)="onRowClick(questionIndex, choiceIndex)"
               >
                 @if (!isTesting) {
                   @if (isReadOnly) {

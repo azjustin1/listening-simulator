@@ -279,16 +279,47 @@ export class TestComponent extends AddOrEditQuizComponent {
   }
 
   afterSubmit() {
+    let htmlString = '';
     if (this.currentTab === 1) {
       this.audioPlayer.nativeElement.pause();
-      ExportUtils.exportListening(this.result);
+      htmlString += ExportUtils.exportListening(this.result);
+      this.subscriptions.push(
+        this.fileService
+          .generatePdfFile(
+            'Listening',
+            htmlString,
+            this.result.studentName,
+            this.result.name,
+          )
+          .subscribe(),
+      );
     }
     if (this.currentTab === 2) {
-      ExportUtils.exportReading(this.result);
+      htmlString += ExportUtils.exportReading(this.result);
+      this.subscriptions.push(
+        this.fileService
+          .generatePdfFile(
+            'Reading',
+            htmlString,
+            this.result.studentName,
+            this.result.name,
+          )
+          .subscribe(),
+      );
     }
 
     if (this.currentTab === 3) {
-      ExportUtils.exportWriting(this.result);
+      htmlString += ExportUtils.exportWriting(this.result);
+      this.subscriptions.push(
+        this.fileService
+          .generatePdfFile(
+            'Writing',
+            htmlString,
+            this.result.studentName,
+            this.result.name,
+          )
+          .subscribe(),
+      );
       this.showFeedbackDialog();
     }
     if (this.testTimeoutIntervalSub) {
@@ -322,7 +353,17 @@ export class TestComponent extends AddOrEditQuizComponent {
     });
     dialogRef.afterClosed().subscribe((feedback) => {
       this.result.feedback = feedback;
-      ExportUtils.exportFeedback(feedback);
+      let htmlString = ExportUtils.exportFeedback(this.result);
+      this.subscriptions.push(
+        this.fileService
+          .generatePdfFile(
+            'Feedback',
+            htmlString,
+            this.result.studentName,
+            this.result.name,
+          )
+          .subscribe(),
+      );
       this.submit();
     });
   }

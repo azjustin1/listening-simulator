@@ -4,11 +4,12 @@ require("dotenv").config();
 const path = require("path");
 const multer = require("multer");
 const fs = require("fs");
+const DateUtils = require("../utils/date.util");
+const puppeteer = require("puppeteer");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    let uploadDir = path.join(__dirname, '../upload');
-    console.log(uploadDir);
+    let uploadDir = path.join(__dirname, "../upload");
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
@@ -69,6 +70,42 @@ router.delete("/:filename", (req, res) => {
     });
   } else {
     return res.status(200).send({ message: "File removed successfully" });
+  }
+});
+
+router.post("/generate-pdf", async (req, res) => {
+  try {
+    const { type, htmlString, studentName, quizName } = req.body;
+    const dir = path.join(
+      __dirname,
+      `../results/${studentName}/${quizName}_${DateUtils.getCurrentDate()}`,
+    );
+    if (!fs.existsSync(dir)) {
+      await fs.mkdirSync(dir, { recursive: true });
+    }
+    const outputPath = path.join(dir, `${type}.pdf`);
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox"],
+    });
+    const page = await browser.newPage();
+
+    await page.setContent(htmlString); // Set the HTML content
+    await page.pdf({
+      path: outputPath,
+      format: "A4", // Paper format
+      printBackground: true,
+    });
+
+    await browser.close();
+    // res.status(200).send("Generate successfully");
+    res.download(outputPath, "output.pdf", (err) => {
+      if (err) {
+        console.error("Error sending PDF:", err);
+      }
+    });
+  } catch (error) {
+    console.log(error);
   }
 });
 
