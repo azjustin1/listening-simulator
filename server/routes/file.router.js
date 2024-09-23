@@ -78,7 +78,7 @@ router.post("/generate-pdf", async (req, res) => {
     const { type, htmlString, studentName, quizName } = req.body;
     const dir = path.join(
       __dirname,
-      `../results/${studentName}/${quizName}_${DateUtils.getCurrentDate()}`,
+      `../results/${studentName}_${quizName}_${DateUtils.getCurrentDate()}`,
     );
     if (!fs.existsSync(dir)) {
       await fs.mkdirSync(dir, { recursive: true });
