@@ -76,14 +76,15 @@ router.delete("/:filename", (req, res) => {
 router.post("/generate-pdf", async (req, res) => {
   try {
     const { type, htmlString, studentName, quizName } = req.body;
+    const currentDate = DateUtils.getCurrentDate();
     const dir = path.join(
       __dirname,
-      `../results/${studentName}_${quizName}_${DateUtils.getCurrentDate()}`,
+      `../results/${studentName}_${quizName}_${currentDate}`,
     );
     if (!fs.existsSync(dir)) {
       await fs.mkdirSync(dir, { recursive: true });
     }
-    const outputPath = path.join(dir, `${type}.pdf`);
+    const outputPath = path.join(dir, `${type}_${quizName}_${currentDate}.pdf`);
     const browser = await puppeteer.launch({
       headless: true,
       args: ["--no-sandbox"],
