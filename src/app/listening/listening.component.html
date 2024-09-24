@@ -41,7 +41,7 @@
                   mat-button
                   color="primary"
                   type="button"
-                  class="btn btn-danger"
+
                   (click)="onSaveQuestion(question.id)"
                 >
                   <mat-icon>save</mat-icon>
@@ -51,7 +51,6 @@
                   mat-button
                   color="primary"
                   type="button"
-                  class="btn btn-danger"
                   (click)="onEditQuestion(question.id)"
                 >
                   <mat-icon>edit</mat-icon>
@@ -60,7 +59,6 @@
               <button
                 mat-button
                 type="button"
-                class="btn btn-danger"
                 (click)="duplicateQuestion(question)"
               >
                 <mat-icon>content_copy</mat-icon>
@@ -69,7 +67,6 @@
                 mat-button
                 color="warn"
                 type="button"
-                class="btn btn-danger"
                 (click)="removeQuestion($index)"
               >
                 <mat-icon>delete</mat-icon>
@@ -78,7 +75,6 @@
                 <button
                   mat-button
                   type="button"
-                  class="btn btn-danger"
                   (click)="moveQuestionUp($index)"
                 >
                   <mat-icon>arrow_upward</mat-icon>
@@ -88,7 +84,6 @@
                 <button
                   mat-button
                   type="button"
-                  class="btn btn-danger"
                   (click)="moveQuestionDown($index)"
                 >
                   <mat-icon>arrow_downward</mat-icon>
@@ -107,35 +102,40 @@
           mat-raised-button
           (click)="addQuestion(0)"
         >
-          <mat-icon>add</mat-icon> Multiple Choices
+          <mat-icon>add</mat-icon>
+          Multiple Choices
         </button>
         <button
           class="add-question-button"
           mat-raised-button
           (click)="addQuestion(1)"
         >
-          <mat-icon>add</mat-icon> Short Answer
+          <mat-icon>add</mat-icon>
+          Short Answer
         </button>
         <button
           class="add-question-button"
           mat-raised-button
           (click)="addQuestion(3)"
         >
-          <mat-icon>add</mat-icon> Dropdown Choices
+          <mat-icon>add</mat-icon>
+          Dropdown Choices
         </button>
         <button
           class="add-question-button"
           mat-raised-button
           (click)="addQuestion(4)"
         >
-          <mat-icon>add</mat-icon> Label On Map
+          <mat-icon>add</mat-icon>
+          Label On Map
         </button>
         <button
           class="add-question-button"
           mat-raised-button
           (click)="addQuestion(5)"
         >
-          <mat-icon>add</mat-icon> Fill In The Gap
+          <mat-icon>add</mat-icon>
+          Fill In The Gap
         </button>
 
         <button
@@ -143,7 +143,8 @@
           mat-raised-button
           (click)="addQuestion(6)"
         >
-          <mat-icon>add</mat-icon> Drag And Drop
+          <mat-icon>add</mat-icon>
+          Drag And Drop
         </button>
       </div>
     }

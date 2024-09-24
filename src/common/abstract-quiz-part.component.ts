@@ -125,6 +125,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
           choices: this.defaultChoices(4),
           answer: [],
           correctAnswer: [],
+          numberOfChoices: 1
         };
         break;
       case QuestionType.SHORT_ANSWER:
@@ -156,6 +157,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
           choices: this.defaultChoices(3),
           answer: [],
           correctAnswer: [],
+          numberOfChoices: 1
         };
         break;
       case QuestionType.LABEL_ON_MAP:

@@ -32,7 +32,7 @@
                   name="timeout"
                   type="number"
                   class="form-control"
-                  id="timeout"
+                  id="listening-timeout"
                   [(ngModel)]="currentQuiz.listeningTimeout"
                   required
                 />
@@ -75,7 +75,6 @@
                   mat-button
                   color="primary"
                   type="button"
-                  class="btn btn-danger"
                   (click)="onEditClick('listening', selectedListeningPart)"
                 >
                   <mat-icon>edit</mat-icon> Edit part
@@ -85,7 +84,6 @@
                   mat-button
                   color="primary"
                   type="button"
-                  class="btn btn-danger"
                   (click)="onSavePart('listening', selectedListeningPart)"
                 >
                   <mat-icon>save</mat-icon> Save
@@ -95,7 +93,6 @@
                 mat-button
                 color="warn"
                 type="button"
-                class="btn btn-danger"
                 (click)="removeListeningPart(selectedListeningPart)"
               >
                 <mat-icon>delete</mat-icon> Remove part
@@ -134,7 +131,7 @@
                   name="timeout"
                   type="number"
                   class="form-control"
-                  id="timeout"
+                  id="reading-timeout"
                   [(ngModel)]="currentQuiz.readingTimeout"
                   required
                 />
@@ -152,7 +149,6 @@
                   mat-button
                   color="primary"
                   type="button"
-                  class="btn btn-danger"
                   (click)="onEditClick('reading', selectedReadingPart)"
                 >
                   <mat-icon>edit</mat-icon> Edit part
@@ -162,7 +158,6 @@
                   mat-button
                   color="primary"
                   type="button"
-                  class="btn btn-danger"
                   (click)="onSavePart('reading', selectedReadingPart)"
                 >
                   <mat-icon>save</mat-icon> Save
@@ -172,7 +167,6 @@
                 mat-button
                 color="warn"
                 type="button"
-                class="btn btn-danger"
                 (click)="removeReadingPart(selectedReadingPart)"
               >
                 <mat-icon>delete</mat-icon> Remove part
@@ -210,7 +204,7 @@
                   name="timeout"
                   type="number"
                   class="form-control"
-                  id="timeout"
+                  id="writing-timeout"
                   [(ngModel)]="currentQuiz.writingTimeout"
                   required
                 />
@@ -229,7 +223,6 @@
                     mat-button
                     color="primary"
                     type="button"
-                    class="btn btn-danger"
                     (click)="onEditClick('writing', selectedWritingPart)"
                   >
                     <mat-icon>edit</mat-icon> Edit part
@@ -239,7 +232,6 @@
                     mat-button
                     color="primary"
                     type="button"
-                    class="btn btn-danger"
                     (click)="onSavePart('writing', selectedWritingPart)"
                   >
                     <mat-icon>save</mat-icon> Save part
@@ -249,7 +241,6 @@
                   mat-button
                   color="warn"
                   type="button"
-                  class="btn btn-danger"
                   (click)="removeWritingPart(selectedWritingPart)"
                 >
                   <mat-icon>delete</mat-icon> Remove part

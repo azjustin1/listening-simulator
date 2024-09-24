@@ -6,8 +6,9 @@ export interface Question {
   content?: string;
   arrayContent?: string[][];
   type?: number | null;
-  choices: Choice[];
   answer: string[] | string;
   correctAnswer: string[];
+  choices: Choice[];
   subQuestions?: Question[];
+  numberOfChoices?: number;
 }

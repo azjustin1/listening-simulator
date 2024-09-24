@@ -48,7 +48,6 @@
               <mat-label>Question</mat-label>
               <textarea
                 autocomplete="off"
-                matInput
                 [name]="$index.toString()"
                 type="text"
                 class="form-control"
@@ -59,7 +58,6 @@
               <mat-label>Answer</mat-label>
               <textarea
                 autocomplete="off"
-                matInput
                 [name]="choice.id"
                 type="text"
                 class="form-control"
@@ -75,7 +73,6 @@
                 <mat-label>Answer</mat-label>
                 <input
                   autocomplete="off"
-                  matInput
                   [name]="choice.id"
                   type="text"
                   class="form-control"
@@ -92,11 +89,9 @@
             }
           }
           <button
-            *ngIf="isEditing"
             mat-button
             color="warn"
             type="button"
-            class="btn btn-danger"
             (click)="removeChoice($index)"
           >
             <mat-icon>delete</mat-icon>
@@ -109,7 +104,6 @@
         mat-button
         color="primary"
         type="button"
-        class="btn btn-primary"
         style="margin-top: 16px"
         (click)="addChoice()"
       >
