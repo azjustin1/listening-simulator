@@ -84,7 +84,7 @@ router.post("/generate-pdf", async (req, res) => {
     if (!fs.existsSync(dir)) {
       await fs.mkdirSync(dir, { recursive: true });
     }
-    const fileName = `${type}_${quizName}_${currentDate}.pdf`;
+    const fileName = `${studentName}_${type}_${quizName}_${currentDate}.pdf`;
     const outputPath = path.join(dir, fileName);
     const browser = await puppeteer.launch({
       headless: true,
