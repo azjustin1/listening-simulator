@@ -1,10 +1,9 @@
 const nodemailer = require("nodemailer");
 const path = require("path");
-require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
+require("dotenv").config();
 
 const transporter = nodemailer.createTransport({
-  service: "gmail", // Use a specific email service provider
-  host: "smtp.gmail.com",
+  host: "smtp.beablevn-api.io.vn",
   port: 587,
   secure: false,
   auth: {

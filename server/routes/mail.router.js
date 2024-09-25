@@ -1,10 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const transporter = require("../configs/email.config");
-const path = require("path");
 const generatePDF = require("../utils/pdf-generator.config");
 const fs = require("fs");
-require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
+require("dotenv").config();
 
 // Route for sending emails
 router.post("/send", (req, res) => {
