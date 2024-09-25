@@ -65,6 +65,10 @@ export class MultipleChoicesComponent extends AbstractQuestionComponent {
   }
 
   onSelectMultipleCorrectAnswer(option: string) {
+    if ((this.question.correctAnswer.length + 1) > Number(this.question.numberOfChoices)) {
+      return;
+    }
+
     if (this.question.correctAnswer.includes(option)) {
       this.question.correctAnswer = filter(
         this.question.correctAnswer,
@@ -76,6 +80,10 @@ export class MultipleChoicesComponent extends AbstractQuestionComponent {
   }
 
   onSelectMultipleAnswer(option: string) {
+    if (Number(this.question.numberOfChoices) === this.question.answer.length) {
+      return;
+    }
+
     if (isArray(this.question.answer)) {
       if (this.question.answer.includes(option)) {
         this.question.answer = filter(

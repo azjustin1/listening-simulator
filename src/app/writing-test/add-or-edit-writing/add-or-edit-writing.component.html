@@ -11,11 +11,11 @@
       @if (state["isEditing"]) {
         <mat-form-field>
           <mat-label>Name</mat-label>
-          <input matInput [(ngModel)]="data.name" />
+          <input [(ngModel)]="data.name" />
         </mat-form-field>
         <mat-form-field>
           <mat-label>Time</mat-label>
-          <input matInput [(ngModel)]="data.timeout" />
+          <input [(ngModel)]="data.timeout" />
         </mat-form-field>
       }
 
@@ -23,7 +23,6 @@
         <mat-form-field>
           <mat-label>Name</mat-label>
           <input
-            matInput
             [(ngModel)]="data.studentName"
             [disabled]="state['isReadOnly'] || isReady"
           />
@@ -67,7 +66,8 @@
                         type="button"
                         (click)="onEditClick($index)"
                       >
-                        <mat-icon>edit</mat-icon> Edit part
+                        <mat-icon>edit</mat-icon>
+                        Edit part
                       </button>
                     } @else {
                       <button
@@ -76,7 +76,8 @@
                         type="button"
                         (click)="onSavePart($index)"
                       >
-                        <mat-icon>save</mat-icon> Save part
+                        <mat-icon>save</mat-icon>
+                        Save part
                       </button>
                     }
                     <button
@@ -85,7 +86,8 @@
                       type="button"
                       (click)="remove($index)"
                     >
-                      <mat-icon>delete</mat-icon> Remove part
+                      <mat-icon>delete</mat-icon>
+                      Remove part
                     </button>
                   </div>
                 }
@@ -97,7 +99,8 @@
       @if (state["isEditing"]) {
         <div class="add-button">
           <button mat-button color="primary" (click)="onAddPart()">
-            <mat-icon>add</mat-icon> Add Part
+            <mat-icon>add</mat-icon>
+            Add Part
           </button>
         </div>
       }
