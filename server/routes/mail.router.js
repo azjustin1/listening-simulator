@@ -2,11 +2,13 @@ const express = require("express");
 const router = express.Router();
 const nodemailer = require("nodemailer");
 const path = require("path");
+const logger = require("../configs/logger.config");
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 
 // Route for sending emails
 router.post("/send", (req, res) => {
   // Get the email details from the request body
+  logger.info(req.body);
   const { from, to, cc, subject, text } = req.body;
   // Create a transporter object
   let transporter = nodemailer.createTransport({
