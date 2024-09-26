@@ -1,4 +1,4 @@
-import { Directive, ElementRef, HostListener, Input } from "@angular/core";
+import { Directive, ElementRef, HostListener, Input } from '@angular/core';
 
 @Directive({
   selector: '[textSelection]',
@@ -13,10 +13,38 @@ export class TextSelectionDirective {
     const selectedText = this.getSelectedText();
     if (selectedText) {
       if (this.isTextAlreadyHighlighted(selectedText)) {
-        console.log('Highlighted')
+        console.log('Highlighted');
         // this.removeHighlight(selectedText);
       } else {
         this.highlightSelection(this.appTextSelection);
+      }
+    }
+  }
+
+  @HostListener('click', ['$event'])
+  onClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+
+    // Check if the clicked target is a highlighted text (span element)
+    if (
+      target.tagName === 'SPAN' &&
+      target.style.backgroundColor === 'yellow'
+    ) {
+      const parent = target.parentNode;
+
+      if (parent) {
+        // Remove the input field if it exists
+        const nextSibling = target.nextSibling;
+        if (nextSibling) {
+          parent.removeChild(nextSibling);
+        }
+
+        // Replace the span with its text content to remove the highlight
+        const selectedText = target.textContent;
+        if (selectedText) {
+          const textNode = document.createTextNode(selectedText);
+          parent.replaceChild(textNode, target);
+        }
       }
     }
   }
@@ -43,17 +71,20 @@ export class TextSelectionDirective {
       const span = document.createElement('span');
       span.style.backgroundColor = color;
       span.className = 'highlighted';
-      const div = document.createElement('span')
-      div.textContent = 'This is note';
-      div.style.backgroundColor = 'red'
-      div.style.height = '2rem'
-      div.style.border = '1px dashed grey'
-      const xspan = document.createElement('span')
-      xspan.textContent = 'X';
-      div.appendChild(xspan)
-      range.insertNode(div)
+      const input = document.createElement('input');
+      const button = document.createElement('div');
+      button.textContent = '❌';
+      input.onchange = (event: Event) => {
+        console.log(event);
+      };
       range.surroundContents(span);
+      range.collapse(false);
+      range.insertNode(input);
       selection.removeAllRanges(); // Clear selection
     }
+  }
+
+  clickOn() {
+    alert('You just clicked');
   }
 }

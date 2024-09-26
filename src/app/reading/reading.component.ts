@@ -25,6 +25,7 @@ import { MatchingHeaderComponent } from '../matching-header/matching-header.comp
 import { MultipleQuestionComponent } from '../multiple-question/multiple-question.component';
 import { QuestionComponent } from '../question/question.component';
 import { ReadingService } from './reading.service';
+import { TextSelectionDirective } from "./text-selection.directive";
 
 @Component({
   selector: 'app-reading',
@@ -43,6 +44,7 @@ import { ReadingService } from './reading.service';
     MatSelectModule,
     MatSlideToggleModule,
     MatchingHeaderComponent,
+    TextSelectionDirective
   ],
   providers: [ReadingService],
   templateUrl: './reading.component.html',
@@ -85,12 +87,5 @@ export class ReadingComponent
   override onEditQuestion(id: string): void {
     super.onEditQuestion(id);
     this.mapSavedQuestion[id] = false;
-  }
-
-  removeSubQuesiton(questionIndex: number, subQuestionIndex: number) {
-    this.data.questions[questionIndex].subQuestions!.splice(
-      subQuestionIndex,
-      1,
-    );
   }
 }
