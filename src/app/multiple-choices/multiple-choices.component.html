@@ -28,10 +28,10 @@
           @if (question.numberOfChoices! > 1) {
             @if (isTesting || isReadOnly) {
               <input [disabled]="isReadOnly" [checked]="question.answer.includes(choice.id)" type="checkbox"
-                     (click)="onSelectMultipleAnswer(choice.id)" />
+                     (click)="onSelectMultipleAnswer($event, choice.id)" />
             } @else {
               <input [disabled]="!isEditing" [checked]="question.correctAnswer.includes(choice.id)" type="checkbox"
-                     (click)="onSelectMultipleCorrectAnswer(choice.id)" />
+                     (click)="onSelectMultipleCorrectAnswer($event, choice.id)" />
             }
           } @else {
             @if (isTesting || isReadOnly) {

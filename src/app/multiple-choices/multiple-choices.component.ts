@@ -64,36 +64,47 @@ export class MultipleChoicesComponent extends AbstractQuestionComponent {
     }
   }
 
-  onSelectMultipleCorrectAnswer(option: string) {
-    if ((this.question.correctAnswer.length + 1) > Number(this.question.numberOfChoices)) {
+  onSelectMultipleCorrectAnswer(event: MouseEvent, choiceId: string) {
+    if (
+      !this.question.correctAnswer.includes(choiceId) &&
+      this.isReachedMaxAnswers()
+    ) {
+      event.preventDefault();
+      event.stopPropagation();
       return;
     }
-
-    if (this.question.correctAnswer.includes(option)) {
+    if (this.question.correctAnswer.includes(choiceId)) {
       this.question.correctAnswer = filter(
         this.question.correctAnswer,
-        (ans) => ans !== option,
+        (ans) => ans !== choiceId,
       );
     } else {
-      this.question.correctAnswer.push(option);
+      this.question.correctAnswer.push(choiceId);
     }
   }
 
-  onSelectMultipleAnswer(option: string) {
-    if (Number(this.question.numberOfChoices) === this.question.answer.length) {
-      return;
-    }
+  private isReachedMaxAnswers() {
+    return Number(this.question.numberOfChoices) === this.question.correctAnswer.length;
+  }
 
-    if (isArray(this.question.answer)) {
-      if (this.question.answer.includes(option)) {
-        this.question.answer = filter(
-          this.question.answer,
-          (ans) => ans !== option,
-        );
-      } else {
-        this.question.answer.push(option);
-      }
-    }
+  onSelectMultipleAnswer(event: MouseEvent, choiceId: string) {
+    event.preventDefault();
+    event.stopPropagation();
+    console.log(event);
+    // if (Number(this.question.numberOfChoices) === this.question.answer.length) {
+    //   return;
+    // }
+    return;
+    // if (isArray(this.question.answer)) {
+    //   if (this.question.answer.includes(value)) {
+    //     this.question.answer = filter(
+    //       this.question.answer,
+    //       (ans) => ans !== option,
+    //     );
+    //   } else {
+    //     this.question.answer.push(option);
+    //   }
+    // }
   }
 
   onSelectChoice(index: number) {
