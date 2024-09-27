@@ -5,16 +5,17 @@
   font-family: Inter;
   src: url(./assets/fonts/inter.ttf) format("truetype");
 }
+
 @include mat.core();
 
 // Define a dark theme
 $dark-theme: mat.define-theme(
-  (
-    color: (
-      theme-type: dark,
-      primary: mat.$violet-palette,
-    ),
-  )
+    (
+      color: (
+        theme-type: dark,
+        primary: mat.$violet-palette,
+      ),
+    )
 );
 
 $my-typography: mat.m2-define-typography-config(
@@ -26,13 +27,13 @@ $myapp-theme-warn: mat.m2-define-palette(mat.$m2-red-palette);
 
 // Define a light theme
 $light-theme: mat.m2-define-light-theme(
-  (
-    color: (
-      primary: $myapp-theme-primary,
-      accent: $myapp-theme-accent,
-      warn: $myapp-theme-warn,
-    ),
-  )
+    (
+      color: (
+        primary: $myapp-theme-primary,
+        accent: $myapp-theme-accent,
+        warn: $myapp-theme-warn,
+      ),
+    )
 );
 
 // Use the default configuration.
@@ -46,13 +47,16 @@ html,
 body {
   height: 100vh;
   font-family: Inter, Arial, Helvetica, sans-serif;
-  background: #dbe5f5;
+  background: var(--primary-color);
 }
+
 body {
   margin: 0;
 }
 
 :root {
+  --primary-color: #dbe5f5;
   --success-color: #4caf50;
   --danger-color: #f44336;
 }
+

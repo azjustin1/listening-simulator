@@ -1,6 +1,6 @@
 <form>
   @if (isReadOnly) {
-    <div class="choice-group">
+    <div class="d-flex justify-content-center align-items-center">
       @for (choice of question.choices; track $index) {
         @if (choice | isCorrectAnswer) {
           <div class="result">
@@ -16,8 +16,8 @@
             <span class="answer-input">
               <b>{{ choice.index }}</b>
               <span class="incorrect-answer">{{
-                !choice.answer || choice.answer === "" ? "❌" : choice.answer
-              }}</span>
+                  !choice.answer || choice.answer === "" ? "❌" : choice.answer
+                }}</span>
               <span class="correct-answer">
                 {{ choice.correctAnswer }}
               </span>
@@ -40,65 +40,49 @@
           <span [innerHTML]="question.content"></span>
         }
       </div>
-
-      <div class="choice-group">
-        @for (choice of question.choices; track $index) {
-          @if (isEditing) {
-            <mat-form-field class="choice-index">
-              <mat-label>Question</mat-label>
-              <textarea
-                autocomplete="off"
-                [name]="$index.toString()"
-                type="text"
-                class="form-control"
-                [(ngModel)]="choice.index"
-              ></textarea>
-            </mat-form-field>
-            <mat-form-field class="choice-answer">
-              <mat-label>Answer</mat-label>
-              <textarea
+      @for (choice of question.choices; track $index) {
+        @if (isEditing) {
+          <div class="d-flex align-items-center mt-2">
+          <textarea
+            class="col-5"
+            autocomplete="off"
+            [name]="$index.toString()"
+            type="text"
+            [(ngModel)]="choice.index"
+          ></textarea>
+            <textarea
+              class="col-5 ms-2"
+              autocomplete="off"
+              [name]="choice.id"
+              type="text"
+              [(ngModel)]="choice.correctAnswer"
+            ></textarea>
+            <mat-icon class="col-2" (click)="removeChoice($index)" color="warn">delete</mat-icon>
+          </div>
+        } @else {
+          @if (isTesting) {
+            <div class="d-flex align-items-center my-2">
+              <div class="answer-input">
+                <b>{{ choice.index }}&nbsp;</b>
+              </div>
+              <input
+                class="ms-2"
                 autocomplete="off"
                 [name]="choice.id"
                 type="text"
-                class="form-control"
-                [(ngModel)]="choice.correctAnswer"
-              ></textarea>
-            </mat-form-field>
+                [(ngModel)]="choice.answer"
+              />
+            </div>
           } @else {
-            @if (isTesting) {
-              <p class="answer-input">
-                <b>{{ choice.index }}&nbsp;</b>
-              </p>
-              <mat-form-field>
-                <mat-label>Answer</mat-label>
-                <input
-                  autocomplete="off"
-                  [name]="choice.id"
-                  type="text"
-                  class="form-control"
-                  [(ngModel)]="choice.answer"
-                />
-              </mat-form-field>
-            } @else {
-              <p class="answer-input">
-                <b>{{ choice.index }}&nbsp;</b>
-                <span class="correct-answer">
+            <p class="answer-input">
+              <b>{{ choice.index }}&nbsp;</b>
+              <span class="correct-answer">
                   {{ choice.correctAnswer }}
                 </span>
-              </p>
-            }
+            </p>
           }
-          <button
-            mat-button
-            color="warn"
-            type="button"
-            (click)="removeChoice($index)"
-          >
-            <mat-icon>delete</mat-icon>
-          </button>
         }
-      </div>
-
+      }
       <button
         *ngIf="isEditing"
         mat-button
