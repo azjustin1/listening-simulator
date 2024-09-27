@@ -9,12 +9,20 @@
 
 table,
 tr,
-td {
+td,
+th {
   border: 1px solid black;
-  height: 30px;
+  min-height: 2rem;
+  min-width: 4rem;
   text-align: center;
 }
 
 .choice-item {
-  width: 25px;
+  width: fit-content;
+  height: fit-content;
+}
+
+.icon {
+  height: fit-content;
+  width: fit-content;
 }

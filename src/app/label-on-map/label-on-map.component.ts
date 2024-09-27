@@ -14,6 +14,7 @@ import { Choice } from '../../common/models/choice.model';
 import { CorrectChoicesPipe } from '../../common/pipes/correct-choices.pipe';
 import { CommonUtils } from '../../utils/common-utils';
 import { CHOICE_INDEX } from '../../utils/constant';
+import { IsCheckCellPipe } from './is-check-cell.pipe';
 
 @Component({
   selector: 'app-label-on-map',
@@ -29,6 +30,7 @@ import { CHOICE_INDEX } from '../../utils/constant';
     MatCardModule,
     MatTableModule,
     CorrectChoicesPipe,
+    IsCheckCellPipe,
   ],
   templateUrl: './label-on-map.component.html',
   styleUrl: './label-on-map.component.scss',
