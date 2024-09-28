@@ -1,5 +1,5 @@
-<div class="container">
-  <div class="question">
+<div class="d-flex">
+  <div class="col-6">
     @if (isEditing) {
       <angular-editor
         class="editor"
@@ -14,7 +14,7 @@
     }
   </div>
 
-  <div class="table">
+  <div class="table ms-2">
     @if (question.subQuestions![0]) {
       <table class="table">
         <tr>
@@ -78,14 +78,7 @@
             }
           </tr>
           @if (isEditing) {
-            <button
-              mat-icon-button
-              type="button"
-              color="warn"
-
-            >
-              <mat-icon class="icon" color="warn" (click)="onRemoveRow(questionIndex)">delete</mat-icon>
-            </button>
+            <mat-icon class="icon" color="warn" (click)="onRemoveRow(questionIndex)">delete</mat-icon>
           }
         }
       </table>

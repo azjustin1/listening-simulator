@@ -1,4 +1,4 @@
-<div class="container">
+<div class="d-flex flex-column">
   <div class="description">
     @if (isEditing) {
       <angular-editor [name]="question.id" [config]="config" [(ngModel)]="question.content"
@@ -9,14 +9,14 @@
   </div>
 
   @if (question.arrayContent) {
-    <div class="line">
+    <div class="d-flex flex-column">
       @for (line of question.arrayContent;
         track $index;
         let lineIndex = $index) {
-        <div class="text-container">
+        <div class="d-flex flex-wrap align-items-center">
           @for (content of line; track $index; let contentIndex = $index) {
-            @if (content | isInput) {
-              <div class="content">
+            <div class="d-flex">
+              @if (content | isInput) {
                 @if (mapSaveTextByIndex[lineIndex][contentIndex] && !isTesting) {
                   <div class="choice-content" [ngClass]="{ edit: isEditing }"
                        (click)="onEditInput(lineIndex, contentIndex)">
@@ -55,38 +55,37 @@
                     }
                   </div>
                 } @else if (isTesting) {
-                  <input class="input-answer" [(ngModel)]="
+                  <input class="me-1" [(ngModel)]="
                       mapChoiceById[content.match(inputPattern)![1]].answer
                     " />
                 } @else {
                   @if (isEditing &&
                   mapShowActionByIndex[lineIndex][contentIndex] &&
                   contentIndex === 0) {
-                    <div class="text-container__button">
-                      <button mat-button color="primary" (click)="addText(lineIndex, contentIndex)">
-                        <mat-icon>add</mat-icon>
+                    <div class="d-flex align-items-center">
+                      <button (click)="addText(lineIndex, contentIndex)">
+                        <mat-icon color="primary">add</mat-icon>
                         Text
                       </button>
-                      <button mat-button color="accent" (click)="addInput(lineIndex, contentIndex)">
-                        <mat-icon>add</mat-icon>
+                      <button (click)="addInput(lineIndex, contentIndex)">
+                        <mat-icon color="primary">add</mat-icon>
                         Input
                       </button>
                     </div>
                   }
 
-                  <input class="input-answer" [(ngModel)]="
+                  <input class="me-1" [(ngModel)]="
                       mapChoiceById[content.match(inputPattern)![1]]
                         .correctAnswer
                     " />
-
                   @if (isEditing && mapShowActionByIndex[lineIndex][contentIndex]) {
-                    <div class="text-container__button">
-                      <button mat-button class="add-btn" color="primary" (click)="addText(lineIndex, contentIndex + 1)">
-                        <mat-icon>add</mat-icon>
+                    <div class="d-flex">
+                      <button class="d-flex align-items-center ms-1" (click)="addText(lineIndex, contentIndex + 1)">
+                        <mat-icon color="primary">add</mat-icon>
                         Text
                       </button>
-                      <button mat-button class="add-btn" color="accent" (click)="addInput(lineIndex, contentIndex + 1)">
-                        <mat-icon>add</mat-icon>
+                      <button class="d-flex align-items-center ms-1" (click)="addInput(lineIndex, contentIndex + 1)">
+                        <mat-icon color="primary">add</mat-icon>
                         Input
                       </button>
                       @if (mapSaveTextByIndex[lineIndex][contentIndex]) {
@@ -102,9 +101,7 @@
                     </div>
                   }
                 }
-              </div>
-            } @else {
-              <div class="content">
+              } @else {
                 @if (mapSaveTextByIndex[lineIndex][contentIndex]) {
                   <div class="question__text" [ngClass]="{ edit: isEditing }"
                        (click)="onEditText(lineIndex, contentIndex)">
@@ -116,24 +113,28 @@
                   </div>
                 } @else {
                   @if ($index === 0) {
-                    <button mat-button color="primary" (click)="addText(lineIndex, contentIndex)">
-                      <mat-icon>add</mat-icon>
+                    <button class="d-flex align-items-center" color="primary"
+                            (click)="addText(lineIndex, contentIndex)">
+                      <mat-icon color="primary">add</mat-icon>
                       Text
                     </button>
-                    <button mat-button color="accent" (click)="addInput(lineIndex, contentIndex)">
-                      <mat-icon>add</mat-icon>
+                    <button class="d-flex align-items-center" color="accent"
+                            (click)="addInput(lineIndex, contentIndex)">
+                      <mat-icon color="primary">add</mat-icon>
                       Input
                     </button>
                   }
-                  <input fitContentInput [content]="question.arrayContent[lineIndex][contentIndex]" class="form-control"
+                  <input fitContentInput [content]="question.arrayContent[lineIndex][contentIndex]"
                          [(ngModel)]="question.arrayContent[lineIndex][contentIndex]" />
-                  <div class="text-container__button">
-                    <button mat-button color="primary" class="add-btn" (click)="addText(lineIndex, contentIndex + 1)">
-                      <mat-icon>add</mat-icon>
+                  <div class="d-flex">
+                    <button mat-button color="primary" class="d-flex align-items-center me-1"
+                            (click)="addText(lineIndex, contentIndex + 1)">
+                      <mat-icon color="primary">add</mat-icon>
                       Text
                     </button>
-                    <button mat-button color="accent" class="add-btn" (click)="addInput(lineIndex, contentIndex + 1)">
-                      <mat-icon>add</mat-icon>
+                    <button mat-button color="accent" class="d-flex align-items-center me-1"
+                            (click)="addInput(lineIndex, contentIndex + 1)">
+                      <mat-icon color="primary">add</mat-icon>
                       Input
                     </button>
                     <mat-icon color="primary" (click)="onSaveText(lineIndex, contentIndex)">
@@ -142,39 +143,38 @@
                     <mat-icon color="warn" (click)="onDeleteText(lineIndex, contentIndex)">delete</mat-icon>
                   </div>
                 }
-              </div>
-
-              <br />
-            }
+              }
+            </div>
           }
         </div>
-        <div class="line-actions">
-
+        <div class="d-flex">
           @if (isEditing) {
-            <button mat-button class="line-btn" color="primary" (click)="addNewLine(lineIndex)">
-              <mat-icon class="line-btn__icon">add</mat-icon>
-              Line
-            </button>
-            <button mat-button class="line-btn" color="warn" (click)="onDeleteLine(lineIndex)">
-              <mat-icon class="line-btn__icon">delete</mat-icon>
-              Line
-            </button>
-            @if (lineIndex !== 0) {
-              <button mat-button type="button" class="line-btn" (click)="moveLineUp(lineIndex)">
-                <mat-icon class="line-btn__icon">arrow_upward</mat-icon>
+            <div class="d-flex mt-1">
+              <button class="d-flex align-items-center me-1" (click)="addNewLine(lineIndex)">
+                <mat-icon color="primary">add</mat-icon>
+                Line
               </button>
-            }
-            @if (lineIndex !== question.arrayContent.length - 1) {
-              <button mat-button type="button" class="line-btn" (click)="moveLineDown(lineIndex)">
-                <mat-icon class="line-btn__icon">arrow_downward</mat-icon>
+              <button class="d-flex align-items-center me-1" (click)="onDeleteLine(lineIndex)">
+                <mat-icon color="warn">delete</mat-icon>
+                Line
               </button>
-            }
+              @if (lineIndex !== 0) {
+                <button class="d-flex align-items-center me-1" type="button" (click)="moveLineUp(lineIndex)">
+                  <mat-icon>arrow_upward</mat-icon>
+                </button>
+              }
+              @if (lineIndex !== question.arrayContent.length - 1) {
+                <button class="d-flex align-items-center me-1" type="button" (click)="moveLineDown(lineIndex)">
+                  <mat-icon>arrow_downward</mat-icon>
+                </button>
+              }
+            </div>
           }
         </div>
       }
       @if (question.arrayContent.length === 0 && isEditing) {
-        <button mat-button class="line-btn" color="primary" (click)="addNewLine(-1)">
-          <mat-icon class="line-btn__icon">add</mat-icon>
+        <button class="d-flex align-items-center me-1" (click)="addNewLine(-1)">
+          <mat-icon color="primary">add</mat-icon>
           Line
         </button>
       }
