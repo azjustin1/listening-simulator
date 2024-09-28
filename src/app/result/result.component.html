@@ -16,16 +16,16 @@
     </mat-form-field>
   </div>
 </div>
-<div class="container">
+<div class="result-container">
   @for (result of results; track $index) {
     <mat-card class="card">
       <mat-card-title class="card-title"
-        ><h1 class="mat-display-2" (click)="view(result.id)">
-          &nbsp;{{ result.studentName }}
-          @if (!result.isSubmit) {
-            🔸
-          }
-        </h1>
+      ><h1 class="mat-display-2" (click)="view(result.id)">
+        &nbsp;{{ result.studentName }}
+        @if (!result.isSubmit) {
+          🔸
+        }
+      </h1>
         <mat-card-actions>
           <button mat-icon-button [matMenuTriggerFor]="menu">
             <mat-icon>more_vert</mat-icon>
@@ -50,8 +50,8 @@
             result.totalListeningPoint
           }}
           &nbsp;&nbsp;<span
-            ><b>Band:</b> {{ result.correctListeningPoint | bandScore }}</span
-          >
+        ><b>Band:</b> {{ result.correctListeningPoint | bandScore }}</span
+        >
         </span>
         <br />
         <span>
@@ -59,8 +59,8 @@
             result.totalReadingPoint
           }}
           &nbsp;&nbsp;&nbsp;&nbsp;<span
-            ><b>Band:</b> {{ result.correctReadingPoint | bandScore }}</span
-          >
+        ><b>Band:</b> {{ result.correctReadingPoint | bandScore }}</span
+        >
         </span>
         <br />
         <b>Test date:</b> {{ result.testDate }}

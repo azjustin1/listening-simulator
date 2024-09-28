@@ -1,22 +1,20 @@
-<form>
+<mat-expansion-panel class="dropdown-container" style="box-shadow: none">
+  <mat-expansion-panel-header style="background: var(--secondary-color)">
+    <span [innerHTML]="question.content"> </span>
+    @if (isReadOnly && question.answer.length === 0) {
+      ❌
+    }
+  </mat-expansion-panel-header>
   <div class="question-group">
-    <div class="form-group">
-      @if (isEditing) {
-        <angular-editor
-          name="questionContent"
-          [id]="question.id"
-          [config]="config"
-          [(ngModel)]="question.content"
-          (ngModelChange)="onPaste($event)"
-        ></angular-editor>
-      } @else {
-        <span [innerHTML]="question.content"> </span>
-      }
-      @if (isReadOnly && question.answer.length === 0) {
-        ❌
-      }
-    </div>
-
+    @if (isEditing) {
+      <angular-editor
+        name="questionContent"
+        [id]="question.id"
+        [config]="config"
+        [(ngModel)]="question.content"
+        (ngModelChange)="onPaste($event)"
+      ></angular-editor>
+    }
     <div class="choice-group">
       @if (isReadOnly) {
         <div class="choice">
@@ -34,59 +32,42 @@
           }
         </div>
       } @else {
-        @if (isEditing) {
-          @for (choice of question.choices; track $index) {
-            <div class="choice">
-              <div class="form-group">
-                <mat-radio-group
-                  [(ngModel)]="question.correctAnswer"
-                  name="correctAnswer"
-                >
-                  <mat-radio-button color="primary" [value]="choice.id">
-                  </mat-radio-button>
-                </mat-radio-group>
-                <mat-form-field class="choice-input">
-                  <textarea
-                    autocomplete="off"
-                    [disabled]="isReadOnly"
-                    [name]="choice.id"
-                    type="text"
-                    class="form-control"
-                    [(ngModel)]="choice.content"
-                  ></textarea>
-                </mat-form-field>
-                <button
-                  mat-button
-                  color="warn"
-                  type="button"
-                  (click)="removeChoice($index)"
-                >
-                  <mat-icon>delete</mat-icon>
-                </button>
+        @for (choice of question.choices; track $index) {
+          @if (isEditing) {
+            <div class="d-flex align-items-center mb-2">
+              <input [checked]="question.correctAnswer.includes(choice.id)" (click)="onSelectCorrectAnswer(choice.id)"
+                     type="radio" />
+              <div class="ms-2 w-100">
+                <textarea
+                  autocomplete="off"
+                  [disabled]="isReadOnly"
+                  [name]="choice.id"
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="choice.content"
+                ></textarea>
               </div>
+              <mat-icon (click)="removeChoice($index)" color="warn">delete</mat-icon>
             </div>
-          }
-        } @else {
-          @if (isTesting) {
-            <mat-form-field class="choice-input">
-              <mat-select [(value)]="question.answer">
-                @for (choice of question.choices; track $index) {
-                  <mat-option [value]="choice.id">{{
-                    choice.content
-                  }}</mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
           } @else {
-            <mat-form-field class="choice-input">
-              <mat-select [(value)]="question.correctAnswer">
-                @for (choice of question.choices; track $index) {
-                  <mat-option [value]="choice.id">{{
-                    choice.content
-                  }}</mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
+            @if (isTesting) {
+              <div (click)="onSelectAnswer(choice.id)" class="d-flex align-items-center mt-2">
+                <input [checked]="selectedChoice"
+                       type="radio">
+                <div class="ms-2">
+                  {{ choice.content }}
+                </div>
+              </div>
+            } @else {
+              <div class="d-flex align-items-center mt-2">
+                <input [disabled]="!isEditing" [checked]="question.correctAnswer.includes(choice.id)"
+                       (click)="onSelectCorrectAnswer(choice.id)"
+                       type="radio">
+                <div class="ms-2">
+                  {{ choice.content }}
+                </div>
+              </div>
+            }
           }
         }
       }
@@ -103,4 +84,4 @@
       </button>
     }
   </div>
-</form>
+</mat-expansion-panel>

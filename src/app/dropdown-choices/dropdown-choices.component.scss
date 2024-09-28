@@ -1,17 +1,5 @@
-.choice-group {
-  margin: 16px 0 0 0;
-}
-
-.question-text {
-  width: 100%;
-  height: 30px;
-  line-height: 60px;
-}
-
-.choice {
-  display: flex;
-  align-items: start;
-  width: 100%;
+.dropdown-container {
+  background: var(--primary-color);
 }
 
 .answer {

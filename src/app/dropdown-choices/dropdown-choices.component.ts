@@ -13,6 +13,8 @@ import { AbstractQuestionComponent } from '../../common/abstract-question.compon
 import { CorrectAnswerChoicePipe } from '../../common/pipes/correct-answer-choice.pipe';
 import { CorrectDropdownPipe } from '../../common/pipes/correct-dropdown.pipe';
 import { AnswerChoicePipe } from '../../common/pipes/answer-choice.pipe';
+import { MatExpansionModule } from '@angular/material/expansion';
+
 @Component({
   selector: 'app-dropdown-choices',
   standalone: true,
@@ -30,8 +32,26 @@ import { AnswerChoicePipe } from '../../common/pipes/answer-choice.pipe';
     AnswerChoicePipe,
     CorrectAnswerChoicePipe,
     CorrectDropdownPipe,
+    MatExpansionModule,
   ],
   templateUrl: './dropdown-choices.component.html',
   styleUrl: './dropdown-choices.component.scss',
 })
-export class DropdownChoicesComponent extends AbstractQuestionComponent {}
+export class DropdownChoicesComponent extends AbstractQuestionComponent {
+  selectedChoice: string = '';
+  onSelectCorrectAnswer(choiceId: string) {
+    if (this.question.correctAnswer.includes(choiceId)) {
+      this.question.correctAnswer = [];
+    } else {
+      this.question.correctAnswer = [choiceId];
+    }
+  }
+
+  onSelectAnswer(choiceId: string) {
+    if (this.question.correctAnswer.includes(choiceId)) {
+      this.question.answer = [];
+    } else {
+      this.question.answer = [choiceId];
+    }
+  }
+}

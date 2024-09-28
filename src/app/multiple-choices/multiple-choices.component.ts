@@ -36,12 +36,22 @@ import { MatRadioGroup } from '@angular/material/radio';
 export class MultipleChoicesComponent extends AbstractQuestionComponent {
   selectedOption: string | null = '';
   mapSelectedChoice: Record<number, boolean> = {};
-
   CHOICE_INDEX: string[] = CHOICE_INDEX;
 
   override ngOnInit() {
     super.ngOnInit();
-    if (!this.isTesting && !isEmpty(this.question.correctAnswer)) {
+    if (
+      this.isTesting &&
+      !isEmpty(this.question.answer) &&
+      Number(this.question.numberOfChoices) < 2
+    ) {
+      this.selectedOption = this.question.answer[0];
+    }
+    if (
+      !this.isTesting &&
+      !isEmpty(this.question.correctAnswer) &&
+      Number(this.question.numberOfChoices) < 2
+    ) {
       this.selectedOption = this.question.correctAnswer[0];
     }
   }
@@ -67,7 +77,7 @@ export class MultipleChoicesComponent extends AbstractQuestionComponent {
   onSelectMultipleCorrectAnswer(event: MouseEvent, choiceId: string) {
     if (
       !this.question.correctAnswer.includes(choiceId) &&
-      this.isReachedMaxAnswers()
+      this.isReachedMaxAnswers(this.question.correctAnswer.length)
     ) {
       event.preventDefault();
       event.stopPropagation();
@@ -83,37 +93,34 @@ export class MultipleChoicesComponent extends AbstractQuestionComponent {
     }
   }
 
-  private isReachedMaxAnswers() {
-    return Number(this.question.numberOfChoices) === this.question.correctAnswer.length;
+  private isReachedMaxAnswers(numberOfSelectdChoice: number) {
+    return Number(this.question.numberOfChoices) === numberOfSelectdChoice;
   }
 
   onSelectMultipleAnswer(event: MouseEvent, choiceId: string) {
-    event.preventDefault();
-    event.stopPropagation();
-    console.log(event);
-    // if (Number(this.question.numberOfChoices) === this.question.answer.length) {
-    //   return;
-    // }
-    return;
-    // if (isArray(this.question.answer)) {
-    //   if (this.question.answer.includes(value)) {
-    //     this.question.answer = filter(
-    //       this.question.answer,
-    //       (ans) => ans !== option,
-    //     );
-    //   } else {
-    //     this.question.answer.push(option);
-    //   }
-    // }
+    if (
+      !this.question.answer.includes(choiceId) &&
+      this.isReachedMaxAnswers(this.question.answer.length)
+    ) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+    if (this.question.answer.includes(choiceId)) {
+      this.question.answer = filter(
+        this.question.answer,
+        (ans) => ans !== choiceId,
+      );
+    } else {
+      (this.question.answer as string[]).push(choiceId);
+    }
   }
 
   onSelectChoice(index: number) {
     if (this.isReadOnly) {
       return;
     }
-
     this.mapSelectedChoice[index] = !this.mapSelectedChoice[index];
-
     if (this.isEditing) {
       const id = this.question.choices[index].id;
       if (!this.question.correctAnswer?.includes(id)) {
@@ -124,11 +131,9 @@ export class MultipleChoicesComponent extends AbstractQuestionComponent {
         );
       }
     }
-
     if (this.isTesting) {
       if (isArray(this.question.answer)) {
         const id = this.question.choices[index].id;
-
         if (!this.question.answer?.includes(id)) {
           this.question.answer.push(id);
         } else {

@@ -26,7 +26,7 @@
     }
   </div>
 </div>
-<div class="container" cdkDropList cdkDropListOrientation="mixed" (cdkDropListDropped)="drop($event)">
+<div class="grid-container" cdkDropList cdkDropListOrientation="mixed" (cdkDropListDropped)="drop($event)">
   @for (folder of folders; track $index) {
   <app-folder [folder]="folder" (onUpdate)="saveOrUpdateFolder($event)"
     (onDelete)="onDeleteFolder($event)"></app-folder>
