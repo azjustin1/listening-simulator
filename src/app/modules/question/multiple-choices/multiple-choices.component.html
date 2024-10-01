@@ -1,74 +1,22 @@
-<form>
-  <div class="question-group">
-    <div class="form-group">
-      @if (isEditing) {
-        <angular-editor
-          name="questionContent"
-          [id]="question.id"
-          [config]="config"
-          [(ngModel)]="question.content"
-          (ngModelChange)="onPaste($event)"
-        ></angular-editor>
-        <div class="my-2">
-          <label for="numberOfAnswer">Number of answers</label> <input id="numberOfAnswer" name="numberOfAnswer"
-                                                                       class="ms-2"
-                                                                       [(ngModel)]="question.numberOfChoices" />
-        </div>
-      } @else {
-        <span [innerHTML]="question.content"> </span>
-      }
-      @if (isReadOnly && question.answer.length === 0) {
-        ❌
-      }
-    </div>
+@if (isEditing) {
+  <app-multiple-choices-editing
+    [question]="question"
+    [isEditing]="isEditing"
+  ></app-multiple-choices-editing>
+}
 
-    <div class="choice-group">
-      @for (choice of question.choices; track $index) {
-        <div class="mt-2 d-flex align-baseline">
-          @if (question.numberOfChoices! > 1) {
-            @if (isTesting || isReadOnly) {
-              <input [disabled]="isReadOnly" [checked]="question.answer.includes(choice.id)" type="checkbox"
-                     (click)="onSelectMultipleAnswer($event, choice.id)" />
-            } @else {
-              <input [disabled]="!isEditing" [checked]="question.correctAnswer.includes(choice.id)" type="checkbox"
-                     (click)="onSelectMultipleCorrectAnswer($event, choice.id)" />
-            }
-          } @else {
-            @if (isTesting || isReadOnly) {
-              <input [disabled]="isReadOnly" [checked]="selectedOption === choice.id" type="radio"
-                     (click)="onSelectSingleAnswer(choice.id)" />
-            } @else {
-              <input [disabled]="!isEditing" [checked]="selectedOption === choice.id" type="radio"
-                     (click)="onSelectSingleCorrectAnswer(choice.id)" />
-            }
-          }
-          @if (isEditing) {
-            <textarea class="ms-2" autocomplete="off" [name]="choice.id" [(ngModel)]="choice.content"></textarea>
-            <button
-              mat-icon-button
-              color="warn"
-              type="button"
-              class="ms-2"
-              (click)="removeChoice($index)"
-            >
-              <mat-icon>delete</mat-icon>
-            </button>
-          } @else {
-            <div class="ms-2">{{ choice.content }}</div>
-          }
-        </div>
-      }
-    </div>
-    @if (isEditing) {
-      <button
-        mat-button
-        color="primary"
-        type="button"
-        (click)="addChoice()"
-      >
-        <mat-icon>add</mat-icon>
-        More option
-      </button>
-    }
-  </div>
-</form>
+@if (isTesting) {
+  <app-multiple-choices-testing
+    [question]="question"
+    [isTesting]="isTesting"
+  ></app-multiple-choices-testing>
+}
+
+@if (isReadOnly || (!isEditing && !isTesting)) {
+  <app-multiple-choices-readonly
+    [question]="question"
+    [isReadOnly]="isReadOnly"
+  ></app-multiple-choices-readonly>
+}
+
+
