@@ -12,7 +12,7 @@ import { Listening } from '../../shared/models/listening.model';
 import { FileService } from '../../file.service';
 import { QuestionComponent } from '../../modules/question/question.component';
 import { ListeningService } from './listening.service';
-import { MatAccordion } from "@angular/material/expansion";
+import { MatAccordion } from '@angular/material/expansion';
 
 @Component({
   selector: 'app-listening',
@@ -33,7 +33,5 @@ import { MatAccordion } from "@angular/material/expansion";
   styleUrl: './listening.component.scss',
 })
 export class ListeningComponent extends AbstractQuizPartComponent<Listening> {
-  isDisableStartButton = false;
-
   subscription: Subscription[] = [];
 }

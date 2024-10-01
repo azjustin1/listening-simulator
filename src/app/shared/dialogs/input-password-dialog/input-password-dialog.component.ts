@@ -35,7 +35,6 @@ import { environment } from '../../../../environments/environment';
 export class InputPasswordDialogComponent {
   isWrongPassword = false;
   formGroup!: FormGroup;
-  passwordControl = new FormControl('', Validators.required);
   readonly dialogRef = inject(MatDialogRef<InputPasswordDialogComponent>);
   readonly formBuilder = inject(FormBuilder);
   constructor() {
@@ -44,10 +43,7 @@ export class InputPasswordDialogComponent {
     });
   }
 
-  onInputPassword(event: any) {}
-
   onSubmit() {
-    console.log(this.formGroup.errors);
     if (this.formGroup.valid) {
       this.isWrongPassword =
         environment.password !== this.formGroup.get('password')?.value;

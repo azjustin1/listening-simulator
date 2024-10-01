@@ -1,10 +1,20 @@
 @if (isEditing) {
-  <app-short-answer-editing [question]="question" [isEditing]="isEditing"></app-short-answer-editing>
-} @else {
-  @if (isTesting) {
-    <app-short-answer-testing [question]="question"></app-short-answer-testing>
-  } @else {
-    <app-short-answer-readonly [question]="question"></app-short-answer-readonly>
-  }
+  <app-short-answer-editing
+    [question]="question"
+    [isEditing]="isEditing"
+  ></app-short-answer-editing>
+}
+@if (isTesting) {
+  <app-short-answer-testing
+    [question]="question"
+    [isTesting]="isTesting"
+  ></app-short-answer-testing>
+}
+
+@if (isReadOnly || (!isEditing && !isTesting)) {
+  <app-short-answer-readonly
+    [question]="question"
+    [isReadOnly]="isReadOnly"
+  ></app-short-answer-readonly>
 }
 

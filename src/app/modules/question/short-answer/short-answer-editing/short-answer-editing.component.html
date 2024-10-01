@@ -29,7 +29,14 @@
             type="text"
             [(ngModel)]="choice.correctAnswer"
           ></textarea>
-          <mat-icon class="col-2" (click)="removeChoice($index)" color="warn">delete</mat-icon>
+          <button
+            mat-button
+            color="warn"
+            class="ms-2"
+            (click)="removeChoice($index)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
         </div>
       } @else {
         <p class="answer-input">
@@ -42,13 +49,12 @@
     }
   </div>
   <button
-    mat-button
-    color="primary"
+    mat-raised-button
     type="button"
     style="margin-top: 16px"
     (click)="addChoice()"
   >
     <mat-icon>add</mat-icon>
-    More option
+    Answer
   </button>
 </div>

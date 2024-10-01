@@ -1,5 +1,5 @@
 <div class="form-group">
-  <span [innerHTML]="question.content"></span>
+  <b><span [innerHTML]="question.content"></span></b>
 </div>
 <div class="mt-3">
   @for (choice of question.choices; track $index) {
@@ -14,15 +14,17 @@
       </div>
     } @else {
       <div class="answer">
-            <span class="answer-input">
-              <b>{{ choice.index }}</b>
-              <span class="incorrect-answer">{{
-                  !choice.answer || choice.answer === "" ? "❌" : choice.answer
-                }}</span>
-              <span class="correct-answer">
-                {{ choice.correctAnswer }}
-              </span>
-            </span>
+        <span class="answer-input">
+          <b>{{ choice.index }}</b>
+          @if (isReadOnly) {
+            <span class="incorrect-answer">
+            {{ !choice.answer || choice.answer === "" ? "❌" : choice.answer }}
+          </span>
+          }
+          <span class="correct-answer">
+            {{ choice.correctAnswer }}
+          </span>
+        </span>
       </div>
     }
   }

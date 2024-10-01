@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { AbstractQuestionComponent } from "../../../../shared/abstract/abstract-question.component";
-import { AngularEditorModule } from "@wfpena/angular-wysiwyg";
-import { FormsModule } from "@angular/forms";
-import { MatButton } from "@angular/material/button";
-import { MatIcon } from "@angular/material/icon";
-import { NgIf } from "@angular/common";
+import { AbstractQuestionComponent } from '../../../../shared/abstract/abstract-question.component';
+import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
+import { FormsModule } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-short-answer-testing',

@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-import { CorrectAnswerPipe } from "../../../../pipes/correct-answer.pipe";
-import { ShortAnswerComponent } from "../short-answer.component";
-import { AbstractQuestionComponent } from "../../../../shared/abstract/abstract-question.component";
+import { CorrectAnswerPipe } from '../../../../pipes/correct-answer.pipe';
+import { AbstractQuestionComponent } from '../../../../shared/abstract/abstract-question.component';
 
 @Component({
   selector: 'app-short-answer-readonly',
