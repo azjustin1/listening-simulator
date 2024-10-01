@@ -15,8 +15,8 @@ import {
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute } from '@angular/router';
-import { Folder } from '../../../../common/models/folder.model';
-import { FolderService } from '../../../folder/folder.service';
+import { Folder } from '../../models/folder.model';
+import { FolderService } from '../../../modules/folder/folder.service';
 
 @Component({
   selector: 'app-move-to-folder-dialog',

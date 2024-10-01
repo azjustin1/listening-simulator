@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { AbstractPart } from '../../../../common/models/abstract-part.model';
+import { AbstractPart } from '../../models/abstract-part.model';
 import { CommonModule } from '@angular/common';
 
 @Component({

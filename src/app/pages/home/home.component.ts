@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { RouterModule } from '@angular/router';
-import { QuizService } from '../../quizzes/quizzes.service';
-import { ReadingService } from '../../reading/reading.service';
-import { TestService } from '../full-test/test.service';
+import { QuizService } from '../../modules/quizzes/quizzes.service';
+import { ReadingService } from '../../tabs/reading/reading.service';
+import { FullTestService } from '../full-test/full-test.service';
 
 enum Tab {
   tests,
@@ -18,7 +18,7 @@ enum Tab {
     MatCardModule,
 
   ],
-  providers: [QuizService, TestService, ReadingService],
+  providers: [QuizService, FullTestService, ReadingService],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })

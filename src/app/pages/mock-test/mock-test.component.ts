@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { MatTabsModule } from '@angular/material/tabs';
-import { QuizzesComponent } from '../../quizzes/quizzes.component';
-import { ResultComponent } from '../result/result.component';
+import { QuizzesComponent } from '../../modules/quizzes/quizzes.component';
+import { ResultComponent } from '../../modules/result/result.component';
 
 @Component({
   selector: 'app-mock-test',
