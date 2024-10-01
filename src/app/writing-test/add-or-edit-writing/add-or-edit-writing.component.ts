@@ -18,7 +18,7 @@ import { each } from 'lodash-es';
 import { interval, map, Subscription } from 'rxjs';
 import { Writing } from '../../../common/models/writing.model';
 import { CommonUtils } from '../../../utils/common-utils';
-import { ConfirmDialogComponent } from '../../dialog/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from '../../shared/dialogs/confirm-dialog/confirm-dialog.component';
 import { FileService } from '../../file.service';
 import { WritingComponent } from '../../writing/writing.component';
 import { WritingService } from '../writing-test.service';

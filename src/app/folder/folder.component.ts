@@ -12,8 +12,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { Folder } from '../../common/models/folder.model';
 import { FolderService } from './folder.service';
 import { MatDialog } from '@angular/material/dialog';
-import { AddOrEditFolderComponent } from '../quizzes/add-or-edit-folder/add-or-edit-folder.component';
-import { ConfirmDialogComponent } from '../dialog/confirm-dialog/confirm-dialog.component';
+import { AddOrEditFolderDialog } from '../shared/dialogs/add-or-edit-folder-dialog/add-or-edit-folder-dialog.component';
+import { ConfirmDialogComponent } from '../shared/dialogs/confirm-dialog/confirm-dialog.component';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
 
@@ -54,7 +54,7 @@ export class FolderComponent {
   }
 
   onEditClick(folder: Folder) {
-    const dialogRef = this.dialog.open(AddOrEditFolderComponent);
+    const dialogRef = this.dialog.open(AddOrEditFolderDialog);
     dialogRef.componentInstance.folder = folder;
     dialogRef.afterClosed().subscribe((folder) => {
       this.onUpdate.emit(folder);

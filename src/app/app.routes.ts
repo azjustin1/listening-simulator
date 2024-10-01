@@ -1,11 +1,11 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './home/home.component';
-import { MockTestComponent } from './mock-test/mock-test.component';
+import { HomeComponent } from './pages/home/home.component';
+import { MockTestComponent } from './pages/mock-test/mock-test.component';
 import { AddOrEditQuizComponent } from './quizzes/add-or-edit-quiz/add-or-edit-quiz.component';
 import { ReadingComponent } from './reading/reading.component';
-import { ResultDetailComponent } from './result/result-detail/result-detail.component';
-import { ResultComponent } from './result/result.component';
-import { TestComponent } from './test/test.component';
+import { ResultDetailComponent } from './pages/result/result-detail/result-detail.component';
+import { ResultComponent } from './pages/result/result.component';
+import { TestComponent } from './pages/full-test/test.component';
 import { WritingTestComponent } from './writing-test/writing-test.component';
 import { AddOrEditWritingComponent } from './writing-test/add-or-edit-writing/add-or-edit-writing.component';
 

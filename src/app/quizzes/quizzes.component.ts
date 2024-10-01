@@ -28,13 +28,13 @@ import { Folder } from '../../common/models/folder.model';
 import { Quiz } from '../../common/models/quiz.model';
 import { SelectedPipe } from '../../common/pipes/selected.pipe';
 import { CommonUtils } from '../../utils/common-utils';
-import { ConfirmDialogComponent } from '../dialog/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from '../shared/dialogs/confirm-dialog/confirm-dialog.component';
 import { FileService } from '../file.service';
 import { FolderComponent } from '../folder/folder.component';
 import { FolderService } from '../folder/folder.service';
 import { ListeningComponent } from '../listening/listening.component';
-import { AddOrEditFolderComponent } from './add-or-edit-folder/add-or-edit-folder.component';
-import { MoveToFolderDialogComponent } from './move-to-folder-dialog/move-to-folder-dialog.component';
+import { AddOrEditFolderDialog } from '../shared/dialogs/add-or-edit-folder-dialog/add-or-edit-folder-dialog.component';
+import { MoveToFolderDialogComponent } from '../shared/dialogs/move-to-folder-dialog/move-to-folder-dialog.component';
 import { QuizService } from './quizzes.service';
 
 @Component({
@@ -133,7 +133,7 @@ export class QuizzesComponent implements OnDestroy {
   }
 
   onAddFolderClick() {
-    const dialogRef = this.dialog.open(AddOrEditFolderComponent, {
+    const dialogRef = this.dialog.open(AddOrEditFolderDialog, {
       disableClose: true,
     });
     dialogRef.afterClosed().subscribe((folder) => {

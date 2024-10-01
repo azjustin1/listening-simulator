@@ -7,8 +7,8 @@ import { Result } from '../common/models/result.model';
 import { AnswerChoicePipe } from '../common/pipes/answer-choice.pipe';
 import { CommonUtils } from './common-utils';
 import { CHOICE_INDEX, INPUT_PATTERN } from './constant';
-import { IsInputPipe } from '../app/fill-in-the-gap/is-input.pipe';
-import { ChoiceContentPipe } from '../app/matching-header/choice-content.pipe';
+import { IsInputPipe } from '../app/question/fill-in-the-gap/is-input.pipe';
+import { ChoiceContentPipe } from '../app/question/matching-header/choice-content.pipe';
 
 export class ExportUtils {
   private static pdfStyle() {

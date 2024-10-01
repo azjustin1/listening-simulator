@@ -13,7 +13,7 @@ import { cloneDeep, debounce, filter } from 'lodash-es';
 import { Subscription } from 'rxjs';
 import { Writing } from '../../common/models/writing.model';
 import { CommonUtils } from '../../utils/common-utils';
-import { ConfirmDialogComponent } from '../dialog/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from '../shared/dialogs/confirm-dialog/confirm-dialog.component';
 import { WritingService } from './writing-test.service';
 
 @Component({
