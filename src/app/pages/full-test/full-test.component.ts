@@ -169,7 +169,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
     const saveInterval = interval(SAVE_INTERVAL).subscribe(() => {
       this.onCtrlSave();
     });
-    this.subscriptions.push(saveInterval);
+    this.subscriptions.add(saveInterval);
   }
 
   onChangeTab(tab: number) {
@@ -204,7 +204,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
     this.saveTimeout();
     this.result.testDate = CommonUtils.getCurrentDate();
     this.result.currentTab = this.currentTab;
-    this.subscriptions.push(
+    this.subscriptions.add(
       this.testService.saveCurrentTest(this.result).subscribe(),
     );
   }
@@ -283,7 +283,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
     if (this.currentTab === 1) {
       this.audioPlayer.nativeElement.pause();
       htmlString += ExportUtils.exportListening(this.result);
-      this.subscriptions.push(
+      this.subscriptions.add(
         this.fileService
           .generatePdfFile(
             'Listening',
@@ -296,7 +296,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
     }
     if (this.currentTab === 2) {
       htmlString += ExportUtils.exportReading(this.result);
-      this.subscriptions.push(
+      this.subscriptions.add(
         this.fileService
           .generatePdfFile(
             'Reading',
@@ -310,7 +310,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
 
     if (this.currentTab === 3) {
       htmlString += ExportUtils.exportWriting(this.result);
-      this.subscriptions.push(
+      this.subscriptions.add(
         this.fileService
           .generatePdfFile(
             'Writing',
@@ -326,7 +326,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
       this.testTimeoutIntervalSub.unsubscribe();
     }
     this.result = { ...this.result, currentTab: this.currentTab };
-    this.subscriptions.push(
+    this.subscriptions.add(
       this.testService.saveCurrentTest(this.result).subscribe(),
     );
   }
@@ -354,7 +354,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
     dialogRef.afterClosed().subscribe((feedback) => {
       this.result.feedback = feedback;
       let htmlString = ExportUtils.exportFeedback(this.result);
-      this.subscriptions.push(
+      this.subscriptions.add(
         this.fileService
           .generatePdfFile(
             'Feedback',

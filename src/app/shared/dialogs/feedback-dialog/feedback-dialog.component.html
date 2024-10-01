@@ -5,18 +5,20 @@
     </h3>
   }
   <form [formGroup]="ratingForm" (ngSubmit)="onSubmit()">
-    <div class="rating-stars">
-      @for (star of stars; track $index; let i = $index) {
-        <mat-icon
-          [class.active]="i < selectedStars"
-          [class.hovered]="i < hoveredStars && !isReadonly"
-          (click)="emitRating(i + 1)"
-          (mouseenter)="hoveredStars = i + 1"
-          (mouseleave)="hoveredStars = selectedStars"
-        >
-          star
-        </mat-icon>
-      }
+    <div class="d-flex justify-content-center">
+      <div class="rating-stars">
+        @for (star of stars; track $index; let i = $index) {
+          <mat-icon
+            [class.active]="i < selectedStars"
+            [class.hovered]="i < hoveredStars && !isReadonly"
+            (click)="emitRating(i + 1)"
+            (mouseenter)="hoveredStars = i + 1"
+            (mouseleave)="hoveredStars = selectedStars"
+          >
+            star
+          </mat-icon>
+        }
+      </div>
     </div>
 
     @if (isReadonly) {
@@ -39,7 +41,7 @@
           rows="10"
         ></textarea>
         @if (ratingForm.get("feedback")?.hasError("required")) {
-          <mat-error color="danger"> Hãy nhập nhận xét </mat-error>
+          <mat-error color="danger"> Hãy nhập nhận xét</mat-error>
         }
       </mat-form-field>
     }

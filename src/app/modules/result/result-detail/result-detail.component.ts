@@ -33,8 +33,7 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
     MatDialogModule,
   ],
   providers: [{ provide: MatDialogRef, useValue: {} }],
-  templateUrl: './result-detail.component.html',
-  styleUrl: './result-detail.component.scss',
+  templateUrl: './result-detail.component.html'
 })
 export class ResultDetailComponent {
   result: Result = {

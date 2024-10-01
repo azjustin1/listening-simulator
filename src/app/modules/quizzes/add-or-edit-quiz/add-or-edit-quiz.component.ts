@@ -53,18 +53,15 @@ export class AddOrEditQuizComponent implements OnDestroy {
     readingParts: [],
     writingParts: [],
   };
-
   mapSavedPart: Record<string, Record<number, boolean>> = {
     listening: {},
     reading: {},
     writing: {},
   };
-
   selectedListeningPart = 0;
   selectedReadingPart = 0;
   selectedWritingPart = 0;
-
-  subscriptions: Subscription[] = [];
+  subscriptions: Subscription = new Subscription();
 
   @HostListener('document:keydown.control.s', ['$event'])
   onKeydownHandler() {
@@ -81,7 +78,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
     this.route.paramMap.subscribe((paramMap: any) => {
       const quizId = paramMap.get('quizId');
       if (quizId) {
-        this.subscriptions.push(
+        this.subscriptions.add(
           this.quizService.getById(quizId).subscribe((quiz: any) => {
             this.generateListeningEditingPartMap(quiz.listeningParts);
             this.generateReadingEditingPartMap(quiz.readingParts);
@@ -103,20 +100,20 @@ export class AddOrEditQuizComponent implements OnDestroy {
 
   deleteFile(fileName: string) {
     const deleteSub = this.fileService.deleteFile(fileName).subscribe();
-    this.subscriptions.push(deleteSub);
+    this.subscriptions.add(deleteSub);
   }
 
   uploadFile() {
     const uploadSub = this.fileService
       .uploadFile(this.selectedFile)
       .subscribe((res) => {
-        this.subscriptions.push(uploadSub);
+        this.subscriptions.add(uploadSub);
         if (res) {
           this.currentQuiz.audioName = res.fileName;
           this.currentQuiz.audioUrl = `${environment.api}/upload/${res.fileName}`;
         }
       });
-    this.subscriptions.push(uploadSub);
+    this.subscriptions.add(uploadSub);
   }
 
   generateListeningEditingPartMap(listeningParts: Listening[]) {
@@ -240,7 +237,6 @@ export class AddOrEditQuizComponent implements OnDestroy {
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
         hasBackdrop: true,
       });
-
       dialogRef.componentInstance.title = 'Warning';
       dialogRef.componentInstance.message = 'You are missing some fields?';
       dialogRef.componentInstance.isWarning = true;
@@ -259,12 +255,10 @@ export class AddOrEditQuizComponent implements OnDestroy {
       observer = this.quizService.create(quiz);
     }
     const sub = observer.subscribe();
-    this.subscriptions.push(sub);
+    this.subscriptions.add(sub);
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach((sub) => {
-      sub.unsubscribe();
-    });
+    this.subscriptions.unsubscribe();
   }
 }

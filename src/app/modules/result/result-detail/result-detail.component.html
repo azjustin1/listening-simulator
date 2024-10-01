@@ -73,28 +73,27 @@
         </mat-tab>
       </mat-tab-group>
     </div>
-
-    @if (result.feedback) {
-      <mat-card class="feedback-container">
-        <mat-card-title style="padding-left: 10rem">
-          <h2>Student Feedback</h2>
-        </mat-card-title>
-        <mat-card-content>
-          <app-feedback
-            [rating]="result.feedback.rating"
-            [content]="result.feedback.content"
-            [isReadonly]="true"
-          ></app-feedback>
-        </mat-card-content>
-      </mat-card>
-    }
   </div>
 </section>
+@if (result.feedback) {
+  <mat-card class="container justify-content-center p-2">
+    <mat-card-title class="text-center">
+      <h2>Student Feedback</h2>
+    </mat-card-title>
+    <mat-card-content class="justify-content-center">
+      <app-feedback
+        [rating]="result.feedback.rating"
+        [content]="result.feedback.content"
+        [isReadonly]="true"
+      ></app-feedback>
+    </mat-card-content>
+  </mat-card>
+}
 <button
+  class="mt-2"
   mat-raised-button
   color="primary"
   (click)="back()"
-  style="margin-top: 16px"
 >
   Back
 </button>
