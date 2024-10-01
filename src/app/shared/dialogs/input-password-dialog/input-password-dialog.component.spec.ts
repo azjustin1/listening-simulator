@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { InputPasswordDialogComponent } from './input-password-dialog.component';
 
 describe('InputPasswordDialogComponent', () => {
@@ -8,9 +7,8 @@ describe('InputPasswordDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [InputPasswordDialogComponent]
-    })
-    .compileComponents();
+      imports: [InputPasswordDialogComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(InputPasswordDialogComponent);
     component = fixture.componentInstance;

@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FillInTheGapComponent } from './fill-in-the-gap.component';
 
 describe('FillInTheGapComponent', () => {
@@ -8,9 +7,8 @@ describe('FillInTheGapComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FillInTheGapComponent]
-    })
-    .compileComponents();
+      imports: [FillInTheGapComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(FillInTheGapComponent);
     component = fixture.componentInstance;

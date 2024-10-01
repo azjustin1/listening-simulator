@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { MultipleQuestionComponent } from './multiple-question.component';
 
 describe('MultipleQuestionComponent', () => {
@@ -8,10 +7,9 @@ describe('MultipleQuestionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MultipleQuestionComponent]
-    })
-    .compileComponents();
-    
+      imports: [MultipleQuestionComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(MultipleQuestionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

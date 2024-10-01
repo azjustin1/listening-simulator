@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FolderComponent } from './folder.component';
 
 describe('FolderComponent', () => {
@@ -8,9 +7,8 @@ describe('FolderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FolderComponent]
-    })
-    .compileComponents();
+      imports: [FolderComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(FolderComponent);
     component = fixture.componentInstance;

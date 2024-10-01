@@ -10,9 +10,9 @@ import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { AbstractQuestionComponent } from '../../../shared/abstract/abstract-question.component';
 import { FileService } from '../../../file.service';
 import { CorrectAnswerPipe } from '../../../pipes/correct-answer.pipe';
-import { ShortAnswerReadonlyComponent } from "./short-answer-readonly/short-answer-readonly.component";
-import { ShortAnswerTestingComponent } from "./short-answer-testing/short-answer-testing.component";
-import { ShortAnswerEditingComponent } from "./short-answer-editing/short-answer-editing.component";
+import { ShortAnswerReadonlyComponent } from './short-answer-readonly/short-answer-readonly.component';
+import { ShortAnswerTestingComponent } from './short-answer-testing/short-answer-testing.component';
+import { ShortAnswerEditingComponent } from './short-answer-editing/short-answer-editing.component';
 
 @Component({
   selector: 'app-short-answer',

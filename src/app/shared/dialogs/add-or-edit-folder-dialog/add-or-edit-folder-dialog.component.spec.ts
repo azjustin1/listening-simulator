@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { AddOrEditFolderDialog } from './add-or-edit-folder-dialog.component';
 
 describe('AddOrEditFolderComponent', () => {
@@ -8,9 +7,8 @@ describe('AddOrEditFolderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddOrEditFolderDialog]
-    })
-    .compileComponents();
+      imports: [AddOrEditFolderDialog],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(AddOrEditFolderDialog);
     component = fixture.componentInstance;

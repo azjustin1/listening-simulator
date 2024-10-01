@@ -3,7 +3,7 @@ import { AbstractQuestionComponent } from '../../../../shared/abstract/abstract-
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { FormsModule } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
-import { filter, isArray, isEmpty, isNull } from 'lodash-es';
+import { filter, isEmpty, isNull } from 'lodash-es';
 import { MatButton } from '@angular/material/button';
 
 @Component({

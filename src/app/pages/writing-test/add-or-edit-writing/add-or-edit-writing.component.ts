@@ -22,7 +22,6 @@ import { ConfirmDialogComponent } from '../../../shared/dialogs/confirm-dialog/c
 import { FileService } from '../../../file.service';
 import { WritingComponent } from '../../../tabs/writing/writing.component';
 import { WritingService } from '../writing-test.service';
-
 import { saveAs } from 'file-saver';
 import { asBlob } from 'html-docx-js-typescript';
 import { environment } from '../../../../environments/environment';

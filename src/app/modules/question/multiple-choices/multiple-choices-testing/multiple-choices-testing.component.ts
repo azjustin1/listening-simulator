@@ -3,7 +3,6 @@ import { AbstractQuestionComponent } from '../../../../shared/abstract/abstract-
 import { MatIcon } from '@angular/material/icon';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { FormsModule } from '@angular/forms';
-import { MultipleChoicesEditingComponent } from '../multiple-choices-editing/multiple-choices-editing.component';
 import { filter, isEmpty, isNull } from 'lodash-es';
 
 @Component({

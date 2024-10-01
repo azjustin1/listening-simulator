@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ReadingComponent } from './reading.component';
 
 describe('ReadingComponent', () => {
@@ -8,10 +7,9 @@ describe('ReadingComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ReadingComponent]
-    })
-    .compileComponents();
-    
+      imports: [ReadingComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(ReadingComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

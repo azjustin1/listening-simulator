@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ShortAnswerComponent } from './short-answer.component';
 
 describe('ShortAnswerComponent', () => {
@@ -8,10 +7,9 @@ describe('ShortAnswerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ShortAnswerComponent]
-    })
-    .compileComponents();
-    
+      imports: [ShortAnswerComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(ShortAnswerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { LabelOnMapComponent } from './label-on-map.component';
 
 describe('LabelOnMapComponent', () => {
@@ -8,9 +7,8 @@ describe('LabelOnMapComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LabelOnMapComponent]
-    })
-    .compileComponents();
+      imports: [LabelOnMapComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(LabelOnMapComponent);
     component = fixture.componentInstance;

@@ -1,4 +1,4 @@
-import { Input, Pipe, PipeTransform } from "@angular/core";
+import { Input, Pipe, PipeTransform } from '@angular/core';
 import { Question } from '../../../shared/models/question.model';
 
 @Pipe({

@@ -3,7 +3,7 @@ import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { FormsModule } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
 import { MultipleChoicesTestingComponent } from '../multiple-choices-testing/multiple-choices-testing.component';
-import { CorrectChoicesPipe } from "../../../../pipes/correct-choices.pipe";
+import { CorrectChoicesPipe } from '../../../../pipes/correct-choices.pipe';
 
 @Component({
   selector: 'app-multiple-choices-readonly',
@@ -16,7 +16,7 @@ export class MultipleChoicesReadonlyComponent extends MultipleChoicesTestingComp
   override ngOnInit() {
     super.ngOnInit();
     if (this.isReadOnly) {
-      this.selectedOption = this.question.answer[0]
+      this.selectedOption = this.question.answer[0];
     } else {
       this.selectedOption = this.question.correctAnswer[0];
     }

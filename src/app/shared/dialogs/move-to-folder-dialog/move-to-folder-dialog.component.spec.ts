@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { MoveToFolderDialogComponent } from './move-to-folder-dialog.component';
 
 describe('MoveToFolderDialogComponent', () => {
@@ -8,9 +7,8 @@ describe('MoveToFolderDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MoveToFolderDialogComponent]
-    })
-    .compileComponents();
+      imports: [MoveToFolderDialogComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MoveToFolderDialogComponent);
     component = fixture.componentInstance;

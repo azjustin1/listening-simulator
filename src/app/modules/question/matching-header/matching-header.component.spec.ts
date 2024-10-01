@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { MatchingHeaderComponent } from './matching-header.component';
 
 describe('MatchingHeaderComponent', () => {
@@ -8,9 +7,8 @@ describe('MatchingHeaderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatchingHeaderComponent]
-    })
-    .compileComponents();
+      imports: [MatchingHeaderComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MatchingHeaderComponent);
     component = fixture.componentInstance;

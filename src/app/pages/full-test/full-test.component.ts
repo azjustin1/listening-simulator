@@ -30,6 +30,7 @@ import {
   Time,
   TimerComponent,
 } from '../../shared/components/timer/timer.component';
+import { Tab } from '../../shared/enums/tab.enum';
 
 const SAVE_INTERVAL = 120000;
 const SECOND_INTERVAL = 1000;
@@ -67,6 +68,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
   override onKeydownHandler() {
     this.onCtrlSave();
   }
+  tabs = Tab;
 
   result: Result = {
     id: '',
@@ -125,6 +127,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
     protected testService: FullTestService,
   ) {
     super(quizService, fileService, route, router, dialog);
+    console.log(this.tabs.LISTENING)
     const quizId = this.router.getCurrentNavigation()?.extras.state?.['quizId'];
     if (quizId) {
       this.quizService.getById(quizId).subscribe((quiz) => {
@@ -179,13 +182,13 @@ export class FullTestComponent extends AddOrEditQuizComponent {
   }
 
   getTestTimeout() {
-    if (this.currentTab === 0) {
+    if (this.currentTab === this.tabs.LISTENING) {
       this.totalSeconds = this.result.listeningTimeout! * 60;
     }
-    if (this.currentTab === 1) {
+    if (this.currentTab === this.tabs.READING) {
       this.totalSeconds = this.result.readingTimeout! * 60;
     }
-    if (this.currentTab === 2) {
+    if (this.currentTab === this.tabs.WRITING) {
       this.totalSeconds = this.result.writingTimeout! * 60;
     }
     this.testTime = {
@@ -211,15 +214,15 @@ export class FullTestComponent extends AddOrEditQuizComponent {
 
   saveTimeout() {
     const timeout = this.testTime.minutes + this.testTime.seconds / 60;
-    if (this.currentTab === 0) {
+    if (this.currentTab === this.tabs.LISTENING) {
       this.result.listeningTimeout = timeout;
     }
 
-    if (this.currentTab === 1) {
+    if (this.currentTab === this.tabs.READING) {
       this.result.readingTimeout = timeout;
     }
 
-    if (this.currentTab === 2) {
+    if (this.currentTab === this.tabs.WRITING) {
       this.result.writingTimeout = timeout;
     }
   }
@@ -280,7 +283,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
 
   afterSubmit() {
     let htmlString = '';
-    if (this.currentTab === 1) {
+    if (this.currentTab === this.tabs.LISTENING + 1) {
       this.audioPlayer.nativeElement.pause();
       htmlString += ExportUtils.exportListening(this.result);
       this.subscriptions.add(
@@ -294,7 +297,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
           .subscribe(),
       );
     }
-    if (this.currentTab === 2) {
+    if (this.currentTab === this.tabs.READING + 1) {
       htmlString += ExportUtils.exportReading(this.result);
       this.subscriptions.add(
         this.fileService
@@ -308,7 +311,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
       );
     }
 
-    if (this.currentTab === 3) {
+    if (this.currentTab === this.tabs.WRITING + 1) {
       htmlString += ExportUtils.exportWriting(this.result);
       this.subscriptions.add(
         this.fileService

@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { MultipleChoicesComponent } from './multiple-choices.component';
 
 describe('MultipleChoicesComponent', () => {
@@ -8,10 +7,9 @@ describe('MultipleChoicesComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MultipleChoicesComponent]
-    })
-    .compileComponents();
-    
+      imports: [MultipleChoicesComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(MultipleChoicesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

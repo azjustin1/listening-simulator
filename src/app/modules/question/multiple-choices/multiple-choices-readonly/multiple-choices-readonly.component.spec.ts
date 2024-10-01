@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { MultipleChoicesReadonlyComponent } from './multiple-choices-readonly.component';
 
 describe('MultipleChoicesReadonlyComponent', () => {
@@ -8,9 +7,8 @@ describe('MultipleChoicesReadonlyComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MultipleChoicesReadonlyComponent]
-    })
-    .compileComponents();
+      imports: [MultipleChoicesReadonlyComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MultipleChoicesReadonlyComponent);
     component = fixture.componentInstance;

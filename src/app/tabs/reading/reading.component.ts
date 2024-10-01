@@ -25,7 +25,7 @@ import { MatchingHeaderComponent } from '../../modules/question/matching-header/
 import { MultipleQuestionComponent } from '../../modules/question/multiple-question/multiple-question.component';
 import { QuestionComponent } from '../../modules/question/question.component';
 import { ReadingService } from './reading.service';
-import { TextSelectionDirective } from "./text-selection.directive";
+import { TextSelectionDirective } from './text-selection.directive';
 
 @Component({
   selector: 'app-reading',

@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FeedbackDialog } from './feedback-dialog.component';
 
 describe('FeedbackComponent', () => {
@@ -8,9 +7,8 @@ describe('FeedbackComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FeedbackDialog]
-    })
-    .compileComponents();
+      imports: [FeedbackDialog],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(FeedbackDialog);
     component = fixture.componentInstance;

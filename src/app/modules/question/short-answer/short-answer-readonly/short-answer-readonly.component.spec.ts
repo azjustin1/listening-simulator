@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ShortAnswerReadonlyComponent } from './short-answer-readonly.component';
 
 describe('ShortAnswerReadonlyComponent', () => {
@@ -8,9 +7,8 @@ describe('ShortAnswerReadonlyComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ShortAnswerReadonlyComponent]
-    })
-    .compileComponents();
+      imports: [ShortAnswerReadonlyComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ShortAnswerReadonlyComponent);
     component = fixture.componentInstance;

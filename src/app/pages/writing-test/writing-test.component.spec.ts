@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { WritingTestComponent } from './writing-test.component';
 
 describe('WritingTestComponent', () => {
@@ -8,10 +7,9 @@ describe('WritingTestComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [WritingTestComponent]
-    })
-    .compileComponents();
-    
+      imports: [WritingTestComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(WritingTestComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
