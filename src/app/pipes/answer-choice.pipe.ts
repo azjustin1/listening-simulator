@@ -6,7 +6,7 @@ import { Question } from '../shared/models/question.model';
   name: 'answerChoice',
 })
 export class AnswerChoicePipe implements PipeTransform {
-  transform(question: Question, ...args: any[]): any {
+  transform(question: Question): string {
     const selectedChoice = question.choices.find((choice) =>
       question.answer.includes(choice.id),
     );

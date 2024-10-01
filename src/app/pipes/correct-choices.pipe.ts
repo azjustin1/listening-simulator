@@ -1,14 +1,13 @@
-import { Pipe } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 import { differenceWith, isEqual } from 'lodash-es';
 import { Question } from '../shared/models/question.model';
-import { AbstractAnswerPipe } from './abstract-answer.pipe';
 
 @Pipe({
   name: 'isCorrectChoices',
   standalone: true,
 })
-export class CorrectChoicesPipe extends AbstractAnswerPipe {
-  override transform(question: Question, ...args: any[]): boolean {
+export class CorrectChoicesPipe implements PipeTransform {
+  transform(question: Question): boolean {
     return (
       question.answer.length > 0 &&
       differenceWith(question.answer, question.correctAnswer, isEqual)

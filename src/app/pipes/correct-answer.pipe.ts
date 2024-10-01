@@ -1,14 +1,13 @@
-import { Pipe } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 import { isUndefined } from 'lodash-es';
 import { Choice } from '../shared/models/choice.model';
-import { AbstractAnswerPipe } from './abstract-answer.pipe';
 
 @Pipe({
   name: 'isCorrectAnswer',
   standalone: true,
 })
-export class CorrectAnswerPipe extends AbstractAnswerPipe {
-  override transform(choice: Choice, ...args: any[]): any {
+export class CorrectAnswerPipe implements PipeTransform {
+  transform(choice: Choice): boolean {
     return (
       choice.answer !== '' &&
       !isUndefined(choice.answer) &&

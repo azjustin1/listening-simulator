@@ -6,7 +6,7 @@ import { Question } from '../shared/models/question.model';
   name: 'correctAnswerChoice',
 })
 export class CorrectAnswerChoicePipe implements PipeTransform {
-  transform(question: Question, ...args: any[]): any {
+  transform(question: Question): string {
     const selectedChoice = question.choices.find(
       (choice) => choice.id === question.correctAnswer.toString(),
     );
