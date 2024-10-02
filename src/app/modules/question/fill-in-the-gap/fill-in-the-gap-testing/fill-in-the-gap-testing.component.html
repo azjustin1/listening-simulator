@@ -1,0 +1,28 @@
+@if (question.arrayContent) {
+  <div class="d-flex flex-column">
+    <b><span [innerHTML]="question.content"></span></b>
+    <div class="d-flex flex-column mt-2 ms-2">
+      @for (line of question.arrayContent;
+        track $index;
+        let lineIndex = $index) {
+        <div class="d-flex flex-wrap align-items-center mb-4">
+          @for (content of line; track $index; let textIndex = $index) {
+            <div class="d-flex align-items-center">
+              @if (content | isInput) {
+                <input
+                  class="mx-1"
+                  [(ngModel)]="
+                  mapChoiceById[content.match(inputPattern)![1]].answer"
+                />
+              } @else {
+                <div>{{ content }}</div>
+              }
+            </div>
+          }
+
+        </div>
+      }
+
+    </div>
+  </div>
+}
