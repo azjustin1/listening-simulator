@@ -14,6 +14,9 @@ import { CorrectAnswerChoicePipe } from '../../../pipes/correct-answer-choice.pi
 import { CorrectDropdownPipe } from '../../../pipes/correct-dropdown.pipe';
 import { AnswerChoicePipe } from '../../../pipes/answer-choice.pipe';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { DropdownChoicesEditingComponent } from "./dropdown-choices-editing/dropdown-choices-editing.component";
+import { DropdownChoicesTestingComponent } from "./dropdown-choices-testing/dropdown-choices-testing.component";
+import { DropdownChoicesReadonlyComponent } from "./dropdown-choices-readonly/dropdown-choices-readonly.component";
 
 @Component({
   selector: 'app-dropdown-choices',
@@ -33,25 +36,11 @@ import { MatExpansionModule } from '@angular/material/expansion';
     CorrectAnswerChoicePipe,
     CorrectDropdownPipe,
     MatExpansionModule,
+    DropdownChoicesEditingComponent,
+    DropdownChoicesTestingComponent,
+    DropdownChoicesReadonlyComponent,
   ],
   templateUrl: './dropdown-choices.component.html',
   styleUrl: './dropdown-choices.component.scss',
 })
-export class DropdownChoicesComponent extends AbstractQuestionComponent {
-  selectedChoice: string = '';
-  onSelectCorrectAnswer(choiceId: string) {
-    if (this.question.correctAnswer.includes(choiceId)) {
-      this.question.correctAnswer = [];
-    } else {
-      this.question.correctAnswer = [choiceId];
-    }
-  }
-
-  onSelectAnswer(choiceId: string) {
-    if (this.question.correctAnswer.includes(choiceId)) {
-      this.question.answer = [];
-    } else {
-      this.question.answer = [choiceId];
-    }
-  }
-}
+export class DropdownChoicesComponent extends AbstractQuestionComponent {}

@@ -1,87 +1,20 @@
-<mat-expansion-panel class="dropdown-container" style="box-shadow: none">
-  <mat-expansion-panel-header style="background: var(--secondary-color)">
-    <span [innerHTML]="question.content"> </span>
-    @if (isReadOnly && question.answer.length === 0) {
-      ❌
-    }
-  </mat-expansion-panel-header>
-  <div class="question-group">
-    @if (isEditing) {
-      <angular-editor
-        name="questionContent"
-        [id]="question.id"
-        [config]="config"
-        [(ngModel)]="question.content"
-        (ngModelChange)="onPaste($event)"
-      ></angular-editor>
-    }
-    <div class="choice-group">
-      @if (isReadOnly) {
-        <div class="choice">
-          @if (question | isCorrectDropdown) {
-            <span class="answer">
-              {{ question | answerChoice }}
-            </span>
-          } @else {
-            <span class="answer incorrect">
-              {{ question | answerChoice }}
-            </span>
-            <span class="answer correct">
-              {{ question | correctAnswerChoice }}
-            </span>
-          }
-        </div>
-      } @else {
-        @for (choice of question.choices; track $index) {
-          @if (isEditing) {
-            <div class="d-flex align-items-center mb-2">
-              <input [checked]="question.correctAnswer.includes(choice.id)" (click)="onSelectCorrectAnswer(choice.id)"
-                     type="radio" />
-              <div class="ms-2 w-100">
-                <textarea
-                  autocomplete="off"
-                  [disabled]="isReadOnly"
-                  [name]="choice.id"
-                  type="text"
-                  class="form-control"
-                  [(ngModel)]="choice.content"
-                ></textarea>
-              </div>
-              <mat-icon (click)="removeChoice($index)" color="warn">delete</mat-icon>
-            </div>
-          } @else {
-            @if (isTesting) {
-              <div (click)="onSelectAnswer(choice.id)" class="d-flex align-items-center mt-2">
-                <input [checked]="selectedChoice"
-                       type="radio">
-                <div class="ms-2">
-                  {{ choice.content }}
-                </div>
-              </div>
-            } @else {
-              <div class="d-flex align-items-center mt-2">
-                <input [disabled]="!isEditing" [checked]="question.correctAnswer.includes(choice.id)"
-                       (click)="onSelectCorrectAnswer(choice.id)"
-                       type="radio">
-                <div class="ms-2">
-                  {{ choice.content }}
-                </div>
-              </div>
-            }
-          }
-        }
-      }
-    </div>
-    @if (isEditing) {
-      <button
-        mat-button
-        color="primary"
-        type="button"
-        (click)="addChoice()"
-      >
-        <mat-icon>add</mat-icon>
-        More option
-      </button>
-    }
-  </div>
-</mat-expansion-panel>
+@if (isEditing) {
+  <app-dropdown-choices-editing
+    [question]="question"
+    [isEditing]="isEditing"
+  ></app-dropdown-choices-editing>
+}
+
+@if (isTesting) {
+  <app-dropdown-choices-testing
+    [question]="question"
+    [isTesting]="isTesting"
+  ></app-dropdown-choices-testing>
+}
+
+@if (isReadOnly || (!isEditing && !isTesting)) {
+  <app-dropdown-choices-readonly
+    [question]="question"
+    [isReadOnly]="isReadOnly"
+  ></app-dropdown-choices-readonly>
+}
