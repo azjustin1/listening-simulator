@@ -15,6 +15,12 @@ import { CorrectChoicesPipe } from '../../../pipes/correct-choices.pipe';
 import { CommonUtils } from '../../../utils/common-utils';
 import { CHOICE_INDEX } from '../../../utils/constant';
 import { IsCheckCellPipe } from './is-check-cell.pipe';
+import { ShortAnswerEditingComponent } from '../short-answer/short-answer-editing/short-answer-editing.component';
+import { ShortAnswerReadonlyComponent } from '../short-answer/short-answer-readonly/short-answer-readonly.component';
+import { ShortAnswerTestingComponent } from '../short-answer/short-answer-testing/short-answer-testing.component';
+import { LabelOnMapEditingComponent } from './label-on-map-editing/label-on-map-editing.component';
+import { LabelOnMapTestingComponent } from './label-on-map-testing/label-on-map-testing.component';
+import { LabelOnMapReadonlyComponent } from './label-on-map-readonly/label-on-map-readonly.component';
 
 @Component({
   selector: 'app-label-on-map',
@@ -31,70 +37,14 @@ import { IsCheckCellPipe } from './is-check-cell.pipe';
     MatTableModule,
     CorrectChoicesPipe,
     IsCheckCellPipe,
+    ShortAnswerEditingComponent,
+    ShortAnswerReadonlyComponent,
+    ShortAnswerTestingComponent,
+    LabelOnMapEditingComponent,
+    LabelOnMapTestingComponent,
+    LabelOnMapReadonlyComponent,
   ],
   templateUrl: './label-on-map.component.html',
   styleUrl: './label-on-map.component.scss',
 })
-export class LabelOnMapComponent extends AbstractQuestionComponent {
-  choiceIndexs = CHOICE_INDEX;
-  selectedIndex = 0;
-
-  addQuestion(questionType: number): void {
-    const lastQuestion = last(this.question.subQuestions);
-    let choices: Choice[] = [];
-    if (lastQuestion) {
-      choices = [...lastQuestion.choices];
-    }
-    this.question.subQuestions?.push({
-      id: CommonUtils.generateRandomId(),
-      content: '',
-      type: questionType,
-      choices: choices,
-      answer: [],
-      correctAnswer: [],
-    });
-  }
-
-  onRowClick(questionIndex: number, choiceIndex: number) {
-    const choiceId =
-      this.question.subQuestions![questionIndex].choices[choiceIndex].id;
-    const correctAnswer =
-      this.question.subQuestions![questionIndex].correctAnswer;
-    const answer = this.question.subQuestions![questionIndex].answer;
-
-    if (this.isEditing) {
-      if (!isEmpty(correctAnswer) && correctAnswer.includes(choiceId)) {
-        this.question.subQuestions![questionIndex].correctAnswer = [];
-      } else {
-        this.question.subQuestions![questionIndex].correctAnswer = [choiceId];
-      }
-    }
-    if (this.isTesting) {
-      if (!isEmpty(correctAnswer) && answer.includes(choiceId)) {
-        this.question.subQuestions![questionIndex].answer = [];
-      } else {
-        this.question.subQuestions![questionIndex].answer = [choiceId];
-      }
-    }
-  }
-
-  onAddColumn() {
-    const newChoice = {
-      id: CommonUtils.generateRandomId(),
-      content: '',
-    };
-    each(this.question.subQuestions, (question) => {
-      question.choices.push(newChoice);
-    });
-  }
-
-  onRemoveColumn() {
-    each(this.question.subQuestions, (question) => {
-      question.choices.splice(question.choices.length - 1, 1);
-    });
-  }
-
-  onRemoveRow(index: number) {
-    this.question.subQuestions?.splice(index, 1);
-  }
-}
+export class LabelOnMapComponent extends AbstractQuestionComponent {}

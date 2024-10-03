@@ -1,0 +1,44 @@
+<div class="d-flex">
+  <div class="col-6">
+    <span class="reading-content" [innerHTML]="question.content"></span>
+  </div>
+  <div>
+    @if (question.subQuestions![0]) {
+      <table class="table">
+        <tr>
+          <th></th>
+          @for (choice of question.subQuestions![0].choices; track $index) {
+            <th>{{ choiceIndexs[$index] }}</th>
+          }
+        </tr>
+        @for (question of question.subQuestions; track $index; ) {
+          <tr>
+            <td>
+              {{ question.content }}
+            </td>
+            @for (choice of question.choices; track $index; ) {
+              <td
+                class="choice-item"
+              >
+                @if (isReadOnly) {
+                  @if (question.correctAnswer.includes(choice.id)) {
+                    <mat-icon class="icon" color="primary">check</mat-icon>
+                  }
+
+                  @if (question.answer.includes(choice.id) &&
+                  !question.correctAnswer.includes(choice.id)) {
+                    <mat-icon class="icon" color="warn">clear</mat-icon>
+                  }
+                } @else {
+                  @if (question.correctAnswer.includes(choice.id)) {
+                    <mat-icon class="icon" color="primary">check</mat-icon>
+                  }
+                }
+              </td>
+            }
+          </tr>
+        }
+      </table>
+    }
+  </div>
+</div>
