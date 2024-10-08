@@ -11,6 +11,13 @@ import { isEmpty } from 'lodash-es';
   styleUrl: './dropdown-choices-testing.component.scss',
 })
 export class DropdownChoicesTestingComponent extends DropdownChoicesEditingComponent {
+  override ngOnInit() {
+    super.ngOnInit();
+    if (!isEmpty(this.question.answer)) {
+      this.selectedChoice = this.question.answer[0];
+    }
+  }
+
   onSelectAnswer(choiceId: string) {
     if (this.question.answer.includes(choiceId)) {
       this.question.answer = [];

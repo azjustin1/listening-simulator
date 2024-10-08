@@ -106,12 +106,14 @@ result.studentName !== "") {
               (onStartChange)="onStartPart()"
             ></app-reading>
           </div>
+
         }
-        <app-part-navigation
-          [(selectedPart)]="selectedReadingPart"
+        <app-question-navigation
           [parts]="result.readingParts"
-          (onPartChange)="onTabChange('reading', $event)"
-        ></app-part-navigation>
+          [(selectedId)]="selectedId"
+          [mapAnsweredById]="mapAnsweredById"
+          (onSelectQuestion)="navigateToQuestion($event)"
+        ></app-question-navigation>
         <button
           mat-raised-button
           type="button"

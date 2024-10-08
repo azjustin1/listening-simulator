@@ -32,13 +32,6 @@ import { isEmpty } from 'lodash-es';
 export class DropdownChoicesEditingComponent extends AbstractQuestionComponent {
   selectedChoice: string | null = null;
 
-  override ngOnInit() {
-    super.ngOnInit();
-    if (!isEmpty(this.question.answer)) {
-      this.selectedChoice = this.question.answer[0];
-    }
-  }
-
   onSelectCorrectAnswer(choiceId: string) {
     if (this.question.correctAnswer.includes(choiceId)) {
       this.question.correctAnswer = [];

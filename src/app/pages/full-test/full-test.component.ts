@@ -267,7 +267,9 @@ export class FullTestComponent extends AddOrEditQuizComponent {
     this.testTimeoutInterval = 0;
     this.disableOthersTab();
     this.mapDisablePart[this.currentTab + 1] = false;
+    this.mapAnsweredById = {}
     this.currentTab = this.currentTab + 1;
+    this.generateMapAnswered();
   }
 
   onTestTimeout() {
