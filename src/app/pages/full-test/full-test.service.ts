@@ -7,16 +7,8 @@ import { Result } from '../../shared/models/result.model';
 export class FullTestService {
   constructor(private httpClient: HttpClient) {}
 
-  getResultByStudentName(studentName: string): Observable<any> {
-    return this.httpClient.get(`/results?studentName_like=${studentName}`);
-  }
-
   getResultById(resultId: string): Observable<any> {
     return this.httpClient.get<any>(`/results/${resultId}`);
-  }
-
-  deleteResultById(resultId: string): Observable<any> {
-    return this.httpClient.delete<any>(`/results/${resultId}`);
   }
 
   saveCurrentTest(result: Result): Observable<any> {

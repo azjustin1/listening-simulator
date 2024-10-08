@@ -27,15 +27,19 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
   implements OnChanges, OnDestroy
 {
   @Input() data!: T;
-  @Output() dataChange = new EventEmitter();
   @Input() isTesting: boolean = false;
   @Input() isEditing: boolean = false;
   @Input() isReadOnly: boolean = false;
   @Input() isSaved: boolean = false;
   @Input() isStart: boolean = false;
+
   @Output() onStartChange = new EventEmitter();
   @Output() onTimeout = new EventEmitter();
   @Output() onSave = new EventEmitter();
+  @Output() dataChange = new EventEmitter();
+  @Output() onAddQuesion = new EventEmitter();
+  @Output() onPartAnswerQuestion = new EventEmitter();
+  @Output() onPartAnswerChoice = new EventEmitter();
 
   currentQuestion: Question = {
     id: '',
@@ -189,6 +193,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     }
     this.data.questions.push({ ...this.currentQuestion });
     this.data = { ...this.data };
+    this.onAddQuesion.emit(this.currentQuestion);
     this.onEditQuestion(id);
   }
 

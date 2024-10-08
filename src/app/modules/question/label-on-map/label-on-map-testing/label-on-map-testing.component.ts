@@ -33,5 +33,8 @@ export class LabelOnMapTestingComponent extends LabelOnMapEditingComponent {
     } else {
       this.question.subQuestions![questionIndex].answer = [choiceId];
     }
+    this.onAnswer.emit({
+      ...this.question.subQuestions![questionIndex],
+    });
   }
 }

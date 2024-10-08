@@ -6,7 +6,6 @@
       autocomplete="off"
       name="quizName"
       type="text"
-      class="form-control"
       id="quizName"
       [(ngModel)]="currentQuiz.name"
       required
@@ -16,7 +15,7 @@
   <div class="form-group">
     <mat-tab-group animationDuration="0ms">
       <!-- Listening -->
-      <mat-tab label="Listening" style="background: red">
+      <mat-tab label="Listening">
         <ng-template matTabContent>
           <div class="timeout">
             @if (mapSavedPart["listening"]) {
@@ -25,7 +24,6 @@
                 placeholder="Minute"
                 name="timeout"
                 type="number"
-                class="form-control"
                 id="listening-timeout"
                 [(ngModel)]="currentQuiz.listeningTimeout"
                 required
@@ -60,6 +58,7 @@
               [(data)]="currentQuiz.listeningParts[selectedListeningPart]"
               [isSaved]="mapSavedPart['listening'][selectedListeningPart]!"
               (onSave)="saveOrEditQuiz(currentQuiz)"
+              (onAddQuesion)="addQuestionMap($event, selectedListeningPart)"
             ></app-listening>
           }
           @if (currentQuiz.listeningParts.length > 0) {
@@ -128,7 +127,6 @@
                   matInput
                   name="timeout"
                   type="number"
-                  class="form-control"
                   id="reading-timeout"
                   [(ngModel)]="currentQuiz.readingTimeout"
                   required
@@ -206,7 +204,6 @@
                   matInput
                   name="timeout"
                   type="number"
-                  class="form-control"
                   id="writing-timeout"
                   [(ngModel)]="currentQuiz.writingTimeout"
                   required

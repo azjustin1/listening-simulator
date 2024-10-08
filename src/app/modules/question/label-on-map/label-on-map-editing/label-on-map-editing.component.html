@@ -17,7 +17,7 @@
           <tr>
             <th></th>
             @for (choice of question.subQuestions![0].choices; track $index) {
-              <th>{{ choiceIndexs[$index] }}</th>
+              <th>{{ choiceIndex[$index] }}</th>
             }
           </tr>
           @for (question of question.subQuestions;

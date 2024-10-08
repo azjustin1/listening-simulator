@@ -8,6 +8,7 @@
   <app-short-answer-testing
     [question]="question"
     [isTesting]="isTesting"
+    (onAnswerChoice)="onAnswerChoice.emit($event)"
   ></app-short-answer-testing>
 }
 

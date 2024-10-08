@@ -10,19 +10,15 @@
 </div>
 <div class="form-group">
   @if (!this.isReady) {
-    <mat-form-field>
-      <mat-label>Name</mat-label>
-      <input
-        autocomplete="off"
-        matInput
-        name="quizName"
-        type="text"
-        class="form-control"
-        id="quizName"
-        [(ngModel)]="result.studentName"
-        required
-      />
-    </mat-form-field>
+    <input
+      placeholder="Student name"
+      autocomplete="off"
+      name="quizName"
+      type="text"
+      id="quizName"
+      [(ngModel)]="result.studentName"
+      required
+    />
   } @else {
     <h1>Name: {{ result.studentName }}</h1>
   }
@@ -43,14 +39,16 @@
 @if (isReady &&
 result.studentName && true &&
 result.studentName !== "") {
-  <button
-    mat-raised-button
-    (click)="onStartPart()"
-    class="start-button"
-    [disabled]="isStart"
-  >
-    Start
-  </button>
+  @if (!isStart) {
+    <button
+      mat-raised-button
+      (click)="onStartPart()"
+      class="start-button"
+      [disabled]="isStart"
+    >
+      Start
+    </button>
+  }
   @if (!isStart && currentTab !== 0) {
     &nbsp;
     <app-timer
@@ -73,14 +71,17 @@ result.studentName !== "") {
               [isTesting]="true"
               [isStart]="isStart"
               (onStartChange)="onStartPart()"
+              (onPartAnswerQuestion)="onMapAnsweredQuestion($event)"
+              (onPartAnswerChoice)="onMapAnswerChoice($event)"
             ></app-listening>
           </div>
+          <app-question-navigation
+            [parts]="result.listeningParts"
+            [(selectedId)]="selectedId"
+            [mapAnsweredById]="mapAnsweredById"
+            (onSelectQuestion)="navigateToQuestion($event)"
+          ></app-question-navigation>
         }
-        <app-part-navigation
-          [(selectedPart)]="selectedListeningPart"
-          [parts]="result.listeningParts"
-          (onPartChange)="onTabChange('listening', $event)"
-        ></app-part-navigation>
         <button
           mat-raised-button
           type="button"

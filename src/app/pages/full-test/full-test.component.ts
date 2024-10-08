@@ -7,7 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { clone, each, mapValues } from 'lodash-es';
+import { clone, each, isEmpty, isUndefined, mapValues } from 'lodash-es';
 import { interval, Subscription } from 'rxjs';
 import { Quiz } from '../../shared/models/quiz.model';
 import { Result } from '../../shared/models/result.model';
@@ -31,6 +31,12 @@ import {
   TimerComponent,
 } from '../../shared/components/timer/timer.component';
 import { Tab } from '../../shared/enums/tab.enum';
+import { QuestionNavigationComponent } from '../../modules/question/question-navigation/question-navigation.component';
+import { Listening } from '../../shared/models/listening.model';
+import { AbstractPart } from '../../shared/models/abstract-part.model';
+import { Question } from '../../shared/models/question.model';
+import { QuestionType } from '../../shared/enums/question-type.enum';
+import { Choice } from '../../shared/models/choice.model';
 
 const SAVE_INTERVAL = 120000;
 const SECOND_INTERVAL = 1000;
@@ -56,6 +62,7 @@ const DEFAULT_START_TIMEOUT = {
     WritingComponent,
     PartNavigationComponent,
     TimerComponent,
+    QuestionNavigationComponent,
   ],
   providers: [QuizService, FullTestService],
   templateUrl: './full-test.component.html',
@@ -68,8 +75,8 @@ export class FullTestComponent extends AddOrEditQuizComponent {
   override onKeydownHandler() {
     this.onCtrlSave();
   }
-  tabs = Tab;
 
+  tabs = Tab;
   result: Result = {
     id: '',
     name: '',
@@ -96,7 +103,6 @@ export class FullTestComponent extends AddOrEditQuizComponent {
     readingParts: [],
     writingParts: [],
   };
-
   testTime: Time = {
     minutes: 0,
     seconds: 0,
@@ -106,17 +112,16 @@ export class FullTestComponent extends AddOrEditQuizComponent {
   testTimeoutIntervalSub!: Subscription;
   testTimeoutInterval: number = 0;
   startTimeoutInterval: number = SECOND_INTERVAL;
-
   isReady: boolean = false;
   isStart: boolean = false;
-
   currentTab = 0;
-
   mapDisablePart: Record<number, boolean> = {
     0: false,
     1: true,
     2: true,
   };
+  mapAnsweredById: Record<string, boolean> = {};
+  selectedId: string = '';
 
   constructor(
     protected override quizService: QuizService,
@@ -127,7 +132,6 @@ export class FullTestComponent extends AddOrEditQuizComponent {
     protected testService: FullTestService,
   ) {
     super(quizService, fileService, route, router, dialog);
-    console.log(this.tabs.LISTENING)
     const quizId = this.router.getCurrentNavigation()?.extras.state?.['quizId'];
     if (quizId) {
       this.quizService.getById(quizId).subscribe((quiz) => {
@@ -137,11 +141,11 @@ export class FullTestComponent extends AddOrEditQuizComponent {
         this.totalSeconds = this.result.listeningTimeout! * 60;
         this.audioPlayer.nativeElement.load();
         this.getTestTimeout();
+        this.generateQuestionMap();
+        this.generateMapAnswered();
       });
-
       this.startAutoSave();
     }
-
     const testId = this.router.getCurrentNavigation()?.extras.state?.['testId'];
     if (testId) {
       this.testService.getResultById(testId).subscribe((result) => {
@@ -154,7 +158,9 @@ export class FullTestComponent extends AddOrEditQuizComponent {
           this.disableOthersTab();
           this.mapDisablePart[this.currentTab] = false;
         }
+        this.generateQuestionMap();
         this.getTestTimeout();
+        this.generateMapAnswered();
       });
       this.isReady = true;
       this.startAutoSave();
@@ -217,11 +223,9 @@ export class FullTestComponent extends AddOrEditQuizComponent {
     if (this.currentTab === this.tabs.LISTENING) {
       this.result.listeningTimeout = timeout;
     }
-
     if (this.currentTab === this.tabs.READING) {
       this.result.readingTimeout = timeout;
     }
-
     if (this.currentTab === this.tabs.WRITING) {
       this.result.writingTimeout = timeout;
     }
@@ -310,7 +314,6 @@ export class FullTestComponent extends AddOrEditQuizComponent {
           .subscribe(),
       );
     }
-
     if (this.currentTab === this.tabs.WRITING + 1) {
       htmlString += ExportUtils.exportWriting(this.result);
       this.subscriptions.add(
@@ -423,4 +426,113 @@ export class FullTestComponent extends AddOrEditQuizComponent {
     this.result.correctReadingPoint = correctPoint;
     this.result.totalReadingPoint = totalPoint;
   }
+
+  generateQuestionMap() {
+    let parts: AbstractPart[] = [];
+    switch (this.currentTab) {
+      case Tab.LISTENING:
+        parts = this.result.listeningParts;
+        break;
+      case Tab.READING:
+        parts = this.result.readingParts;
+        break;
+      case Tab.WRITING:
+        parts = this.result.writingParts;
+        break;
+      default:
+        break;
+    }
+    each(parts, (_part, index: number) => {
+      each(_part.questions, (question) => {
+        if (
+          question.type === QuestionType.SHORT_ANSWER ||
+          question.type === QuestionType.FILL_IN_THE_GAP ||
+          question.type === QuestionType.LABEL_ON_MAP
+        ) {
+          each(question.choices, (choice) => {
+            this.mapQuestionPart[choice.id] = index;
+          });
+        } else {
+          this.mapQuestionPart[question.id] = index;
+        }
+      });
+    });
+  }
+
+  navigateToQuestion(id: string) {
+    const part = this.mapQuestionPart[id];
+    switch (this.currentTab) {
+      case Tab.LISTENING:
+        this.selectedListeningPart = part;
+        break;
+      case Tab.READING:
+        this.selectedReadingPart = part;
+        break;
+      case Tab.WRITING:
+        this.selectedWritingPart = part;
+        break;
+      default:
+        break;
+    }
+  }
+
+  generateMapAnswered() {
+    if (this.currentTab === Tab.LISTENING) {
+      each(this.result.listeningParts, (part) => {
+        each(part.questions, (question) => {
+          switch (question.type) {
+            case QuestionType.SHORT_ANSWER:
+            case QuestionType.FILL_IN_THE_GAP:
+              each(question.choices, (choice) => {
+                this.mapAnsweredById[choice.id] =
+                  !isEmpty(choice.answer) && !isUndefined(choice.answer);
+              });
+              break;
+            case QuestionType.LABEL_ON_MAP:
+              each(question.subQuestions, (subQuestion) => {
+                this.mapAnsweredById[subQuestion.id] = !isEmpty(
+                  subQuestion.answer,
+                );
+              });
+              break;
+            case QuestionType.MULTIPLE_CHOICE:
+            case QuestionType.DROPDOWN_ANSWER:
+              this.mapAnsweredById[question.id] = question.isAnswer ?? false;
+              break;
+          }
+        });
+      });
+    }
+    if (this.currentTab === Tab.READING) {
+      each(this.result.readingParts, (part) => {
+        each(part.questions, (question) => {
+          this.mapAnsweredById[question.id] = question.isAnswer ?? false;
+        });
+      });
+    }
+  }
+
+  onMapAnsweredQuestion(event: { question: Question; index: number }) {
+    const { question, index } = event;
+    if (!isUndefined(question.isAnswer)) {
+      this.mapAnsweredById[question.id] = question.isAnswer;
+    }
+    if (this.currentTab === Tab.LISTENING) {
+      this.result.listeningParts[this.selectedListeningPart].questions[index] =
+        question;
+    }
+    if (this.currentTab === Tab.READING) {
+      this.result.readingParts[this.selectedReadingPart].questions[index] =
+        question;
+    }
+    this.selectedId = question.id;
+  }
+
+  onMapAnswerChoice(choice: Choice) {
+    this.selectedId = choice.id;
+    this.mapAnsweredById[choice.id] =
+      !isEmpty(choice.answer) && !isUndefined(choice.answer);
+  }
+
+  protected readonly console = console;
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { AbstractQuestionComponent } from '../../../../shared/abstract/abstract-question.component';
 import { MatIcon } from '@angular/material/icon';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
@@ -14,7 +14,6 @@ import { filter, isEmpty, isNull } from 'lodash-es';
 })
 export class MultipleChoicesTestingComponent extends AbstractQuestionComponent {
   selectedOption: string | null = '';
-  mapSelectedChoice: Record<number, boolean> = {};
 
   override ngOnInit() {
     super.ngOnInit();
@@ -29,10 +28,19 @@ export class MultipleChoicesTestingComponent extends AbstractQuestionComponent {
   onSelectSingleAnswer(option: string) {
     this.selectedOption = this.selectedOption === option ? null : option;
     if (isNull(this.selectedOption)) {
-      this.question.answer = [];
+      this.question = {
+        ...this.question,
+        answer: [],
+        isAnswer: false,
+      };
     } else {
-      this.question.answer = [option];
+      this.question = {
+        ...this.question,
+        answer: [option],
+        isAnswer: true,
+      };
     }
+    this.onAnswer.emit(this.question);
   }
 
   onSelectMultipleAnswer(event: MouseEvent, choiceId: string) {
@@ -45,13 +53,20 @@ export class MultipleChoicesTestingComponent extends AbstractQuestionComponent {
       return;
     }
     if (this.question.answer.includes(choiceId)) {
-      this.question.answer = filter(
-        this.question.answer,
-        (ans) => ans !== choiceId,
-      );
+      this.question = {
+        ...this.question,
+        answer: filter(this.question.answer, (ans) => ans !== choiceId),
+      };
     } else {
       (this.question.answer as string[]).push(choiceId);
+      this.question = {
+        ...this.question,
+      };
     }
+    this.onAnswer.emit({
+      ...this.question,
+      isAnswer: !isEmpty(this.question.answer),
+    });
   }
 
   private isReachedMaxAnswers(numberOfSelectdChoice: number) {

@@ -16,7 +16,7 @@ import {
   omit,
   toArray,
 } from 'lodash-es';
-import { INPUT_PATTERN } from '../../../../utils/constant';
+import { CHOICE_INDEX, INPUT_PATTERN } from "../../../../utils/constant";
 import { Choice } from '../../../../shared/models/choice.model';
 import { NgClass } from '@angular/common';
 import { MatButton } from '@angular/material/button';

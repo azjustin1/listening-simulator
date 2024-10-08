@@ -21,4 +21,6 @@ import { FillInTheGapEditingComponent } from '../fill-in-the-gap-editing/fill-in
   templateUrl: './fill-in-the-gap-testing.component.html',
   styleUrl: './fill-in-the-gap-testing.component.scss',
 })
-export class FillInTheGapTestingComponent extends FillInTheGapEditingComponent {}
+export class FillInTheGapTestingComponent extends FillInTheGapEditingComponent {
+  protected readonly console = console;
+}

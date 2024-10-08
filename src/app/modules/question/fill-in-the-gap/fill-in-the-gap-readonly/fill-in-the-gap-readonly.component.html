@@ -1,12 +1,11 @@
-<span [innerHTML]="question.content"></span>
+<b><span [innerHTML]="question.content"></span></b>
 
 @if (question.arrayContent) {
   <div class="d-flex flex-column mt-3 ms-2">
     @for (line of question.arrayContent;
-      track $index;
-      let lineIndex = $index) {
+      track $index; ) {
       <div class="d-flex flex-wrap align-items-center">
-        @for (content of line; track $index; let contentIndex = $index) {
+        @for (content of line; track $index; ) {
           <div class="d-flex mb-4">
             @if (content | isInput) {
               <div
@@ -36,7 +35,8 @@
               <div
                 class="choice-content"
                 [ngClass]="{'edit': isEditing}"
-              >{{ content }}
+              >
+                <b>{{ content }}</b>
               </div>
             }
           </div>

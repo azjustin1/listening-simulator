@@ -22,20 +22,7 @@ import { DropdownChoicesReadonlyComponent } from "./dropdown-choices-readonly/dr
   selector: 'app-dropdown-choices',
   standalone: true,
   imports: [
-    CommonModule,
-    FormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    AngularEditorModule,
     MatIconModule,
-    MatCardModule,
-    MatSelectModule,
-    MatRadioModule,
-    AnswerChoicePipe,
-    CorrectAnswerChoicePipe,
-    CorrectDropdownPipe,
-    MatExpansionModule,
     DropdownChoicesEditingComponent,
     DropdownChoicesTestingComponent,
     DropdownChoicesReadonlyComponent,
@@ -43,4 +30,6 @@ import { DropdownChoicesReadonlyComponent } from "./dropdown-choices-readonly/dr
   templateUrl: './dropdown-choices.component.html',
   styleUrl: './dropdown-choices.component.scss',
 })
-export class DropdownChoicesComponent extends AbstractQuestionComponent {}
+export class DropdownChoicesComponent extends AbstractQuestionComponent {
+  protected readonly console = console;
+}

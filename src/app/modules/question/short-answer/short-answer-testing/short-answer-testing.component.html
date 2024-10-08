@@ -14,6 +14,8 @@
           [name]="choice.id"
           type="text"
           [(ngModel)]="choice.answer"
+          (ngModelChange)="onAnswerChoice.emit(choice)"
+          (click)="onAnswerChoice.emit(choice)"
         />
       </div>
     }

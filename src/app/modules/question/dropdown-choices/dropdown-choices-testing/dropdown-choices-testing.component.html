@@ -4,8 +4,10 @@
   </mat-expansion-panel-header>
   @for (choice of question.choices; track $index) {
     <div (click)="onSelectAnswer(choice.id)" class="d-flex align-items-center mt-2">
-      <input [checked]="selectedChoice === choice.id"
-             type="radio">
+      <input
+        [checked]="selectedChoice === choice.id"
+        type="radio"
+      >
       <div class="ms-2">
         {{ choice.content }}
       </div>

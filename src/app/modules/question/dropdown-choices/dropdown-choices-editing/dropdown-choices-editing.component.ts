@@ -11,6 +11,7 @@ import {
 } from '@angular/material/expansion';
 import { FormsModule } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
+import { isEmpty } from 'lodash-es';
 
 @Component({
   selector: 'app-dropdown-choices-editing',
@@ -29,11 +30,13 @@ import { MatIcon } from '@angular/material/icon';
   styleUrl: './dropdown-choices-editing.component.scss',
 })
 export class DropdownChoicesEditingComponent extends AbstractQuestionComponent {
-  selectedChoice: string | null = '';
+  selectedChoice: string | null = null;
 
   override ngOnInit() {
     super.ngOnInit();
-    this.selectedChoice = this.question.correctAnswer[0];
+    if (!isEmpty(this.question.answer)) {
+      this.selectedChoice = this.question.answer[0];
+    }
   }
 
   onSelectCorrectAnswer(choiceId: string) {

@@ -7,6 +7,7 @@
         [isEditing]="isEditing"
         [isTesting]="isTesting"
         (onSave)="onSaveQuestion()"
+        (onAnswer)="onAnswer.emit($event)"
       ></app-multiple-choices>
     </div>
   }
@@ -18,6 +19,7 @@
         [isEditing]="isEditing"
         [isTesting]="isTesting"
         (onSave)="onSaveQuestion()"
+        (onAnswerChoice)="onAnswerChoice.emit($event)"
       ></app-short-answer>
     </div>
   }
@@ -29,6 +31,7 @@
         [isEditing]="isEditing"
         [isTesting]="isTesting"
         (onSave)="onSaveQuestion()"
+        (onAnswer)="onAnswer.emit($event)"
       ></app-dropdown-choices>
     </div>
   }
@@ -40,6 +43,7 @@
         [isEditing]="isEditing"
         [isTesting]="isTesting"
         (onSave)="onSaveQuestion()"
+        (onAnswer)="onAnswer.emit($event)"
       ></app-label-on-map>
     </div>
   }
@@ -50,6 +54,8 @@
       [isEditing]="isEditing"
       [isTesting]="isTesting"
       (onSave)="onSaveQuestion()"
+      (onAnswer)="onAnswer.emit($event)"
+      (onAnswerChoice)="onAnswerChoice.emit($event)"
     >
     </app-fill-in-the-gap>
   }

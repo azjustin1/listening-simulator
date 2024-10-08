@@ -20,22 +20,15 @@ import { INPUT_PATTERN } from '../../../utils/constant';
 import { ArrayContentChoice } from './array-content.pipe';
 import { FitContentDirective } from './fit-content.directive';
 import { IsInputPipe } from './is-input.pipe';
-import { FillInTheGapEditingComponent } from "./fill-in-the-gap-editing/fill-in-the-gap-editing.component";
-import { FillInTheGapTestingComponent } from "./fill-in-the-gap-testing/fill-in-the-gap-testing.component";
-import { FillInTheGapReadonlyComponent } from "./fill-in-the-gap-readonly/fill-in-the-gap-readonly.component";
+import { FillInTheGapEditingComponent } from './fill-in-the-gap-editing/fill-in-the-gap-editing.component';
+import { FillInTheGapTestingComponent } from './fill-in-the-gap-testing/fill-in-the-gap-testing.component';
+import { FillInTheGapReadonlyComponent } from './fill-in-the-gap-readonly/fill-in-the-gap-readonly.component';
 
 @Component({
   selector: 'app-fill-in-the-gap',
   standalone: true,
   imports: [
-    NgClass,
-    FormsModule,
-    AngularEditorModule,
     MatIconModule,
-    ArrayContentChoice,
-    IsInputPipe,
-    FitContentDirective,
-    CorrectAnswerPipe,
     FillInTheGapEditingComponent,
     FillInTheGapTestingComponent,
     FillInTheGapReadonlyComponent,
@@ -44,4 +37,5 @@ import { FillInTheGapReadonlyComponent } from "./fill-in-the-gap-readonly/fill-i
   styleUrl: './fill-in-the-gap.component.scss',
 })
 export class FillInTheGapComponent extends AbstractQuestionComponent {
+  protected readonly console = console;
 }

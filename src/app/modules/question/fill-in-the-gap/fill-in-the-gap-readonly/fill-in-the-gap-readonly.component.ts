@@ -25,5 +25,4 @@ import { NgClass } from "@angular/common";
   styleUrl: './fill-in-the-gap-readonly.component.scss',
 })
 export class FillInTheGapReadonlyComponent extends FillInTheGapEditingComponent {
-  @Input() content: string = '';
 }

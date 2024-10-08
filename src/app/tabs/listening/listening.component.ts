@@ -13,6 +13,9 @@ import { FileService } from '../../file.service';
 import { QuestionComponent } from '../../modules/question/question.component';
 import { ListeningService } from './listening.service';
 import { MatAccordion } from '@angular/material/expansion';
+import { QuestionNavigationComponent } from '../../modules/question/question-navigation/question-navigation.component';
+import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
+import { Question } from '../../shared/models/question.model';
 
 @Component({
   selector: 'app-listening',
@@ -27,6 +30,8 @@ import { MatAccordion } from '@angular/material/expansion';
     QuestionComponent,
     MatIconModule,
     MatAccordion,
+    QuestionNavigationComponent,
+    AngularEditorModule,
   ],
   providers: [ListeningService, FileService],
   templateUrl: './listening.component.html',
@@ -34,4 +39,5 @@ import { MatAccordion } from '@angular/material/expansion';
 })
 export class ListeningComponent extends AbstractQuizPartComponent<Listening> {
   subscription: Subscription[] = [];
+  protected readonly console = console;
 }

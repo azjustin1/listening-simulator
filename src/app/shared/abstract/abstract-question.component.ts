@@ -16,6 +16,7 @@ import { Question } from '../models/question.model';
 import { CommonUtils } from '../../utils/common-utils';
 import { environment } from '../../../environments/environment';
 import { BASE64_IMAGE_REGEX } from '../../utils/constant';
+import { QuestionType } from '../enums/question-type.enum';
 
 @Component({
   template: '',
@@ -27,14 +28,12 @@ export abstract class AbstractQuestionComponent implements OnChanges {
   @Input() isReadOnly: boolean = false;
   @Input() isTesting: boolean = false;
   @Input() isExpand: boolean = true;
-
   @Output() onSave = new EventEmitter();
   @Output() onEdit = new EventEmitter();
-
+  @Output() onAnswer = new EventEmitter();
+  @Output() onAnswerChoice = new EventEmitter();
   onPaste = debounce((event) => this.uploadQuestionBase64Images(event), 1000);
-
   mapEditingQuestion: Record<string, boolean> = {};
-
   fileService = inject(FileService);
 
   ngOnInit(): void {

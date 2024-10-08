@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { DropdownChoicesEditingComponent } from '../dropdown-choices-editing/dropdown-choices-editing.component';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { isEmpty } from 'lodash-es';
 
 @Component({
   selector: 'app-dropdown-choices-testing',
@@ -18,5 +19,9 @@ export class DropdownChoicesTestingComponent extends DropdownChoicesEditingCompo
       this.question.answer = [choiceId];
       this.selectedChoice = choiceId;
     }
+    this.onAnswer.emit({
+      ...this.question,
+      isAnswer: !isEmpty(this.question.answer),
+    });
   }
 }

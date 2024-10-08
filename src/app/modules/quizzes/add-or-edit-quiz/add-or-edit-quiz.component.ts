@@ -23,6 +23,8 @@ import { PartNavigationComponent } from '../../../shared/components/part-navigat
 import { ReadingComponent } from '../../../tabs/reading/reading.component';
 import { WritingComponent } from '../../../tabs/writing/writing.component';
 import { QuizService } from '../quizzes.service';
+import { QuestionNavigationComponent } from '../../question/question-navigation/question-navigation.component';
+import { Question } from '../../../shared/models/question.model';
 
 @Component({
   selector: 'app-add-or-edit-quiz',
@@ -39,6 +41,7 @@ import { QuizService } from '../quizzes.service';
     ReadingComponent,
     WritingComponent,
     PartNavigationComponent,
+    QuestionNavigationComponent,
   ],
   providers: [QuizService, FileService],
   templateUrl: './add-or-edit-quiz.component.html',
@@ -58,6 +61,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
     reading: {},
     writing: {},
   };
+  mapQuestionPart: Record<string, number> = {};
   selectedListeningPart = 0;
   selectedReadingPart = 0;
   selectedWritingPart = 0;
@@ -122,6 +126,9 @@ export class AddOrEditQuizComponent implements OnDestroy {
     }
     each(listeningParts, (_part, index: number) => {
       this.mapSavedPart['listening'][index] = true;
+      each(_part.questions, (question) => {
+        this.mapQuestionPart[question.id] = index;
+      });
     });
   }
 
@@ -244,6 +251,10 @@ export class AddOrEditQuizComponent implements OnDestroy {
       this.saveOrEditQuiz(this.currentQuiz);
       this.router.navigate(['/mock-test']).then(() => {});
     }
+  }
+
+  addQuestionMap(question: Question, partIndex: number) {
+    this.mapQuestionPart[question.id] = partIndex;
   }
 
   saveOrEditQuiz(quiz: Quiz) {

@@ -11,4 +11,5 @@ export interface Question {
   choices: Choice[];
   subQuestions?: Question[];
   numberOfChoices?: number;
+  isAnswer?: boolean;
 }

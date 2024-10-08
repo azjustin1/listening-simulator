@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { AbstractQuestionComponent } from '../../shared/abstract/abstract-question.component';
 import { DropdownChoicesComponent } from './dropdown-choices/dropdown-choices.component';
@@ -21,4 +21,10 @@ import { ShortAnswerComponent } from './short-answer/short-answer.component';
   templateUrl: './question.component.html',
   styleUrl: './question.component.scss',
 })
-export class QuestionComponent extends AbstractQuestionComponent {}
+export class QuestionComponent extends AbstractQuestionComponent {
+  onDropdown() {
+    console.log('Dropdown')
+  }
+
+  protected readonly console = console;
+}

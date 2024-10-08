@@ -9,7 +9,7 @@
         <tr>
           <th></th>
           @for (choice of question.subQuestions![0].choices; track $index) {
-            <th>{{ choiceIndexs[$index] }}</th>
+            <th>{{ choiceIndex[$index] }}</th>
           }
         </tr>
         @for (question of question.subQuestions;
@@ -34,18 +34,6 @@
           </tr>
         }
       </table>
-    }
-
-    @if (isEditing) {
-      <button
-        mat-button
-        color="primary"
-        type="button"
-        (click)="addQuestion(1)"
-      >
-        <mat-icon class="icon">add</mat-icon>
-        More option
-      </button>
     }
   </div>
 </div>

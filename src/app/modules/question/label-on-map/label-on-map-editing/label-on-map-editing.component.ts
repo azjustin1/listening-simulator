@@ -27,7 +27,7 @@ import { CommonUtils } from '../../../../utils/common-utils';
   styleUrl: '../label-on-map.component.scss',
 })
 export class LabelOnMapEditingComponent extends AbstractQuestionComponent {
-  choiceIndexs = CHOICE_INDEX;
+  choiceIndex = CHOICE_INDEX;
 
   addQuestion(questionType: number): void {
     const lastQuestion = last(this.question.subQuestions);

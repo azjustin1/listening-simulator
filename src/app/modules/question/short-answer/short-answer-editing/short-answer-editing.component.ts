@@ -13,4 +13,5 @@ import { AbstractQuestionComponent } from '../../../../shared/abstract/abstract-
   templateUrl: './short-answer-editing.component.html',
   styleUrl: './short-answer-editing.component.scss',
 })
-export class ShortAnswerEditingComponent extends AbstractQuestionComponent {}
+export class ShortAnswerEditingComponent extends AbstractQuestionComponent {
+}

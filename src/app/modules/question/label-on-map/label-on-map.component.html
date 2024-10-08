@@ -8,6 +8,7 @@
   <app-label-on-map-testing
     [question]="question"
     [isTesting]="isTesting"
+    (onAnswer)="onAnswer.emit($event)"
   ></app-label-on-map-testing>
 }
 
