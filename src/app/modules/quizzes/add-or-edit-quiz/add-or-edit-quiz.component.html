@@ -31,7 +31,7 @@
             }
 
             <div class="form-group">
-              <div class="upload-file">
+              <div class="mt-2">
                 <button
                   type="button"
                   mat-raised-button
@@ -117,21 +117,17 @@
       <!-- Reading -->
       <mat-tab label="Reading">
         <ng-template matTabContent>
-          <div class="timeout">
+          <div class="mb-2">
             @if (mapSavedPart["reading"]) {
-              <mat-form-field>
-                <mat-label>Time</mat-label>
-                <input
-                  autocomplete="off"
-                  placeholder="Minute"
-                  matInput
-                  name="timeout"
-                  type="number"
-                  id="reading-timeout"
-                  [(ngModel)]="currentQuiz.readingTimeout"
-                  required
-                />
-              </mat-form-field>
+              <input
+                autocomplete="off"
+                placeholder="Minute"
+                name="timeout"
+                type="number"
+                id="reading-timeout"
+                [(ngModel)]="currentQuiz.readingTimeout"
+                required
+              />
             }
           </div>
           <app-reading

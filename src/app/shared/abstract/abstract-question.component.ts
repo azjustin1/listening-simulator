@@ -27,7 +27,7 @@ export abstract class AbstractQuestionComponent implements OnChanges {
   @Input() isEditing: boolean = false;
   @Input() isReadOnly: boolean = false;
   @Input() isTesting: boolean = false;
-  @Input() isExpand: boolean = true;
+  @Input() isExpandable: boolean = true;
   @Output() onSave = new EventEmitter();
   @Output() onEdit = new EventEmitter();
   @Output() onAnswer = new EventEmitter();

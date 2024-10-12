@@ -1,150 +1,147 @@
-@if (data) {
-  <div class="form-group">
-    @if (isSaved || isTesting || isReadOnly) {
-      <div [innerHTML]="data.name"></div>
-    } @else {
-      <angular-editor
-        autocomplete="off"
-        name="part"
-        type="text"
-        id="part"
-        [(ngModel)]="data.name"
-        [config]="config"
-        required
-      ></angular-editor>
-    }
-  </div>
+<div class="mt-5">
 
-  <div
-    class="d-flex flex-wrap"
-    [ngClass]="{ 'un-clickable': isTesting && !isStart }"
-  >
-    <mat-accordion class="w-100">
-      @for (question of data.questions; track $index) {
-        <div class="question">
-          <app-question
-            [question]="question"
-            [isSaved]="isSaved"
-            [isEditing]="mapQuestionEditting[question.id]"
-            [isReadOnly]="isReadOnly"
-            [isTesting]="isTesting"
-            (onSave)="onSaveClick()"
-            (onAnswer)="onPartAnswerQuestion.emit({question: $event, index: $index})"
-            (onAnswerChoice)="onPartAnswerChoice.emit($event)"
-          ></app-question>
-          <div class="actions">
-            @if (!isSaved && !isTesting && !isReadOnly) {
-              @if (mapQuestionEditting[question.id]) {
-                <button
-                  mat-button
-                  color="primary"
-                  type="button"
-                  (click)="onSaveQuestion(question.id)"
-                >
-                  <mat-icon>save</mat-icon>
-                </button>
-              } @else {
-                <button
-                  mat-button
-                  color="primary"
-                  type="button"
-                  (click)="onEditQuestion(question.id)"
-                >
-                  <mat-icon>edit</mat-icon>
-                </button>
-              }
-              <button
-                mat-button
-                type="button"
-                (click)="duplicateQuestion(question)"
-              >
-                <mat-icon>content_copy</mat-icon>
-              </button>
-              <button
-                mat-button
-                color="warn"
-                type="button"
-                (click)="removeQuestion($index)"
-              >
-                <mat-icon>delete</mat-icon>
-              </button>
-              @if ($index !== 0) {
-                <button
-                  mat-button
-                  type="button"
-                  (click)="moveQuestionUp($index)"
-                >
-                  <mat-icon>arrow_upward</mat-icon>
-                </button>
-              }
-              @if ($index !== data.questions.length - 1) {
-                <button
-                  mat-button
-                  type="button"
-                  (click)="moveQuestionDown($index)"
-                >
-                  <mat-icon>arrow_downward</mat-icon>
-                </button>
-              }
-            }
-          </div>
-        </div>
+  @if (data) {
+    <div class="form-group">
+      @if (isSaved || isTesting || isReadOnly) {
+        <div [innerHTML]="data.name"></div>
+      } @else {
+        <angular-editor
+          autocomplete="off"
+          name="part"
+          type="text"
+          id="part"
+          [(ngModel)]="data.name"
+          [config]="config"
+          required
+        ></angular-editor>
       }
-    </mat-accordion>
-
-  </div>
-
-  @if (!isSaved && !isTesting && !isReadOnly) {
-    <div class="question-type-container">
-      <button
-        class="add-question-button"
-        mat-raised-button
-        (click)="addQuestion(0)"
-      >
-        <mat-icon>add</mat-icon>
-        Multiple Choices
-      </button>
-      <button
-        class="add-question-button"
-        mat-raised-button
-        (click)="addQuestion(1)"
-      >
-        <mat-icon>add</mat-icon>
-        Short Answer
-      </button>
-      <button
-        class="add-question-button"
-        mat-raised-button
-        (click)="addQuestion(3)"
-      >
-        <mat-icon>add</mat-icon>
-        Dropdown Choices
-      </button>
-      <button
-        class="add-question-button"
-        mat-raised-button
-        (click)="addQuestion(4)"
-      >
-        <mat-icon>add</mat-icon>
-        Label On Map
-      </button>
-      <button
-        class="add-question-button"
-        mat-raised-button
-        (click)="addQuestion(5)"
-      >
-        <mat-icon>add</mat-icon>
-        Fill In The Gap
-      </button>
-
-      <button
-        class="add-question-button"
-        mat-raised-button
-        (click)="addQuestion(6)"
-      >
-        <mat-icon>add</mat-icon>
-        Drag And Drop
-      </button>
     </div>
+
+    <div
+      class="d-flex flex-wrap"
+      [ngClass]="{ 'un-clickable': isTesting && !isStart }"
+    >
+      <mat-accordion class="w-100">
+        @for (question of data.questions; track $index) {
+          <div class="question">
+            <app-question
+              [question]="question"
+              [isSaved]="isSaved"
+              [isEditing]="mapQuestionEditting[question.id]"
+              [isReadOnly]="isReadOnly"
+              [isTesting]="isTesting"
+              (onSave)="onSaveClick()"
+              (onAnswer)="onPartAnswerQuestion.emit({question: $event, index: $index})"
+              (onAnswerChoice)="onPartAnswerChoice.emit($event)"
+            ></app-question>
+            <div class="actions">
+              @if (!isSaved && !isTesting && !isReadOnly) {
+                @if (mapQuestionEditting[question.id]) {
+                  <button
+                    mat-button
+                    color="primary"
+                    type="button"
+                    (click)="onSaveQuestion(question.id)"
+                  >
+                    <mat-icon>save</mat-icon>
+                  </button>
+                } @else {
+                  <button
+                    mat-button
+                    color="primary"
+                    type="button"
+                    (click)="onEditQuestion(question.id)"
+                  >
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                }
+                <button
+                  mat-button
+                  type="button"
+                  (click)="duplicateQuestion(question)"
+                >
+                  <mat-icon>content_copy</mat-icon>
+                </button>
+                <button
+                  mat-button
+                  color="warn"
+                  type="button"
+                  (click)="removeQuestion($index)"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+                @if ($index !== 0) {
+                  <button
+                    mat-button
+                    type="button"
+                    (click)="moveQuestionUp($index)"
+                  >
+                    <mat-icon>arrow_upward</mat-icon>
+                  </button>
+                }
+                @if ($index !== data.questions.length - 1) {
+                  <button
+                    mat-button
+                    type="button"
+                    (click)="moveQuestionDown($index)"
+                  >
+                    <mat-icon>arrow_downward</mat-icon>
+                  </button>
+                }
+              }
+            </div>
+          </div>
+        }
+      </mat-accordion>
+
+    </div>
+
+    @if (!isSaved && !isTesting && !isReadOnly) {
+      <div class="d-flex mt-2">
+        <button
+          mat-raised-button
+          (click)="addQuestion(0)"
+        >
+          Multiple Choices
+        </button>
+        <button
+          class="ms-1"
+          mat-raised-button
+          (click)="addQuestion(1)"
+        >
+          <mat-icon>add</mat-icon>
+          Short Answer
+        </button>
+        <button
+          class="ms-1"
+          mat-raised-button
+          (click)="addQuestion(3)"
+        >
+          Dropdown Choices
+        </button>
+        <button
+          class="ms-1"
+          mat-raised-button
+          (click)="addQuestion(4)"
+        >
+          <mat-icon>add</mat-icon>
+          Label On Map
+        </button>
+        <button
+          class="ms-1"
+          mat-raised-button
+          (click)="addQuestion(5)"
+        >
+          Fill In The Gap
+        </button>
+        <button
+          class="ms-1"
+          mat-raised-button
+          (click)="addQuestion(6)"
+        >
+          Drag And Drop
+        </button>
+      </div>
+    }
   }
-}
+</div>

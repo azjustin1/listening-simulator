@@ -1,4 +1,4 @@
-<mat-expansion-panel class="dropdown-container" style="box-shadow: none">
+<mat-expansion-panel class="dropdown-container">
   <mat-expansion-panel-header style="background: var(--secondary-color)">
     <span [innerHTML]="question.content"> </span>
   </mat-expansion-panel-header>
@@ -10,13 +10,14 @@
       [(ngModel)]="question.content"
       (ngModelChange)="onPaste($event)"
     ></angular-editor>
-    <div class="choice-group">
+    <div class="choice-group w-100">
       @for (choice of question.choices; track $index) {
-        <div class="d-flex align-items-center mb-2">
+        <div class="d-flex align-items-center w-100 mb-2">
           <input [checked]="selectedChoice === choice.id" (click)="onSelectCorrectAnswer(choice.id)"
                  type="radio" />
           <div class="mt-2 ms-2 w-100">
                 <textarea
+                  class="w-100"
                   autocomplete="off"
                   [disabled]="isReadOnly"
                   [name]="choice.id"

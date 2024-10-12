@@ -170,6 +170,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
   onAddReadingParagraph(isMatchHeader: boolean) {
     const id = CommonUtils.generateRandomId();
     const newReadingParagraph: Reading = {
+      name: '',
       id: id,
       content: '',
       timeout: undefined,

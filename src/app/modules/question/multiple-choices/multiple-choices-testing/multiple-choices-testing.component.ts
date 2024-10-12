@@ -4,11 +4,18 @@ import { MatIcon } from '@angular/material/icon';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { FormsModule } from '@angular/forms';
 import { filter, isEmpty, isNull } from 'lodash-es';
+import { MatExpansionPanel, MatExpansionPanelHeader } from "@angular/material/expansion";
 
 @Component({
   selector: 'app-multiple-choices-testing',
   standalone: true,
-  imports: [MatIcon, AngularEditorModule, FormsModule],
+  imports: [
+    MatIcon,
+    AngularEditorModule,
+    FormsModule,
+    MatExpansionPanel,
+    MatExpansionPanelHeader,
+  ],
   templateUrl: './multiple-choices-testing.component.html',
   styleUrl: './multiple-choices-testing.component.scss',
 })

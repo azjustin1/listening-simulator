@@ -31,7 +31,7 @@
                    (click)="onSelectSingleCorrectAnswer(choice.id)" />
           }
           @if (isEditing) {
-            <textarea class="ms-2" autocomplete="off" [name]="choice.id" [(ngModel)]="choice.content"></textarea>
+            <textarea class="w-100 ms-2" autocomplete="off" [name]="choice.id" [(ngModel)]="choice.content"></textarea>
             <button
               mat-button
               color="warn"

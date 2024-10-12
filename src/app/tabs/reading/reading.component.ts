@@ -26,6 +26,7 @@ import { MultipleQuestionComponent } from '../../modules/question/multiple-quest
 import { QuestionComponent } from '../../modules/question/question.component';
 import { ReadingService } from './reading.service';
 import { TextSelectionDirective } from './text-selection.directive';
+import { NgClass } from "@angular/common";
 
 @Component({
   selector: 'app-reading',
@@ -44,7 +45,8 @@ import { TextSelectionDirective } from './text-selection.directive';
     MatSelectModule,
     MatSlideToggleModule,
     MatchingHeaderComponent,
-    TextSelectionDirective
+    TextSelectionDirective,
+    NgClass
   ],
   providers: [ReadingService],
   templateUrl: './reading.component.html',

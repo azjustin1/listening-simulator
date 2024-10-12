@@ -6,6 +6,7 @@
         [isReadOnly]="isReadOnly"
         [isEditing]="isEditing"
         [isTesting]="isTesting"
+        [isExpandable]="true"
         (onSave)="onSaveQuestion()"
         (onAnswer)="onAnswer.emit($event)"
       ></app-multiple-choices>
