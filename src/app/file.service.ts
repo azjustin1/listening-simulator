@@ -21,7 +21,7 @@ export class FileService {
       studentName,
       quizName,
     };
-    return this.httpClient.post('/file/generate-pdf', requestBody);
+    return this.httpClient.post('/file/generate-pdf', requestBody, {responseType: "text"});
   }
 
   deleteFile(fileName: string): Observable<any> {
