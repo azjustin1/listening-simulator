@@ -26,9 +26,6 @@ export class DropdownChoicesTestingComponent extends DropdownChoicesEditingCompo
       this.question.answer = [choiceId];
       this.selectedChoice = choiceId;
     }
-    this.onAnswer.emit({
-      ...this.question,
-      isAnswer: !isEmpty(this.question.answer),
-    });
+    this.onAnswer.emit(this.question);
   }
 }

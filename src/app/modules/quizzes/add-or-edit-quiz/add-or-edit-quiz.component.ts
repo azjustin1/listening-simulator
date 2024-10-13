@@ -165,6 +165,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
     this.mapSavedPart['listening'][size(this.mapSavedPart['listening'])] =
       false;
     this.currentQuiz.listeningParts.push(newListeningPart);
+    this.selectedListeningPart = this.currentQuiz.listeningParts.length - 1;
   }
 
   onAddReadingParagraph(isMatchHeader: boolean) {
@@ -182,6 +183,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
     };
     this.mapSavedPart['reading'][size(this.mapSavedPart['reading'])] = false;
     this.currentQuiz.readingParts.push(newReadingParagraph);
+    this.selectedReadingPart = this.currentQuiz.readingParts.length - 1;
   }
 
   onAddWritingParagraph() {
@@ -200,7 +202,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
       this.currentQuiz = { ...this.currentQuiz, writingParts: [] };
     }
     this.currentQuiz.writingParts.push(newWritingParagraph);
-    this.selectedWritingPart++;
+    this.selectedWritingPart = this.currentQuiz.writingParts.length - 1;
   }
 
   onTabChange(key: string, index: number) {

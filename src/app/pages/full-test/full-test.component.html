@@ -58,6 +58,7 @@ result.studentName !== "") {
     ></app-timer>
   }
   <mat-tab-group
+
     (selectedIndexChange)="onChangeTab($event)"
     [(selectedIndex)]="currentTab"
     animationDuration="0ms"
@@ -77,8 +78,8 @@ result.studentName !== "") {
           </div>
           <app-question-navigation
             [parts]="result.listeningParts"
-            [(selectedId)]="selectedId"
             [mapAnsweredById]="mapAnsweredById"
+            [selectedQuestionIndex]="selectedQuestionIndex"
             (onSelectQuestion)="navigateToQuestion($event)"
           ></app-question-navigation>
         }
@@ -103,15 +104,18 @@ result.studentName !== "") {
               [data]="result.readingParts[selectedReadingPart]"
               [isTesting]="true"
               [isStart]="isStart"
+              [selectedQuestionId]="selectedQuestionId"
               (onStartChange)="onStartPart()"
+              (onPartAnswerQuestion)="onMapAnsweredQuestion($event)"
+              (onPartAnswerChoice)="onMapAnswerChoice($event)"
             ></app-reading>
           </div>
 
         }
         <app-question-navigation
           [parts]="result.readingParts"
-          [(selectedId)]="selectedId"
           [mapAnsweredById]="mapAnsweredById"
+          [selectedQuestionIndex]="selectedQuestionIndex"
           (onSelectQuestion)="navigateToQuestion($event)"
         ></app-question-navigation>
         <button

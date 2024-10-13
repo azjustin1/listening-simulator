@@ -17,6 +17,7 @@ import { CommonUtils } from '../../utils/common-utils';
 import { environment } from '../../../environments/environment';
 import { BASE64_IMAGE_REGEX } from '../../utils/constant';
 import { QuestionType } from '../enums/question-type.enum';
+import { QuestionIndex } from '../../pages/full-test/full-test.component';
 
 @Component({
   template: '',
@@ -28,6 +29,7 @@ export abstract class AbstractQuestionComponent implements OnChanges {
   @Input() isReadOnly: boolean = false;
   @Input() isTesting: boolean = false;
   @Input() isExpandable: boolean = true;
+  @Input() selectedQuestionId = '';
   @Output() onSave = new EventEmitter();
   @Output() onEdit = new EventEmitter();
   @Output() onAnswer = new EventEmitter();

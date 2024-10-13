@@ -1,6 +1,6 @@
 <form>
   @if (isExpandable) {
-    <mat-expansion-panel>
+    <mat-expansion-panel [expanded]="selectedQuestionId !== '' && selectedQuestionId === question.id">
       <mat-expansion-panel-header style="background: var(--secondary-color); height: fit-content">
         <span [innerHTML]="question.content"> </span>
       </mat-expansion-panel-header>

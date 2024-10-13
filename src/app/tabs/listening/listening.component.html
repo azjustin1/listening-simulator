@@ -27,16 +27,16 @@
             <app-question
               [question]="question"
               [isSaved]="isSaved"
-              [isEditing]="mapQuestionEditting[question.id]"
+              [isEditing]="mapQuestionEditing[question.id]"
               [isReadOnly]="isReadOnly"
               [isTesting]="isTesting"
               (onSave)="onSaveClick()"
-              (onAnswer)="onPartAnswerQuestion.emit({question: $event, index: $index})"
+              (onAnswer)="onPartAnswerQuestion.emit($event)"
               (onAnswerChoice)="onPartAnswerChoice.emit($event)"
             ></app-question>
             <div class="actions">
               @if (!isSaved && !isTesting && !isReadOnly) {
-                @if (mapQuestionEditting[question.id]) {
+                @if (mapQuestionEditing[question.id]) {
                   <button
                     mat-button
                     color="primary"

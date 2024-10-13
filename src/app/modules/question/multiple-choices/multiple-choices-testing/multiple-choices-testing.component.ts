@@ -4,7 +4,10 @@ import { MatIcon } from '@angular/material/icon';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { FormsModule } from '@angular/forms';
 import { filter, isEmpty, isNull } from 'lodash-es';
-import { MatExpansionPanel, MatExpansionPanelHeader } from "@angular/material/expansion";
+import {
+  MatExpansionPanel,
+  MatExpansionPanelHeader,
+} from '@angular/material/expansion';
 
 @Component({
   selector: 'app-multiple-choices-testing',
@@ -70,10 +73,7 @@ export class MultipleChoicesTestingComponent extends AbstractQuestionComponent {
         ...this.question,
       };
     }
-    this.onAnswer.emit({
-      ...this.question,
-      isAnswer: !isEmpty(this.question.answer),
-    });
+    this.onAnswer.emit(this.question);
   }
 
   private isReachedMaxAnswers(numberOfSelectdChoice: number) {

@@ -19,6 +19,7 @@ import { BASE64_IMAGE_REGEX } from '../../utils/constant';
 import { QuestionType } from '../enums/question-type.enum';
 import { AbstractPart } from '../models/abstract-part.model';
 import { Question } from '../models/question.model';
+import { QuestionIndex } from '../../pages/full-test/full-test.component';
 
 @Component({
   template: '',
@@ -32,15 +33,14 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
   @Input() isReadOnly: boolean = false;
   @Input() isSaved: boolean = false;
   @Input() isStart: boolean = false;
-
+  @Input() selectedQuestionId = '';
   @Output() onStartChange = new EventEmitter();
   @Output() onTimeout = new EventEmitter();
   @Output() onSave = new EventEmitter();
   @Output() dataChange = new EventEmitter();
-  @Output() onAddQuesion = new EventEmitter();
+  @Output() onAddQuestion = new EventEmitter();
   @Output() onPartAnswerQuestion = new EventEmitter();
   @Output() onPartAnswerChoice = new EventEmitter();
-
   currentQuestion: Question = {
     id: '',
     content: '',
@@ -49,11 +49,9 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     answer: [],
     correctAnswer: [],
   };
-  mapQuestionEditting: Record<string, boolean> = {};
+  mapQuestionEditing: Record<string, boolean> = {};
   subscriptions: Subscription[] = [];
-
   onPaste = debounce((event) => this.uploadQuestionBase64Images(event), 1000);
-
   config: AngularEditorConfig = {
     editable: true,
     sanitize: true,
@@ -85,14 +83,12 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
       );
     },
   };
-
   wordCount: number = 0;
-
   fileService = inject(FileService);
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isSaved']?.currentValue) {
-      mapValues(this.mapQuestionEditting, () => false);
+      mapValues(this.mapQuestionEditing, () => false);
     }
   }
 
@@ -129,7 +125,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
           choices: this.defaultChoices(4),
           answer: [],
           correctAnswer: [],
-          numberOfChoices: 1
+          numberOfChoices: 1,
         };
         break;
       case QuestionType.SHORT_ANSWER:
@@ -161,7 +157,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
           choices: this.defaultChoices(3),
           answer: [],
           correctAnswer: [],
-          numberOfChoices: 1
+          numberOfChoices: 1,
         };
         break;
       case QuestionType.LABEL_ON_MAP:
@@ -193,18 +189,18 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     }
     this.data.questions.push({ ...this.currentQuestion });
     this.data = { ...this.data };
-    this.onAddQuesion.emit(this.currentQuestion);
+    this.onAddQuestion.emit(this.currentQuestion);
     this.onEditQuestion(id);
   }
 
   onSaveQuestion(id: string) {
-    this.mapQuestionEditting[id] = false;
+    this.mapQuestionEditing[id] = false;
     this.onSave.emit();
   }
 
   onEditQuestion(id: string) {
     this.saveOthersEditting();
-    this.mapQuestionEditting[id] = true;
+    this.mapQuestionEditing[id] = true;
   }
 
   moveQuestionUp(index: number) {
@@ -237,8 +233,8 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
   }
 
   saveOthersEditting() {
-    for (const key in this.mapQuestionEditting) {
-      this.mapQuestionEditting[key] = false;
+    for (const key in this.mapQuestionEditing) {
+      this.mapQuestionEditing[key] = false;
     }
   }
 

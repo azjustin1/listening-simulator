@@ -58,7 +58,7 @@
               [(data)]="currentQuiz.listeningParts[selectedListeningPart]"
               [isSaved]="mapSavedPart['listening'][selectedListeningPart]!"
               (onSave)="saveOrEditQuiz(currentQuiz)"
-              (onAddQuesion)="addQuestionMap($event, selectedListeningPart)"
+              (onAddQuestion)="addQuestionMap($event, selectedListeningPart)"
             ></app-listening>
           }
           @if (currentQuiz.listeningParts.length > 0) {

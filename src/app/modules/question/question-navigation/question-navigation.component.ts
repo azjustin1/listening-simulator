@@ -1,17 +1,8 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnInit,
-  Output,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AbstractPart } from '../../../shared/models/abstract-part.model';
-import { Question } from '../../../shared/models/question.model';
-import { each, findIndex, toArray } from 'lodash-es';
 import { JsonPipe, KeyValuePipe, NgClass } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
+import { QuestionIndex } from '../../../pages/full-test/full-test.component';
 
 @Component({
   selector: 'app-question-navigation',
@@ -21,17 +12,18 @@ import { MatIcon } from '@angular/material/icon';
   styleUrl: './question-navigation.component.scss',
 })
 export class QuestionNavigationComponent implements OnInit {
-  @Input() selectedId = '';
   @Output() selectedIdChange = new EventEmitter();
   @Input() parts: AbstractPart[] = [];
-  @Input() selectedPart = 0;
-  @Input() mapAnsweredById: Record<string, boolean> = {};
+  @Input() mapAnsweredById: Record<string, QuestionIndex[]> = {};
   @Output() onSelectQuestion = new EventEmitter();
+  @Input() selectedQuestionIndex!: QuestionIndex;
 
-  ngOnInit(): void {}
+  ngOnInit() {
+    console.log(this.mapAnsweredById)
+  }
 
-  onClickQuestion(id: string) {
-    this.onSelectQuestion.emit(id);
-    this.selectedId = id;
+  onClickQuestion(questionId: string, questionIndex: QuestionIndex) {
+    this.selectedQuestionIndex = questionIndex;
+    this.onSelectQuestion.emit(questionId);
   }
 }

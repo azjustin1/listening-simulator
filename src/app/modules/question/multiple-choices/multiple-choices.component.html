@@ -9,6 +9,7 @@
   <app-multiple-choices-testing
     [question]="question"
     [isTesting]="isTesting"
+    [selectedQuestionId]="selectedQuestionId"
     (onAnswer)="onAnswer.emit($event)"
   ></app-multiple-choices-testing>
 }

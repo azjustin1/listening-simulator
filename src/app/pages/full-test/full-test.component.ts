@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { clone, each, isEmpty, isUndefined, mapValues } from 'lodash-es';
-import { interval, Subscription } from 'rxjs';
+import { interval, map, Subscription } from 'rxjs';
 import { Quiz } from '../../shared/models/quiz.model';
 import { Result } from '../../shared/models/result.model';
 import { CommonUtils } from '../../utils/common-utils';
@@ -45,6 +45,12 @@ const DEFAULT_START_TIMEOUT = {
   seconds: 0,
 };
 
+export interface QuestionIndex {
+  index: number;
+  isAnswer: boolean;
+  answer: string[];
+}
+
 @Component({
   selector: 'app-test',
   standalone: true,
@@ -55,7 +61,6 @@ const DEFAULT_START_TIMEOUT = {
     FormsModule,
     MatCardModule,
     MatButtonModule,
-    MatInputModule,
     MatTabsModule,
     ListeningComponent,
     ReadingComponent,
@@ -120,8 +125,9 @@ export class FullTestComponent extends AddOrEditQuizComponent {
     1: true,
     2: true,
   };
-  mapAnsweredById: Record<string, boolean> = {};
-  selectedId: string = '';
+  mapAnsweredById: Record<string, QuestionIndex[]> = {};
+  selectedQuestionId: string = '';
+  selectedQuestionIndex!: QuestionIndex;
 
   constructor(
     protected override quizService: QuizService,
@@ -267,7 +273,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
     this.testTimeoutInterval = 0;
     this.disableOthersTab();
     this.mapDisablePart[this.currentTab + 1] = false;
-    this.mapAnsweredById = {}
+    this.mapAnsweredById = {};
     this.currentTab = this.currentTab + 1;
     this.generateMapAnswered();
   }
@@ -476,64 +482,128 @@ export class FullTestComponent extends AddOrEditQuizComponent {
       default:
         break;
     }
+    this.selectedQuestionId = id;
   }
 
   generateMapAnswered() {
     if (this.currentTab === Tab.LISTENING) {
-      each(this.result.listeningParts, (part) => {
-        each(part.questions, (question) => {
-          switch (question.type) {
-            case QuestionType.SHORT_ANSWER:
-            case QuestionType.FILL_IN_THE_GAP:
-              each(question.choices, (choice) => {
-                this.mapAnsweredById[choice.id] =
-                  !isEmpty(choice.answer) && !isUndefined(choice.answer);
-              });
-              break;
-            case QuestionType.LABEL_ON_MAP:
-              each(question.subQuestions, (subQuestion) => {
-                this.mapAnsweredById[subQuestion.id] = !isEmpty(
-                  subQuestion.answer,
-                );
-              });
-              break;
-            case QuestionType.MULTIPLE_CHOICE:
-            case QuestionType.DROPDOWN_ANSWER:
-              this.mapAnsweredById[question.id] = question.isAnswer ?? false;
-              break;
-          }
-        });
-      });
+      this.generatePartQuestionIndex(this.result.listeningParts);
     }
     if (this.currentTab === Tab.READING) {
-      each(this.result.readingParts, (part) => {
-        each(part.questions, (question) => {
-          this.mapAnsweredById[question.id] = question.isAnswer ?? false;
-        });
-      });
+      this.generatePartQuestionIndex(this.result.readingParts);
     }
   }
 
-  onMapAnsweredQuestion(event: { question: Question; index: number }) {
-    const { question, index } = event;
-    if (!isUndefined(question.isAnswer)) {
-      this.mapAnsweredById[question.id] = question.isAnswer;
+  private generatePartQuestionIndex(parts: AbstractPart[]) {
+    let index = 0;
+    each(parts, (part) => {
+      each(part.questions, (question) => {
+        if (isUndefined(this.mapAnsweredById[question.id])) {
+          this.mapAnsweredById[question.id] = [];
+        }
+        switch (question.type) {
+          case QuestionType.SHORT_ANSWER:
+          case QuestionType.FILL_IN_THE_GAP:
+            each(question.choices, (choice) => {
+              this.mapAnsweredById[question.id].push({
+                index: index,
+                answer: [],
+                isAnswer:
+                  !isEmpty(choice.answer) && !isUndefined(choice.answer),
+              });
+              index++;
+            });
+            break;
+          case QuestionType.LABEL_ON_MAP:
+            each(question.subQuestions, (subQuestion) => {
+              // if (isUndefined(this.mapAnsweredById[subQuestion.id])) {
+              //   this.mapAnsweredById[question.id] = [];
+              // }
+              this.mapAnsweredById[question.id].push({
+                index: index,
+                answer: [],
+                isAnswer: false,
+              });
+              index++;
+            });
+            break;
+          case QuestionType.MULTIPLE_CHOICE:
+            each(question.correctAnswer, (questionId) => {
+              this.generateMultipleChoiceIndex(question, index);
+              index++;
+            });
+            break;
+          case QuestionType.DROPDOWN_ANSWER:
+            this.generateDropdownChoiceIndex(question, index);
+            index++;
+            break;
+        }
+      });
+    });
+  }
+
+  generateMultipleChoiceIndex(question: Question, index: number) {
+    this.mapAnsweredById[question.id].push({
+      index: index,
+      answer: question.answer as string[],
+      isAnswer: false,
+    });
+    if (!isEmpty(question.answer)) {
+      for (let i = 0; i < question.answer.length; i++) {
+        if (this.mapAnsweredById[question.id][i]) {
+          this.mapAnsweredById[question.id][i].isAnswer = true;
+        }
+      }
     }
+  }
+
+  private generateDropdownChoiceIndex(question: Question, index: number) {
+    this.mapAnsweredById[question.id].push({
+      index: index,
+      answer: question.answer as string[],
+      isAnswer: !isEmpty(question.answer),
+    });
+  }
+
+  onMapAnsweredQuestion(question: Question) {
     if (this.currentTab === Tab.LISTENING) {
-      this.result.listeningParts[this.selectedListeningPart].questions[index] =
-        question;
+      // this.result.listeningParts[this.selectedListeningPart].questions[index] =
+      //   question;
     }
     if (this.currentTab === Tab.READING) {
-      this.result.readingParts[this.selectedReadingPart].questions[index] =
-        question;
+      if (this.mapAnsweredById[question.id]) {
+        each(this.mapAnsweredById[question.id], (questionIndex) => {
+          questionIndex = {
+            ...questionIndex,
+            answer: question.answer as string[],
+          };
+        });
+        const questionIndexes = this.mapAnsweredById[question.id].map(
+          (questionIndex) => {
+            questionIndex = {
+              ...questionIndex,
+              answer: question.answer as string[],
+              isAnswer: false,
+            };
+            return questionIndex;
+          },
+        );
+        for (let i = 0; i < question.answer.length; i++) {
+          questionIndexes[i].isAnswer = true;
+        }
+        this.mapAnsweredById[question.id] = questionIndexes;
+        if (!isEmpty(questionIndexes) && !isEmpty(questionIndexes[0].answer)) {
+          this.selectedQuestionIndex =
+            questionIndexes[questionIndexes[0].answer.length - 1];
+        }
+      }
     }
-    this.selectedId = question.id;
   }
 
   onMapAnswerChoice(choice: Choice) {
-    this.selectedId = choice.id;
-    this.mapAnsweredById[choice.id] =
-      !isEmpty(choice.answer) && !isUndefined(choice.answer);
+    this.selectedQuestionId = choice.id;
+    // this.mapAnsweredById[choice.id] =
+    //   !isEmpty(choice.answer) && !isUndefined(choice.answer);
   }
 
   protected readonly console = console;
