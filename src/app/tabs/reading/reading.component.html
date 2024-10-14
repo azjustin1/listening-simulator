@@ -15,7 +15,7 @@
         ></angular-editor>
       } @else {
         @if (data) {
-          <p textSelection class="reading-content" [innerHTML]="data.content"></p>
+          <p textSelection style="max-height: calc(100vh - 250px); overflow-y: auto" [innerHTML]="data.content"></p>
         }
       }
     </div>

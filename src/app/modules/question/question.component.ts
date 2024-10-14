@@ -22,9 +22,6 @@ import { ShortAnswerComponent } from './short-answer/short-answer.component';
   styleUrl: './question.component.scss',
 })
 export class QuestionComponent extends AbstractQuestionComponent {
-  onDropdown() {
-    console.log('Dropdown')
-  }
 
   protected readonly console = console;
 }

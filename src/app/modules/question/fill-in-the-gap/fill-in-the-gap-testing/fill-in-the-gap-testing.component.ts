@@ -6,6 +6,8 @@ import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FillInTheGapEditingComponent } from '../fill-in-the-gap-editing/fill-in-the-gap-editing.component';
+import { toArray } from 'lodash-es';
+import { Choice } from '../../../../shared/models/choice.model';
 
 @Component({
   selector: 'app-fill-in-the-gap-testing',
@@ -22,5 +24,11 @@ import { FillInTheGapEditingComponent } from '../fill-in-the-gap-editing/fill-in
   styleUrl: './fill-in-the-gap-testing.component.scss',
 })
 export class FillInTheGapTestingComponent extends FillInTheGapEditingComponent {
-  protected readonly console = console;
+  onInputAnswer(answer: string, choiceId: string) {
+    this.mapChoiceById[choiceId].answer = answer;
+    this.onAnswer.emit({
+      ...this.question,
+      choices: toArray(this.mapChoiceById),
+    });
+  }
 }

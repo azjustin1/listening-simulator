@@ -4,11 +4,18 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
-import { MatInputModule } from '@angular/material/input';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { clone, each, isEmpty, isUndefined, mapValues } from 'lodash-es';
-import { interval, map, Subscription } from 'rxjs';
+import {
+  clone,
+  each,
+  isEmpty,
+  isUndefined,
+  mapValues,
+  toArray,
+  flatMap,
+} from 'lodash-es';
+import { find, interval, Subscription } from 'rxjs';
 import { Quiz } from '../../shared/models/quiz.model';
 import { Result } from '../../shared/models/result.model';
 import { CommonUtils } from '../../utils/common-utils';
@@ -32,7 +39,6 @@ import {
 } from '../../shared/components/timer/timer.component';
 import { Tab } from '../../shared/enums/tab.enum';
 import { QuestionNavigationComponent } from '../../modules/question/question-navigation/question-navigation.component';
-import { Listening } from '../../shared/models/listening.model';
 import { AbstractPart } from '../../shared/models/abstract-part.model';
 import { Question } from '../../shared/models/question.model';
 import { QuestionType } from '../../shared/enums/question-type.enum';
@@ -47,6 +53,7 @@ const DEFAULT_START_TIMEOUT = {
 
 export interface QuestionIndex {
   index: number;
+  id?: string;
   isAnswer: boolean;
   answer: string[];
 }
@@ -125,9 +132,10 @@ export class FullTestComponent extends AddOrEditQuizComponent {
     1: true,
     2: true,
   };
-  mapAnsweredById: Record<string, QuestionIndex[]> = {};
+  mapAnsweredQuestionId: Record<string, QuestionIndex[]> = {};
   selectedQuestionId: string = '';
   selectedQuestionIndex!: QuestionIndex;
+  mapAnswerByChoiceId: { [key: string]: string } = {};
 
   constructor(
     protected override quizService: QuizService,
@@ -273,7 +281,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
     this.testTimeoutInterval = 0;
     this.disableOthersTab();
     this.mapDisablePart[this.currentTab + 1] = false;
-    this.mapAnsweredById = {};
+    this.mapAnsweredQuestionId = {};
     this.currentTab = this.currentTab + 1;
     this.generateMapAnswered();
   }
@@ -452,17 +460,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
     }
     each(parts, (_part, index: number) => {
       each(_part.questions, (question) => {
-        if (
-          question.type === QuestionType.SHORT_ANSWER ||
-          question.type === QuestionType.FILL_IN_THE_GAP ||
-          question.type === QuestionType.LABEL_ON_MAP
-        ) {
-          each(question.choices, (choice) => {
-            this.mapQuestionPart[choice.id] = index;
-          });
-        } else {
-          this.mapQuestionPart[question.id] = index;
-        }
+        this.mapQuestionPart[question.id] = index;
       });
     });
   }
@@ -498,28 +496,27 @@ export class FullTestComponent extends AddOrEditQuizComponent {
     let index = 0;
     each(parts, (part) => {
       each(part.questions, (question) => {
-        if (isUndefined(this.mapAnsweredById[question.id])) {
-          this.mapAnsweredById[question.id] = [];
+        if (isUndefined(this.mapAnsweredQuestionId[question.id])) {
+          this.mapAnsweredQuestionId[question.id] = [];
         }
         switch (question.type) {
           case QuestionType.SHORT_ANSWER:
           case QuestionType.FILL_IN_THE_GAP:
             each(question.choices, (choice) => {
-              this.mapAnsweredById[question.id].push({
+              this.mapAnsweredQuestionId[question.id].push({
                 index: index,
+                id: choice.id,
                 answer: [],
                 isAnswer:
                   !isEmpty(choice.answer) && !isUndefined(choice.answer),
               });
+              this.mapAnswerByChoiceId[choice.id] = '';
               index++;
             });
             break;
           case QuestionType.LABEL_ON_MAP:
             each(question.subQuestions, (subQuestion) => {
-              // if (isUndefined(this.mapAnsweredById[subQuestion.id])) {
-              //   this.mapAnsweredById[question.id] = [];
-              // }
-              this.mapAnsweredById[question.id].push({
+              this.mapAnsweredQuestionId[question.id].push({
                 index: index,
                 answer: [],
                 isAnswer: false,
@@ -543,22 +540,22 @@ export class FullTestComponent extends AddOrEditQuizComponent {
   }
 
   generateMultipleChoiceIndex(question: Question, index: number) {
-    this.mapAnsweredById[question.id].push({
+    this.mapAnsweredQuestionId[question.id].push({
       index: index,
       answer: question.answer as string[],
       isAnswer: false,
     });
     if (!isEmpty(question.answer)) {
       for (let i = 0; i < question.answer.length; i++) {
-        if (this.mapAnsweredById[question.id][i]) {
-          this.mapAnsweredById[question.id][i].isAnswer = true;
+        if (this.mapAnsweredQuestionId[question.id][i]) {
+          this.mapAnsweredQuestionId[question.id][i].isAnswer = true;
         }
       }
     }
   }
 
   private generateDropdownChoiceIndex(question: Question, index: number) {
-    this.mapAnsweredById[question.id].push({
+    this.mapAnsweredQuestionId[question.id].push({
       index: index,
       answer: question.answer as string[],
       isAnswer: !isEmpty(question.answer),
@@ -566,19 +563,27 @@ export class FullTestComponent extends AddOrEditQuizComponent {
   }
 
   onMapAnsweredQuestion(question: Question) {
-    if (this.currentTab === Tab.LISTENING) {
-      // this.result.listeningParts[this.selectedListeningPart].questions[index] =
-      //   question;
-    }
-    if (this.currentTab === Tab.READING) {
-      if (this.mapAnsweredById[question.id]) {
-        each(this.mapAnsweredById[question.id], (questionIndex) => {
-          questionIndex = {
-            ...questionIndex,
-            answer: question.answer as string[],
-          };
+    if (this.mapAnsweredQuestionId[question.id]) {
+      if (
+        question.type === QuestionType.SHORT_ANSWER ||
+        question.type === QuestionType.FILL_IN_THE_GAP
+      ) {
+        each(question.choices, (choice) => {
+          this.mapAnswerByChoiceId[choice.id] = clone(choice.answer!);
         });
-        const questionIndexes = this.mapAnsweredById[question.id].map(
+        each(this.mapAnsweredQuestionId[question.id], (questionIndex) => {
+          questionIndex.answer = [
+            this.mapAnswerByChoiceId[questionIndex.id as string],
+          ];
+          questionIndex.isAnswer =
+            !isEmpty(this.mapAnswerByChoiceId[questionIndex.id!]) &&
+            !isUndefined(this.mapAnswerByChoiceId[questionIndex.id!]);
+        });
+      } else {
+        each(this.mapAnsweredQuestionId[question.id], (questionIndex) => {
+          questionIndex.answer = question.answer as string[];
+        });
+        const questionIndexes = this.mapAnsweredQuestionId[question.id].map(
           (questionIndex) => {
             questionIndex = {
               ...questionIndex,
@@ -591,7 +596,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
         for (let i = 0; i < question.answer.length; i++) {
           questionIndexes[i].isAnswer = true;
         }
-        this.mapAnsweredById[question.id] = questionIndexes;
+        this.mapAnsweredQuestionId[question.id] = questionIndexes;
         if (!isEmpty(questionIndexes) && !isEmpty(questionIndexes[0].answer)) {
           this.selectedQuestionIndex =
             questionIndexes[questionIndexes[0].answer.length - 1];
@@ -601,10 +606,10 @@ export class FullTestComponent extends AddOrEditQuizComponent {
   }
 
   onMapAnswerChoice(choice: Choice) {
-    this.selectedQuestionId = choice.id;
-    // this.mapAnsweredById[choice.id] =
-    //   !isEmpty(choice.answer) && !isUndefined(choice.answer);
+    this.selectedQuestionIndex = flatMap(
+      toArray(this.mapAnsweredQuestionId),
+    ).find(
+      (questionIndex) => questionIndex.id && questionIndex.id === choice.id,
+    )!;
   }
-
-  protected readonly console = console;
 }

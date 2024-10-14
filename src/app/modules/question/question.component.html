@@ -1,3 +1,4 @@
+<h1>Question type{{question.type}}</h1>
 @switch (question.type) {
   @case (0) {
     <div class="question">
@@ -56,9 +57,10 @@
       [isReadOnly]="isReadOnly"
       [isEditing]="isEditing"
       [isTesting]="isTesting"
+      [selectedQuestionId]="selectedQuestionId"
       (onSave)="onSaveQuestion()"
-      (onAnswer)="onAnswer.emit($event)"
       (onAnswerChoice)="onAnswerChoice.emit($event)"
+      (onAnswer)="onAnswer.emit($event)"
     >
     </app-fill-in-the-gap>
   }

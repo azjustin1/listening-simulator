@@ -73,12 +73,11 @@ result.studentName !== "") {
               [isStart]="isStart"
               (onStartChange)="onStartPart()"
               (onPartAnswerQuestion)="onMapAnsweredQuestion($event)"
-              (onPartAnswerChoice)="onMapAnswerChoice($event)"
             ></app-listening>
           </div>
           <app-question-navigation
             [parts]="result.listeningParts"
-            [mapAnsweredById]="mapAnsweredById"
+            [mapAnsweredById]="mapAnsweredQuestionId"
             [selectedQuestionIndex]="selectedQuestionIndex"
             (onSelectQuestion)="navigateToQuestion($event)"
           ></app-question-navigation>
@@ -114,7 +113,7 @@ result.studentName !== "") {
         }
         <app-question-navigation
           [parts]="result.readingParts"
-          [mapAnsweredById]="mapAnsweredById"
+          [mapAnsweredById]="mapAnsweredQuestionId"
           [selectedQuestionIndex]="selectedQuestionIndex"
           (onSelectQuestion)="navigateToQuestion($event)"
         ></app-question-navigation>
