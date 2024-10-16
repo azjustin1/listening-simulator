@@ -8,6 +8,7 @@
             <div class="d-flex align-items-center">
               @if (content | isInput) {
                 <input
+                  [autofocus]="true"
                   class="mx-1"
                   (click)="onAnswerChoice.emit(mapChoiceById[content.match(inputPattern)![1]])"
                   (ngModelChange)="onInputAnswer($event, content.match(inputPattern)![1])"

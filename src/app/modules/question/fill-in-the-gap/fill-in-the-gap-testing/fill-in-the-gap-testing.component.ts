@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { AbstractQuestionComponent } from '../../../../shared/abstract/abstract-question.component';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { IsInputPipe } from '../is-input.pipe';
 import { MatButton } from '@angular/material/button';
@@ -7,7 +6,6 @@ import { MatIcon } from '@angular/material/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FillInTheGapEditingComponent } from '../fill-in-the-gap-editing/fill-in-the-gap-editing.component';
 import { toArray } from 'lodash-es';
-import { Choice } from '../../../../shared/models/choice.model';
 
 @Component({
   selector: 'app-fill-in-the-gap-testing',
@@ -30,5 +28,6 @@ export class FillInTheGapTestingComponent extends FillInTheGapEditingComponent {
       ...this.question,
       choices: toArray(this.mapChoiceById),
     });
+    console.log(this.question)
   }
 }

@@ -501,12 +501,13 @@ export class FullTestComponent extends AddOrEditQuizComponent {
         }
         switch (question.type) {
           case QuestionType.SHORT_ANSWER:
+            break;
           case QuestionType.FILL_IN_THE_GAP:
             each(question.choices, (choice) => {
               this.mapAnsweredQuestionId[question.id].push({
                 index: index,
                 id: choice.id,
-                answer: [],
+                answer: [choice.answer as string],
                 isAnswer:
                   !isEmpty(choice.answer) && !isUndefined(choice.answer),
               });
@@ -525,10 +526,10 @@ export class FullTestComponent extends AddOrEditQuizComponent {
             });
             break;
           case QuestionType.MULTIPLE_CHOICE:
-            each(question.correctAnswer, (questionId) => {
+            for (let i = 0; i < question.numberOfChoices!; i++) {
               this.generateMultipleChoiceIndex(question, index);
               index++;
-            });
+            }
             break;
           case QuestionType.DROPDOWN_ANSWER:
             this.generateDropdownChoiceIndex(question, index);
