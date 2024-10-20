@@ -1,0 +1,47 @@
+<div class="d-flex">
+  <div class="col-6 container--left">
+    @for (question of data.questions; track $index) {
+      <div class="paragraph my-4">
+        <div class="mb-2">
+          <select
+            [disabled]="true"
+            [(ngModel)]="question.correctAnswer"
+          >
+            @for (answer of data.answers; track $index) {
+              <option [value]="answer.id">
+                {{ answer.content }}
+              </option>
+            }
+          </select>
+        </div>
+        <div class="input-reading">
+          @if (data) {
+            <span
+              class="reading-content"
+              [innerHTML]="question.content"
+            ></span>
+          }
+        </div>
+      </div>
+    }
+  </div>
+  <!-- Container right -->
+  <div
+    id="container-right"
+    class="ms-2 container--right"
+    [ngClass]="{ testing: isTesting }"
+  >
+    @if (!isReadOnly) {
+      <div class="description">
+        <span [innerHTML]="this.data.content"></span>
+      </div>
+      <div>
+        @for (answer of data.answers; track $index) {
+          <mat-card class="p-3 m-2">
+            {{ answer.content }}
+          </mat-card>
+        }
+      </div>
+    }
+  </div>
+</div>

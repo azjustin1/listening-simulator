@@ -27,6 +27,12 @@ import { Reading } from '../../../shared/models/reading.model';
 import { CommonUtils } from '../../../utils/common-utils';
 import { MultipleQuestionComponent } from '../multiple-question/multiple-question.component';
 import { ChoiceContentPipe } from './choice-content.pipe';
+import { FillInTheGapEditingComponent } from '../fill-in-the-gap/fill-in-the-gap-editing/fill-in-the-gap-editing.component';
+import { FillInTheGapReadonlyComponent } from '../fill-in-the-gap/fill-in-the-gap-readonly/fill-in-the-gap-readonly.component';
+import { FillInTheGapTestingComponent } from '../fill-in-the-gap/fill-in-the-gap-testing/fill-in-the-gap-testing.component';
+import { MatchingHeaderReadonlyComponent } from './matching-header-readonly/matching-header-readonly.component';
+import { MatchingHeaderTestingComponent } from './matching-header-testing/matching-header-testing.component';
+import { MatchingHeaderEditingComponent } from './matching-header-editing/matching-header-editing.component';
 
 const DATA_TRANSFER_KEY = 'answerId';
 const DROP_OVER_CLASS = 'drop-over';
@@ -49,188 +55,14 @@ const CONTAINER_RIGHT_ID = 'container-right';
     MultipleQuestionComponent,
     DragDropModule,
     ChoiceContentPipe,
+    MatchingHeaderReadonlyComponent,
+    MatchingHeaderTestingComponent,
+    MatchingHeaderEditingComponent,
   ],
   templateUrl: './matching-header.component.html',
   styleUrl: './matching-header.component.scss',
 })
-export class MatchingHeaderComponent
-  extends AbstractQuizPartComponent<Reading>
-  implements OnInit
-{
+export class MatchingHeaderComponent extends AbstractQuizPartComponent<Reading> {
   @Input() answers: Choice[] = [];
-  mapEditingById: Record<string, boolean> = {};
-  mapAnswerById: Record<string, Choice> = {};
-
-  ngOnInit(): void {
-    this.initMapEditAnswer();
-    if (this.isTesting) {
-      this.remapDroppedAnswers();
-    }
-  }
-
-  override ngOnChanges(changes: SimpleChanges): void {
-    super.ngOnChanges(changes);
-    if (changes['data']?.currentValue) {
-      this.initMapEditAnswer();
-    }
-
-    if (changes['isSaved']?.currentValue) {
-      this.saveAllEditing();
-    }
-  }
-
-  initMapEditAnswer() {
-    each(this.data.answers, (answer) => {
-      this.mapEditingById[answer.id] = false;
-      this.mapAnswerById[answer.id] = answer;
-    });
-    each(this.data.questions, (question) => {
-      this.mapEditingById[question.id] = false;
-    });
-  }
-
-  remapDroppedAnswers() {
-    const answerIds = map(this.data.questions, (question) => question.answer);
-    this.answers = sortBy(
-      filter(this.answers, (answer) => !answerIds.includes(answer.id)),
-    );
-  }
-
-  removeDuplicateChoiceInOthers(choice: Choice) {
-    each(this.data.questions, (question) => {
-      if (question.answer && question.answer === choice.id) {
-        question.answer = '';
-      }
-    });
-  }
-
-  addParagraph() {
-    const id = CommonUtils.generateRandomId();
-    const newQuestion: Question = {
-      id: id,
-      content: '',
-      type: QuestionType.MATCHING_HEADER,
-      choices: [],
-      answer: [],
-      correctAnswer: [],
-    };
-    this.data.questions.push(newQuestion);
-    this.mapEditingById[id] = true;
-  }
-
-  editContent(id: string) {
-    if (!this.mapEditingById[id]) {
-      this.saveAllEditing();
-    }
-    this.mapEditingById[id] = !this.mapEditingById[id];
-  }
-
-  removeParagraph(index: number) {
-    this.removeMapEditingId(this.data.questions[index].id);
-    this.data.questions.splice(index, 1);
-  }
-
-  addAnswer() {
-    if (isUndefined(this.data.answers)) {
-      this.data.answers = [];
-    }
-    const id = CommonUtils.generateRandomId();
-    const newAnswer: Choice = {
-      id: id,
-      content: '',
-    };
-    this.data.answers?.push(newAnswer);
-    this.mapEditingById[id] = true;
-  }
-
-  removeAnswer(index: number) {
-    this.removeMapEditingId(this.data.answers![index].id);
-    this.data.answers?.splice(index, 1);
-  }
-
-  private removeMapEditingId(id: string) {
-    this.mapEditingById = omit(this.mapEditingById, id);
-  }
-
-  private saveAllEditing() {
-    this.mapEditingById = mapValues(this.mapEditingById, () => false);
-  }
-
-  onDragStart(event: DragEvent, answerId: string) {
-    event.dataTransfer!.dropEffect = 'move';
-    event.dataTransfer!.setData(DATA_TRANSFER_KEY, answerId);
-    event.dataTransfer!.setDragImage(event.target as HTMLElement, 0, 0);
-  }
-
   results: string[] = [];
-
-  onDragOver(event: DragEvent, questionId: string) {
-    event.preventDefault();
-    this.addDropOverClass(questionId);
-  }
-
-  removeDropOver(event: DragEvent, questionId: string) {
-    event.preventDefault();
-    this.removeDropOverClass(questionId);
-  }
-
-  onDropAnswer(event: DragEvent, questionId: string) {
-    event.preventDefault();
-    const choice = ChoiceContentPipe.prototype.transform(
-      event.dataTransfer!.getData(DATA_TRANSFER_KEY),
-      this.data.answers!,
-    );
-    if (choice) {
-      this.removeDuplicateChoiceInOthers(choice);
-      each(this.data.questions, (question) => {
-        if (question.id === questionId) {
-          question.answer = choice.id;
-        }
-      });
-
-      this.answers = filter(this.data.answers, (a) => a.id !== choice.id);
-      this.removeDropOverClass(questionId);
-      this.remapDroppedAnswers();
-    }
-  }
-
-  onAnswerBackDragOver(event: DragEvent) {
-    event.preventDefault();
-    this.addDropOverClass(CONTAINER_RIGHT_ID);
-  }
-
-  onAnswerBackDragLeave(event: DragEvent) {
-    event.preventDefault();
-    this.removeDropOverClass(CONTAINER_RIGHT_ID);
-  }
-
-  onAnswerBackDrop(event: DragEvent) {
-    event.preventDefault();
-    const answer = ChoiceContentPipe.prototype.transform(
-      event.dataTransfer!.getData(DATA_TRANSFER_KEY),
-      this.data.answers!,
-    );
-    if (answer) {
-      each(this.data.questions, (question) => {
-        if (question.answer === answer.id) {
-          question.answer = '';
-        }
-      });
-      if (!map(this.answers, (answer) => answer.id).includes(answer.id)) {
-        this.answers.push(answer);
-        this.answers = sortBy(this.answers, ['id']);
-      }
-      this.removeDropOverClass(CONTAINER_RIGHT_ID);
-    }
-  }
-
-  addDropOverClass(elementId: string) {
-    const dropZone = document.getElementById(elementId) as HTMLElement;
-    dropZone.classList.add(DROP_OVER_CLASS);
-  }
-
-  removeDropOverClass(elementId: string) {
-    const dropZone = document.getElementById(elementId) as HTMLElement;
-    dropZone.classList.remove(DROP_OVER_CLASS);
-  }
 }
