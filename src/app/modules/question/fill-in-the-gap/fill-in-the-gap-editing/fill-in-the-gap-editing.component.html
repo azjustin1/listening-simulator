@@ -1,0 +1,126 @@
+@if (question.arrayContent) {
+  <div class="d-flex flex-column">
+    <div class="description">
+      <angular-editor
+        [name]="question.id"
+        [config]="config"
+        [(ngModel)]="question.content"
+        (ngModelChange)="onPaste($event)"
+      ></angular-editor>
+    </div>
+    <div class="d-flex flex-column">
+      @for (line of question.arrayContent;
+        track $index;
+        let lineIndex = $index) {
+        <div class="d-flex flex-wrap align-items-center">
+          @for (content of line; track $index; let textIndex = $index) {
+            <div class="d-flex justify-content-center align-items-center mt-3">
+              @if (content | isInput) {
+                <div class="d-flex mx-1">
+                  @if (mapSaveTextByIndex[lineIndex][textIndex]) {
+                    <div class="text-center" (click)="onEditInput(lineIndex, textIndex)">
+                      <input
+                        [value]="mapChoiceById[content | extractId].correctAnswer">
+                    </div>
+                  } @else {
+                    <div class="d-flex align-items-center">
+                      <input
+                        class="mx-1"
+                        [(ngModel)]="mapChoiceById[content.match(inputPattern)![1]].correctAnswer"
+                      />
+                      @if (mapShowActionByIndex[lineIndex][textIndex]) {
+                        <div class="d-flex">
+                          @if (mapSaveTextByIndex[lineIndex][textIndex]) {
+                            <mat-icon color="primary" (click)="onEditText(lineIndex, textIndex)">
+                              edit
+                            </mat-icon>
+                          } @else {
+                            <mat-icon color="primary" (click)="onSaveText(lineIndex, textIndex)">
+                              check
+                            </mat-icon>
+                          }
+                          <mat-icon color="warn" (click)="onDeleteText(lineIndex, textIndex)">delete</mat-icon>
+                          <button class="d-flex align-items-center ms-1" (click)="addText(lineIndex, textIndex + 1)">
+                            <mat-icon color="primary">add</mat-icon>
+                            Text
+                          </button>
+                        </div>
+
+                      }
+                    </div>
+                  }
+                </div>
+              } @else {
+                @if (mapSaveTextByIndex[lineIndex][textIndex]) {
+                  <div
+                    (click)="onEditText(lineIndex, textIndex)"
+                  >
+                    {{
+                      question.arrayContent[lineIndex][textIndex] === ""
+                        ? "..."
+                        : question.arrayContent[lineIndex][textIndex]
+                    }}
+                  </div>
+                } @else {
+                  <input
+                    [(ngModel)]="question.arrayContent[lineIndex][textIndex]" />
+                  @if (mapShowActionByIndex[lineIndex][textIndex]) {
+                    <div class="d-flex">
+                      @if (mapSaveTextByIndex[lineIndex][textIndex]) {
+                        <mat-icon color="primary" (click)="onEditText(lineIndex, textIndex)">
+                          edit
+                        </mat-icon>
+                      } @else {
+                        <mat-icon color="primary" (click)="onSaveText(lineIndex, textIndex)">
+                          check
+                        </mat-icon>
+                      }
+                      <mat-icon color="warn" (click)="onDeleteText(lineIndex, textIndex)">delete</mat-icon>
+                    </div>
+                  }
+                }
+                @if (mapShowActionByIndex[lineIndex][textIndex]) {
+
+                  <button class="d-flex align-items-center ms-1" (click)="addInput(lineIndex, textIndex + 1)">
+                    <mat-icon color="primary">add</mat-icon>
+                    Input
+                  </button>
+                }
+              }
+            </div>
+
+          }
+
+        </div>
+        <div class="d-flex mt-2">
+          <button mat-button class="d-flex align-items-center me-1" (click)="addNewLine(lineIndex)">
+            <mat-icon color="primary">add</mat-icon>
+            Line
+          </button>
+          <button mat-button class="d-flex align-items-center me-1" (click)="onDeleteLine(lineIndex)">
+            <mat-icon color="warn">delete</mat-icon>
+            Line
+          </button>
+          @if (lineIndex !== 0) {
+            <button mat-button class="d-flex align-items-center me-1" type="button" (click)="moveLineUp(lineIndex)">
+              <mat-icon>arrow_upward</mat-icon>
+            </button>
+          }
+          @if (lineIndex !== question.arrayContent.length - 1) {
+            <button mat-button class="d-flex align-items-center me-1" type="button" (click)="moveLineDown(lineIndex)">
+              <mat-icon>arrow_downward</mat-icon>
+            </button>
+          }
+        </div>
+      }
+
+
+    </div>
+  </div>
+  @if (question.arrayContent.length === 0 && isEditing) {
+    <button class="d-flex align-items-center mt-1" (click)="addNewLine(-1)">
+      <mat-icon color="primary">add</mat-icon>
+      Line
+    </button>
+  }
+}

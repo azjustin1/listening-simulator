@@ -1,0 +1,79 @@
+@switch (question.type) {
+  @case (questionType.MULTIPLE_CHOICE) {
+    <div class="question">
+      <app-multiple-choices
+        [question]="question"
+        [isReadOnly]="isReadOnly"
+        [isEditing]="isEditing"
+        [isTesting]="isTesting"
+        [isExpandable]="true"
+        [(selectedId)]="selectedId"
+        (onSave)="onSaveQuestion()"
+        (onAnswer)="onAnswer.emit($event)"
+      ></app-multiple-choices>
+    </div>
+  }
+  @case (questionType.SHORT_ANSWER) {
+    <div class="question">
+      <app-short-answer
+        [question]="question"
+        [isReadOnly]="isReadOnly"
+        [isEditing]="isEditing"
+        [isTesting]="isTesting"
+        (onSave)="onSaveQuestion()"
+        (onAnswerChoice)="onAnswerChoice.emit($event)"
+      ></app-short-answer>
+    </div>
+  }
+  @case (questionType.DROPDOWN_ANSWER) {
+    <div class="question">
+      <app-dropdown-choices
+        [question]="question"
+        [isReadOnly]="isReadOnly"
+        [isEditing]="isEditing"
+        [isTesting]="isTesting"
+        [(selectedId)]="selectedId"
+        (onSave)="onSaveQuestion()"
+        (onAnswer)="onAnswer.emit($event)"
+      ></app-dropdown-choices>
+    </div>
+  }
+  @case (questionType.LABEL_ON_MAP) {
+    <div class="question">
+      <app-label-on-map
+        [question]="question"
+        [isReadOnly]="isReadOnly"
+        [isEditing]="isEditing"
+        [isTesting]="isTesting"
+        (onSave)="onSaveQuestion()"
+        (onAnswer)="onAnswer.emit($event)"
+      ></app-label-on-map>
+    </div>
+  }
+  @case (questionType.FILL_IN_THE_GAP) {
+    <app-fill-in-the-gap
+      [question]="question"
+      [isReadOnly]="isReadOnly"
+      [isEditing]="isEditing"
+      [isTesting]="isTesting"
+      [(selectedId)]="selectedId"
+      (onSave)="onSaveQuestion()"
+      (onAnswerChoice)="onAnswerChoice.emit($event)"
+      (onAnswer)="onAnswer.emit($event)"
+    >
+    </app-fill-in-the-gap>
+  }
+  @case (questionType.DRAG_AND_DROP_ANSWER) {
+    <app-drag-and-drop-answer
+      [question]="question"
+      [isReadOnly]="isReadOnly"
+      [isEditing]="isEditing"
+      [isTesting]="isTesting"
+      [(selectedId)]="selectedId"
+      (onSave)="onSaveQuestion()"
+      (onAnswer)="onAnswer.emit($event)"
+      (onAnswerChoice)="onAnswerChoice.emit($event)"
+    >
+    </app-drag-and-drop-answer>
+  }
+}

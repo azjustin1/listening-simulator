@@ -1,0 +1,39 @@
+<div class="d-flex">
+  <div class="col-6">
+    <span class="reading-content" [innerHTML]="question.content"></span>
+  </div>
+
+  <div class="ms-2">
+    @if (question.subQuestions![0]) {
+      <table>
+        <tr>
+          <th></th>
+          @for (choice of question.subQuestions![0].choices; track $index) {
+            <th>{{ choiceIndex[$index] }}</th>
+          }
+        </tr>
+        @for (question of question.subQuestions;
+          track $index;
+          let questionIndex = $index) {
+          <tr>
+            <td>
+              {{ question.content }}
+            </td>
+            @for (choice of question.choices;
+              track $index;
+              let choiceIndex = $index) {
+              <td
+                class="choice-item"
+                (click)="onSelectAnswer(questionIndex, choiceIndex)"
+              >
+                @if (question.answer.includes(choice.id)) {
+                  <mat-icon class="icon" color="primary">check</mat-icon>
+                }
+              </td>
+            }
+          </tr>
+        }
+      </table>
+    }
+  </div>
+</div>
