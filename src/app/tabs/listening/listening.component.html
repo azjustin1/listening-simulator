@@ -100,44 +100,43 @@
       <div class="d-flex mt-2">
         <button
           mat-raised-button
-          (click)="addQuestion(0)"
+          (click)="addQuestion(questionType.MULTIPLE_CHOICE)"
         >
           Multiple Choices
         </button>
-<!--        <button-->
-<!--          class="ms-1"-->
-<!--          mat-raised-button-->
-<!--          (click)="addQuestion(1)"-->
-<!--        >-->
-<!--          <mat-icon>add</mat-icon>-->
-<!--          Short Answer-->
-<!--        </button>-->
+        <!--        <button-->
+        <!--          class="ms-1"-->
+        <!--          mat-raised-button-->
+        <!--          (click)="addQuestion(1)"-->
+        <!--        >-->
+        <!--          <mat-icon>add</mat-icon>-->
+        <!--          Short Answer-->
+        <!--        </button>-->
         <button
           class="ms-1"
           mat-raised-button
-          (click)="addQuestion(3)"
+          (click)="addQuestion(questionType.DROPDOWN_ANSWER)"
         >
           Dropdown Choices
         </button>
         <button
           class="ms-1"
           mat-raised-button
-          (click)="addQuestion(4)"
+          (click)="addQuestion(questionType.LABEL_ON_MAP)"
         >
-          <mat-icon>add</mat-icon>
           Label On Map
         </button>
         <button
           class="ms-1"
           mat-raised-button
-          (click)="addQuestion(5)"
+          (click)="addQuestion(questionType.FILL_IN_THE_GAP)"
         >
           Fill In The Gap
         </button>
         <button
           class="ms-1"
           mat-raised-button
-          (click)="addQuestion(6)"
+          (click)="addQuestion(questionType.DRAG_AND_DROP_ANSWER)"
         >
           Drag And Drop
         </button>

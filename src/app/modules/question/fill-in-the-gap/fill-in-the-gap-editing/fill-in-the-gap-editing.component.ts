@@ -20,6 +20,7 @@ import { CHOICE_INDEX, INPUT_PATTERN } from "../../../../utils/constant";
 import { Choice } from '../../../../shared/models/choice.model';
 import { NgClass } from '@angular/common';
 import { MatButton } from '@angular/material/button';
+import { ExtractIdPipe } from "../../../../pipes/extract-id.pipe";
 
 @Component({
   selector: 'app-fill-in-the-gap-editing',
@@ -34,6 +35,7 @@ import { MatButton } from '@angular/material/button';
     FormsModule,
     NgClass,
     MatButton,
+    ExtractIdPipe
   ],
   templateUrl: './fill-in-the-gap-editing.component.html',
   styleUrl: './fill-in-the-gap-editing.component.scss',

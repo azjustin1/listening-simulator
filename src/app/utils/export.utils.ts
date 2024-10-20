@@ -239,6 +239,28 @@ export class ExportUtils {
     return htmlString;
   }
 
+  static exportDragAndDrop(question: Question) {
+    let htmlString = '';
+    const inputPattern = new RegExp(INPUT_PATTERN);
+    each(question.arrayContent, (line) => {
+      htmlString += '<div class="answer-container">';
+      each(line, (content) => {
+        if (IsInputPipe.prototype.transform(content)) {
+          const answer = question.choices.find(
+            (choice) => choice.id! === inputPattern.exec(content)![1],
+          )?.answer;
+          htmlString += `
+            <span class="answer-input">${answer ?? ''}</span>
+          `;
+        } else {
+          htmlString += `${content}`;
+        }
+      });
+      htmlString += '</div>';
+    });
+    return htmlString;
+  }
+
   static exportFeedback(result: Result) {
     let htmlString = `<h1>Bảng đánh giá</h1>
                         <div>

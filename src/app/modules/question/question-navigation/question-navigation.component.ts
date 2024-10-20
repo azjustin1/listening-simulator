@@ -11,16 +11,12 @@ import { QuestionIndex } from '../../../pages/full-test/full-test.component';
   templateUrl: './question-navigation.component.html',
   styleUrl: './question-navigation.component.scss',
 })
-export class QuestionNavigationComponent implements OnInit {
+export class QuestionNavigationComponent {
   @Output() selectedIdChange = new EventEmitter();
   @Input() parts: AbstractPart[] = [];
   @Input() mapAnsweredById: Record<string, QuestionIndex[]> = {};
   @Output() onSelectQuestion = new EventEmitter();
   @Input() selectedQuestionIndex!: QuestionIndex;
-
-  ngOnInit() {
-    console.log(this.mapAnsweredById)
-  }
 
   onClickQuestion(questionId: string, questionIndex: QuestionIndex) {
     this.selectedQuestionIndex = questionIndex;

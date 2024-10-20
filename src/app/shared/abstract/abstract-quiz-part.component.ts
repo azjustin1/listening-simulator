@@ -41,6 +41,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
   @Output() onAddQuestion = new EventEmitter();
   @Output() onPartAnswerQuestion = new EventEmitter();
   @Output() onPartAnswerChoice = new EventEmitter();
+  questionType = QuestionType;
   currentQuestion: Question = {
     id: '',
     content: '',
@@ -173,6 +174,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
         break;
       case QuestionType.FILL_IN_THE_GAP:
       case QuestionType.MATCHING_HEADER:
+      case QuestionType.DRAG_AND_DROP_ANSWER:
         this.currentQuestion = {
           id: id,
           content: '',

@@ -1,5 +1,5 @@
 @switch (question.type) {
-  @case (0) {
+  @case (questionType.MULTIPLE_CHOICE) {
     <div class="question">
       <app-multiple-choices
         [question]="question"
@@ -13,7 +13,7 @@
       ></app-multiple-choices>
     </div>
   }
-  @case (1) {
+  @case (questionType.SHORT_ANSWER) {
     <div class="question">
       <app-short-answer
         [question]="question"
@@ -25,7 +25,7 @@
       ></app-short-answer>
     </div>
   }
-  @case (3) {
+  @case (questionType.DROPDOWN_ANSWER) {
     <div class="question">
       <app-dropdown-choices
         [question]="question"
@@ -38,7 +38,7 @@
       ></app-dropdown-choices>
     </div>
   }
-  @case (4) {
+  @case (questionType.LABEL_ON_MAP) {
     <div class="question">
       <app-label-on-map
         [question]="question"
@@ -50,7 +50,7 @@
       ></app-label-on-map>
     </div>
   }
-  @case (5) {
+  @case (questionType.FILL_IN_THE_GAP) {
     <app-fill-in-the-gap
       [question]="question"
       [isReadOnly]="isReadOnly"
@@ -62,5 +62,18 @@
       (onAnswer)="onAnswer.emit($event)"
     >
     </app-fill-in-the-gap>
+  }
+  @case (questionType.DRAG_AND_DROP_ANSWER) {
+    <app-drag-and-drop-answer
+      [question]="question"
+      [isReadOnly]="isReadOnly"
+      [isEditing]="isEditing"
+      [isTesting]="isTesting"
+      [selectedQuestionId]="selectedQuestionId"
+      (onSave)="onSaveQuestion()"
+      (onAnswerChoice)="onAnswerChoice.emit($event)"
+      (onAnswer)="onAnswer.emit($event)"
+    >
+    </app-drag-and-drop-answer>
   }
 }
