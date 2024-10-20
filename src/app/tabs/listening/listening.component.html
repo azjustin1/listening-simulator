@@ -1,5 +1,4 @@
 <div class="mt-5">
-
   @if (data) {
     <div class="form-group">
       @if (isSaved || isTesting || isReadOnly) {
@@ -30,6 +29,7 @@
               [isEditing]="mapQuestionEditing[question.id]"
               [isReadOnly]="isReadOnly"
               [isTesting]="isTesting"
+              [selectedId]="selectedId"
               (onSave)="onSaveClick()"
               (onAnswer)="onPartAnswerQuestion.emit($event)"
               (onAnswerChoice)="onPartAnswerChoice.emit($event)"

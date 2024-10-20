@@ -15,7 +15,6 @@ import { ListeningService } from './listening.service';
 import { MatAccordion } from '@angular/material/expansion';
 import { QuestionNavigationComponent } from '../../modules/question/question-navigation/question-navigation.component';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
-import { Question } from '../../shared/models/question.model';
 
 @Component({
   selector: 'app-listening',
@@ -39,5 +38,4 @@ import { Question } from '../../shared/models/question.model';
 })
 export class ListeningComponent extends AbstractQuizPartComponent<Listening> {
   subscription: Subscription[] = [];
-  protected readonly console = console;
 }

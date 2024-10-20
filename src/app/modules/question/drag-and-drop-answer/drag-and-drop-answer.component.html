@@ -8,7 +8,9 @@
   <app-drag-and-drop-answer-testing
     [question]="question"
     [isTesting]="isTesting"
+    [(selectedId)]="selectedId"
     (onAnswer)="onAnswer.emit($event)"
+    (onAnswerChoice)="onAnswerChoice.emit($event)"
   ></app-drag-and-drop-answer-testing>
 }
 

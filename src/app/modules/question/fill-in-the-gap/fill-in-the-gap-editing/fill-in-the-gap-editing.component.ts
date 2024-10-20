@@ -16,11 +16,11 @@ import {
   omit,
   toArray,
 } from 'lodash-es';
-import { CHOICE_INDEX, INPUT_PATTERN } from "../../../../utils/constant";
+import { CHOICE_INDEX, INPUT_PATTERN } from '../../../../utils/constant';
 import { Choice } from '../../../../shared/models/choice.model';
 import { NgClass } from '@angular/common';
 import { MatButton } from '@angular/material/button';
-import { ExtractIdPipe } from "../../../../pipes/extract-id.pipe";
+import { ExtractIdPipe } from '../../../../pipes/extract-id.pipe';
 
 @Component({
   selector: 'app-fill-in-the-gap-editing',
@@ -35,7 +35,7 @@ import { ExtractIdPipe } from "../../../../pipes/extract-id.pipe";
     FormsModule,
     NgClass,
     MatButton,
-    ExtractIdPipe
+    ExtractIdPipe,
   ],
   templateUrl: './fill-in-the-gap-editing.component.html',
   styleUrl: './fill-in-the-gap-editing.component.scss',
@@ -95,11 +95,20 @@ export class FillInTheGapEditingComponent extends AbstractQuestionComponent {
         (choice) => choice.id !== inputId,
       );
     }
-    each(this.question.arrayContent![lineIndex], (_content, contentIndex) => {
-      this.updateMapChoiceId(lineIndex, contentIndex);
-    });
+    this.removeAssociatedChoice(this.question.arrayContent![lineIndex]);
     this.question.arrayContent!.splice(lineIndex, 1);
     this.initMapSaveText();
+  }
+
+  private removeAssociatedChoice(arrayContent: string[]) {
+    each(arrayContent, (content) => {
+      if (IsInputPipe.prototype.transform(content)) {
+        this.mapChoiceById = omit(
+          this.mapChoiceById,
+          RegExp(INPUT_PATTERN).exec(content)![1],
+        );
+      }
+    });
   }
 
   moveLineUp(index: number) {

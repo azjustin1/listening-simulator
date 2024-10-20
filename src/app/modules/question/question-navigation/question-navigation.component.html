@@ -7,7 +7,7 @@
       @for (questionIndex of question.value; track $index) {
         <div
           [ngClass]="{
-                'active': selectedQuestionIndex && questionIndex.index === selectedQuestionIndex.index,
+                'active': selectedQuestionIndex() && questionIndex.index === selectedQuestionIndex()!.index,
                 'answered': questionIndex.isAnswer
                 }"
           (click)="onClickQuestion(question.key, questionIndex)"

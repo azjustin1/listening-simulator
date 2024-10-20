@@ -56,19 +56,16 @@
                     }
                   }
                 </div>
+                @if (mapShowActionByIndex[lineIndex][textIndex]) {
+                  <div class="d-flex justify-content-center align-items-center">
+                    <button class="d-flex align-items-center ms-1" (click)="addInput(lineIndex, textIndex + 1)">
+                      <mat-icon color="primary">add</mat-icon>
+                      Answer
+                    </button>
+                  </div>
+                }
               }
-              @if (mapShowActionByIndex[lineIndex][textIndex]) {
-                <div class="d-flex justify-content-center align-items-center">
-                  <button class="d-flex align-items-center ms-1" (click)="addText(lineIndex, textIndex + 1)">
-                    <mat-icon color="primary">add</mat-icon>
-                    Text
-                  </button>
-                  <button class="d-flex align-items-center ms-1" (click)="addInput(lineIndex, textIndex + 1)">
-                    <mat-icon color="primary">add</mat-icon>
-                    Answer
-                  </button>
-                </div>
-              }
+
             </div>
           }
         </div>

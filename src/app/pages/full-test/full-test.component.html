@@ -71,14 +71,17 @@ result.studentName !== "") {
               [data]="result.listeningParts[selectedListeningPart]"
               [isTesting]="true"
               [isStart]="isStart"
+              [(selectedId)]="selectedId"
               (onStartChange)="onStartPart()"
               (onPartAnswerQuestion)="onMapAnsweredQuestion($event)"
+              (onPartAnswerChoice)="onMapAnswerChoice($event)"
             ></app-listening>
           </div>
           <app-question-navigation
             [parts]="result.listeningParts"
             [mapAnsweredById]="mapAnsweredQuestionId"
-            [selectedQuestionIndex]="selectedQuestionIndex"
+            [(selectedId)]="selectedId"
+            [(selectedQuestionIndex)]="selectedQuestionIndex"
             (onSelectQuestion)="navigateToQuestion($event)"
           ></app-question-navigation>
         }
@@ -103,18 +106,18 @@ result.studentName !== "") {
               [data]="result.readingParts[selectedReadingPart]"
               [isTesting]="true"
               [isStart]="isStart"
-              [selectedQuestionId]="selectedQuestionId"
+              [(selectedId)]="selectedId"
               (onStartChange)="onStartPart()"
               (onPartAnswerQuestion)="onMapAnsweredQuestion($event)"
               (onPartAnswerChoice)="onMapAnswerChoice($event)"
             ></app-reading>
           </div>
-
         }
         <app-question-navigation
           [parts]="result.readingParts"
           [mapAnsweredById]="mapAnsweredQuestionId"
-          [selectedQuestionIndex]="selectedQuestionIndex"
+          [(selectedId)]="selectedId"
+          [(selectedQuestionIndex)]="selectedQuestionIndex"
           (onSelectQuestion)="navigateToQuestion($event)"
         ></app-question-navigation>
         <button

@@ -89,19 +89,19 @@
     </mat-card-content>
   </mat-card>
 }
-<button
-  class="mt-2"
-  mat-raised-button
-  color="primary"
-  (click)="back()"
->
-  Back
-</button>
-<button
-
-  mat-raised-button
-  (click)="export()"
-  style="margin: 16px 0 0 16px"
->
-  Download
-</button>
+<div class="d-flex align-items-center mt-2">
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="back()"
+  >
+    Back
+  </button>
+  <button
+    class="ms-2"
+    mat-raised-button
+    (click)="export()"
+  >
+    Download
+  </button>
+</div>

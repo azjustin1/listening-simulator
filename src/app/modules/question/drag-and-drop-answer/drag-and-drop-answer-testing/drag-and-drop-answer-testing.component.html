@@ -1,4 +1,5 @@
 @if (question.arrayContent) {
+  <h1>{{ selectedId() }}</h1>
   <div class="d-flex flex-column">
     <b><span [innerHTML]="question.content"></span></b>
     <div class="d-flex flex-column mt-2 ms-2">
@@ -7,12 +8,16 @@
           @for (content of line; track $index) {
             <div class="d-flex align-items-center">
               @if (content | isInput) {
-                <div [draggable]="true"
-                     (dragstart)="onDragStart($event, mapChoiceById[content.match(inputPattern)![1]].answer!)"
-                     class="drop-container" [id]="mapChoiceById[content | extractId].id"
-                     (drop)="onDropAnswer($event, mapChoiceById[content.match(inputPattern)![1]])"
-                     (dragover)="onDragOver($event, content.match(inputPattern)![1])"
-                     (dragleave)="removeDropOver($event, content.match(inputPattern)![1])">
+                <div
+                  class="drop-container"
+                  [ngClass]="{'active': selectedId() === content.match(inputPattern)![1]}"
+                  [id]="mapChoiceById[content | extractId].id"
+                  [draggable]="true"
+                  (dragstart)="onDragStart($event, mapChoiceById[content.match(inputPattern)![1]].answer!)"
+                  (click)="onAnswerChoice.emit(mapChoiceById[content.match(inputPattern)![1]])"
+                  (drop)="onDropAnswer($event, mapChoiceById[content.match(inputPattern)![1]])"
+                  (dragover)="onDragOver($event, content.match(inputPattern)![1])"
+                  (dragleave)="removeDropOver($event, content.match(inputPattern)![1])">
                   {{ mapAnswerById[mapChoiceById[content | extractId].answer!] ? mapAnswerById[mapChoiceById[content | extractId].answer!].content : '' }}
                 </div>
               } @else {
@@ -25,18 +30,18 @@
         </div>
       }
     </div>
-    <div id="container-right" class="p-1">
+    <div id="container-right" class="d-flex flex-column p-1">
       @for (answer of answers; track $index) {
-        <div class="border border-black w-25 my-2"
-             draggable="true"
-             [id]="answer.id"
-             (dragstart)="onDragStart($event, answer.id)"
-             (drop)="onAnswerBackDrop($event)"
-             (dragover)="onAnswerBackDragOver($event)"
-             (dragleave)="onAnswerBackDragLeave($event)"
+        <mat-card class="w-50 p-2 my-2"
+                  draggable="true"
+                  [id]="answer.id"
+                  (dragstart)="onDragStart($event, answer.id)"
+                  (drop)="onAnswerBackDrop($event)"
+                  (dragover)="onAnswerBackDragOver($event)"
+                  (dragleave)="onAnswerBackDragLeave($event)"
         >
           {{ answer.content }}
-        </div>
+        </mat-card>
       }
     </div>
   </div>

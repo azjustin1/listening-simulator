@@ -3,11 +3,12 @@ import {
   Component,
   EventEmitter,
   inject,
-  Input,
+  input,
+  Input, model,
   OnChanges,
   Output,
-  SimpleChanges,
-} from '@angular/core';
+  SimpleChanges
+} from "@angular/core";
 import { AngularEditorConfig, UploadResponse } from '@wfpena/angular-wysiwyg';
 import { debounce, each, isNull } from 'lodash-es';
 import { map } from 'rxjs';
@@ -16,8 +17,6 @@ import { Question } from '../models/question.model';
 import { CommonUtils } from '../../utils/common-utils';
 import { environment } from '../../../environments/environment';
 import { BASE64_IMAGE_REGEX } from '../../utils/constant';
-import { QuestionType } from '../enums/question-type.enum';
-import { QuestionIndex } from '../../pages/full-test/full-test.component';
 
 @Component({
   template: '',
@@ -29,7 +28,7 @@ export abstract class AbstractQuestionComponent implements OnChanges {
   @Input() isReadOnly: boolean = false;
   @Input() isTesting: boolean = false;
   @Input() isExpandable: boolean = true;
-  @Input() selectedQuestionId = '';
+  selectedId = model();
   @Output() onSave = new EventEmitter();
   @Output() onEdit = new EventEmitter();
   @Output() onAnswer = new EventEmitter();

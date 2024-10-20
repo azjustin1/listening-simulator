@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, SimpleChanges } from "@angular/core";
 import { MatIconModule } from '@angular/material/icon';
 import { AbstractQuestionComponent } from '../../shared/abstract/abstract-question.component';
 import { DropdownChoicesComponent } from './dropdown-choices/dropdown-choices.component';

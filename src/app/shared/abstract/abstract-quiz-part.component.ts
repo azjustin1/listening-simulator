@@ -2,13 +2,13 @@ import { HttpResponse } from '@angular/common/http';
 import {
   Component,
   EventEmitter,
-  inject,
-  Input,
+  inject, input,
+  Input, model,
   OnChanges,
   OnDestroy,
   Output,
-  SimpleChanges,
-} from '@angular/core';
+  SimpleChanges
+} from "@angular/core";
 import { AngularEditorConfig, UploadResponse } from '@wfpena/angular-wysiwyg';
 import { clone, cloneDeep, debounce, each, isNull, mapValues } from 'lodash-es';
 import { map, Subscription } from 'rxjs';
@@ -33,7 +33,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
   @Input() isReadOnly: boolean = false;
   @Input() isSaved: boolean = false;
   @Input() isStart: boolean = false;
-  @Input() selectedQuestionId = '';
+  selectedId = model('');
   @Output() onStartChange = new EventEmitter();
   @Output() onTimeout = new EventEmitter();
   @Output() onSave = new EventEmitter();

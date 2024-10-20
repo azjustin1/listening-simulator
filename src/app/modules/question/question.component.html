@@ -7,7 +7,7 @@
         [isEditing]="isEditing"
         [isTesting]="isTesting"
         [isExpandable]="true"
-        [selectedQuestionId]="selectedQuestionId"
+        [(selectedId)]="selectedId"
         (onSave)="onSaveQuestion()"
         (onAnswer)="onAnswer.emit($event)"
       ></app-multiple-choices>
@@ -32,7 +32,7 @@
         [isReadOnly]="isReadOnly"
         [isEditing]="isEditing"
         [isTesting]="isTesting"
-        [selectedQuestionId]="selectedQuestionId"
+        [(selectedId)]="selectedId"
         (onSave)="onSaveQuestion()"
         (onAnswer)="onAnswer.emit($event)"
       ></app-dropdown-choices>
@@ -56,7 +56,7 @@
       [isReadOnly]="isReadOnly"
       [isEditing]="isEditing"
       [isTesting]="isTesting"
-      [selectedQuestionId]="selectedQuestionId"
+      [(selectedId)]="selectedId"
       (onSave)="onSaveQuestion()"
       (onAnswerChoice)="onAnswerChoice.emit($event)"
       (onAnswer)="onAnswer.emit($event)"
@@ -69,10 +69,10 @@
       [isReadOnly]="isReadOnly"
       [isEditing]="isEditing"
       [isTesting]="isTesting"
-      [selectedQuestionId]="selectedQuestionId"
+      [(selectedId)]="selectedId"
       (onSave)="onSaveQuestion()"
-      (onAnswerChoice)="onAnswerChoice.emit($event)"
       (onAnswer)="onAnswer.emit($event)"
+      (onAnswerChoice)="onAnswerChoice.emit($event)"
     >
     </app-drag-and-drop-answer>
   }

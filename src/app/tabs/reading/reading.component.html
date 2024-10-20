@@ -43,8 +43,8 @@
             [isEditing]="mapQuestionEditing[question.id]"
             [isReadOnly]="isReadOnly"
             [isTesting]="isTesting"
-            [selectedQuestionId]="selectedQuestionId"
             [isExpandable]="true"
+            [(selectedId)]="selectedId"
             (onSave)="onSaveClick()"
             (onAnswer)="onPartAnswerQuestion.emit($event)"
             (onAnswerChoice)="onPartAnswerChoice.emit($event)"
@@ -113,21 +113,21 @@
           <button
             class="d-flex"
             mat-raised-button
-            (click)="addQuestion(0)"
+            (click)="addQuestion(questionType.DROPDOWN_ANSWER)"
           >
             Multiple Choices
           </button>
-<!--          <button-->
-<!--            class="d-flex ms-1"-->
-<!--            mat-raised-button-->
-<!--            (click)="addQuestion(1)"-->
-<!--          >-->
-<!--            Short Answer-->
-<!--          </button>-->
+          <!--          <button-->
+          <!--            class="d-flex ms-1"-->
+          <!--            mat-raised-button-->
+          <!--            (click)="addQuestion(1)"-->
+          <!--          >-->
+          <!--            Short Answer-->
+          <!--          </button>-->
           <button
             class="d-flex ms-1"
             mat-raised-button
-            (click)="addQuestion(3)"
+            (click)="addQuestion(questionType.DROPDOWN_ANSWER)"
           >
             Dropdown Choices
           </button>
@@ -141,7 +141,7 @@
           <button
             class="d-flex ms-1"
             mat-raised-button
-            (click)="addQuestion(5)"
+            (click)="addQuestion(questionType.FILL_IN_THE_GAP)"
           >
             Fill In The Gap
           </button>
@@ -149,7 +149,7 @@
           <button
             class="d-flex ms-1"
             mat-raised-button
-            (click)="addQuestion(6)"
+            (click)="addQuestion(questionType.DRAG_AND_DROP_ANSWER)"
           >
             Drag And Drop
           </button>

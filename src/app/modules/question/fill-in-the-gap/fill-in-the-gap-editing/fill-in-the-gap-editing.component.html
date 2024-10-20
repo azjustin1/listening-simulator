@@ -15,42 +15,39 @@
         <div class="d-flex flex-wrap align-items-center">
           @for (content of line; track $index; let textIndex = $index) {
             <div class="d-flex justify-content-center align-items-center mt-3">
-              @if (mapShowActionByIndex[lineIndex][textIndex]) {
-                <button class="d-flex align-items-center ms-1" (click)="addText(lineIndex, textIndex + 1)">
-                  <mat-icon color="primary">add</mat-icon>
-                  Text
-                </button>
-                <button class="d-flex align-items-center ms-1" (click)="addInput(lineIndex, textIndex + 1)">
-                  <mat-icon color="primary">add</mat-icon>
-                  Input
-                </button>
-              }
               @if (content | isInput) {
-                <div class="d-flex ms-1">
+                <div class="d-flex mx-1">
                   @if (mapSaveTextByIndex[lineIndex][textIndex]) {
-                    <div class="ms-1 text-center" (click)="onEditInput(lineIndex, textIndex)">
+                    <div class="text-center" (click)="onEditInput(lineIndex, textIndex)">
                       <input
                         [value]="mapChoiceById[content | extractId].correctAnswer">
                     </div>
                   } @else {
-                    <input
-                      class="me-1"
-                      [(ngModel)]="mapChoiceById[content.match(inputPattern)![1]].correctAnswer"
-                    />
-                    @if (mapShowActionByIndex[lineIndex][textIndex]) {
-                      <div class="d-flex">
-                        @if (mapSaveTextByIndex[lineIndex][textIndex]) {
-                          <mat-icon color="primary" (click)="onEditText(lineIndex, textIndex)">
-                            edit
-                          </mat-icon>
-                        } @else {
-                          <mat-icon color="primary" (click)="onSaveText(lineIndex, textIndex)">
-                            check
-                          </mat-icon>
-                        }
-                        <mat-icon color="warn" (click)="onDeleteText(lineIndex, textIndex)">delete</mat-icon>
-                      </div>
-                    }
+                    <div class="d-flex align-items-center">
+                      <input
+                        class="mx-1"
+                        [(ngModel)]="mapChoiceById[content.match(inputPattern)![1]].correctAnswer"
+                      />
+                      @if (mapShowActionByIndex[lineIndex][textIndex]) {
+                        <div class="d-flex">
+                          @if (mapSaveTextByIndex[lineIndex][textIndex]) {
+                            <mat-icon color="primary" (click)="onEditText(lineIndex, textIndex)">
+                              edit
+                            </mat-icon>
+                          } @else {
+                            <mat-icon color="primary" (click)="onSaveText(lineIndex, textIndex)">
+                              check
+                            </mat-icon>
+                          }
+                          <mat-icon color="warn" (click)="onDeleteText(lineIndex, textIndex)">delete</mat-icon>
+                          <button class="d-flex align-items-center ms-1" (click)="addText(lineIndex, textIndex + 1)">
+                            <mat-icon color="primary">add</mat-icon>
+                            Text
+                          </button>
+                        </div>
+
+                      }
+                    </div>
                   }
                 </div>
               } @else {
@@ -82,16 +79,13 @@
                     </div>
                   }
                 }
-              }
-              @if (mapShowActionByIndex[lineIndex][textIndex]) {
-                <button class="d-flex align-items-center ms-1" (click)="addText(lineIndex, textIndex + 1)">
-                  <mat-icon color="primary">add</mat-icon>
-                  Text
-                </button>
-                <button class="d-flex align-items-center ms-1" (click)="addInput(lineIndex, textIndex + 1)">
-                  <mat-icon color="primary">add</mat-icon>
-                  Input
-                </button>
+                @if (mapShowActionByIndex[lineIndex][textIndex]) {
+
+                  <button class="d-flex align-items-center ms-1" (click)="addInput(lineIndex, textIndex + 1)">
+                    <mat-icon color="primary">add</mat-icon>
+                    Input
+                  </button>
+                }
               }
             </div>
 
@@ -119,13 +113,14 @@
           }
         </div>
       }
-      @if (question.arrayContent.length === 0 && isEditing) {
-        <button class="d-flex align-items-center me-1" (click)="addNewLine(-1)">
-          <mat-icon color="primary">add</mat-icon>
-          Line
-        </button>
-      }
+
 
     </div>
   </div>
+  @if (question.arrayContent.length === 0 && isEditing) {
+    <button class="d-flex align-items-center mt-1" (click)="addNewLine(-1)">
+      <mat-icon color="primary">add</mat-icon>
+      Line
+    </button>
+  }
 }

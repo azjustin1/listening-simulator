@@ -37,9 +37,11 @@ export class ExportUtils {
         margin-left: 0.5rem;
       }
       .answer-container {
+        display: flex;
         margin: 1rem 0;
       }
       .answer-input {
+        min-width: 200px;
         border: 1px solid black;
         padding: 0 .5rem;
         margin: 0 .5rem;
@@ -109,7 +111,6 @@ export class ExportUtils {
       });
       htmlString += '<hr>';
     });
-    // this.exportFile(result, htmlString, 'Listening');
     return (htmlString += this.endHTML());
   }
 
@@ -265,7 +266,6 @@ export class ExportUtils {
       });
       htmlString += '</div>';
     });
-    console.log(htmlString);
     return htmlString;
   }
 

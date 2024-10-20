@@ -35,10 +35,6 @@ import { ExtractIdPipe } from '../../../../pipes/extract-id.pipe';
 export class DragAndDropAnswerEditingComponent extends FillInTheGapEditingComponent {
   mapEditingById: Record<string, boolean> = {};
 
-  override ngOnInit() {
-    super.ngOnInit();
-  }
-
   addAnswer() {
     if (isUndefined(this.question.answers)) {
       this.question.answers = [];
@@ -55,9 +51,5 @@ export class DragAndDropAnswerEditingComponent extends FillInTheGapEditingCompon
 
   deleteAnswer(index: number) {
     this.question.answers?.splice(index, 1);
-  }
-
-  onSelectAnswer(event: any, choiceId: string) {
-    console.log(this.mapChoiceById);
   }
 }

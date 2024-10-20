@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, SimpleChanges } from "@angular/core";
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { IsInputPipe } from '../../fill-in-the-gap/is-input.pipe';
 import { MatButton } from '@angular/material/button';
@@ -7,9 +7,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FillInTheGapTestingComponent } from '../../fill-in-the-gap/fill-in-the-gap-testing/fill-in-the-gap-testing.component';
 import { ExtractIdPipe } from '../../../../pipes/extract-id.pipe';
 import { Choice } from '../../../../shared/models/choice.model';
-import { clone, cloneDeep, each, filter, map, sortBy } from 'lodash-es';
-import { JsonPipe } from '@angular/common';
+import { each, filter, map, sortBy } from 'lodash-es';
+import { JsonPipe, NgClass } from "@angular/common";
 import { ChoiceContentPipe } from '../../matching-header/choice-content.pipe';
+import { MatCard } from '@angular/material/card';
 
 const DATA_TRANSFER_KEY = 'answerId';
 const DROP_OVER_CLASS = 'drop-over';
@@ -23,10 +24,12 @@ const CONTAINER_RIGHT_ID = 'container-right';
     IsInputPipe,
     MatButton,
     MatIcon,
+    MatCard,
     ReactiveFormsModule,
     FormsModule,
     ExtractIdPipe,
     JsonPipe,
+    NgClass,
   ],
   templateUrl: './drag-and-drop-answer-testing.component.html',
   styleUrl: './drag-and-drop-answer-testing.component.scss',
@@ -45,6 +48,11 @@ export class DragAndDropAnswerTestingComponent extends FillInTheGapTestingCompon
     each(this.question.answers, (answer) => {
       this.mapAnswerById[answer.id] = answer;
     });
+  }
+
+  override ngOnChanges(changes: SimpleChanges) {
+    super.ngOnChanges(changes);
+    console.log(changes['selectedChoiceId']);
   }
 
   onDragStart(event: DragEvent, answerId: string) {
@@ -71,10 +79,9 @@ export class DragAndDropAnswerTestingComponent extends FillInTheGapTestingCompon
       this.mapChoiceById[choice.id].answer = answer.id;
     }
     this.answers = filter(this.answers, (a) => a.id !== answer.id);
-    console.log(this.answers);
     this.removeDropOverClass(choice.id);
-    // this.remapDroppedAnswers();
-    // }
+    this.onAnswerChoice.emit(choice);
+    this.onAnswer.emit(this.question);
   }
 
   onAnswerBackDrop(event: DragEvent) {
@@ -83,18 +90,22 @@ export class DragAndDropAnswerTestingComponent extends FillInTheGapTestingCompon
       event.dataTransfer!.getData(DATA_TRANSFER_KEY),
       this.question.answers!,
     );
+    let answerChoice;
     if (answer) {
       each(this.question.choices, (choice) => {
         if (choice.answer === answer.id) {
           choice.answer = '';
+          answerChoice = choice;
         }
       });
+      this.onAnswerChoice.emit(answerChoice);
       if (!map(this.answers, (answer) => answer.id).includes(answer.id)) {
         this.answers.push(answer);
         this.answers = sortBy(this.answers, ['id']);
       }
       this.removeDropOverClass(CONTAINER_RIGHT_ID);
     }
+    this.onAnswer.emit(this.question);
   }
 
   onAnswerBackDragOver(event: DragEvent) {
@@ -116,7 +127,6 @@ export class DragAndDropAnswerTestingComponent extends FillInTheGapTestingCompon
 
   removeDropOverClass(elementId: string) {
     const dropZone = document.getElementById(elementId) as HTMLElement;
-    console.log(dropZone)
     if (dropZone) {
       dropZone.classList.remove(DROP_OVER_CLASS);
     }

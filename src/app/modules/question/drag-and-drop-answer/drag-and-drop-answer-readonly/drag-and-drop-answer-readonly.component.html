@@ -38,9 +38,8 @@
             } @else {
               <div
                 class="choice-content"
-                [ngClass]="{'edit': isEditing}"
-              >
-                <b>{{ content }}</b>
+                [ngClass]="{'edit': isEditing}">
+                {{ content }}
               </div>
             }
           </div>
@@ -50,8 +49,8 @@
     }
   </div>
   @for (answer of question.answers; track $index) {
-    <div class="border border-black p-1 m-1">
+    <mat-card class="p-1 my-2">
       {{ answer.content }}
-    </div>
+    </mat-card>
   }
 }

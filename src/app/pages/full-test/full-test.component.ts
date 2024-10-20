@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  signal,
+  ViewChild,
+  WritableSignal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -133,9 +140,10 @@ export class FullTestComponent extends AddOrEditQuizComponent {
     2: true,
   };
   mapAnsweredQuestionId: Record<string, QuestionIndex[]> = {};
-  selectedQuestionId: string = '';
-  selectedQuestionIndex!: QuestionIndex;
+  selectedId = signal<string>('');
+  selectedQuestionIndex = signal<QuestionIndex | null>(null);
   mapAnswerByChoiceId: { [key: string]: string } = {};
+  selectedChoiceId = '';
 
   constructor(
     protected override quizService: QuizService,
@@ -480,7 +488,6 @@ export class FullTestComponent extends AddOrEditQuizComponent {
       default:
         break;
     }
-    this.selectedQuestionId = id;
   }
 
   generateMapAnswered() {
@@ -501,7 +508,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
         }
         switch (question.type) {
           case QuestionType.SHORT_ANSWER:
-            break;
+          case QuestionType.DRAG_AND_DROP_ANSWER:
           case QuestionType.FILL_IN_THE_GAP:
             each(question.choices, (choice) => {
               this.mapAnsweredQuestionId[question.id].push({
@@ -512,6 +519,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
                   !isEmpty(choice.answer) && !isUndefined(choice.answer),
               });
               this.mapAnswerByChoiceId[choice.id] = '';
+              this.selectedChoiceId = choice.id;
               index++;
             });
             break;
@@ -567,7 +575,8 @@ export class FullTestComponent extends AddOrEditQuizComponent {
     if (this.mapAnsweredQuestionId[question.id]) {
       if (
         question.type === QuestionType.SHORT_ANSWER ||
-        question.type === QuestionType.FILL_IN_THE_GAP
+        question.type === QuestionType.FILL_IN_THE_GAP ||
+        question.type === QuestionType.DRAG_AND_DROP_ANSWER
       ) {
         each(question.choices, (choice) => {
           this.mapAnswerByChoiceId[choice.id] = clone(choice.answer!);
@@ -599,18 +608,19 @@ export class FullTestComponent extends AddOrEditQuizComponent {
         }
         this.mapAnsweredQuestionId[question.id] = questionIndexes;
         if (!isEmpty(questionIndexes) && !isEmpty(questionIndexes[0].answer)) {
-          this.selectedQuestionIndex =
-            questionIndexes[questionIndexes[0].answer.length - 1];
+          this.selectedQuestionIndex.set(
+            questionIndexes[questionIndexes[0].answer.length - 1],
+          );
         }
       }
     }
   }
 
   onMapAnswerChoice(choice: Choice) {
-    this.selectedQuestionIndex = flatMap(
-      toArray(this.mapAnsweredQuestionId),
-    ).find(
-      (questionIndex) => questionIndex.id && questionIndex.id === choice.id,
-    )!;
+    this.selectedQuestionIndex.set(
+      flatMap(toArray(this.mapAnsweredQuestionId)).find(
+        (questionIndex) => questionIndex.id && questionIndex.id === choice.id,
+      )!,
+    );
   }
 }

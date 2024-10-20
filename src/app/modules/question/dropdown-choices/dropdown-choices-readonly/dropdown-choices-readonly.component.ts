@@ -13,7 +13,5 @@ import { CorrectDropdownPipe } from "../../../../pipes/correct-dropdown.pipe";
 export class DropdownChoicesReadonlyComponent extends DropdownChoicesEditingComponent {
   override ngOnInit() {
     super.ngOnInit();
-    console.log(this.question.answer, this.question.correctAnswer)
-    console.log(this.question.answer[0] === this.question.correctAnswer[0])
   }
 }
