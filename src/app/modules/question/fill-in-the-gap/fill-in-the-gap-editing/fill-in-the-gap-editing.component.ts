@@ -172,6 +172,7 @@ export class FillInTheGapEditingComponent extends AbstractQuestionComponent {
     }
     this.initMapSaveText();
     this.saveAllEditing();
+    this.question.choices = toArray(this.mapChoiceById);
     this.onSave.emit();
   }
 

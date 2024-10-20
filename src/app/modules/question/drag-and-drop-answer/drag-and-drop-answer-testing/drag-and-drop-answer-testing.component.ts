@@ -50,11 +50,6 @@ export class DragAndDropAnswerTestingComponent extends FillInTheGapTestingCompon
     });
   }
 
-  override ngOnChanges(changes: SimpleChanges) {
-    super.ngOnChanges(changes);
-    console.log(changes['selectedChoiceId']);
-  }
-
   onDragStart(event: DragEvent, answerId: string) {
     event.dataTransfer!.dropEffect = 'move';
     event.dataTransfer!.setData(DATA_TRANSFER_KEY, answerId);

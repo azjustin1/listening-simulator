@@ -13,8 +13,6 @@ export class TextSelectionDirective {
     const selectedText = this.getSelectedText();
     if (selectedText) {
       if (this.isTextAlreadyHighlighted(selectedText)) {
-        console.log('Highlighted');
-        // this.removeHighlight(selectedText);
       } else {
         this.highlightSelection(this.appTextSelection);
       }
@@ -74,9 +72,6 @@ export class TextSelectionDirective {
       const input = document.createElement('input');
       const button = document.createElement('div');
       button.textContent = '❌';
-      input.onchange = (event: Event) => {
-        console.log(event);
-      };
       range.surroundContents(span);
       range.collapse(false);
       range.insertNode(input);
