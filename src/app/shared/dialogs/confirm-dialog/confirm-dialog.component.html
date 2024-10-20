@@ -10,7 +10,7 @@
   >
     Ok
   </button>
-  @if (!isWarning) {
+  @if (isWarning) {
   <button mat-button (click)="onNoClick()" color="error">Cancel</button>
   }
 </mat-dialog-actions>

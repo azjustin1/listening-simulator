@@ -32,11 +32,10 @@ router.post("/upload", upload.single("file"), (req, res) => {
     res.status(400).send("No file uploaded or an error occurred.");
   }
 });
-
 router.get("/:filename", (req, res) => {
   const filename = req.params.filename;
   const filePath = path.join(__dirname, "../upload", filename);
-  console.log(filePath)
+  console.log(filePath);
   // Check if the file exists
   if (fs.existsSync(filePath)) {
     // Set the appropriate headers for file download
@@ -74,7 +73,7 @@ router.post("/generate-pdf", async (req, res) => {
       `../results/${studentName}_${quizName}_${currentDate}`,
     );
     if (!fs.existsSync(dir)) {
-      await fs.mkdirSync(dir, { recursive: true });
+      fs.mkdirSync(dir, { recursive: true });
     }
     const fileName = `${studentName}_${type}_${quizName}_${currentDate}.pdf`;
     const outputPath = path.join(dir, fileName);
