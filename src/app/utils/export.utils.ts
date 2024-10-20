@@ -91,6 +91,9 @@ export class ExportUtils {
       case QuestionType.FILL_IN_THE_GAP:
         htmlString += this.exportFillInTheGap(question);
         break;
+      case QuestionType.DRAG_AND_DROP_ANSWER:
+        htmlString += this.exportDragAndDrop(question);
+        break;
       default:
         break;
     }
@@ -160,7 +163,6 @@ export class ExportUtils {
       htmlString += `<tr>
         <td>${question.content}</td>
       `;
-
       each(question.choices, (choice) => {
         htmlString += `
           <td>${question.answer.includes(choice.id) ? '✅' : ''}</td>
@@ -246,38 +248,45 @@ export class ExportUtils {
       htmlString += '<div class="answer-container">';
       each(line, (content) => {
         if (IsInputPipe.prototype.transform(content)) {
-          const answer = question.choices.find(
+          const choice = question.choices.find(
             (choice) => choice.id! === inputPattern.exec(content)![1],
-          )?.answer;
-          htmlString += `
-            <span class="answer-input">${answer ?? ''}</span>
+          );
+          if (choice) {
+            const answer = question.answers!.find(
+              (answer) => answer.id === choice.answer,
+            );
+            htmlString += `
+            <span class="answer-input">${answer?.content ?? ''}</span>
           `;
+          }
         } else {
           htmlString += `${content}`;
         }
       });
       htmlString += '</div>';
     });
+    console.log(htmlString);
     return htmlString;
   }
 
   static exportFeedback(result: Result) {
-    let htmlString = `<h1>Bảng đánh giá</h1>
-                        <div>
-                          <b>Tên học viên:</b> ${result.studentName}
-                        </div>
-                        <div>
-                          <b>Đánh giá:</b>${result.feedback?.rating.toString()}/5
-                        </div>
-                        ${
-                          result.feedback?.rating! < 4
-                            ? `
-                        <div>
-                          <b>Góp ý:</b> ${result.feedback?.content}
-                        </div>`
-                            : ''
-                        }
-                   `;
+    let htmlString = `
+      <h1>Bảng đánh giá</h1>
+      <div>
+        <b>Tên học viên:</b> ${result.studentName}
+      </div>
+      <div>
+        <b>Đánh giá:</b>${result.feedback?.rating.toString()}/5
+      </div>
+      ${
+        result.feedback?.rating! < 4
+          ? `
+      <div>
+        <b>Góp ý:</b> ${result.feedback?.content}
+      </div>`
+          : ''
+      }
+    `;
     return htmlString;
   }
 

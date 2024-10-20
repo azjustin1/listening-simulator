@@ -12,19 +12,16 @@ import { ShortAnswerComponent } from '../../question/short-answer/short-answer.c
 import { WritingComponent } from '../../../tabs/writing/writing.component';
 import { BandScorePipe } from '../band-score.pipe';
 import { ResultService } from '../result.service';
-import { FeedbackComponent } from '../../feedback/feedback.component';
 import {
   MatDialog,
   MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
 import { ExportUtils } from '../../../utils/export.utils';
-import { FileService } from '../../file.service';
 import { forkJoin } from 'rxjs';
-import { ConfirmDialogComponent } from '../../dialog/confirm-dialog/confirm-dialog.component';
-import { error } from 'winston';
 import { FeedbackDialog } from '../../../shared/dialogs/feedback-dialog/feedback-dialog.component';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { FileService } from "../../../file.service";
+import { ConfirmDialogComponent } from "../../../shared/dialogs/confirm-dialog/confirm-dialog.component";
 
 @Component({
   selector: 'app-result-detail',
@@ -44,7 +41,7 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
     MatDialogModule,
   ],
   providers: [{ provide: MatDialogRef, useValue: {} }],
-  templateUrl: './result-detail.component.html'
+  templateUrl: './result-detail.component.html',
 })
 export class ResultDetailComponent {
   result: Result = {
@@ -67,8 +64,8 @@ export class ResultDetailComponent {
   selectedListeningPart = 0;
   selectedReadingPart = 0;
   selectedWritingPart = 0;
-  fileService = inject(FileService);
-  dialog = inject(MatDialog);
+  fileService: FileService = inject(FileService);
+  dialog: MatDialog = inject(MatDialog);
 
   constructor(
     private route: ActivatedRoute,
