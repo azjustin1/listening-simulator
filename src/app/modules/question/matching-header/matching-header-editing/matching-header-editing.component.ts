@@ -13,7 +13,7 @@ import { Question } from '../../../../shared/models/question.model';
 import { QuestionType } from '../../../../shared/enums/question-type.enum';
 import { each, isUndefined, mapValues, omit } from 'lodash-es';
 import { Choice } from '../../../../shared/models/choice.model';
-import { NgClass } from "@angular/common";
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-matching-header-editing',

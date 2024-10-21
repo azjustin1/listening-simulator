@@ -104,7 +104,7 @@
           (click)="onAddListeningPart()"
         >
           <mat-icon>add</mat-icon>
-          Add Part
+          Part
         </button>
       </ng-template>
     </mat-tab>
@@ -131,7 +131,7 @@
           [isSaved]="mapSavedPart['reading'][selectedReadingPart]!"
         ></app-reading>
         @if (currentQuiz.readingParts.length > 0) {
-          <div class="d-flex align-items-center mt-5">
+          <div class="d-flex align-items-center mt-1">
             @if (mapSavedPart["reading"][selectedReadingPart]) {
               <button
                 mat-button
@@ -170,16 +170,14 @@
           [parts]="currentQuiz.readingParts"
           (onPartChange)="onTabChange('reading', $event)"
         ></app-part-navigation>
-        <div class="add-button">
-          <button mat-raised-button (click)="onAddReadingParagraph(false)">
-            <mat-icon>add</mat-icon>
-            Add Part
-          </button>
-          <button class="ms-2" mat-raised-button (click)="onAddReadingParagraph(true)">
-            <mat-icon>add</mat-icon>
-            Matching Headings
-          </button>
-        </div>
+        <button mat-raised-button (click)="onAddReadingParagraph(false)">
+          <mat-icon>add</mat-icon>
+          Part
+        </button>
+        <button class="ms-2" mat-raised-button (click)="onAddReadingParagraph(true)">
+          <mat-icon>add</mat-icon>
+          Matching Headings
+        </button>
       </ng-template>
     </mat-tab>
 
@@ -247,12 +245,10 @@
           (onPartChange)="onTabChange('writing', $event)"
         ></app-part-navigation>
 
-        <div class="add-button">
-          <button mat-raised-button (click)="onAddWritingParagraph()">
-            <mat-icon>add</mat-icon>
-            Add Part
-          </button>
-        </div>
+        <button mat-raised-button (click)="onAddWritingParagraph()">
+          <mat-icon>add</mat-icon>
+          Part
+        </button>
       </ng-template>
     </mat-tab>
   </mat-tab-group>

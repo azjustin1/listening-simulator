@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AbstractQuizPartComponent } from '../../../../shared/abstract/abstract-quiz-part.component';
 import { Reading } from '../../../../shared/models/reading.model';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
@@ -7,6 +7,10 @@ import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { NgClass } from '@angular/common';
 import { MatCard } from '@angular/material/card';
+import { each } from 'lodash-es';
+import { Choice } from '../../../../shared/models/choice.model';
+import { ChoiceContentPipe } from '../choice-content.pipe';
+import { AbstractQuestionComponent } from '../../../../shared/abstract/abstract-question.component';
 
 @Component({
   selector: 'app-matching-header-readonly',
@@ -18,6 +22,7 @@ import { MatCard } from '@angular/material/card';
     MatIcon,
     MatCard,
     NgClass,
+    ChoiceContentPipe,
   ],
   templateUrl: './matching-header-readonly.component.html',
   styleUrl: './matching-header-readonly.component.scss',

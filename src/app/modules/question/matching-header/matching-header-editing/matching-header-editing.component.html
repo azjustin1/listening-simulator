@@ -7,7 +7,7 @@
             [disabled]="!mapEditingById[question.id]"
             [(ngModel)]="question.correctAnswer"
           >
-            @for (answer of data.answers; track $index) {
+            @for (answer of question.answers; track $index) {
               <option [value]="answer.id">
                 {{ answer.content }}
               </option>
@@ -25,12 +25,10 @@
               [config]="config"
             ></angular-editor>
           } @else {
-            @if (data) {
-              <span
-                class="reading-content"
-                [innerHTML]="question.content"
-              ></span>
-            }
+            <span
+              class="reading-content"
+              [innerHTML]="question.content"
+            ></span>
           }
         </div>
         <div class="d-flex align-items-center mb-3">
@@ -68,7 +66,7 @@
   >
     <angular-editor
       [config]="config"
-      [(ngModel)]="this.data.content"
+      [(ngModel)]="data.content"
     ></angular-editor>
     <div>
       @for (answer of data.answers; track $index) {

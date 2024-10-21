@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelect } from '@angular/material/select';
 import { ChoiceContentPipe } from '../choice-content.pipe';
@@ -11,6 +11,7 @@ import { MatCard, MatCardContent } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { NgClass } from '@angular/common';
+import { AbstractQuestionComponent } from '../../../../shared/abstract/abstract-question.component';
 
 const DATA_TRANSFER_KEY = 'answerId';
 const DROP_OVER_CLASS = 'drop-over';
@@ -34,10 +35,14 @@ const CONTAINER_RIGHT_ID = 'container-right';
   templateUrl: './matching-header-testing.component.html',
   styleUrl: './matching-header-testing.component.scss',
 })
-export class MatchingHeaderTestingComponent extends MatchingHeaderEditingComponent {
+export class MatchingHeaderTestingComponent
+  extends MatchingHeaderEditingComponent
+  implements OnInit
+{
   answers: Choice[] = [];
 
   ngOnInit(): void {
+    this.answers = this.data.answers!;
     this.initMapEditAnswer();
     if (this.isTesting) {
       this.remapDroppedAnswers();
