@@ -1,5 +1,6 @@
 .question-group {
-  height: calc(100vh - 250px);
+  height: calc(100vh - 16rem);
+  overflow-y: hidden;
 }
 .timer {
   position: fixed;
@@ -10,8 +11,4 @@
 
 .start-part-button {
   display: flex;
-}
-
-.submit-button {
-  margin: 16px 0 16px 16px;
 }

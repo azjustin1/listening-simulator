@@ -77,10 +77,6 @@ export class ReadingComponent
     }
   }
 
-  getChoiceById(id: string, choices: Choice[]) {
-    return choices.find((choice) => choice.id === id);
-  }
-
   override onSaveQuestion(id: string): void {
     super.onSaveQuestion(id);
     this.mapSavedQuestion[id] = true;

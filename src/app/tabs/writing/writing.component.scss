@@ -1,8 +1,5 @@
-.container {
-  display: flex;
-  margin-top: 16px;
-  min-height: 500px;
-  max-height: max-content;
+.writing-container {
+  height: calc(100vh - 22rem);
 }
 
 .question-group {

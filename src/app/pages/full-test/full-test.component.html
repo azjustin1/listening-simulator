@@ -1,5 +1,4 @@
 <h1>{{ quiz.name }}</h1>
-
 <div class="form-group">
   <div hidden class="audio">
     <audio #audioPlayer controls>
@@ -58,7 +57,7 @@ result.studentName !== "") {
     ></app-timer>
   }
   <mat-tab-group
-
+    dynamicHeight
     (selectedIndexChange)="onChangeTab($event)"
     [(selectedIndex)]="currentTab"
     animationDuration="0ms"
@@ -89,7 +88,7 @@ result.studentName !== "") {
           mat-raised-button
           type="button"
           color="primary"
-          class="submit-button"
+          class="mt-2"
           (click)="onSubmitPartClick()"
           [disabled]="!isStart"
         >
@@ -166,7 +165,7 @@ result.studentName !== "") {
   }
 } @else {
   <button
-    class="submit-button"
+    class="mt-2"
     [disabled]="
         !result.studentName || false ||
         result.studentName === ''
