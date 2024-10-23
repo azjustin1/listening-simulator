@@ -7,4 +7,5 @@ export interface AbstractPart {
   questions: Question[];
   wordCount: number;
   testDate: string;
+  isMatchHeader?: boolean;
 }

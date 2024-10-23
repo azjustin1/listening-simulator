@@ -10,6 +10,7 @@
     [data]="data"
     [isTesting]="isTesting"
     [(selectedId)]="selectedId"
+    (onAnswer)="onAnswer.emit($event)"
   >
   </app-matching-header-testing>
 }

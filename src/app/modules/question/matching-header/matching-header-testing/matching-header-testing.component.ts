@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelect } from '@angular/material/select';
 import { ChoiceContentPipe } from '../choice-content.pipe';
@@ -11,7 +11,7 @@ import { MatCard, MatCardContent } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { NgClass } from '@angular/common';
-import { AbstractQuestionComponent } from '../../../../shared/abstract/abstract-question.component';
+import { Question } from '../../../../shared/models/question.model';
 
 const DATA_TRANSFER_KEY = 'answerId';
 const DROP_OVER_CLASS = 'drop-over';
@@ -40,9 +40,13 @@ export class MatchingHeaderTestingComponent
   implements OnInit
 {
   answers: Choice[] = [];
+  @Output() onAnswer = new EventEmitter();
 
   ngOnInit(): void {
-    this.answers = this.data.answers!;
+    const answeredIds = this.data.questions.map((question) => question.answer);
+    this.answers = this.data.answers!.filter(
+      (answer) => !answeredIds.includes(answer.id),
+    );
     this.initMapEditAnswer();
     if (this.isTesting) {
       this.remapDroppedAnswers();
@@ -66,7 +70,7 @@ export class MatchingHeaderTestingComponent
     this.removeDropOverClass(questionId);
   }
 
-  onDropAnswer(event: DragEvent, questionId: string) {
+  onDropAnswer(event: DragEvent, question: Question) {
     event.preventDefault();
     const choice = ChoiceContentPipe.prototype.transform(
       event.dataTransfer!.getData(DATA_TRANSFER_KEY),
@@ -74,14 +78,15 @@ export class MatchingHeaderTestingComponent
     );
     if (choice) {
       this.removeDuplicateChoiceInOthers(choice);
-      each(this.data.questions, (question) => {
-        if (question.id === questionId) {
-          question.answer = choice.id;
+      each(this.data.questions, (dataQuestion) => {
+        if (dataQuestion.id === question.id) {
+          dataQuestion.answer = choice.id;
         }
       });
       this.answers = filter(this.data.answers, (a) => a.id !== choice.id);
-      this.removeDropOverClass(questionId);
+      this.removeDropOverClass(question.id);
       this.remapDroppedAnswers();
+      this.onAnswer.emit(question);
     }
   }
 
@@ -119,6 +124,7 @@ export class MatchingHeaderTestingComponent
       each(this.data.questions, (question) => {
         if (question.answer === answer.id) {
           question.answer = '';
+          this.onAnswer.emit(question);
         }
       });
       if (!map(this.answers, (answer) => answer.id).includes(answer.id)) {

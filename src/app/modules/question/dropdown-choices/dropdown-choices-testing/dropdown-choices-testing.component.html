@@ -1,4 +1,4 @@
-<mat-expansion-panel [expanded]="selectedId() !== '' && selectedId() === question.id">
+<mat-expansion-panel [expanded]="selectedId() === question.id">
   <mat-expansion-panel-header style="background: var(--secondary-color)">
     <span [innerHTML]="question.content"> </span>
   </mat-expansion-panel-header>

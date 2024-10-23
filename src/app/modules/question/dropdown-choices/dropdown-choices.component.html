@@ -9,7 +9,7 @@
   <app-dropdown-choices-testing
     [question]="question"
     [isTesting]="isTesting"
-    [selectedId]="selectedId"
+    [(selectedId)]="selectedId"
     (onAnswer)="onAnswer.emit($event)"
   ></app-dropdown-choices-testing>
 }

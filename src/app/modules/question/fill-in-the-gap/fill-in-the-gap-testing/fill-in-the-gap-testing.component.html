@@ -8,7 +8,7 @@
             <div class="d-flex align-items-center">
               @if (content | isInput) {
                 <input
-                  [ngClass]="{'active': selectedId() === content.match(inputPattern)![1]}"
+                  [ngClass]="{'bg-white': selectedId() === content.match(inputPattern)![1]}"
                   [autofocus]="true"
                   class="answer-input mx-1"
                   (click)="onAnswerChoice.emit(mapChoiceById[content.match(inputPattern)![1]])"

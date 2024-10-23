@@ -82,6 +82,7 @@ result.studentName !== "") {
             [(selectedId)]="selectedId"
             [(selectedQuestionIndex)]="selectedQuestionIndex"
             (onSelectQuestion)="navigateToQuestion($event)"
+            (onReviewQuestion)="onMapReviewQuestion($event)"
           ></app-question-navigation>
         }
         <button
@@ -109,6 +110,7 @@ result.studentName !== "") {
               (onStartChange)="onStartPart()"
               (onPartAnswerQuestion)="onMapAnsweredQuestion($event)"
               (onPartAnswerChoice)="onMapAnswerChoice($event)"
+              (onMatchHeaderAnswer)="onMapPartAnswered($event, result.readingParts[selectedReadingPart])"
             ></app-reading>
           </div>
         }
@@ -118,6 +120,7 @@ result.studentName !== "") {
           [(selectedId)]="selectedId"
           [(selectedQuestionIndex)]="selectedQuestionIndex"
           (onSelectQuestion)="navigateToQuestion($event)"
+          (onReviewQuestion)="onMapReviewQuestion($event)"
         ></app-question-navigation>
         <button
           mat-raised-button

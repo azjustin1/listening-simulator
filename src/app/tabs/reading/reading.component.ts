@@ -1,11 +1,12 @@
 import {
-  Component,
+  Component, EventEmitter,
   Input,
   OnInit,
+  Output,
   signal,
   SimpleChanges,
-  WritableSignal,
-} from '@angular/core';
+  WritableSignal
+} from "@angular/core";
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -59,6 +60,7 @@ export class ReadingComponent
   @Input() isMatchingHeader = false;
   mapSavedQuestion: Record<string, boolean> = {};
   answers: WritableSignal<Choice[]> = signal([]);
+  @Output() onMatchHeaderAnswer = new EventEmitter();
 
   subscription: Subscription[] = [];
 

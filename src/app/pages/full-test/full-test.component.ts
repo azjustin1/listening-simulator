@@ -21,6 +21,7 @@ import {
   mapValues,
   toArray,
   flatMap,
+  assign,
 } from 'lodash-es';
 import { find, interval, Subscription } from 'rxjs';
 import { Quiz } from '../../shared/models/quiz.model';
@@ -63,6 +64,7 @@ export interface QuestionIndex {
   id?: string;
   isAnswer: boolean;
   answer: string[];
+  isReviewed: boolean;
 }
 
 @Component({
@@ -466,10 +468,14 @@ export class FullTestComponent extends AddOrEditQuizComponent {
       default:
         break;
     }
-    each(parts, (_part, index: number) => {
-      each(_part.questions, (question) => {
-        this.mapQuestionPart[question.id] = index;
-      });
+    each(parts, (part, index: number) => {
+      if (part.isMatchHeader) {
+        this.mapQuestionPart[part.id] = index;
+      } else {
+        each(part.questions, (question) => {
+          this.mapQuestionPart[question.id] = index;
+        });
+      }
     });
   }
 
@@ -502,49 +508,68 @@ export class FullTestComponent extends AddOrEditQuizComponent {
   private generatePartQuestionIndex(parts: AbstractPart[]) {
     let index = 0;
     each(parts, (part) => {
-      each(part.questions, (question) => {
-        if (isUndefined(this.mapAnsweredQuestionId[question.id])) {
-          this.mapAnsweredQuestionId[question.id] = [];
+      if (part.isMatchHeader) {
+        if (isUndefined(this.mapAnsweredQuestionId[part.id])) {
+          this.mapAnsweredQuestionId[part.id] = [];
         }
-        switch (question.type) {
-          case QuestionType.SHORT_ANSWER:
-          case QuestionType.DRAG_AND_DROP_ANSWER:
-          case QuestionType.FILL_IN_THE_GAP:
-            each(question.choices, (choice) => {
-              this.mapAnsweredQuestionId[question.id].push({
-                index: index,
-                id: choice.id,
-                answer: [choice.answer as string],
-                isAnswer:
-                  !isEmpty(choice.answer) && !isUndefined(choice.answer),
+        each(part.questions, (question) => {
+          this.mapAnsweredQuestionId[part.id].push({
+            index: index,
+            id: question.id,
+            answer: [question.answer as string],
+            isAnswer:
+              !isEmpty(question.answer) && !isUndefined(question.answer),
+            isReviewed: false,
+          });
+          index++;
+        });
+      } else {
+        each(part.questions, (question) => {
+          if (isUndefined(this.mapAnsweredQuestionId[question.id])) {
+            this.mapAnsweredQuestionId[question.id] = [];
+          }
+          switch (question.type) {
+            case QuestionType.SHORT_ANSWER:
+            case QuestionType.DRAG_AND_DROP_ANSWER:
+            case QuestionType.FILL_IN_THE_GAP:
+              each(question.choices, (choice) => {
+                this.mapAnsweredQuestionId[question.id].push({
+                  index: index,
+                  id: choice.id,
+                  answer: [choice.answer as string],
+                  isAnswer:
+                    !isEmpty(choice.answer) && !isUndefined(choice.answer),
+                  isReviewed: false,
+                });
+                this.mapAnswerByChoiceId[choice.id] = '';
+                this.selectedChoiceId = choice.id;
+                index++;
               });
-              this.mapAnswerByChoiceId[choice.id] = '';
-              this.selectedChoiceId = choice.id;
-              index++;
-            });
-            break;
-          case QuestionType.LABEL_ON_MAP:
-            each(question.subQuestions, (subQuestion) => {
-              this.mapAnsweredQuestionId[question.id].push({
-                index: index,
-                answer: [],
-                isAnswer: false,
+              break;
+            case QuestionType.LABEL_ON_MAP:
+              each(question.subQuestions, (subQuestion) => {
+                this.mapAnsweredQuestionId[question.id].push({
+                  index: index,
+                  answer: [],
+                  isAnswer: false,
+                  isReviewed: false,
+                });
+                index++;
               });
+              break;
+            case QuestionType.MULTIPLE_CHOICE:
+              for (let i = 0; i < question.numberOfChoices!; i++) {
+                this.generateMultipleChoiceIndex(question, index);
+                index++;
+              }
+              break;
+            case QuestionType.DROPDOWN_ANSWER:
+              this.generateDropdownChoiceIndex(question, index);
               index++;
-            });
-            break;
-          case QuestionType.MULTIPLE_CHOICE:
-            for (let i = 0; i < question.numberOfChoices!; i++) {
-              this.generateMultipleChoiceIndex(question, index);
-              index++;
-            }
-            break;
-          case QuestionType.DROPDOWN_ANSWER:
-            this.generateDropdownChoiceIndex(question, index);
-            index++;
-            break;
-        }
-      });
+              break;
+          }
+        });
+      }
     });
   }
 
@@ -553,6 +578,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
       index: index,
       answer: question.answer as string[],
       isAnswer: false,
+      isReviewed: false,
     });
     if (!isEmpty(question.answer)) {
       for (let i = 0; i < question.answer.length; i++) {
@@ -568,6 +594,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
       index: index,
       answer: question.answer as string[],
       isAnswer: !isEmpty(question.answer),
+      isReviewed: false,
     });
   }
 
@@ -616,11 +643,34 @@ export class FullTestComponent extends AddOrEditQuizComponent {
     }
   }
 
+  onMapPartAnswered(question: Question, part: AbstractPart) {
+    this.selectedId.set(question.id);
+    each(this.mapAnsweredQuestionId[part.id], (questionIndex) => {
+      if (questionIndex.id === question.id) {
+        questionIndex.answer = [question.answer as string];
+        questionIndex.isAnswer = !isEmpty(question.answer);
+        this.selectedQuestionIndex.set(questionIndex);
+      }
+    });
+    this.mapAnsweredQuestionId = { ...this.mapAnsweredQuestionId };
+  }
+
   onMapAnswerChoice(choice: Choice) {
+    this.selectedId.set(choice.id);
     this.selectedQuestionIndex.set(
       flatMap(toArray(this.mapAnsweredQuestionId)).find(
         (questionIndex) => questionIndex.id && questionIndex.id === choice.id,
       )!,
     );
+  }
+
+  onMapReviewQuestion(reviewedQuestionIndex: QuestionIndex) {
+    each(this.mapAnsweredQuestionId, (questionIndexes) => {
+      each(questionIndexes, (questionIndex) => {
+        if (questionIndex.index === reviewedQuestionIndex.index) {
+          questionIndex.isReviewed = reviewedQuestionIndex.isReviewed;
+        }
+      });
+    });
   }
 }
