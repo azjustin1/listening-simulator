@@ -5,7 +5,6 @@ import {
   HostListener,
   signal,
   ViewChild,
-  WritableSignal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,14 +15,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   clone,
   each,
+  flatMap,
   isEmpty,
   isUndefined,
   mapValues,
   toArray,
-  flatMap,
-  assign,
 } from 'lodash-es';
-import { find, interval, Subscription } from 'rxjs';
+import { interval, Subscription } from 'rxjs';
 import { Quiz } from '../../shared/models/quiz.model';
 import { Result } from '../../shared/models/result.model';
 import { CommonUtils } from '../../utils/common-utils';
