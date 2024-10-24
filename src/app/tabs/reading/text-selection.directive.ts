@@ -12,31 +12,25 @@ export class TextSelectionDirective {
   @HostListener('mouseup') onMouseUp() {
     const selectedText = this.getSelectedText();
     if (selectedText) {
-      if (this.isTextAlreadyHighlighted(selectedText)) {
-      } else {
-        this.highlightSelection(this.appTextSelection);
-      }
+      this.highlightSelection(this.appTextSelection);
     }
   }
 
   @HostListener('click', ['$event'])
   onClick(event: MouseEvent): void {
     const target = event.target as HTMLElement;
-
     // Check if the clicked target is a highlighted text (span element)
     if (
       target.tagName === 'SPAN' &&
       target.style.backgroundColor === 'yellow'
     ) {
       const parent = target.parentNode;
-
       if (parent) {
         // Remove the input field if it exists
         const nextSibling = target.nextSibling;
         if (nextSibling) {
           parent.removeChild(nextSibling);
         }
-
         // Replace the span with its text content to remove the highlight
         const selectedText = target.textContent;
         if (selectedText) {
@@ -77,9 +71,5 @@ export class TextSelectionDirective {
       range.insertNode(input);
       selection.removeAllRanges(); // Clear selection
     }
-  }
-
-  clickOn() {
-    alert('You just clicked');
   }
 }
