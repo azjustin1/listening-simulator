@@ -324,6 +324,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
           )
           .subscribe(),
       );
+      this.generateMapAnswered();
     }
     if (this.currentTab === this.tabs.READING + 1) {
       htmlString += ExportUtils.exportReading(this.result);
@@ -337,6 +338,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
           )
           .subscribe(),
       );
+      this.generateMapAnswered();
     }
     if (this.currentTab === this.tabs.WRITING + 1) {
       htmlString += ExportUtils.exportWriting(this.result);
@@ -495,6 +497,10 @@ export class FullTestComponent extends AddOrEditQuizComponent {
   }
 
   generateMapAnswered() {
+    this.mapAnsweredQuestionId = {};
+    this.mapQuestionPart = {};
+    this.generateQuestionMap()
+    this.selectedQuestionIndex.set(null);
     if (this.currentTab === Tab.LISTENING) {
       this.generatePartQuestionIndex(this.result.listeningParts);
     }
