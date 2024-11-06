@@ -7,7 +7,7 @@
   </div>
   <div class="backdrop"></div>
 </div>
-<div class="form-group">
+<div>
   @if (!this.isReady) {
     <input
       placeholder="Student name"
@@ -24,16 +24,14 @@
 </div>
 
 <mat-card class="timer">
-  <mat-card-content>
-    <h2>
-      <app-timer
-        [(time)]="testTime"
-        [interval]="testTimeoutInterval!"
-        (onTimeout)="onTestTimeout()"
-      ></app-timer>
-    </h2
-    >
-  </mat-card-content>
+  <h3>
+    <app-timer
+      [(time)]="testTime"
+      [interval]="testTimeoutInterval!"
+      (onTimeout)="onTestTimeout()"
+    ></app-timer>
+  </h3
+  >
 </mat-card>
 @if (isReady &&
 result.studentName && true &&
@@ -113,25 +111,25 @@ result.studentName !== "") {
               (onMatchHeaderAnswer)="onMapPartAnswered($event, result.readingParts[selectedReadingPart])"
             ></app-reading>
           </div>
+          <app-question-navigation
+            [parts]="result.readingParts"
+            [mapAnsweredById]="mapAnsweredQuestionId"
+            [(selectedId)]="selectedId"
+            [(selectedQuestionIndex)]="selectedQuestionIndex"
+            (onSelectQuestion)="navigateToQuestion($event)"
+            (onReviewQuestion)="onMapReviewQuestion($event)"
+          ></app-question-navigation>
+          <button
+            mat-raised-button
+            type="button"
+            color="primary"
+            class="submit-button"
+            (click)="onSubmitPartClick()"
+            [disabled]="!isStart"
+          >
+            Submit
+          </button>
         }
-        <app-question-navigation
-          [parts]="result.readingParts"
-          [mapAnsweredById]="mapAnsweredQuestionId"
-          [(selectedId)]="selectedId"
-          [(selectedQuestionIndex)]="selectedQuestionIndex"
-          (onSelectQuestion)="navigateToQuestion($event)"
-          (onReviewQuestion)="onMapReviewQuestion($event)"
-        ></app-question-navigation>
-        <button
-          mat-raised-button
-          type="button"
-          color="primary"
-          class="submit-button"
-          (click)="onSubmitPartClick()"
-          [disabled]="!isStart"
-        >
-          Submit
-        </button>
       </ng-template>
     </mat-tab>
 
@@ -146,12 +144,12 @@ result.studentName !== "") {
               (onStartChange)="onStartPart()"
             ></app-writing>
           </div>
+          <app-part-navigation
+            [(selectedPart)]="selectedWritingPart"
+            [parts]="result.writingParts"
+            (onPartChange)="onTabChange('writing', $event)"
+          ></app-part-navigation>
         }
-        <app-part-navigation
-          [(selectedPart)]="selectedWritingPart"
-          [parts]="result.writingParts"
-          (onPartChange)="onTabChange('writing', $event)"
-        ></app-part-navigation>
       </ng-template>
     </mat-tab>
   </mat-tab-group>

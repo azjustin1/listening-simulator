@@ -1,6 +1,17 @@
 .reading-container {
-  height: calc(100vh - 24rem);
+  height: calc(100vh - 18rem);
   overflow-y: hidden;
+}
+
+.reading-content {
+  max-height: calc(100vh - 16rem);
+  overflow-y: auto;
+}
+
+.question-container {
+  max-height: calc(100vh - 18rem);
+  width: 100%;
+  overflow-y: auto;
 }
 
 .question {
@@ -56,9 +67,6 @@
   font-weight: bold;
 }
 
-.answer.correct {
-}
-
 .answer.incorrect {
   color: var(--danger-color);
 }
@@ -79,10 +87,6 @@
     flex-direction: column-reverse;
   }
 
-  .question-group {
-    max-width: 100%;
-  }
-
   .input-reading {
     width: 100%;
     max-width: 100%;
@@ -91,10 +95,5 @@
 
   .answer-container {
     margin-left: 0;
-  }
-
-  .reading-content {
-    max-height: calc(100vh - 250px);
-    overflow-y: auto;
   }
 }

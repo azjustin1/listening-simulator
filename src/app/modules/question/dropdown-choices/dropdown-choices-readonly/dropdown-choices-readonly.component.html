@@ -1,37 +1,33 @@
-<mat-expansion-panel>
-  <mat-expansion-panel-header>
-    <span [innerHTML]="question.content"></span>
-    @if (isReadOnly && question.answer.length === 0) {
+<span [innerHTML]="question.content"></span>
+@if (isReadOnly && question.answer.length === 0) {
+  <span>❌</span>
+}
+@for (choice of question.choices; track $index) {
+  <div class="d-flex align-items-center mt-2">
+    @if (isReadOnly) {
+      <input disabled [checked]="question.answer.includes(choice.id)"
+             type="radio">
+
+    } @else {
+      <input disabled [checked]="question.correctAnswer.includes(choice.id)"
+             type="radio">
+    }
+    <div class="ms-2">
+      {{ choice.content }}
+    </div>
+    @if (isReadOnly && question.answer.includes(choice.id) && question.answer[0] === question.correctAnswer[0]) {
+      <span>✅</span>
+    }
+    @if (isReadOnly && question.answer.includes(choice.id) && question.answer[0] !== question.correctAnswer[0]) {
       <span>❌</span>
     }
-  </mat-expansion-panel-header>
-  @for (choice of question.choices; track $index) {
-    <div class="d-flex align-items-center mt-2">
-      @if (isReadOnly) {
-        <input disabled [checked]="question.answer.includes(choice.id)"
-               type="radio">
 
-      } @else {
-        <input disabled [checked]="question.correctAnswer.includes(choice.id)"
-               type="radio">
-      }
-      <div class="ms-2">
-        {{ choice.content }}
-      </div>
-      @if (isReadOnly && question.answer.includes(choice.id) && question.answer[0] === question.correctAnswer[0]) {
-        <span>✅</span>
-      }
-      @if (isReadOnly && question.answer.includes(choice.id) && question.answer[0] !== question.correctAnswer[0]) {
-        <span>❌</span>
-      }
+    @if (isReadOnly && question.answer.length === 0 && question.correctAnswer.includes(choice.id)) {
+      <span>✅</span>
+    }
+  </div>
+}
 
-      @if (isReadOnly && question.answer.length === 0 && question.correctAnswer.includes(choice.id)) {
-        <span>✅</span>
-      }
-    </div>
-  }
-
-</mat-expansion-panel>
 <!--        <div class="choice">-->
 <!--          @if (question | isCorrectDropdown) {-->
 <!--            <span class="answer">-->

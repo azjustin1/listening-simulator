@@ -1,57 +1,28 @@
-<form>
-  @if (isExpandable) {
-    <mat-expansion-panel [expanded]="selectedId() === question.id">
-      <mat-expansion-panel-header style="background: var(--secondary-color); height: fit-content">
-        <span [innerHTML]="question.content"> </span>
-      </mat-expansion-panel-header>
-      @for (choice of question.choices; track $index) {
-        <div class="mt-2 d-flex align-baseline">
-          @if (question.numberOfChoices! > 1) {
-            <div class="d-flex" (click)="onSelectMultipleAnswer($event, choice.id)">
-              <input [checked]="question.answer.includes(choice.id)" type="checkbox"
-              />
-              <div class="ms-2">{{ choice.content }}</div>
-            </div>
-          } @else {
-            <div class="d-flex" (click)="onSelectSingleAnswer(choice.id)">
-              <input [checked]="selectedOption === choice.id" type="radio"
-              />
-              <div class="ms-2">{{ choice.content }}</div>
-            </div>
-          }
-        </div>
-      }
-    </mat-expansion-panel>
+<div class="question-group my-3">
+  <div class="form-group">
+    <span [innerHTML]="question.content"> </span>
+    @if (isReadOnly && question.answer.length === 0) {
+      ❌
+    }
+  </div>
 
-  } @else {
-    <div class="question-group">
-      <div class="form-group">
-        <span [innerHTML]="question.content"> </span>
-        @if (isReadOnly && question.answer.length === 0) {
-          ❌
-        }
-      </div>
-
-      <div class="choice-group">
-        @for (choice of question.choices; track $index) {
-          <div class="mt-2 d-flex align-baseline">
-            @if (question.numberOfChoices! > 1) {
-              <div class="d-flex" (click)="onSelectMultipleAnswer($event, choice.id)">
-                <input [checked]="question.answer.includes(choice.id)" type="checkbox"
-                />
-                <div class="ms-2">{{ choice.content }}</div>
-              </div>
-            } @else {
-              <div class="d-flex" (click)="onSelectSingleAnswer(choice.id)">
-                <input [checked]="selectedOption === choice.id" type="radio"
-                />
-                <div class="ms-2">{{ choice.content }}</div>
-              </div>
-            }
+  <div class="choice-group">
+    @for (choice of question.choices; track $index) {
+      <div class="mt-2 d-flex align-baseline">
+        @if (question.numberOfChoices! > 1) {
+          <div class="d-flex" (click)="onSelectMultipleAnswer($event, choice.id)">
+            <input [checked]="question.answer.includes(choice.id)" type="checkbox"
+            />
+            <div class="ms-2">{{ choice.content }}</div>
+          </div>
+        } @else {
+          <div class="d-flex" (click)="onSelectSingleAnswer(choice.id)">
+            <input [checked]="selectedOption === choice.id" type="radio"
+            />
+            <div class="ms-2">{{ choice.content }}</div>
           </div>
         }
       </div>
-    </div>
-  }
-
-</form>
+    }
+  </div>
+</div>

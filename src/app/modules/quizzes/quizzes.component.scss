@@ -1,7 +1,7 @@
 .grid-container {
   display: grid;
   padding: 10px;
-  max-height: calc(100vh - 300px);
+  max-height: calc(100vh - 9rem);
   grid-template-columns: repeat(auto-fill, 300px);
   grid-gap: 16px;
 }

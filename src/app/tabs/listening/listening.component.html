@@ -20,7 +20,7 @@
       class="d-flex"
       [ngClass]="{ 'un-clickable': isTesting && !isStart }"
     >
-      <mat-accordion class="w-100">
+      <div class="w-100">
         @for (question of data.questions; track $index) {
           <div class="question">
             <app-question
@@ -92,7 +92,7 @@
             </div>
           </div>
         }
-      </mat-accordion>
+      </div>
 
     </div>
 
