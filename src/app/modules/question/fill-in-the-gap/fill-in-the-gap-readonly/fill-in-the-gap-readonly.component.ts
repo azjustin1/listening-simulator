@@ -7,7 +7,7 @@ import { FillInTheGapEditingComponent } from '../fill-in-the-gap-editing/fill-in
 import { FitContentDirective } from "../fit-content.directive";
 import { IsInputPipe } from "../is-input.pipe";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { NgClass } from "@angular/common";
+import { KeyValuePipe, NgClass } from "@angular/common";
 import { ExtractIdPipe } from "../../../../pipes/extract-id.pipe";
 
 @Component({

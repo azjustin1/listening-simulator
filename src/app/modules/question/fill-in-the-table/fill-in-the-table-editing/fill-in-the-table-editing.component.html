@@ -1,0 +1,101 @@
+@if (question.tableContent) {
+  <div class="d-flex flex-column">
+    <div class="description">
+      <angular-editor
+        [name]="question.id"
+        [config]="config"
+        [(ngModel)]="question.content"
+        (ngModelChange)="onPaste($event)"
+      ></angular-editor>
+    </div>
+    <div class="d-flex flex-column mt-3">
+      <table>
+        <th [colSpan]="headerColSpan" class="align-middle">
+          <input [(ngModel)]="question.name" class="my-2" />
+        </th>
+        <th colspan="1" class="text-center">
+          <mat-icon color="primary" (click)="addNewColumn()">add</mat-icon>
+        </th>
+        @for (row of question.tableContent | keyvalue; track $index; let rowIndex = $index) {
+          <tr>
+            @for (column of row.value | keyvalue; track $index; let columnIndex = $index) {
+              <td class="m-1">
+                <div class="d-flex flex-wrap align-items-center m-2"
+                     [ngClass]="{'justify-content-center': row.key === 'tr0' || column.key === 'td0'}">
+                  @for (content of column.value; track $index; let textIndex = $index) {
+                    @if ((content | isInput) && mapChoiceById[content | extractId]) {
+                      <div class="mx-1">
+                        <input [(ngModel)]="mapChoiceById[content.match(inputPattern)![1]].correctAnswer"
+                               (click)="editColumnInput(row.key, column.key, textIndex)" />
+                        @if (this.mapEditingByCell[row.key + '' + column.key][textIndex]) {
+                          <div class="d-flex align-items-center">
+                            <mat-icon color="primary" (click)="saveColumnInput(row.key, column.key, textIndex)">
+                              check
+                            </mat-icon>
+                            <mat-icon color="warn" (click)="deleteColumnInput(row.key, column.key, textIndex)">
+                              delete
+                            </mat-icon>
+                            <button class="d-flex align-items-center ms-1"
+                                    (click)="addColumnText(row.key, column.key, textIndex + 1)">
+                              <mat-icon color="primary">add</mat-icon>
+                              Text
+                            </button>
+                          </div>
+                        }
+                      </div>
+                    } @else {
+                      @if (this.mapEditingByCell[row.key + '' + column.key][textIndex]) {
+                        <input [(ngModel)]="question.tableContent[row.key][column.key][textIndex]" />
+                        <mat-icon color="primary" (click)="saveColumnText(row.key, column.key, textIndex)">
+                          check
+                        </mat-icon>
+                        @if (textIndex !== 0) {
+                          <mat-icon color="warn" (click)="deleteColumnText(row.key, column.key, textIndex)">
+                            delete
+                          </mat-icon>
+                        }
+                        <button class="d-flex align-items-center ms-1"
+                                (click)="addColumnInput(row.key, column.key, textIndex + 1)">
+                          <mat-icon color="primary">add</mat-icon>
+                          Input
+                        </button>
+                      } @else {
+                        @if (row.key === 'tr0' || column.key === 'td0') {
+                          <b>
+                            <p class="my-2"
+                               (click)="editColumnText(row.key, column.key, textIndex)">{{ content === '' ? '...' : content }}</p>
+                          </b>
+                        } @else {
+                          <p class="my-2"
+                             (click)="editColumnText(row.key, column.key, textIndex)">{{ content === '' ? '...' : content }}</p>
+                        }
+                      }
+                    }
+                  }
+                </div>
+              </td>
+            }
+            <td>
+              <mat-icon color="warn" (click)="deleteRow(rowIndex)">
+                delete
+              </mat-icon>
+            </td>
+          </tr>
+        }
+        <tr>
+          @for (column of question.tableContent['tr0'] | keyvalue; track $index; let columnIndex = $index) {
+            <td>
+              <mat-icon color="warn" (click)="deleteColumn(columnIndex)">
+                delete
+              </mat-icon>
+            </td>
+          }
+        </tr>
+      </table>
+    </div>
+  </div>
+  <button class="d-flex align-items-center mt-1" (click)="addNewRow()">
+    <mat-icon color="primary">add</mat-icon>
+    Row
+  </button>
+}

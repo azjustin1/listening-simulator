@@ -5,6 +5,7 @@ export interface Question {
   name?: string;
   content?: string;
   arrayContent?: string[][];
+  tableContent?: Record<string, Record<string, string[]>>;
   type?: number | null;
   answer: string[] | string;
   correctAnswer: string[];

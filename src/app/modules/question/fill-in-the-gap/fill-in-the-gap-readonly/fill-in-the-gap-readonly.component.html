@@ -19,11 +19,11 @@
                       'text-danger': !(mapChoiceById[content.match(inputPattern)![1]] | isCorrectAnswer)
                     }"
                   >
-                      {{ mapChoiceById[content.match(inputPattern)![1]].answer ?? '❌' }}
+                      {{ mapChoiceById[content | extractId].answer ?? '❌' }}
                   </span>
-                  @if (!(mapChoiceById[content.match(inputPattern)![1]] | isCorrectAnswer)) {
+                  @if (!(mapChoiceById[content | extractId] | isCorrectAnswer)) {
                     | <span
-                      class="text-success">{{ mapChoiceById[content.match(inputPattern)![1]].correctAnswer }}</span>
+                      class="text-success">{{ mapChoiceById[content | extractId].correctAnswer }}</span>
                   }
                 } @else {
                   <span class="text-success">

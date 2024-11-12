@@ -2,13 +2,15 @@ import { HttpResponse } from '@angular/common/http';
 import {
   Component,
   EventEmitter,
-  inject, input,
-  Input, model,
+  inject,
+  input,
+  Input,
+  model,
   OnChanges,
   OnDestroy,
   Output,
-  SimpleChanges
-} from "@angular/core";
+  SimpleChanges,
+} from '@angular/core';
 import { AngularEditorConfig, UploadResponse } from '@wfpena/angular-wysiwyg';
 import { clone, cloneDeep, debounce, each, isNull, mapValues } from 'lodash-es';
 import { map, Subscription } from 'rxjs';
@@ -179,6 +181,32 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
           id: id,
           content: '',
           arrayContent: [],
+          type: type,
+          choices: [],
+          answer: [],
+          correctAnswer: [],
+          subQuestions: [],
+        };
+        break;
+      case QuestionType.FILL_IN_THE_TABLE:
+        this.currentQuestion = {
+          id: id,
+          content: '',
+          name: 'Table title',
+          tableContent: {
+            tr0: {
+              td0: ['Text'],
+              td1: ['Text'],
+            },
+            tr1: {
+              td0: ['Text'],
+              td1: ['Text'],
+            },
+            tr2: {
+              td0: ['Text'],
+              td1: ['Text'],
+            },
+          },
           type: type,
           choices: [],
           answer: [],

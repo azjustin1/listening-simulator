@@ -76,4 +76,17 @@
     >
     </app-drag-and-drop-answer>
   }
+  @case (questionType.FILL_IN_THE_TABLE) {
+    <app-fill-in-the-table
+      [question]="question"
+      [isReadOnly]="isReadOnly"
+      [isEditing]="isEditing"
+      [isTesting]="isTesting"
+      [(selectedId)]="selectedId"
+      (onSave)="onSaveQuestion()"
+      (onAnswer)="onAnswer.emit($event)"
+      (onAnswerChoice)="onAnswerChoice.emit($event)"
+    >
+    </app-fill-in-the-table>
+  }
 }
