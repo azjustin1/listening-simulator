@@ -554,6 +554,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
               each(question.subQuestions, (subQuestion) => {
                 this.mapAnsweredQuestionId[question.id].push({
                   index: index,
+                  id: subQuestion.id,
                   answer: [],
                   isAnswer: false,
                   isReviewed: false,
@@ -603,51 +604,56 @@ export class FullTestComponent extends AddOrEditQuizComponent {
   }
 
   onMapAnsweredQuestion(question: Question) {
+    console.log(this.mapAnsweredQuestionId[question.id])
     if (this.mapAnsweredQuestionId[question.id]) {
-      if (
-        question.type === QuestionType.SHORT_ANSWER ||
-        question.type === QuestionType.FILL_IN_THE_GAP ||
-        question.type === QuestionType.DRAG_AND_DROP_ANSWER
-      ) {
-        each(question.choices, (choice) => {
-          this.mapAnswerByChoiceId[choice.id] = clone(choice.answer!);
-        });
-        each(this.mapAnsweredQuestionId[question.id], (questionIndex) => {
-          questionIndex.answer = [
-            this.mapAnswerByChoiceId[questionIndex.id as string],
-          ];
-          questionIndex.isAnswer =
-            !isEmpty(this.mapAnswerByChoiceId[questionIndex.id!]) &&
-            !isUndefined(this.mapAnswerByChoiceId[questionIndex.id!]);
-        });
-      } else {
-        each(this.mapAnsweredQuestionId[question.id], (questionIndex) => {
-          questionIndex.answer = question.answer as string[];
-        });
-        const questionIndexes = this.mapAnsweredQuestionId[question.id].map(
-          (questionIndex) => {
-            questionIndex = {
-              ...questionIndex,
-              answer: question.answer as string[],
-              isAnswer: false,
-            };
-            return questionIndex;
-          },
-        );
-        for (let i = 0; i < question.answer.length; i++) {
-          questionIndexes[i].isAnswer = true;
-        }
-        this.mapAnsweredQuestionId[question.id] = questionIndexes;
-        if (!isEmpty(questionIndexes) && !isEmpty(questionIndexes[0].answer)) {
-          this.selectedQuestionIndex.set(
-            questionIndexes[questionIndexes[0].answer.length - 1],
+      switch (question.type) {
+        case QuestionType.SHORT_ANSWER:
+        case QuestionType.FILL_IN_THE_GAP:
+        case QuestionType.FILL_IN_THE_TABLE:
+        case QuestionType.DRAG_AND_DROP_ANSWER:
+          each(question.choices, (choice) => {
+            this.mapAnswerByChoiceId[choice.id] = clone(choice.answer!);
+          });
+          each(this.mapAnsweredQuestionId[question.id], (questionIndex) => {
+            questionIndex.answer = [
+              this.mapAnswerByChoiceId[questionIndex.id as string],
+            ];
+            questionIndex.isAnswer =
+              !isEmpty(this.mapAnswerByChoiceId[questionIndex.id!]) &&
+              !isUndefined(this.mapAnswerByChoiceId[questionIndex.id!]);
+          });
+          break;
+        case QuestionType.DROPDOWN_ANSWER:
+        case QuestionType.MULTIPLE_CHOICE:
+        case QuestionType.MATCHING_HEADER:
+          each(this.mapAnsweredQuestionId[question.id], (questionIndex) => {
+            questionIndex.answer = question.answer as string[];
+          });
+          const questionIndexes = this.mapAnsweredQuestionId[question.id].map(
+            (questionIndex) => {
+              questionIndex = {
+                ...questionIndex,
+                answer: question.answer as string[],
+                isAnswer: false,
+              };
+              return questionIndex;
+            },
           );
-        }
+          for (let i = 0; i < question.answer.length; i++) {
+            questionIndexes[i].isAnswer = true;
+          }
+          this.mapAnsweredQuestionId[question.id] = questionIndexes;
+          if (!isEmpty(questionIndexes) && !isEmpty(questionIndexes[0].answer)) {
+            this.selectedQuestionIndex.set(
+              questionIndexes[questionIndexes[0].answer.length - 1],
+            );
+          }
+          break;
       }
     }
   }
 
-  onMapPartAnswered(question: Question, part: AbstractPart) {
+  onMapHeaderAnswered(question: Question, part: AbstractPart) {
     this.selectedId.set(question.id);
     each(this.mapAnsweredQuestionId[part.id], (questionIndex) => {
       if (questionIndex.id === question.id) {

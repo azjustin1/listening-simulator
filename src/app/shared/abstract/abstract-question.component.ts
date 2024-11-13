@@ -22,13 +22,14 @@ import { BASE64_IMAGE_REGEX } from '../../utils/constant';
   template: '',
 })
 export abstract class AbstractQuestionComponent implements OnChanges {
+  selectedId = model();
+  selectedQuestionIndex = model();
   @Input() question!: Question;
   @Input() isSaved: boolean = false;
   @Input() isEditing: boolean = false;
   @Input() isReadOnly: boolean = false;
   @Input() isTesting: boolean = false;
   @Input() isExpandable: boolean = true;
-  selectedId = model();
   @Output() onSave = new EventEmitter();
   @Output() onEdit = new EventEmitter();
   @Output() onAnswer = new EventEmitter();

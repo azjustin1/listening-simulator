@@ -33,8 +33,13 @@ export class LabelOnMapTestingComponent extends LabelOnMapEditingComponent {
     } else {
       this.question.subQuestions![questionIndex].answer = [choiceId];
     }
-    this.onAnswer.emit({
-      ...this.question.subQuestions![questionIndex],
-    });
+    console.log(this.question.subQuestions![questionIndex].id)
+    this.selectedId.set(this.question.subQuestions![questionIndex].id);
+    this.selectedQuestionIndex.set({
+      id: this.question.subQuestions![questionIndex].id,
+      isAnswer: !isEmpty(this.question.subQuestions![questionIndex].answer),
+      isReview: false,
+    })
+    this.onAnswer.emit(this.question);
   }
 }

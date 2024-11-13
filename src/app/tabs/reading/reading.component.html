@@ -10,7 +10,7 @@
             [isReadOnly]="isReadOnly"
             [isTesting]="isTesting"
             [isEditing]="isEditing"
-            [selectedId]="selectedId()"
+            [(selectedId)]="selectedId"
             (onAnswer)="onMatchHeaderAnswer.emit($event)"
           ></app-matching-header>
         </div>

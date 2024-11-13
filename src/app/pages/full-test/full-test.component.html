@@ -1,4 +1,4 @@
-<h1>{{ quiz.name }}</h1>
+<h1>{{ quiz.name }}{{selectedId()}}</h1>
 <div class="form-group">
   <div hidden class="audio">
     <audio #audioPlayer controls>
@@ -69,6 +69,7 @@ result.studentName !== "") {
               [isTesting]="true"
               [isStart]="isStart"
               [(selectedId)]="selectedId"
+              [(selectedQuestionIndex)]="selectedQuestionIndex"
               (onStartChange)="onStartPart()"
               (onPartAnswerQuestion)="onMapAnsweredQuestion($event)"
               (onPartAnswerChoice)="onMapAnswerChoice($event)"
@@ -108,7 +109,7 @@ result.studentName !== "") {
               (onStartChange)="onStartPart()"
               (onPartAnswerQuestion)="onMapAnsweredQuestion($event)"
               (onPartAnswerChoice)="onMapAnswerChoice($event)"
-              (onMatchHeaderAnswer)="onMapPartAnswered($event, result.readingParts[selectedReadingPart])"
+              (onMatchHeaderAnswer)="onMapHeaderAnswered($event, result.readingParts[selectedReadingPart])"
             ></app-reading>
           </div>
           <app-question-navigation

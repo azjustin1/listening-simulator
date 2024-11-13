@@ -3,7 +3,7 @@
     <span class="reading-content" [innerHTML]="question.content"></span>
   </div>
   <div class="ms-2">
-    @if (question.subQuestions![0]) {
+    @if (question && question.subQuestions) {
       <table>
         <tr>
           <th></th>
@@ -11,16 +11,12 @@
             <th>{{ choiceIndex[$index] }}</th>
           }
         </tr>
-        @for (question of question.subQuestions;
-          track $index;
-          let questionIndex = $index) {
+        @for (question of question.subQuestions; track $index; let questionIndex = $index) {
           <tr>
             <td>
               {{ question.content }}
             </td>
-            @for (choice of question.choices;
-              track $index;
-              let choiceIndex = $index) {
+            @for (choice of question.choices; track $index; let choiceIndex = $index) {
               <td
                 class="choice-item"
                 (click)="onSelectAnswer(questionIndex, choiceIndex)"

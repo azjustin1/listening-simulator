@@ -8,21 +8,10 @@
         [isTesting]="isTesting"
         [isExpandable]="true"
         [(selectedId)]="selectedId"
+        [(selectedQuestionIndex)]="selectedQuestionIndex"
         (onSave)="onSaveQuestion()"
         (onAnswer)="onAnswer.emit($event)"
       ></app-multiple-choices>
-    </div>
-  }
-  @case (questionType.SHORT_ANSWER) {
-    <div class="question">
-      <app-short-answer
-        [question]="question"
-        [isReadOnly]="isReadOnly"
-        [isEditing]="isEditing"
-        [isTesting]="isTesting"
-        (onSave)="onSaveQuestion()"
-        (onAnswerChoice)="onAnswerChoice.emit($event)"
-      ></app-short-answer>
     </div>
   }
   @case (questionType.DROPDOWN_ANSWER) {
@@ -45,6 +34,8 @@
         [isReadOnly]="isReadOnly"
         [isEditing]="isEditing"
         [isTesting]="isTesting"
+        [(selectedId)]="selectedId"
+        [(selectedQuestionIndex)]="selectedQuestionIndex"
         (onSave)="onSaveQuestion()"
         (onAnswer)="onAnswer.emit($event)"
       ></app-label-on-map>
