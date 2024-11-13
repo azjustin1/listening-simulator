@@ -1,1 +1,46 @@
-<p>fill-in-the-table-testing works!</p>
+@if (question.tableContent) {
+  <div class="d-flex flex-column" [id]="question.id">
+    <b><span [innerHTML]="question.content"></span></b>
+    <div class="d-flex flex-column mt-3">
+      <table>
+        <th [colSpan]="headerColSpan">
+          <p class="my-2">
+            {{ question.name }}
+          </p>
+        </th>
+        @for (row of question.tableContent | keyvalue; track $index; ) {
+          <tr>
+            @for (column of row.value | keyvalue; track $index; ) {
+              <td class="m-1">
+                <div class="d-flex flex-wrap align-items-center m-2"
+                     [ngClass]="{'justify-content-center': row.key === 'tr0' || column.key === 'td0'}">
+                  @for (content of column.value; track $index; ) {
+                    @if ((content | isInput) && mapChoiceById[content | extractId]) {
+                      <div class="mx-1">
+                        <input
+                          [id]="content.match(inputPattern)![1]"
+                          [(ngModel)]="mapChoiceById[content.match(inputPattern)![1]].answer"
+                          [ngClass]="{'bg-white': selectedId() === content.match(inputPattern)![1]}"
+                          (click)="onAnswerChoice.emit(mapChoiceById[content.match(inputPattern)![1]])"
+                          (ngModelChange)="onInputAnswer($event, content.match(inputPattern)![1])"
+                          [(ngModel)]="mapChoiceById[content.match(inputPattern)![1]].answer" />
+                      </div>
+                    } @else {
+                      @if (row.key === 'tr0' || column.key === 'td0') {
+                        <b>
+                          <p class="my-2">{{ content }}</p>
+                        </b>
+                      } @else {
+                        <p class="my-2">{{ content }}</p>
+                      }
+                    }
+                  }
+                </div>
+              </td>
+            }
+          </tr>
+        }
+      </table>
+    </div>
+  </div>
+}

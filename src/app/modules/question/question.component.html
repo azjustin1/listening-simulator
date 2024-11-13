@@ -51,42 +51,48 @@
     </div>
   }
   @case (questionType.FILL_IN_THE_GAP) {
-    <app-fill-in-the-gap
-      [question]="question"
-      [isReadOnly]="isReadOnly"
-      [isEditing]="isEditing"
-      [isTesting]="isTesting"
-      [(selectedId)]="selectedId"
-      (onSave)="onSaveQuestion()"
-      (onAnswerChoice)="onAnswerChoice.emit($event)"
-      (onAnswer)="onAnswer.emit($event)"
-    >
-    </app-fill-in-the-gap>
+    <div class="question">
+      <app-fill-in-the-gap
+        [question]="question"
+        [isReadOnly]="isReadOnly"
+        [isEditing]="isEditing"
+        [isTesting]="isTesting"
+        [(selectedId)]="selectedId"
+        (onSave)="onSaveQuestion()"
+        (onAnswerChoice)="onAnswerChoice.emit($event)"
+        (onAnswer)="onAnswer.emit($event)"
+      >
+      </app-fill-in-the-gap>
+    </div>
   }
   @case (questionType.DRAG_AND_DROP_ANSWER) {
-    <app-drag-and-drop-answer
-      [question]="question"
-      [isReadOnly]="isReadOnly"
-      [isEditing]="isEditing"
-      [isTesting]="isTesting"
-      [(selectedId)]="selectedId"
-      (onSave)="onSaveQuestion()"
-      (onAnswer)="onAnswer.emit($event)"
-      (onAnswerChoice)="onAnswerChoice.emit($event)"
-    >
-    </app-drag-and-drop-answer>
+    <div class="question">
+      <app-drag-and-drop-answer
+        [question]="question"
+        [isReadOnly]="isReadOnly"
+        [isEditing]="isEditing"
+        [isTesting]="isTesting"
+        [(selectedId)]="selectedId"
+        (onSave)="onSaveQuestion()"
+        (onAnswer)="onAnswer.emit($event)"
+        (onAnswerChoice)="onAnswerChoice.emit($event)"
+      >
+      </app-drag-and-drop-answer>
+    </div>
   }
   @case (questionType.FILL_IN_THE_TABLE) {
-    <app-fill-in-the-table
-      [question]="question"
-      [isReadOnly]="isReadOnly"
-      [isEditing]="isEditing"
-      [isTesting]="isTesting"
-      [(selectedId)]="selectedId"
-      (onSave)="onSaveQuestion()"
-      (onAnswer)="onAnswer.emit($event)"
-      (onAnswerChoice)="onAnswerChoice.emit($event)"
-    >
-    </app-fill-in-the-table>
+    <div class="question">
+      <app-fill-in-the-table
+        [question]="question"
+        [isReadOnly]="isReadOnly"
+        [isEditing]="isEditing"
+        [isTesting]="isTesting"
+        [(selectedId)]="selectedId"
+        (onSave)="onSaveQuestion()"
+        (onAnswer)="onAnswer.emit($event)"
+        (onAnswerChoice)="onAnswerChoice.emit($event)"
+      >
+      </app-fill-in-the-table>
+    </div>
   }
 }

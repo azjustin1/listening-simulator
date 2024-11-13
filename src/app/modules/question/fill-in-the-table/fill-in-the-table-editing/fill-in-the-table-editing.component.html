@@ -1,5 +1,5 @@
 @if (question.tableContent) {
-  <div class="d-flex flex-column">
+  <div class="d-flex flex-column mt-2">
     <div class="description">
       <angular-editor
         [name]="question.id"
@@ -24,7 +24,7 @@
                      [ngClass]="{'justify-content-center': row.key === 'tr0' || column.key === 'td0'}">
                   @for (content of column.value; track $index; let textIndex = $index) {
                     @if ((content | isInput) && mapChoiceById[content | extractId]) {
-                      <div class="mx-1">
+                      <div class="d-flex mx-1">
                         <input [(ngModel)]="mapChoiceById[content.match(inputPattern)![1]].correctAnswer"
                                (click)="editColumnInput(row.key, column.key, textIndex)" />
                         @if (this.mapEditingByCell[row.key + '' + column.key][textIndex]) {
@@ -75,19 +75,23 @@
                 </div>
               </td>
             }
-            <td>
-              <mat-icon color="warn" (click)="deleteRow(rowIndex)">
-                delete
-              </mat-icon>
-            </td>
+            @if (row.key !== 'tr0') {
+              <td>
+                <mat-icon color="warn" (click)="deleteRow(rowIndex)">
+                  delete
+                </mat-icon>
+              </td>
+            }
           </tr>
         }
         <tr>
-          @for (column of question.tableContent['tr0'] | keyvalue; track $index; let columnIndex = $index) {
+          @for (column of question.tableContent['tr0'] | keyvalue; track $index; ) {
             <td>
-              <mat-icon color="warn" (click)="deleteColumn(columnIndex)">
-                delete
-              </mat-icon>
+              @if ($index !== 0) {
+                <mat-icon color="warn" (click)="deleteColumn($index)">
+                  delete
+                </mat-icon>
+              }
             </td>
           }
         </tr>

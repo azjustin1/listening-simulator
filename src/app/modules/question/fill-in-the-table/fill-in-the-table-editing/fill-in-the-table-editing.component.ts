@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { IsInputPipe } from '../../fill-in-the-gap/is-input.pipe';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { KeyValuePipe, NgClass } from "@angular/common";
+import { KeyValuePipe, NgClass } from '@angular/common';
 import {
   each,
   forEach,
@@ -58,7 +58,6 @@ export class FillInTheTableEditingComponent extends FillInTheGapEditingComponent
           });
         });
       });
-      console.log(this.mapEditingByCell);
     }
   }
 
@@ -82,6 +81,7 @@ export class FillInTheTableEditingComponent extends FillInTheGapEditingComponent
 
   deleteRow(index: number) {
     const omitted = omit(this.question.tableContent, [`tr${index}`]);
+    this.deleteAllAnswerInRow(`tr${index}`);
     const sortedKeys: string[] = keys(omitted).sort((key1, key2) => {
       const num1 = parseInt(key1.replace('tr', ''), 10);
       const num2 = parseInt(key2.replace('tr', ''), 10);
@@ -112,6 +112,7 @@ export class FillInTheTableEditingComponent extends FillInTheGapEditingComponent
   }
 
   deleteColumn(index: number) {
+    this.deleteAllAnswerInColumn(index);
     each(this.question.tableContent, (row, key) => {
       if (this.question.tableContent![`${key}`]) {
         const omitted = omit(this.question.tableContent![`${key}`], [
@@ -215,5 +216,33 @@ export class FillInTheTableEditingComponent extends FillInTheGapEditingComponent
       }),
     };
     this.onSave.emit();
+  }
+
+  private deleteAllAnswerInRow(rowKey: string) {
+    each(this.question.tableContent![`${rowKey}`], (column, columnKey) => {
+      each(column, (content) => {
+        this.removeChoiceFromMap(content);
+      });
+    });
+  }
+
+  private deleteAllAnswerInColumn(columnIndex: number) {
+    each(this.question.tableContent, (row, rowKey) => {
+      each(
+        this.question.tableContent![`${rowKey}`][`td${columnIndex}`],
+        (content) => {
+          this.removeChoiceFromMap(content);
+        },
+      );
+    });
+  }
+
+  private removeChoiceFromMap(content: string) {
+    if (IsInputPipe.prototype.transform(content)) {
+      this.mapChoiceById = omit(
+        this.mapChoiceById,
+        RegExp(INPUT_PATTERN).exec(content)![1],
+      );
+    }
   }
 }

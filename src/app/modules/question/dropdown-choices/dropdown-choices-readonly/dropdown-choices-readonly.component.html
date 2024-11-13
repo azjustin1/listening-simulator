@@ -1,4 +1,4 @@
-<span [innerHTML]="question.content"></span>
+<b><span [innerHTML]="question.content"></span></b>
 @if (isReadOnly && question.answer.length === 0) {
   <span>❌</span>
 }
@@ -27,18 +27,3 @@
     }
   </div>
 }
-
-<!--        <div class="choice">-->
-<!--          @if (question | isCorrectDropdown) {-->
-<!--            <span class="answer">-->
-<!--              {{ question | answerChoice }}-->
-<!--            </span>-->
-<!--          } @else {-->
-<!--            <span class="answer incorrect">-->
-<!--              {{ question | answerChoice }}-->
-<!--            </span>-->
-<!--            <span class="answer correct">-->
-<!--              {{ question | correctAnswerChoice }}-->
-<!--            </span>-->
-<!--          }-->
-<!--        </div>-->

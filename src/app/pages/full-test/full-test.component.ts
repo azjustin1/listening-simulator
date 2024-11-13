@@ -274,7 +274,6 @@ export class FullTestComponent extends AddOrEditQuizComponent {
     });
     dialogRef.componentInstance.title = 'Information';
     dialogRef.componentInstance.message = "Time's up";
-    dialogRef.componentInstance.isWarning = true;
     dialogRef.afterClosed().subscribe((isConfirm) => {
       if (isConfirm) {
         this.updateTab();
@@ -499,7 +498,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
   generateMapAnswered() {
     this.mapAnsweredQuestionId = {};
     this.mapQuestionPart = {};
-    this.generateQuestionMap()
+    this.generateQuestionMap();
     this.selectedQuestionIndex.set(null);
     if (this.currentTab === Tab.LISTENING) {
       this.generatePartQuestionIndex(this.result.listeningParts);
@@ -536,6 +535,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
             case QuestionType.SHORT_ANSWER:
             case QuestionType.DRAG_AND_DROP_ANSWER:
             case QuestionType.FILL_IN_THE_GAP:
+            case QuestionType.FILL_IN_THE_TABLE:
               each(question.choices, (choice) => {
                 this.mapAnsweredQuestionId[question.id].push({
                   index: index,

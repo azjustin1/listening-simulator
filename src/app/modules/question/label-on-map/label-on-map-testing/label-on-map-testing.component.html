@@ -1,8 +1,7 @@
-<div class="d-flex">
+<div class="d-flex" [id]="question.id">
   <div class="col-6">
     <span class="reading-content" [innerHTML]="question.content"></span>
   </div>
-
   <div class="ms-2">
     @if (question.subQuestions![0]) {
       <table>

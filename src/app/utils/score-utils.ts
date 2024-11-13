@@ -17,6 +17,7 @@ export class ScoreUtils {
         return ScoreUtils.forMultiplePointChoices(question);
       case QuestionType.SHORT_ANSWER:
       case QuestionType.FILL_IN_THE_GAP:
+      case QuestionType.FILL_IN_THE_TABLE:
         return ScoreUtils.forAnswer(question);
       case QuestionType.DROPDOWN_ANSWER:
         return ScoreUtils.forDropdown(question);

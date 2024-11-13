@@ -52,6 +52,9 @@ export class ExportUtils {
         align-items: center;
         margin: .5rem 10px 0 0;
       }
+      .table-input {
+        text-decoration: underline
+      }
     `;
   }
 
@@ -95,6 +98,9 @@ export class ExportUtils {
         break;
       case QuestionType.DRAG_AND_DROP_ANSWER:
         htmlString += this.exportDragAndDrop(question);
+        break;
+      case QuestionType.FILL_IN_THE_TABLE:
+        htmlString += this.exportFillInTheTable(question);
         break;
       default:
         break;
@@ -266,6 +272,36 @@ export class ExportUtils {
       });
       htmlString += '</div>';
     });
+    return htmlString;
+  }
+
+  static exportFillInTheTable(question: Question) {
+    let htmlString = '';
+    const inputPattern = new RegExp(INPUT_PATTERN);
+    htmlString += `<div><table>`;
+    each(question.tableContent, (row, rowKey) => {
+      htmlString += '<tr>';
+      each(row, (column, columnKey) => {
+        htmlString += `<td>`;
+        each(column, (content, index) => {
+          if (rowKey === 'tr0' || columnKey === 'td0') {
+            htmlString += `<b>${content}</b>`;
+          } else {
+            if (IsInputPipe.prototype.transform(content)) {
+              const answer = question.choices.find(
+                (choice) => choice.id! === inputPattern.exec(content)![1],
+              )?.answer;
+              htmlString += ` <span class="table-input">${answer ? answer : '❌'}</span>`;
+            } else {
+              htmlString += `${content}`;
+            }
+          }
+        });
+        htmlString += '</td>';
+      });
+      htmlString += '</tr>';
+    });
+    htmlString += '</table>';
     return htmlString;
   }
 

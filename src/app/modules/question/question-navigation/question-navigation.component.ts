@@ -25,6 +25,14 @@ export class QuestionNavigationComponent {
     this.selectedQuestionIndex.set(questionIndex);
     this.selectedId.set(questionIndex.id!);
     this.onSelectQuestion.emit(questionId);
+    this.scrollToQuestion(questionId);
+  }
+
+  scrollToQuestion(id: string) {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView();
+    }
   }
 
   next() {

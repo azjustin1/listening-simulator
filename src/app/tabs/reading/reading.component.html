@@ -126,9 +126,9 @@
             }
 
             @if (!isSaved && !isTesting && !isReadOnly) {
-              <div class="d-flex mt-2">
+              <div class="d-flex flex-row flex-wrap mt-2">
                 <button
-                  class="d-flex"
+                  class="d-flex my-1"
                   mat-raised-button
                   (click)="addQuestion(questionType.DROPDOWN_ANSWER)"
                 >
@@ -142,21 +142,21 @@
                 <!--            Short Answer-->
                 <!--          </button>-->
                 <button
-                  class="d-flex ms-1"
+                  class="d-flex my-1 ms-1"
                   mat-raised-button
                   (click)="addQuestion(questionType.DROPDOWN_ANSWER)"
                 >
                   Dropdown Choices
                 </button>
                 <button
-                  class="d-flex ms-1"
+                  class="d-flex my-1 ms-1"
                   mat-raised-button
                   (click)="addQuestion(4)"
                 >
                   Label On Map
                 </button>
                 <button
-                  class="d-flex ms-1"
+                  class="d-flex my-1 ms-1"
                   mat-raised-button
                   (click)="addQuestion(questionType.FILL_IN_THE_GAP)"
                 >
@@ -164,11 +164,18 @@
                 </button>
 
                 <button
-                  class="d-flex ms-1"
+                  class="d-flex my-1 ms-1"
                   mat-raised-button
                   (click)="addQuestion(questionType.DRAG_AND_DROP_ANSWER)"
                 >
                   Drag And Drop
+                </button>
+                <button
+                  class="d-flex my-1 ms-1"
+                  mat-raised-button
+                  (click)="addQuestion(questionType.FILL_IN_THE_TABLE)"
+                >
+                  Fill In The Table
                 </button>
               </div>
             }

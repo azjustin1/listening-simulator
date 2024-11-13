@@ -41,8 +41,6 @@ export class ResultComponent {
   results: Result[] = [];
   searchString: string = '';
   onSearchChange = debounce(() => this.search(), 500);
-  listeningBand = 0;
-  readingBand = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -82,9 +80,10 @@ export class ResultComponent {
   onDeleteResultClick(resultId: string) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       hasBackdrop: true,
+      disableClose: true,
     });
-
     dialogRef.componentInstance.title = 'Warning';
+    dialogRef.componentInstance.isWarning = true;
     dialogRef.componentInstance.message = 'Confirm to delete this?';
     dialogRef.afterClosed().subscribe((isConfirm: boolean) => {
       if (isConfirm) {
