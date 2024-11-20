@@ -1,9 +1,6 @@
 import { Component } from '@angular/core';
-import { AbstractQuestionComponent } from '../../../../shared/abstract/abstract-question.component';
 import { MatIcon } from '@angular/material/icon';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
-import { MatButton } from '@angular/material/button';
-import { MatInput } from '@angular/material/input';
 import { ReactiveFormsModule } from '@angular/forms';
 import { isEmpty } from 'lodash-es';
 import { LabelOnMapEditingComponent } from '../label-on-map-editing/label-on-map-editing.component';
@@ -11,13 +8,7 @@ import { LabelOnMapEditingComponent } from '../label-on-map-editing/label-on-map
 @Component({
   selector: 'app-label-on-map-testing',
   standalone: true,
-  imports: [
-    MatIcon,
-    AngularEditorModule,
-    MatButton,
-    MatInput,
-    ReactiveFormsModule,
-  ],
+  imports: [MatIcon, AngularEditorModule, ReactiveFormsModule],
   templateUrl: './label-on-map-testing.component.html',
   styleUrl: '../label-on-map.component.scss',
 })
@@ -33,13 +24,13 @@ export class LabelOnMapTestingComponent extends LabelOnMapEditingComponent {
     } else {
       this.question.subQuestions![questionIndex].answer = [choiceId];
     }
-    console.log(this.question.subQuestions![questionIndex].id)
+    console.log(this.question.subQuestions![questionIndex].id);
     this.selectedId.set(this.question.subQuestions![questionIndex].id);
     this.selectedQuestionIndex.set({
       id: this.question.subQuestions![questionIndex].id,
       isAnswer: !isEmpty(this.question.subQuestions![questionIndex].answer),
       isReview: false,
-    })
+    });
     this.onAnswer.emit(this.question);
   }
 }

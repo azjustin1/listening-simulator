@@ -30,12 +30,10 @@ import { ScoreUtils } from '../../utils/score-utils';
 import { ConfirmDialogComponent } from '../../shared/dialogs/confirm-dialog/confirm-dialog.component';
 import { FileService } from '../../file.service';
 import { ListeningComponent } from '../../tabs/listening/listening.component';
-import { MultipleChoicesComponent } from '../../modules/question/multiple-choices/multiple-choices.component';
 import { PartNavigationComponent } from '../../shared/components/part-navigation/part-navigation.component';
 import { AddOrEditQuizComponent } from '../../modules/quizzes/add-or-edit-quiz/add-or-edit-quiz.component';
 import { QuizService } from '../../modules/quizzes/quizzes.service';
 import { ReadingComponent } from '../../tabs/reading/reading.component';
-import { ShortAnswerComponent } from '../../modules/question/short-answer/short-answer.component';
 import { WritingComponent } from '../../tabs/writing/writing.component';
 import { FullTestService } from './full-test.service';
 import { FeedbackDialog } from '../../shared/dialogs/feedback-dialog/feedback-dialog.component';
@@ -69,8 +67,6 @@ export interface QuestionIndex {
   selector: 'app-test',
   standalone: true,
   imports: [
-    MultipleChoicesComponent,
-    ShortAnswerComponent,
     CommonModule,
     FormsModule,
     MatCardModule,
@@ -604,7 +600,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
   }
 
   onMapAnsweredQuestion(question: Question) {
-    console.log(this.mapAnsweredQuestionId[question.id])
+    console.log(this.mapAnsweredQuestionId[question.id]);
     if (this.mapAnsweredQuestionId[question.id]) {
       switch (question.type) {
         case QuestionType.SHORT_ANSWER:
@@ -643,7 +639,10 @@ export class FullTestComponent extends AddOrEditQuizComponent {
             questionIndexes[i].isAnswer = true;
           }
           this.mapAnsweredQuestionId[question.id] = questionIndexes;
-          if (!isEmpty(questionIndexes) && !isEmpty(questionIndexes[0].answer)) {
+          if (
+            !isEmpty(questionIndexes) &&
+            !isEmpty(questionIndexes[0].answer)
+          ) {
             this.selectedQuestionIndex.set(
               questionIndexes[questionIndexes[0].answer.length - 1],
             );

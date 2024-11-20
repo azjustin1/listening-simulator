@@ -13,12 +13,11 @@
         </tr>
         @for (question of question.subQuestions; track $index; let questionIndex = $index) {
           <tr>
-            <td>
+            <td class="p-2">
               {{ question.content }}
             </td>
             @for (choice of question.choices; track $index; let choiceIndex = $index) {
-              <td
-                class="choice-item"
+              <td class="align-items-center"
                 (click)="onSelectAnswer(questionIndex, choiceIndex)"
               >
                 @if (question.answer.includes(choice.id)) {
