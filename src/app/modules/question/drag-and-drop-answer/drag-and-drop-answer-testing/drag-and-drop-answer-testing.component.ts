@@ -1,14 +1,12 @@
-import { Component, SimpleChanges } from "@angular/core";
+import { Component } from '@angular/core';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { IsInputPipe } from '../../fill-in-the-gap/is-input.pipe';
-import { MatButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FillInTheGapTestingComponent } from '../../fill-in-the-gap/fill-in-the-gap-testing/fill-in-the-gap-testing.component';
 import { ExtractIdPipe } from '../../../../pipes/extract-id.pipe';
 import { Choice } from '../../../../shared/models/choice.model';
 import { each, filter, map, sortBy } from 'lodash-es';
-import { JsonPipe, NgClass } from "@angular/common";
+import { NgClass } from '@angular/common';
 import { ChoiceContentPipe } from '../../matching-header/choice-content.pipe';
 import { MatCard } from '@angular/material/card';
 
@@ -22,13 +20,10 @@ const CONTAINER_RIGHT_ID = 'container-right';
   imports: [
     AngularEditorModule,
     IsInputPipe,
-    MatButton,
-    MatIcon,
     MatCard,
     ReactiveFormsModule,
     FormsModule,
     ExtractIdPipe,
-    JsonPipe,
     NgClass,
   ],
   templateUrl: './drag-and-drop-answer-testing.component.html',

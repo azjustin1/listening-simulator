@@ -1,8 +1,6 @@
 import { Component, SimpleChanges } from '@angular/core';
-import { CorrectAnswerPipe } from '../../../../pipes/correct-answer.pipe';
 import { AbstractQuestionComponent } from '../../../../shared/abstract/abstract-question.component';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
-import { FitContentDirective } from '../fit-content.directive';
 import { IsInputPipe } from '../is-input.pipe';
 import { MatIcon } from '@angular/material/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -16,9 +14,8 @@ import {
   omit,
   toArray,
 } from 'lodash-es';
-import { CHOICE_INDEX, INPUT_PATTERN } from '../../../../utils/constant';
+import { INPUT_PATTERN } from '../../../../utils/constant';
 import { Choice } from '../../../../shared/models/choice.model';
-import { NgClass } from '@angular/common';
 import { MatButton } from '@angular/material/button';
 import { ExtractIdPipe } from '../../../../pipes/extract-id.pipe';
 
@@ -26,14 +23,11 @@ import { ExtractIdPipe } from '../../../../pipes/extract-id.pipe';
   selector: 'app-fill-in-the-gap-editing',
   standalone: true,
   imports: [
-    CorrectAnswerPipe,
     AngularEditorModule,
-    FitContentDirective,
     IsInputPipe,
     MatIcon,
     ReactiveFormsModule,
     FormsModule,
-    NgClass,
     MatButton,
     ExtractIdPipe,
   ],

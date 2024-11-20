@@ -1,4 +1,4 @@
-import { HttpResponse } from '@angular/common/http';
+import { HttpResponse } from "@angular/common/http";
 import {
   Component,
   EventEmitter,
@@ -9,33 +9,32 @@ import {
   OnChanges,
   OnDestroy,
   Output,
-  SimpleChanges,
-} from '@angular/core';
-import { AngularEditorConfig, UploadResponse } from '@wfpena/angular-wysiwyg';
-import { clone, cloneDeep, debounce, each, isNull, mapValues } from 'lodash-es';
-import { map, Subscription } from 'rxjs';
-import { FileService } from '../../file.service';
-import { environment } from '../../../environments/environment';
-import { CommonUtils } from '../../utils/common-utils';
-import { BASE64_IMAGE_REGEX } from '../../utils/constant';
-import { QuestionType } from '../enums/question-type.enum';
-import { AbstractPart } from '../models/abstract-part.model';
-import { Question } from '../models/question.model';
-import { QuestionIndex } from '../../pages/full-test/full-test.component';
+  SimpleChanges
+} from "@angular/core";
+import { AngularEditorConfig, UploadResponse } from "@wfpena/angular-wysiwyg";
+import { clone, cloneDeep, debounce, each, isNull, mapValues } from "lodash-es";
+import { map, Subscription } from "rxjs";
+import { FileService } from "../../file.service";
+import { environment } from "../../../environments/environment";
+import { CommonUtils } from "../../utils/common-utils";
+import { BASE64_IMAGE_REGEX } from "../../utils/constant";
+import { QuestionType } from "../enums/question-type.enum";
+import { AbstractPart } from "../models/abstract-part.model";
+import { Question } from "../models/question.model";
+import { QuestionIndex } from "../../pages/full-test/full-test.component";
 
 @Component({
-  template: '',
+  template: ""
 })
 export abstract class AbstractQuizPartComponent<T extends AbstractPart>
-  implements OnChanges, OnDestroy
-{
+  implements OnChanges, OnDestroy {
   @Input() data!: T;
   @Input() isTesting: boolean = false;
   @Input() isEditing: boolean = false;
   @Input() isReadOnly: boolean = false;
   @Input() isSaved: boolean = false;
   @Input() isStart: boolean = false;
-  selectedId = model('');
+  selectedId = model("");
   selectedQuestionIndex = model();
   @Output() onStartChange = new EventEmitter();
   @Output() onTimeout = new EventEmitter();
@@ -46,12 +45,12 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
   @Output() onPartAnswerChoice = new EventEmitter();
   questionType = QuestionType;
   currentQuestion: Question = {
-    id: '',
-    content: '',
+    id: "",
+    content: "",
     type: null,
     choices: [],
     answer: [],
-    correctAnswer: [],
+    correctAnswer: []
   };
   mapQuestionEditing: Record<string, boolean> = {};
   subscriptions: Subscription[] = [];
@@ -61,19 +60,19 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     sanitize: true,
     toolbarHiddenButtons: [
       [
-        'backgroundColor',
-        'customClasses',
-        'link',
-        'unlink',
-        'insertHorizontalRule',
-        'insertVideo',
-        'subscript',
-        'superscript',
-        'undo',
-        'redo',
-        'toggleEditorMode',
+        "backgroundColor",
+        "customClasses",
+        "link",
+        "unlink",
+        "insertHorizontalRule",
+        "insertVideo",
+        "subscript",
+        "superscript",
+        "undo",
+        "redo",
+        "toggleEditorMode"
       ],
-      [],
+      []
     ],
     upload: (file: File) => {
       return this.fileService.uploadFile(file).pipe(
@@ -81,17 +80,17 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
           const imageUrl = `${environment.api}/api/file/upload/${response.fileName}`;
           return {
             ...response,
-            body: { imageUrl: imageUrl },
+            body: { imageUrl: imageUrl }
           } as HttpResponse<UploadResponse>;
-        }),
+        })
       );
-    },
+    }
   };
   wordCount: number = 0;
   fileService = inject(FileService);
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['isSaved']?.currentValue) {
+    if (changes["isSaved"]?.currentValue) {
       mapValues(this.mapQuestionEditing, () => false);
     }
   }
@@ -111,7 +110,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     for (let i = 0; i < numberOfChocies; i++) {
       const choice = {
         id: CommonUtils.generateRandomId(),
-        content: '',
+        content: ""
       };
       choices.push(choice);
     }
@@ -124,55 +123,55 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
       case QuestionType.MULTIPLE_CHOICE:
         this.currentQuestion = {
           id: id,
-          content: '',
+          content: "",
           type: type,
           choices: this.defaultChoices(4),
           answer: [],
           correctAnswer: [],
-          numberOfChoices: 1,
+          numberOfChoices: 1
         };
         break;
       case QuestionType.SHORT_ANSWER:
         this.currentQuestion = {
           id: id,
-          content: '',
+          content: "",
           type: type,
           choices: [],
           answer: [],
-          correctAnswer: [],
+          correctAnswer: []
         };
         break;
       case QuestionType.MULTIPLE_QUESTIONS:
         this.currentQuestion = {
           id: id,
-          content: '',
+          content: "",
           type: type,
           choices: [],
           answer: [],
           correctAnswer: [],
-          subQuestions: [],
+          subQuestions: []
         };
         break;
       case QuestionType.DROPDOWN_ANSWER:
         this.currentQuestion = {
           id: id,
-          content: '',
+          content: "",
           type: type,
           choices: this.defaultChoices(3),
           answer: [],
           correctAnswer: [],
-          numberOfChoices: 1,
+          numberOfChoices: 1
         };
         break;
       case QuestionType.LABEL_ON_MAP:
         this.currentQuestion = {
           id: id,
-          content: '',
+          content: "",
           type: type,
           choices: this.defaultChoices(4),
           answer: [],
           correctAnswer: [],
-          subQuestions: [],
+          subQuestions: []
         };
         break;
       case QuestionType.FILL_IN_THE_GAP:
@@ -180,39 +179,40 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
       case QuestionType.DRAG_AND_DROP_ANSWER:
         this.currentQuestion = {
           id: id,
-          content: '',
+          content: "",
           arrayContent: [],
           type: type,
           choices: [],
           answer: [],
           correctAnswer: [],
-          subQuestions: [],
+          subQuestions: []
         };
         break;
       case QuestionType.FILL_IN_THE_TABLE:
+      case QuestionType.DRAG_IN_TABLE:
         this.currentQuestion = {
           id: id,
-          content: '',
-          name: 'Table title',
+          content: "",
+          name: "Table title",
           tableContent: {
             tr0: {
-              td0: ['Text'],
-              td1: ['Text'],
+              td0: ["Text"],
+              td1: ["Text"]
             },
             tr1: {
-              td0: ['Text'],
-              td1: ['Text'],
+              td0: ["Text"],
+              td1: ["Text"]
             },
             tr2: {
-              td0: ['Text'],
-              td1: ['Text'],
-            },
+              td0: ["Text"],
+              td1: ["Text"]
+            }
           },
           type: type,
           choices: [],
           answer: [],
           correctAnswer: [],
-          subQuestions: [],
+          subQuestions: []
         };
         break;
       default:
@@ -253,7 +253,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     cloneQuestion = {
       ...cloneQuestion,
       id: CommonUtils.generateRandomId(),
-      content: `Copy of ${cloneQuestion.content}`,
+      content: `Copy of ${cloneQuestion.content}`
     };
     this.data.questions.push(cloneQuestion);
     this.onSave.emit();
@@ -275,14 +275,14 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
 
   uploadQuestionBase64Images(content: string) {
     const base64Image = this.extractBase64Image(content);
-    if (!isNull(base64Image) && base64Image[1].startsWith('data')) {
+    if (!isNull(base64Image) && base64Image[1].startsWith("data")) {
       const imageSrc = base64Image[1];
       const fileName = `${this.data.id}_${new Date().getMilliseconds()}.png`;
       const imageFile: File = CommonUtils.base64ToFile(imageSrc, fileName);
       this.fileService.uploadFile(imageFile).subscribe((response) => {
         this.data.content = this.data.content?.replace(
           `"${imageSrc}"`,
-          `"${environment.api}/upload/${response.fileName}" width="100%"`,
+          `"${environment.api}/upload/${response.fileName}" width="100%"`
         );
       });
     }

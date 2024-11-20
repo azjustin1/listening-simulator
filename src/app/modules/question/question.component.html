@@ -86,4 +86,19 @@
       </app-fill-in-the-table>
     </div>
   }
+  @case (questionType.DRAG_IN_TABLE) {
+    <div class="question">
+      <app-drag-in-table
+        [question]="question"
+        [isReadOnly]="isReadOnly"
+        [isEditing]="isEditing"
+        [isTesting]="isTesting"
+        [(selectedId)]="selectedId"
+        (onSave)="onSaveQuestion()"
+        (onAnswer)="onAnswer.emit($event)"
+        (onAnswerChoice)="onAnswerChoice.emit($event)"
+      >
+      </app-drag-in-table>
+    </div>
+  }
 }

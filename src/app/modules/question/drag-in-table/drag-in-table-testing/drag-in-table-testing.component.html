@@ -1,0 +1,65 @@
+@if (question.tableContent) {
+  <div class="d-flex flex-column" [id]="question.id">
+    <b><span [innerHTML]="question.content"></span></b>
+    <div class="d-flex flex-column mt-3">
+      <table>
+        <th [colSpan]="headerColSpan">
+          <p class="my-2">
+            {{ question.name }}
+          </p>
+        </th>
+        @for (row of question.tableContent | keyvalue; track $index; ) {
+          <tr>
+            @for (column of row.value | keyvalue; track $index; ) {
+              <td class="m-1">
+                <div class="d-flex flex-wrap align-items-center m-2"
+                     [ngClass]="{'justify-content-center': row.key === 'tr0' || column.key === 'td0'}">
+                  @for (content of column.value; track $index; ) {
+                    @if ((content | isInput) && mapChoiceById[content | extractId]) {
+                      <div
+                        class="mx-1 drop-container"
+                        [ngClass]="{'active': selectedId() === content.match(inputPattern)![1]}"
+                        [id]="mapChoiceById[content | extractId].id"
+                        [draggable]="true"
+                        (dragstart)="onDragStart($event, mapChoiceById[content.match(inputPattern)![1]].answer!)"
+                        (click)="onAnswerChoice.emit(mapChoiceById[content.match(inputPattern)![1]])"
+                        (drop)="onDropAnswer($event, mapChoiceById[content.match(inputPattern)![1]])"
+                        (dragover)="onDragOver($event, content.match(inputPattern)![1])"
+                        (dragleave)="removeDropOver($event, content.match(inputPattern)![1])">
+                        {{ mapAnswerById[mapChoiceById[content | extractId].answer!] ? mapAnswerById[mapChoiceById[content | extractId].answer!].content : '' }}
+                      </div>
+                    } @else {
+                      @if (row.key === 'tr0' || column.key === 'td0') {
+                        <b>
+                          <p class="my-2">{{ content }}</p>
+                        </b>
+                      } @else {
+                        <p class="my-2">{{ content }}</p>
+                      }
+                    }
+                  }
+                </div>
+              </td>
+            }
+          </tr>
+        }
+      </table>
+    </div>
+
+    <div id="container-right" class="d-flex flex-column p-1 mt-3"
+         (drop)="onAnswerBackDrop($event)"
+         (dragover)="onAnswerBackDragOver($event)"
+         (dragleave)="onAnswerBackDragLeave($event)">
+      @for (answer of answers; track $index) {
+        <mat-card class="w-50 p-2 my-2"
+                  draggable="true"
+                  [id]="answer.id"
+                  (dragstart)="onDragStart($event, answer.id)"
+
+        >
+          {{ answer.content }}
+        </mat-card>
+      }
+    </div>
+  </div>
+}

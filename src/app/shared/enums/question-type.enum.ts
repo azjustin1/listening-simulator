@@ -8,4 +8,5 @@ export enum QuestionType {
   MATCHING_HEADER,
   DRAG_AND_DROP_ANSWER,
   FILL_IN_THE_TABLE,
+  DRAG_IN_TABLE
 }

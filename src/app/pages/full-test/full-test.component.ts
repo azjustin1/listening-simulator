@@ -532,6 +532,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
             case QuestionType.DRAG_AND_DROP_ANSWER:
             case QuestionType.FILL_IN_THE_GAP:
             case QuestionType.FILL_IN_THE_TABLE:
+            case QuestionType.DRAG_IN_TABLE:
               each(question.choices, (choice) => {
                 this.mapAnsweredQuestionId[question.id].push({
                   index: index,
@@ -665,12 +666,14 @@ export class FullTestComponent extends AddOrEditQuizComponent {
   }
 
   onMapAnswerChoice(choice: Choice) {
-    this.selectedId.set(choice.id);
-    this.selectedQuestionIndex.set(
-      flatMap(toArray(this.mapAnsweredQuestionId)).find(
-        (questionIndex) => questionIndex.id && questionIndex.id === choice.id,
-      )!,
-    );
+    if (choice) {
+      this.selectedId.set(choice.id);
+      this.selectedQuestionIndex.set(
+        flatMap(toArray(this.mapAnsweredQuestionId)).find(
+          (questionIndex) => questionIndex.id && questionIndex.id === choice.id,
+        )!,
+      );
+    }
   }
 
   onMapReviewQuestion(reviewedQuestionIndex: QuestionIndex) {

@@ -1,30 +1,34 @@
 import { Component } from '@angular/core';
-import { Choice } from '../../../../shared/models/choice.model';
-import { FillInTheGapEditingComponent } from '../../fill-in-the-gap/fill-in-the-gap-editing/fill-in-the-gap-editing.component';
+import { FillInTheTableEditingComponent } from '../../fill-in-the-table/fill-in-the-table-editing/fill-in-the-table-editing.component';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
+import { ExtractIdPipe } from '../../../../pipes/extract-id.pipe';
 import { IsInputPipe } from '../../fill-in-the-gap/is-input.pipe';
-import { MatButton } from '@angular/material/button';
+import { KeyValuePipe, NgClass } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { isUndefined } from 'lodash-es';
+import { MatButton } from '@angular/material/button';
+import { isUndefined, toArray } from 'lodash-es';
 import { CommonUtils } from '../../../../utils/common-utils';
+import { Choice } from '../../../../shared/models/choice.model';
 
 @Component({
-  selector: 'app-drag-and-drop-answer-editing',
+  selector: 'app-drag-in-table-editing',
   standalone: true,
   imports: [
-    FormsModule,
     AngularEditorModule,
-    AngularEditorModule,
+    ExtractIdPipe,
     IsInputPipe,
-    MatButton,
+    KeyValuePipe,
     MatIcon,
     ReactiveFormsModule,
+    FormsModule,
+    NgClass,
+    MatButton,
   ],
-  templateUrl: './drag-and-drop-answer-editing.component.html',
-  styleUrl: './drag-and-drop-answer-editing.component.scss',
+  templateUrl: './drag-in-table-editing.component.html',
+  styleUrl: './drag-in-table-editing.component.scss',
 })
-export class DragAndDropAnswerEditingComponent extends FillInTheGapEditingComponent {
+export class DragInTableEditingComponent extends FillInTheTableEditingComponent {
   mapEditingById: Record<string, boolean> = {};
 
   addAnswer() {
@@ -43,5 +47,9 @@ export class DragAndDropAnswerEditingComponent extends FillInTheGapEditingCompon
 
   deleteAnswer(index: number) {
     this.question.answers?.splice(index, 1);
+  }
+
+  updateQuestionChoices() {
+    this.question.choices = toArray(this.mapChoiceById);
   }
 }

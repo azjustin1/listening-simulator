@@ -24,20 +24,11 @@ export class ScoreUtils {
       case QuestionType.LABEL_ON_MAP:
         return ScoreUtils.forMapLabel(question);
       case QuestionType.DRAG_AND_DROP_ANSWER:
+      case QuestionType.DRAG_IN_TABLE:
         return ScoreUtils.forAnswer(question);
       default:
         return this.getResult(0, 0);
     }
-  }
-
-  static forSinglePointChoices(question: Question): ScoreResult {
-    let totalPoint = 0;
-    let correctPoint = 0;
-    totalPoint++;
-    if (CorrectChoicesPipe.prototype.transform(question)) {
-      correctPoint++;
-    }
-    return this.getResult(correctPoint, totalPoint);
   }
 
   static forMultiplePointChoices(question: Question): ScoreResult {
@@ -83,19 +74,6 @@ export class ScoreUtils {
       }
     });
     return this.getResult(correctPoint, totalPoint);
-  }
-
-  static forDragAndDrop(question: Question) {
-    let correctPoint = 0;
-    let totalPoint = 0;
-    each(question.subQuestions, (question) => {
-      totalPoint++;
-      if (CorrectChoicesPipe.prototype.transform(question)) {
-        correctPoint++;
-      }
-    });
-    return this.getResult(correctPoint, totalPoint);
-
   }
 
   static getResult(correctPoint: number, totalPoint: number) {

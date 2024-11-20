@@ -102,6 +102,9 @@ export class ExportUtils {
       case QuestionType.FILL_IN_THE_TABLE:
         htmlString += this.exportFillInTheTable(question);
         break;
+      case QuestionType.DRAG_IN_TABLE:
+        htmlString += this.exportDragInTable(question);
+        break;
       default:
         break;
     }
@@ -305,6 +308,42 @@ export class ExportUtils {
     return htmlString;
   }
 
+
+  private static exportDragInTable(question: Question) {
+    let htmlString = '';
+    const inputPattern = new RegExp(INPUT_PATTERN);
+    htmlString += `<div><table>`;
+    each(question.tableContent, (row, rowKey) => {
+      htmlString += '<tr>';
+      each(row, (column, columnKey) => {
+        htmlString += `<td>`;
+        each(column, (content, index) => {
+          if (rowKey === 'tr0' || columnKey === 'td0') {
+            htmlString += `<b>${content}</b>`;
+          } else {
+            if (IsInputPipe.prototype.transform(content)) {
+              const choice = question.choices.find(
+                (choice) => choice.id! === inputPattern.exec(content)![1],
+              );
+              if (choice) {
+                const answer = question.answers!.find(
+                  (answer) => answer.id === choice.answer,
+                );
+                htmlString += ` <span class="table-input">${answer ? answer.content : '❌'}</span>`;
+              }
+            } else {
+              htmlString += `${content}`;
+            }
+          }
+        });
+        htmlString += '</td>';
+      });
+      htmlString += '</tr>';
+    });
+    htmlString += '</table>';
+    return htmlString;
+  }
+
   static exportFeedback(result: Result) {
     let htmlString = `
       <h1>Bảng đánh giá</h1>
@@ -326,14 +365,4 @@ export class ExportUtils {
     return htmlString;
   }
 
-  static exportFile(result: Result, htmlString: string, part: string) {
-    if (!isEmpty(htmlString)) {
-      asBlob(htmlString).then((data: any) => {
-        saveAs(
-          data,
-          `${result.studentName}_${part}_${result.name}_${CommonUtils.getCurrentDate()}`,
-        );
-      });
-    }
-  }
 }
