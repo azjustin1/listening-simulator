@@ -77,20 +77,18 @@ router.post("/generate-pdf", async (req, res) => {
     }
     const fileName = `${studentName}_${type}_${quizName}_${currentDate}.pdf`;
     const outputPath = path.join(dir, fileName);
-    await (async () => {
-      const browser = await puppeteer.launch({
-        headless: true,
-        args: ["--no-sandbox"],
-      });
-      const page = await browser.newPage();
-      await page.setContent(htmlString); // Set the HTML content
-      await page.pdf({
-        path: outputPath,
-        format: "A4", // Paper format
-        printBackground: true,
-      });
-      await browser.close();
-    })();
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox"],
+    });
+    const page = await browser.newPage();
+    await page.setContent(htmlString); // Set the HTML content
+    await page.pdf({
+      path: outputPath,
+      format: "A4", // Paper format
+      printBackground: true,
+    });
+    await browser.close();
     res.status(200).json({ message: "Generate successfully" });
   } catch (error) {
     console.log(error);

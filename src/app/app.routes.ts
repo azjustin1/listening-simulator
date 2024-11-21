@@ -1,13 +1,13 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './home/home.component';
-import { MockTestComponent } from './mock-test/mock-test.component';
-import { AddOrEditQuizComponent } from './quizzes/add-or-edit-quiz/add-or-edit-quiz.component';
-import { ReadingComponent } from './reading/reading.component';
-import { ResultDetailComponent } from './result/result-detail/result-detail.component';
-import { ResultComponent } from './result/result.component';
-import { TestComponent } from './test/test.component';
-import { WritingTestComponent } from './writing-test/writing-test.component';
-import { AddOrEditWritingComponent } from './writing-test/add-or-edit-writing/add-or-edit-writing.component';
+import { HomeComponent } from './pages/home/home.component';
+import { MockTestComponent } from './pages/mock-test/mock-test.component';
+import { AddOrEditQuizComponent } from './modules/quizzes/add-or-edit-quiz/add-or-edit-quiz.component';
+import { ReadingComponent } from './tabs/reading/reading.component';
+import { ResultDetailComponent } from './modules/result/result-detail/result-detail.component';
+import { ResultComponent } from './modules/result/result.component';
+import { FullTestComponent } from './pages/full-test/full-test.component';
+import { WritingTestComponent } from './pages/writing-test/writing-test.component';
+import { AddOrEditWritingComponent } from './pages/writing-test/add-or-edit-writing/add-or-edit-writing.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -24,12 +24,12 @@ export const routes: Routes = [
   {
     path: 'mock-test/:folderId',
     loadChildren: () =>
-      import('./quizzes/quizzes.routes').then((m) => m.routes),
+      import('./modules/quizzes/quizzes.routes').then((m) => m.routes),
   },
   { path: 'add-quiz', component: AddOrEditQuizComponent },
   { path: 'edit-quiz/:quizId', component: AddOrEditQuizComponent },
-  { path: 'test/:resultId', component: TestComponent },
-  { path: 'continue-test/:testId', component: TestComponent },
+  { path: 'test/:resultId', component: FullTestComponent },
+  { path: 'continue-test/:testId', component: FullTestComponent },
   { path: 'add-reading', component: ReadingComponent },
   { path: 'edit-reading/:quizId', component: ReadingComponent },
   { path: 'reading/:quizId', component: ReadingComponent },

@@ -1,0 +1,9 @@
+.container--left,
+.container--right,
+{
+  max-height: calc(100vh - 25rem);
+  overflow-y: scroll;
+}
+
+
+
