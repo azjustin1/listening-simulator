@@ -1,10 +1,11 @@
 <div class="d-flex align-items-center">
-  <input [checked]="selectedQuestionIndex() !== null && (selectedQuestionIndex() && selectedQuestionIndex()?.isReviewed)"
-         (change)="reviewQuestion()" type="checkbox" />
+  <input
+    [checked]="selectedQuestionIndex() !== null && (selectedQuestionIndex() && selectedQuestionIndex()?.isReviewed)"
+    (change)="reviewQuestion()" type="checkbox" />
   <label class="ms-1">Review</label>
   <div class="d-flex question-nav">
-    @for (question of mapAnsweredById | keyvalue; track $index) {
-      @for (questionIndex of question.value; track $index) {
+    @for (question of mapAnsweredById | keyvalue : returnZero; track question.key) {
+      @for (questionIndex of question.value; track questionIndex.index) {
         <div
           [ngClass]="{
                 'active': (selectedQuestionIndex() && questionIndex.index === selectedQuestionIndex()!.index) || selectedId() === questionIndex.id,

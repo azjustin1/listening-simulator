@@ -1,9 +1,25 @@
-import { Component, EventEmitter, Input, model, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  model,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { AbstractPart } from '../../../shared/models/abstract-part.model';
 import { JsonPipe, KeyValuePipe, NgClass } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { QuestionIndex } from '../../../pages/full-test/full-test.component';
-import { each, find, flatMap, forEach, isEmpty, toArray } from 'lodash-es';
+import {
+  each,
+  find,
+  flatMap,
+  forEach,
+  isEmpty,
+  mapValues,
+  sortBy,
+  toArray,
+} from 'lodash-es';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -20,6 +36,10 @@ export class QuestionNavigationComponent {
   @Output() onReviewQuestion = new EventEmitter();
   selectedId = model('');
   selectedQuestionIndex = model<QuestionIndex | null>();
+
+  returnZero() {
+    return 0;
+  }
 
   onClickQuestion(questionId: string, questionIndex: QuestionIndex) {
     this.selectedQuestionIndex.set(questionIndex);

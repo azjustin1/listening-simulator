@@ -19,6 +19,7 @@ import {
   isEmpty,
   isUndefined,
   mapValues,
+  sortBy,
   toArray,
 } from 'lodash-es';
 import { interval, Subscription } from 'rxjs';
@@ -159,7 +160,6 @@ export class FullTestComponent extends AddOrEditQuizComponent {
         this.totalSeconds = this.result.listeningTimeout! * 60;
         this.audioPlayer.nativeElement.load();
         this.getTestTimeout();
-        this.generateQuestionMap();
         this.generateMapAnswered();
       });
       this.startAutoSave();
@@ -176,7 +176,6 @@ export class FullTestComponent extends AddOrEditQuizComponent {
           this.disableOthersTab();
           this.mapDisablePart[this.currentTab] = false;
         }
-        this.generateQuestionMap();
         this.getTestTimeout();
         this.generateMapAnswered();
       });
