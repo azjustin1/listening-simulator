@@ -601,7 +601,6 @@ export class FullTestComponent extends AddOrEditQuizComponent {
   }
 
   onMapAnsweredQuestion(question: Question) {
-    console.log(this.mapAnsweredQuestionId[question.id]);
     if (this.mapAnsweredQuestionId[question.id]) {
       switch (question.type) {
         case QuestionType.SHORT_ANSWER:

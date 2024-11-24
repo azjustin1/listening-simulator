@@ -24,7 +24,6 @@ export class LabelOnMapTestingComponent extends LabelOnMapEditingComponent {
     } else {
       this.question.subQuestions![questionIndex].answer = [choiceId];
     }
-    console.log(this.question.subQuestions![questionIndex].id);
     this.selectedId.set(this.question.subQuestions![questionIndex].id);
     this.selectedQuestionIndex.set({
       id: this.question.subQuestions![questionIndex].id,

@@ -15,6 +15,9 @@
           <tr>
             <td>
               {{ question.content }}
+              @if (isReadOnly && question.answer.length === 0) {
+                ❌
+              }
             </td>
             @for (choice of question.choices; track $index; ) {
               <td

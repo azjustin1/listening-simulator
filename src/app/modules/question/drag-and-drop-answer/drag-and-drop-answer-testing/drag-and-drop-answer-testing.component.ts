@@ -5,7 +5,16 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FillInTheGapTestingComponent } from '../../fill-in-the-gap/fill-in-the-gap-testing/fill-in-the-gap-testing.component';
 import { ExtractIdPipe } from '../../../../pipes/extract-id.pipe';
 import { Choice } from '../../../../shared/models/choice.model';
-import { each, filter, map, sortBy } from 'lodash-es';
+import {
+  clone,
+  each,
+  filter,
+  isEmpty,
+  map,
+  orderBy,
+  sortBy,
+  uniqBy,
+} from 'lodash-es';
 import { NgClass } from '@angular/common';
 import { ChoiceContentPipe } from '../../matching-header/choice-content.pipe';
 import { MatCard } from '@angular/material/card';
@@ -65,13 +74,40 @@ export class DragAndDropAnswerTestingComponent extends FillInTheGapTestingCompon
     event.preventDefault();
     const answer =
       this.mapAnswerById[event.dataTransfer!.getData(DATA_TRANSFER_KEY)];
+    this.clearPreviousAnswer(answer);
     if (this.mapChoiceById[choice.id]) {
       this.mapChoiceById[choice.id].answer = answer.id;
     }
-    this.answers = filter(this.answers, (a) => a.id !== answer.id);
+    // this.answers = filter(this.answers, (a) => a.id !== choice.id);
+    this.updateAnswersList();
     this.removeDropOverClass(choice.id);
     this.onAnswerChoice.emit(choice);
     this.onAnswer.emit(this.question);
+  }
+
+  private clearPreviousAnswer(dropChoice: Choice) {
+    each(this.question.choices, (choice) => {
+      if (choice.id !== dropChoice.id) {
+        if (choice.answer === dropChoice.id) {
+          choice.answer = '';
+        }
+      }
+    });
+  }
+
+  private updateAnswersList() {
+    const answeredChoices = filter(
+      this.question.choices,
+      (choice) => !isEmpty(choice.answer),
+    ).map((choice) => choice.answer);
+    console.log(answeredChoices);
+    this.answers = sortBy(
+      filter(
+        this.question.answers,
+        (answer) => !answeredChoices.includes(answer.id),
+      ),
+      'id',
+    );
   }
 
   onAnswerBackDrop(event: DragEvent) {
