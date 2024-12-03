@@ -50,8 +50,9 @@ export class QuestionNavigationComponent {
 
   scrollToQuestion(id: string) {
     const element = document.getElementById(id);
+    console.log(element)
     if (element) {
-      element.scrollIntoView();
+      element.scrollIntoView(false);
     }
   }
 
