@@ -45,14 +45,14 @@ export class QuestionNavigationComponent {
     this.selectedQuestionIndex.set(questionIndex);
     this.selectedId.set(questionIndex.id!);
     this.onSelectQuestion.emit(questionId);
-    this.scrollToQuestion(questionId);
+    this.scrollToQuestion(this.selectedQuestionIndex()!.id as string);
   }
 
   scrollToQuestion(id: string) {
     const element = document.getElementById(id);
-    console.log(element)
-    if (element) {
-      element.scrollIntoView(false);
+    const container = document.getElementById('quiz-container');
+    if (element && container) {
+      element.scrollIntoView({ inline: 'start' });
     }
   }
 

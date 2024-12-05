@@ -62,7 +62,7 @@ result.studentName !== "") {
     <mat-tab label="Listening" [disabled]="mapDisablePart[0]">
       <ng-template matTabContent>
         @if (isStart) {
-          <div class="question-group">
+          <div id="question-group">
             <app-listening
               [data]="result.listeningParts[selectedListeningPart]"
               [isTesting]="true"
