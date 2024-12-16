@@ -64,5 +64,7 @@ body {
 
 .angular-editor-textarea {
   background: #fff;
+  max-height: calc(100vh - 18rem);
+  overflow-y: auto;
 }
 
