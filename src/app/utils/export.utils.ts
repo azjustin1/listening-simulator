@@ -1,11 +1,8 @@
-import { saveAs } from 'file-saver';
-import { asBlob } from 'html-docx-js-typescript';
 import { each, isEmpty } from 'lodash-es';
 import { QuestionType } from '../shared/enums/question-type.enum';
 import { Question } from '../shared/models/question.model';
 import { Result } from '../shared/models/result.model';
 import { AnswerChoicePipe } from '../pipes/answer-choice.pipe';
-import { CommonUtils } from './common-utils';
 import { CHOICE_INDEX, INPUT_PATTERN } from './constant';
 import { IsInputPipe } from '../modules/question/fill-in-the-gap/is-input.pipe';
 import { ChoiceContentPipe } from '../modules/question/matching-header/choice-content.pipe';
@@ -174,15 +171,15 @@ export class ExportUtils {
         <td>${question.content}</td>
       `;
       each(question.choices, (choice) => {
-        console.log(question.answer.includes(choice.id))
+        console.log(question.answer.includes(choice.id));
         htmlString += `
           <td>${question.answer.includes(choice.id) ? '✅' : ''}</td>
         `;
       });
-      htmlString += '</tr>'
+      htmlString += '</tr>';
     });
     htmlString += '</table>';
-    console.log(htmlString)
+    console.log(htmlString);
     return htmlString;
   }
 
@@ -289,19 +286,22 @@ export class ExportUtils {
       htmlString += '<tr>';
       each(row, (column, columnKey) => {
         htmlString += `<td>`;
-        each(column, (content, index) => {
-          if (rowKey === 'tr0' || columnKey === 'td0') {
-            htmlString += `<b>${content}</b>`;
-          } else {
-            if (IsInputPipe.prototype.transform(content)) {
-              const answer = question.choices.find(
-                (choice) => choice.id! === inputPattern.exec(content)![1],
-              )?.answer;
-              htmlString += ` <span class="table-input">${answer ? answer : '❌'}</span>`;
+        each(column, (line, index) => {
+          each(line, (content) => {
+            if (rowKey === 'tr0' || columnKey === 'td0') {
+              htmlString += `<b>${content}</b>`;
             } else {
-              htmlString += `${content}`;
+              if (IsInputPipe.prototype.transform(content)) {
+                const answer = question.choices.find(
+                  (choice) => choice.id! === inputPattern.exec(content)![1],
+                )?.answer;
+                htmlString += ` <span class="table-input">${answer ? answer : '❌'}</span>`;
+              } else {
+                htmlString += `${content}`;
+              }
             }
-          }
+          });
+          htmlString += '<br>';
         });
         htmlString += '</td>';
       });
@@ -311,7 +311,6 @@ export class ExportUtils {
     return htmlString;
   }
 
-
   private static exportDragInTable(question: Question) {
     let htmlString = '';
     const inputPattern = new RegExp(INPUT_PATTERN);
@@ -320,24 +319,26 @@ export class ExportUtils {
       htmlString += '<tr>';
       each(row, (column, columnKey) => {
         htmlString += `<td>`;
-        each(column, (content, index) => {
-          if (rowKey === 'tr0' || columnKey === 'td0') {
-            htmlString += `<b>${content}</b>`;
-          } else {
-            if (IsInputPipe.prototype.transform(content)) {
-              const choice = question.choices.find(
-                (choice) => choice.id! === inputPattern.exec(content)![1],
-              );
-              if (choice) {
-                const answer = question.answers!.find(
-                  (answer) => answer.id === choice.answer,
-                );
-                htmlString += ` <span class="table-input">${answer ? answer.content : '❌'}</span>`;
-              }
+        each(column, (line, index) => {
+          each(line, (content) => {
+            if (rowKey === 'tr0' || columnKey === 'td0') {
+              htmlString += `<b>${line}</b>`;
             } else {
-              htmlString += `${content}`;
+              if (IsInputPipe.prototype.transform(content)) {
+                const choice = question.choices.find(
+                  (choice) => choice.id! === inputPattern.exec(content)![1],
+                );
+                if (choice) {
+                  const answer = question.answers!.find(
+                    (answer) => answer.id === choice.answer,
+                  );
+                  htmlString += ` <span class="table-input">${answer ? answer.content : '❌'}</span>`;
+                }
+              } else {
+                htmlString += `${line}`;
+              }
             }
-          }
+          });
         });
         htmlString += '</td>';
       });
@@ -367,5 +368,4 @@ export class ExportUtils {
     `;
     return htmlString;
   }
-
 }

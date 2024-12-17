@@ -26,9 +26,11 @@
                       class="text-success">{{ mapChoiceById[content | extractId].correctAnswer }}</span>
                   }
                 } @else {
-                  <span class="text-success">
+                  @if (mapChoiceById[content | extractId]) {
+                    <span class="text-success">
                      <input disabled [value]="mapChoiceById[content | extractId].correctAnswer">
                   </span>
+                  }
                 }
               </div>
             } @else {

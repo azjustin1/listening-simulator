@@ -12,36 +12,38 @@
           <tr>
             @for (column of row.value | keyvalue; track $index; ) {
               <td>
-                <div class="d-flex flex-wrap align-items-center m-2"
+                <div class="d-flex flex-column flex-wrap m-2"
                      [ngClass]="{'justify-content-center': row.key === 'tr0' || column.key === 'td0'}">
-                  @for (content of column.value; track $index; ) {
-                    <div class="mx-1">
-                      @if ((content | isInput) && mapChoiceById[content | extractId]) {
-
-                        @if (isReadOnly) {
-                          <span
-                            [ngClass]="{
-                            'text-success': mapChoiceById[content.match(inputPattern)![1]] | isCorrectAnswer,
-                            'text-danger': !(mapChoiceById[content.match(inputPattern)![1]] | isCorrectAnswer)
-                          }"
-                          >
-                            {{ !mapChoiceById[content | extractId].answer || mapChoiceById[content | extractId].answer === '' ? '❌' : mapChoiceById[content | extractId].answer }}
-                        </span>
-                          @if (!(mapChoiceById[content | extractId] | isCorrectAnswer)) {
-                            | <span
-                              class="text-success">{{ mapChoiceById[content | extractId].correctAnswer }}</span>
+                  @for (line of column.value; track $index; ) {
+                    <div class="d-flex flex-row align-items-center">
+                      @for (content of line; track $index; ) {
+                        <div class="mx-1">
+                          @if ((content | isInput) && mapChoiceById[content | extractId]) {
+                            @if (isReadOnly) {
+                              <span
+                                [ngClass]="{
+                                'text-success': mapChoiceById[content.match(inputPattern)![1]] | isCorrectAnswer,
+                                'text-danger': !(mapChoiceById[content.match(inputPattern)![1]] | isCorrectAnswer)
+                              }">
+                                {{ !mapChoiceById[content | extractId].answer || mapChoiceById[content | extractId].answer === '' ? '❌' : mapChoiceById[content | extractId].answer }}
+                              </span>
+                              @if (!(mapChoiceById[content | extractId] | isCorrectAnswer)) {
+                                | <span
+                                  class="text-success">{{ mapChoiceById[content | extractId].correctAnswer }}</span>
+                              }
+                            } @else {
+                              <input disabled [value]="mapChoiceById[content | extractId].correctAnswer" />
+                            }
+                          } @else {
+                            @if (row.key === 'tr0' || column.key === 'td0') {
+                              <b>
+                                <p class="my-2">{{ content }}</p>
+                              </b>
+                            } @else {
+                              <p class="my-2">{{ content }}</p>
+                            }
                           }
-                        } @else {
-                          <input disabled [value]="mapChoiceById[content | extractId].correctAnswer" />
-                        }
-                      } @else {
-                        @if (row.key === 'tr0' || column.key === 'td0') {
-                          <b>
-                            <p class="my-2">{{ content }}</p>
-                          </b>
-                        } @else {
-                          <p class="my-2">{{ content }}</p>
-                        }
+                        </div>
                       }
                     </div>
                   }

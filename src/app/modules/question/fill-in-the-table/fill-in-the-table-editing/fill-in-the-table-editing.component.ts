@@ -4,20 +4,21 @@ import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { ExtractIdPipe } from '../../../../pipes/extract-id.pipe';
 import { FormsModule } from '@angular/forms';
 import { IsInputPipe } from '../../fill-in-the-gap/is-input.pipe';
-import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { KeyValuePipe, NgClass } from '@angular/common';
 import {
   each,
-  forEach,
   keys,
-  mapKeys,
   mapValues,
   omit,
   toArray,
+  filter,
+  isObject,
+  isArray,
 } from 'lodash-es';
 import { INPUT_PATTERN } from '../../../../utils/constant';
 import { CommonUtils } from '../../../../utils/common-utils';
+import { MatButton } from '@angular/material/button';
 
 @Component({
   selector: 'app-fill-in-the-table-editing',
@@ -27,20 +28,20 @@ import { CommonUtils } from '../../../../utils/common-utils';
     ExtractIdPipe,
     FormsModule,
     IsInputPipe,
-    MatButton,
     MatIcon,
     KeyValuePipe,
     NgClass,
+    MatButton,
   ],
   templateUrl: './fill-in-the-table-editing.component.html',
   styleUrl: './fill-in-the-table-editing.component.scss',
 })
 export class FillInTheTableEditingComponent extends FillInTheGapEditingComponent {
   headerColSpan = 1;
-  mapEditingByCell: Record<string, Record<number, boolean>> = {
+  mapEditingByCell: Record<string, Record<number, Record<number, boolean>>> = {
     tr0td0: {
-      0: false,
-      1: false,
+      0: { 0: false },
+      1: { 0: false },
     },
   };
 
@@ -53,8 +54,15 @@ export class FillInTheTableEditingComponent extends FillInTheGapEditingComponent
       each(this.question.tableContent, (row, rowKey) => {
         each(row, (column, columnKey) => {
           this.mapEditingByCell[`${rowKey}${columnKey}`] = {};
-          each(column, (content, index) => {
-            this.mapEditingByCell[`${rowKey}${columnKey}`][index] = false;
+          each(column, (line, lineIndex) => {
+            if (!this.mapEditingByCell[`${rowKey}${columnKey}`][lineIndex]) {
+              this.mapEditingByCell[`${rowKey}${columnKey}`][lineIndex] = {};
+            }
+            each(line, (_content, contentIndex) => {
+              this.mapEditingByCell[`${rowKey}${columnKey}`][lineIndex][
+                contentIndex
+              ] = false;
+            });
           });
         });
       });
@@ -67,12 +75,12 @@ export class FillInTheTableEditingComponent extends FillInTheGapEditingComponent
       if (this.question.tableContent['tr0']) {
         columnLength = Object.keys(this.question.tableContent['tr0']).length;
       }
-      let newRow: Record<string, string[]> = {};
+      let newRow: Record<string, string[][]> = {};
       const newRowIndex = keys(this.question.tableContent).length;
       for (let i = 0; i < columnLength; i++) {
-        newRow[`td${i}`] = ['Text'];
+        newRow[`td${i}`] = [['Text']];
         this.mapEditingByCell[`tr${newRowIndex}td${i}`] = {
-          0: false,
+          0: { 0: false },
         };
       }
       this.question.tableContent[`tr${newRowIndex}`] = newRow;
@@ -87,7 +95,7 @@ export class FillInTheTableEditingComponent extends FillInTheGapEditingComponent
       const num2 = parseInt(key2.replace('tr', ''), 10);
       return num1 - num2;
     });
-    const reorderRows: Record<string, Record<string, string[]>> = {};
+    const reorderRows: Record<string, Record<string, string[][]>> = {};
     sortedKeys.forEach((key: string, index: number) => {
       reorderRows[`tr${index}`] = omitted[key];
     });
@@ -101,9 +109,11 @@ export class FillInTheTableEditingComponent extends FillInTheGapEditingComponent
       ).length;
       each(this.question.tableContent, (row, key) => {
         if (this.question.tableContent![`${key}`]) {
-          this.question.tableContent![`${key}`][`td${columnLength}`] = ['Text'];
+          this.question.tableContent![`${key}`][`td${columnLength}`] = [
+            ['Text'],
+          ];
           this.mapEditingByCell[`${key}td${columnLength}`] = {
-            0: false,
+            0: { 0: false },
           };
         }
       });
@@ -123,7 +133,7 @@ export class FillInTheTableEditingComponent extends FillInTheGapEditingComponent
           const num2 = parseInt(key2.replace('td', ''), 10);
           return num1 - num2;
         });
-        const reorderColumns: Record<string, string[]> = {};
+        const reorderColumns: Record<string, string[][]> = {};
         sortedKeys.forEach((key: string, index: number) => {
           reorderColumns[`td${index}`] = omitted[key];
         });
@@ -133,39 +143,69 @@ export class FillInTheTableEditingComponent extends FillInTheGapEditingComponent
     this.headerColSpan--;
   }
 
-  addColumnText(rowKey: string, columnKey: string, index: number) {
-    this.question.tableContent![`${rowKey}`][`${columnKey}`] = [
+  addColumnText(
+    rowKey: string,
+    columnKey: string,
+    lineIndex: number,
+    contentIndex: number,
+  ) {
+    this.question.tableContent![rowKey][columnKey][lineIndex] = [
       ...CommonUtils.pushAtIndex(
-        this.question.tableContent![`${rowKey}`][`${columnKey}`],
-        index,
+        this.question.tableContent![rowKey][columnKey][lineIndex],
+        contentIndex + 1,
         '',
       ),
     ];
-    this.enableEdit(rowKey, columnKey, index);
+    this.enableEdit(rowKey, columnKey, lineIndex, contentIndex + 1);
   }
 
-  editColumnText(rowKey: string, columnKey: string, index: number) {
+  editColumnText(
+    rowKey: string,
+    columnKey: string,
+    lineIndex: number,
+    contentIndex: number,
+  ) {
     const foundContent = this.mapEditingByCell[`${rowKey}${columnKey}`];
     if (foundContent) {
-      this.mapEditingByCell[`${rowKey}${columnKey}`][index] = true;
+      this.mapEditingByCell[`${rowKey}${columnKey}`][lineIndex][contentIndex] =
+        true;
     }
-    this.enableEdit(rowKey, columnKey, index);
+    this.enableEdit(rowKey, columnKey, lineIndex, contentIndex);
   }
 
-  saveColumnText(rowKey: string, columnKey: string, index: number) {
+  saveColumnText(
+    rowKey: string,
+    columnKey: string,
+    lineIndex: number,
+    contentIndex: number,
+  ) {
     const foundContent = this.mapEditingByCell[`${rowKey}${columnKey}`];
     if (foundContent) {
-      this.mapEditingByCell[`${rowKey}${columnKey}`][index] = false;
+      this.mapEditingByCell[`${rowKey}${columnKey}`][lineIndex][contentIndex] =
+        false;
     }
     this.saveOthersEditing();
   }
 
-  deleteColumnText(rowKey: string, columnKey: string, index: number) {
-    this.question.tableContent![`${rowKey}`][`${columnKey}`].splice(index, 1);
+  deleteColumnText(
+    rowKey: string,
+    columnKey: string,
+    lineIndex: number,
+    contentIndex: number,
+  ) {
+    this.question.tableContent![rowKey][columnKey][lineIndex].splice(
+      contentIndex,
+      1,
+    );
   }
 
-  addColumnInput(rowKey: string, columnKey: string, index: number) {
-    this.enableEdit(rowKey, columnKey, index);
+  addColumnInput(
+    rowKey: string,
+    columnKey: string,
+    lineIndex: number,
+    contentIndex: number,
+  ) {
+    this.enableEdit(rowKey, columnKey, lineIndex, contentIndex);
     const foundContent = this.mapEditingByCell[`${rowKey}${columnKey}`];
     if (foundContent) {
       const newChoice = {
@@ -175,18 +215,24 @@ export class FillInTheTableEditingComponent extends FillInTheGapEditingComponent
         answer: '',
       };
       this.mapChoiceById[newChoice.id] = newChoice;
-      this.question.tableContent![`${rowKey}`][`${columnKey}`] = [
-        ...CommonUtils.pushAtIndex(
-          this.question.tableContent![`${rowKey}`][`${columnKey}`],
-          index,
+      this.question.tableContent![rowKey][columnKey][lineIndex] = [
+        ...(CommonUtils.pushAtIndex(
+          this.question.tableContent![rowKey][columnKey][lineIndex],
+          contentIndex + 1,
           `<${newChoice.id}>`,
-        ),
+        ) as string[]),
       ];
     }
   }
 
-  editColumnInput(rowKey: string, columnKey: string, index: number) {
-    this.mapEditingByCell[`${rowKey}${columnKey}`][index] = true;
+  editColumnInput(
+    rowKey: string,
+    columnKey: string,
+    lineIndex: number,
+    contentIndex: number,
+  ) {
+    this.mapEditingByCell[`${rowKey}${columnKey}`][lineIndex][contentIndex] =
+      true;
   }
 
   saveColumnInput(rowKey: string, columnKey: string, index: number) {
@@ -194,34 +240,52 @@ export class FillInTheTableEditingComponent extends FillInTheGapEditingComponent
     this.saveOthersEditing();
   }
 
-  deleteColumnInput(rowKey: string, columnKey: string, index: number) {
+  deleteColumnInput(
+    rowKey: string,
+    columnKey: string,
+    lineIndex: number,
+    contentIndex: number,
+  ) {
     const content =
-      this.question.tableContent![`${rowKey}`][`${columnKey}`][index];
-    this.question.tableContent![`${rowKey}`][`${columnKey}`].splice(index, 1);
+      this.question.tableContent![rowKey][columnKey][lineIndex][contentIndex];
+    this.question.tableContent![rowKey][columnKey][contentIndex].splice(
+      contentIndex,
+      1,
+    );
     this.mapChoiceById = omit(
       this.mapChoiceById,
       RegExp(INPUT_PATTERN).exec(content)![1],
     );
   }
 
-  private enableEdit(rowKey: string, columnKey: string, index: number) {
+  private enableEdit(
+    rowKey: string,
+    columnKey: string,
+    lineIndex: number,
+    contentIndex: number,
+  ) {
     this.saveOthersEditing();
-    this.mapEditingByCell[`${rowKey}${columnKey}`][index] = true;
+    this.mapEditingByCell[`${rowKey}${columnKey}`][lineIndex][contentIndex] =
+      true;
   }
 
   private saveOthersEditing() {
-    this.mapEditingByCell = {
-      ...mapValues(this.mapEditingByCell, (cell) => {
-        return { ...mapValues(cell, () => false) };
-      }),
-    };
+    this.mapEditingByCell = mapValues(this.mapEditingByCell, (cell) => {
+      return {
+        ...mapValues(cell, (line) => {
+          return { ...mapValues(line, () => false) };
+        }),
+      };
+    });
     this.onSave.emit();
   }
 
   private deleteAllAnswerInRow(rowKey: string) {
     each(this.question.tableContent![`${rowKey}`], (column, columnKey) => {
-      each(column, (content) => {
-        this.removeChoiceFromMap(content);
+      each(column, (line) => {
+        each(line, (content) => {
+          this.removeChoiceFromMap(content);
+        });
       });
     });
   }
@@ -230,19 +294,54 @@ export class FillInTheTableEditingComponent extends FillInTheGapEditingComponent
     each(this.question.tableContent, (row, rowKey) => {
       each(
         this.question.tableContent![`${rowKey}`][`td${columnIndex}`],
-        (content) => {
-          this.removeChoiceFromMap(content);
+        (line) => {
+          each(line, (content) => {
+            this.removeChoiceFromMap(content);
+          });
         },
       );
     });
   }
 
-  private removeChoiceFromMap(content: string) {
+  removeChoiceFromMap(content: string) {
     if (IsInputPipe.prototype.transform(content)) {
       this.mapChoiceById = omit(
         this.mapChoiceById,
         RegExp(INPUT_PATTERN).exec(content)![1],
       );
+      this.question.choices = toArray(this.mapChoiceById);
     }
+  }
+
+  addNewLineInColumn(rowIndex: string, columnIndex: string, lineIndex: number) {
+    this.question.tableContent![rowIndex][columnIndex] = [
+      ...CommonUtils.pushAtIndex(
+        this.question.tableContent![rowIndex][columnIndex],
+        lineIndex + 1,
+        ['Text'],
+      ),
+    ];
+    this.mapEditingByCell[`${rowIndex}${columnIndex}`][lineIndex + 1] = {
+      0: true,
+    };
+  }
+
+  deleteLineInColumn(rowIndex: string, columnIndex: string, lineIndex: number) {
+    const line = this.question.tableContent![rowIndex][columnIndex][lineIndex];
+    const inputId = this.getInputId(line)[0];
+    if (inputId) {
+      this.question.choices = filter(
+        this.question.choices,
+        (choice) => inputId !== choice.id,
+      );
+    }
+    this.removeAssociatedChoice(
+      this.question.tableContent![rowIndex][columnIndex][lineIndex],
+    );
+    this.question.tableContent![rowIndex][columnIndex][lineIndex].splice(
+      lineIndex,
+      1,
+    );
+    this.initMapSaveText();
   }
 }

@@ -94,7 +94,7 @@ export class FillInTheGapEditingComponent extends AbstractQuestionComponent {
     this.initMapSaveText();
   }
 
-  private removeAssociatedChoice(arrayContent: string[]) {
+  protected removeAssociatedChoice(arrayContent: string[]) {
     each(arrayContent, (content) => {
       if (IsInputPipe.prototype.transform(content)) {
         this.mapChoiceById = omit(
@@ -198,7 +198,7 @@ export class FillInTheGapEditingComponent extends AbstractQuestionComponent {
     this.mapShowActionByIndex[lineIndex][contentIndex] = true;
   }
 
-  private getInputId(line: string[]) {
+  protected getInputId(line: string[]) {
     return line
       .map((item) => {
         const match = item.match(INPUT_PATTERN);
