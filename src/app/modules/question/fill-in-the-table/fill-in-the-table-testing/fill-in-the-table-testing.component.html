@@ -12,13 +12,13 @@
           <tr>
             @for (column of row.value | keyvalue; track $index; ) {
               <td class="m-1">
-                <div class="d-flex flex-wrap align-items-center m-2"
+                <div class="d-flex flex-column flex-wrap m-2"
                      [ngClass]="{'justify-content-center': row.key === 'tr0' || column.key === 'td0'}">
                   @for (line of column.value; track $index; ) {
                     <div class="d-flex flex-row align-items-center">
                       @for (content of line; track $index; let lineIndex = $index) {
-                        @if ((content | isInput) && mapChoiceById[content | extractId]) {
-                          <div class="mx-1">
+                        <div class="mx-1">
+                          @if ((content | isInput) && mapChoiceById[content | extractId]) {
                             <input
                               [id]="content.match(inputPattern)![1]"
                               [(ngModel)]="mapChoiceById[content.match(inputPattern)![1]].answer"
@@ -26,16 +26,16 @@
                               (click)="onAnswerChoice.emit(mapChoiceById[content.match(inputPattern)![1]])"
                               (ngModelChange)="onInputAnswer($event, content.match(inputPattern)![1])"
                               [(ngModel)]="mapChoiceById[content.match(inputPattern)![1]].answer" />
-                          </div>
-                        } @else {
-                          @if (row.key === 'tr0' || column.key === 'td0') {
-                            <b>
-                              <p class="my-2">{{ content }}</p>
-                            </b>
                           } @else {
-                            <p class="my-2">{{ content }}</p>
+                            @if (row.key === 'tr0' || column.key === 'td0') {
+                              <b>
+                                <p class="my-2">{{ content }}</p>
+                              </b>
+                            } @else {
+                              <p class="my-2">{{ content }}</p>
+                            }
                           }
-                        }
+                        </div>
                       }
                     </div>
                   }

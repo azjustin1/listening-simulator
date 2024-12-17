@@ -335,7 +335,7 @@ export class ExportUtils {
                   htmlString += ` <span class="table-input">${answer ? answer.content : '❌'}</span>`;
                 }
               } else {
-                htmlString += `${line}`;
+                htmlString += `${content}`;
               }
             }
           });
