@@ -7,6 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { toArray } from 'lodash-es';
 import { MatCard } from '@angular/material/card';
 import { DragAndDropAnswerTestingComponent } from '../../drag-and-drop-answer/drag-and-drop-answer-testing/drag-and-drop-answer-testing.component';
+import { Choice } from '../../../../shared/models/choice.model';
 
 @Component({
   selector: 'app-drag-in-table-testing',

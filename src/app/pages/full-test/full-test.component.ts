@@ -606,6 +606,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
         case QuestionType.FILL_IN_THE_GAP:
         case QuestionType.FILL_IN_THE_TABLE:
         case QuestionType.DRAG_AND_DROP_ANSWER:
+        case QuestionType.DRAG_IN_TABLE:
           each(question.choices, (choice) => {
             this.mapAnswerByChoiceId[choice.id] = clone(choice.answer!);
           });
