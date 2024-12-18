@@ -267,6 +267,15 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
     const correctAnswers = clone(question.correctAnswer);
     question.correctAnswer = [];
     if (question.correctAnswer) {
+      if (question.type === QuestionType.LABEL_ON_MAP) {
+        each(question.subQuestions, (subQuestion) => {
+          const newId = CommonUtils.generateRandomId();
+          if (correctAnswers.includes(subQuestion.id)) {
+            subQuestion.correctAnswer.push(subQuestion.id);
+          }
+          subQuestion.id = newId;
+        });
+      }
       each(question.choices, (choice) => {
         const newChoiceId = CommonUtils.generateRandomId();
         if (correctAnswers.includes(choice.id)) {

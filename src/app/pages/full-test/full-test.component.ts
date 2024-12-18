@@ -552,7 +552,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
                   index: index,
                   id: subQuestion.id,
                   answer: [],
-                  isAnswer: false,
+                  isAnswer: !isEmpty(subQuestion.answer),
                   isReviewed: false,
                 });
                 index++;
@@ -648,6 +648,18 @@ export class FullTestComponent extends AddOrEditQuizComponent {
             );
           }
           break;
+        case QuestionType.LABEL_ON_MAP:
+          const mapAnsweredBySubQuestionId: Record<string, boolean> = {};
+          each(question.subQuestions, (subQuestion) => {
+            mapAnsweredBySubQuestionId[subQuestion.id] = !isEmpty(
+              subQuestion.answer,
+            );
+          });
+          each(this.mapAnsweredQuestionId[question.id], (questionIndex) => {
+            questionIndex.isAnswer =
+              mapAnsweredBySubQuestionId[questionIndex.id!];
+          });
+          break;
       }
     }
   }
@@ -678,7 +690,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
   onMapReviewQuestion(reviewedQuestionIndex: QuestionIndex) {
     each(this.mapAnsweredQuestionId, (questionIndexes) => {
       each(questionIndexes, (questionIndex) => {
-        if (questionIndex.index === reviewedQuestionIndex.index) {
+        if (questionIndex.id === reviewedQuestionIndex.id) {
           questionIndex.isReviewed = reviewedQuestionIndex.isReviewed;
         }
       });

@@ -101,6 +101,7 @@ export class QuestionNavigationComponent {
   }
 
   reviewQuestion() {
+    console.log(this.selectedQuestionIndex())
     if (this.selectedQuestionIndex() !== null) {
       this.selectedQuestionIndex.set({
         ...(this.selectedQuestionIndex() as QuestionIndex),
