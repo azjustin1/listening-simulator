@@ -200,7 +200,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
           tableContent: {
             tr0: {
               td0: [['Text']],
-              td1: [['Text']]
+              td1: [['Text']],
             },
             tr1: {
               td0: [['Text']],
@@ -272,10 +272,42 @@ export abstract class AbstractQuizPartComponent<T extends AbstractPart>
         if (correctAnswers.includes(choice.id)) {
           question.correctAnswer.push(newChoiceId);
         }
-        if (question.type === QuestionType.FILL_IN_THE_GAP) {
+        if (
+          question.type === QuestionType.FILL_IN_THE_GAP ||
+          question.type === QuestionType.DRAG_AND_DROP_ANSWER
+        ) {
           this.changeIdLineFillInTheGap(question, choice.id, newChoiceId);
         }
+        if (
+          question.type === QuestionType.DRAG_IN_TABLE ||
+          question.type === QuestionType.FILL_IN_THE_TABLE
+        ) {
+          this.changeIdInLine(question, choice.id, newChoiceId);
+        }
         choice.id = newChoiceId;
+      });
+    }
+  }
+
+  private changeIdInLine(
+    question: Question,
+    oldChoiceId: string,
+    newChoiceId: string,
+  ) {
+    if (question.tableContent) {
+      each(question.tableContent, (row) => {
+        each(row, (column) => {
+          each(column, (line) => {
+            for (let i = 0; i < line.length; i++) {
+              if (
+                IsInputPipe.prototype.transform(line[i]) &&
+                ExtractIdPipe.prototype.transform(line[i]) === oldChoiceId
+              ) {
+                line[i] = `<${newChoiceId}>`;
+              }
+            }
+          });
+        });
       });
     }
   }
