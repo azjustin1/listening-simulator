@@ -29,7 +29,7 @@
                       <div class="d-flex flex-row">
                         @for (content of line; track $index; let contentIndex = $index) {
                           <div class="d-flex flex-row">
-                            @if ((content | isInput) && mapChoiceById[choiceId]) {
+                            @if ((content | isInput)) {
                               @let choiceId = (content | extractId);
                               @let choice = mapChoiceById[choiceId];
                               @if (choice) {

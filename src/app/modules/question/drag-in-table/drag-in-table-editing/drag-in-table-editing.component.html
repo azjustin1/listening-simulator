@@ -28,9 +28,10 @@
                     @for (line of column.value; track $index; let lineIndex = $index) {
                       <div class="d-flex flex-row">
                         @for (content of line; track $index; let contentIndex = $index) {
-                          @if ((content | isInput) && mapChoiceById[choiceId]) {
+                          @if ((content | isInput)) {
                             @let choiceId = (content | extractId);
-                            @if (mapChoiceById[choiceId]) {
+                            @let choice = mapChoiceById[choiceId];
+                            @if (choice) {
                               <div class="d-flex mx-1">
                                 <select class="ms-1"
                                         [(ngModel)]="mapChoiceById[choiceId].correctAnswer"
