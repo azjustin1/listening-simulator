@@ -7,6 +7,10 @@ import { INPUT_PATTERN } from '../utils/constant';
 })
 export class ExtractIdPipe implements PipeTransform {
   transform(value: string, ...args: unknown[]): string {
-    return value.match(INPUT_PATTERN)![1];
+    const match = value.match(INPUT_PATTERN);
+    if (match) {
+      return match[1];
+    }
+    return '';
   }
 }

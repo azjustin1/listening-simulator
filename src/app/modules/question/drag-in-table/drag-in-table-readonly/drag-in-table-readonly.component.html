@@ -15,24 +15,27 @@
                 <div class="d-flex flex-wrap align-items-center m-2"
                      [ngClass]="{'justify-content-center': row.key === 'tr0' || column.key === 'td0'}">
                   @for (line of column.value; track $index; ) {
-                    @for (content of line; track $index; let contentIndex = $index) {
+                    @for (content of line; track $index; ) {
                       <div class="mx-1">
-                        @if ((content | isInput) && mapChoiceById[content | extractId]) {
-                          @if (isReadOnly) {
-                            <span
-                              [ngClass]="{
-                            'text-success': mapChoiceById[content.match(inputPattern)![1]] | isCorrectAnswer,
-                            'text-danger': !(mapChoiceById[content.match(inputPattern)![1]] | isCorrectAnswer)
-                          }">
-                            {{ !mapChoiceById[content | extractId].answer || mapChoiceById[content | extractId].answer === '' ? '❌' : mapAnswerById[mapChoiceById[content | extractId].answer!].content }}
-                          </span>
-                            @if (!(mapChoiceById[content | extractId] | isCorrectAnswer)) {
-                              | <span
-                                class="text-success">{{ mapAnswerById[mapChoiceById[content | extractId].correctAnswer!].content }}</span>
+                        @if ((content | isInput)) {
+                          @let choiceId = content | extractId;
+                          @let choice = mapChoiceById[choiceId];
+                          @if (choice) {
+                            @if (isReadOnly && choice) {
+                              <span
+                                [ngClass]="{
+                                'text-success': choice | isCorrectAnswer,
+                                'text-danger': !(choice | isCorrectAnswer)}">
+                                {{ !choice.answer || choice.answer === '' ? '❌' : mapAnswerById[choice.answer!].content }}
+                              </span>
+                              @if (!(choice | isCorrectAnswer)) {
+                                | <span
+                                  class="text-success">{{ mapAnswerById[choice.correctAnswer!].content }}</span>
+                              }
+                            } @else {
+                              <input disabled
+                                     [value]="mapAnswerById[choice.correctAnswer!].content" />
                             }
-                          } @else {
-                            <input disabled
-                                   [value]="mapAnswerById[mapChoiceById[content | extractId].correctAnswer!].content" />
                           }
                         } @else {
                           @if (row.key === 'tr0' || column.key === 'td0') {

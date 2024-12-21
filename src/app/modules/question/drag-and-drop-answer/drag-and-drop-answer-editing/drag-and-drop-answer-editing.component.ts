@@ -8,6 +8,7 @@ import { MatIcon } from '@angular/material/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { isUndefined } from 'lodash-es';
 import { CommonUtils } from '../../../../utils/common-utils';
+import { ExtractIdPipe } from "../../../../pipes/extract-id.pipe";
 
 @Component({
   selector: 'app-drag-and-drop-answer-editing',
@@ -20,6 +21,7 @@ import { CommonUtils } from '../../../../utils/common-utils';
     MatButton,
     MatIcon,
     ReactiveFormsModule,
+    ExtractIdPipe,
   ],
   templateUrl: './drag-and-drop-answer-editing.component.html',
   styleUrl: './drag-and-drop-answer-editing.component.scss',

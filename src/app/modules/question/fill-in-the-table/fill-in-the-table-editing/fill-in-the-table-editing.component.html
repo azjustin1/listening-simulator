@@ -16,9 +16,11 @@
         <th colspan="1" class="text-start">
           <mat-icon color="primary" (click)="addNewColumn()">add</mat-icon>
         </th>
-        @for (row of question.tableContent | keyvalue; track $index; let rowIndex = $index) {
+        @for (row of question.tableContent | keyvalue; track $index; ) {
+          @let rowIndex = $index;
           <tr>
             @for (column of row.value | keyvalue; track $index; ) {
+              @let editingCell = this.mapEditingByCell[row.key + '' + column.key];
               <td class="m-1">
                 <div class="d-flex flex-wrap align-items-center m-2"
                      [ngClass]="{'justify-content-center': row.key === 'tr0' || column.key === 'td0'}">
@@ -27,30 +29,34 @@
                       <div class="d-flex flex-row">
                         @for (content of line; track $index; let contentIndex = $index) {
                           <div class="d-flex flex-row">
-                            @if ((content | isInput) && mapChoiceById[content | extractId]) {
-                              <div class="d-flex mx-1">
-                                <input [(ngModel)]="mapChoiceById[content.match(inputPattern)![1]].correctAnswer"
-                                       (click)="editColumnInput(row.key, column.key, lineIndex, contentIndex)" />
-                                @if (this.mapEditingByCell[row.key + '' + column.key][lineIndex][contentIndex]) {
-                                  <div class="d-flex align-items-center">
-                                    <mat-icon color="primary"
-                                              (click)="saveColumnInput(row.key, column.key, contentIndex)">
-                                      check
-                                    </mat-icon>
-                                    <mat-icon color="warn"
-                                              (click)="deleteColumnInput(row.key, column.key, lineIndex, contentIndex)">
-                                      delete
-                                    </mat-icon>
-                                    <button class="d-flex align-items-center ms-1"
-                                            (click)="addColumnText(row.key, column.key, lineIndex, contentIndex)">
-                                      <mat-icon color="primary">add</mat-icon>
-                                      Text
-                                    </button>
-                                  </div>
-                                }
-                              </div>
+                            @if ((content | isInput) && mapChoiceById[choiceId]) {
+                              @let choiceId = (content | extractId);
+                              @let choice = mapChoiceById[choiceId];
+                              @if (choice) {
+                                <div class="d-flex mx-1">
+                                  <input [(ngModel)]="mapChoiceById[choiceId].correctAnswer"
+                                         (click)="editColumnInput(row.key, column.key, lineIndex, contentIndex)" />
+                                  @if (editingCell[lineIndex][contentIndex]) {
+                                    <div class="d-flex align-items-center">
+                                      <mat-icon color="primary"
+                                                (click)="saveColumnInput(row.key, column.key, contentIndex)">
+                                        check
+                                      </mat-icon>
+                                      <mat-icon color="warn"
+                                                (click)="deleteColumnInput(row.key, column.key, lineIndex, contentIndex)">
+                                        delete
+                                      </mat-icon>
+                                      <button class="d-flex align-items-center ms-1"
+                                              (click)="addColumnText(row.key, column.key, lineIndex, contentIndex)">
+                                        <mat-icon color="primary">add</mat-icon>
+                                        Text
+                                      </button>
+                                    </div>
+                                  }
+                                </div>
+                              }
                             } @else {
-                              @if (this.mapEditingByCell[row.key + '' + column.key] && this.mapEditingByCell[row.key + '' + column.key][lineIndex] && this.mapEditingByCell[row.key + '' + column.key][lineIndex][contentIndex]) {
+                              @if (editingCell && editingCell[lineIndex] && editingCell[lineIndex][contentIndex]) {
                                 <input
                                   [(ngModel)]="question.tableContent[row.key][column.key][lineIndex][contentIndex]" />
                                 <mat-icon color="primary"

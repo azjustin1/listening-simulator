@@ -8,6 +8,8 @@
         @for (content of line; track $index; ) {
           <div class="d-flex mb-4">
             @if (content | isInput) {
+              @let choiceId = content | extractId;
+              @let choice = mapChoiceById[choiceId];
               <div
                 class="mx-1 px-2 question__text"
                 [ngClass]="{'edit': isEditing}"
@@ -15,24 +17,24 @@
                 @if (isReadOnly) {
                   <span
                     [ngClass]="{
-                      'text-success': mapChoiceById[content.match(inputPattern)![1]] | isCorrectAnswer,
-                      'text-danger': !(mapChoiceById[content.match(inputPattern)![1]] | isCorrectAnswer)
+                      'text-success': choice | isCorrectAnswer,
+                      'text-danger': !(choice | isCorrectAnswer)
                     }"
                   >
                       {{
-                      (mapChoiceById[content | extractId].answer! | choiceContent: question.answers!)
+                      (choice.answer! | choiceContent: question.answers!)
                         ?.content ?? '❌'
                     }}
                   </span>
-                  @if (!(mapChoiceById[content | extractId] | isCorrectAnswer)) {
+                  @if (!(choice | isCorrectAnswer)) {
                     | <span
                       class="text-success">   {{
-                        (mapChoiceById[content | extractId].correctAnswer! | choiceContent: question.answers!)
+                        (choice.correctAnswer! | choiceContent: question.answers!)
                           ?.content
                       }}</span>
                   }
                 } @else {
-                  <input disabled [value]="mapAnswerById[mapChoiceById[content | extractId].correctAnswer!].content">
+                  <input disabled [value]="mapAnswerById[choice.correctAnswer!].content">
                 }
               </div>
             } @else {

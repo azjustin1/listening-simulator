@@ -7,17 +7,19 @@
           @for (content of line; track $index) {
             <div class="d-flex align-items-center">
               @if (content | isInput) {
+                @let choiceId = content | extractId;
+                @let choice = mapChoiceById[choiceId];
                 <div
                   class="drop-container"
                   [ngClass]="{'active': selectedId() === content.match(inputPattern)![1]}"
-                  [id]="mapChoiceById[content | extractId].id"
+                  [id]="choiceId"
                   [draggable]="true"
-                  (dragstart)="onDragStart($event, mapChoiceById[content.match(inputPattern)![1]].answer!)"
-                  (click)="onAnswerChoice.emit(mapChoiceById[content.match(inputPattern)![1]])"
-                  (drop)="onDropAnswer($event, mapChoiceById[content.match(inputPattern)![1]])"
+                  (dragstart)="onDragStart($event, choice.answer!)"
+                  (click)="onAnswerChoice.emit(choice)"
+                  (drop)="onDropAnswer($event, choice)"
                   (dragover)="onDragOver($event, content.match(inputPattern)![1])"
                   (dragleave)="removeDropOver($event, content.match(inputPattern)![1])">
-                  {{ mapAnswerById[mapChoiceById[content | extractId].answer!] ? mapAnswerById[mapChoiceById[content | extractId].answer!].content : '' }}
+                  {{ mapAnswerById[choice.answer!] ? mapAnswerById[choice.answer!].content : '' }}
                 </div>
               } @else {
                 <div>

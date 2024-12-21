@@ -180,7 +180,7 @@ export class FillInTheGapEditingComponent extends AbstractQuestionComponent {
     this.question.arrayContent![lineIndex] = [
       ...CommonUtils.pushAtIndex(
         this.question.arrayContent![lineIndex],
-        contentIndex,
+        contentIndex + 1,
         `<${newChoice.id}>`,
       ),
     ];

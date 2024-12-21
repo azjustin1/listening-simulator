@@ -171,7 +171,6 @@ export class ExportUtils {
         <td>${question.content}</td>
       `;
       each(question.choices, (choice) => {
-        console.log(question.answer.includes(choice.id));
         htmlString += `
           <td>${question.answer.includes(choice.id) ? '✅' : ''}</td>
         `;
@@ -179,7 +178,6 @@ export class ExportUtils {
       htmlString += '</tr>';
     });
     htmlString += '</table>';
-    console.log(htmlString);
     return htmlString;
   }
 
@@ -339,6 +337,7 @@ export class ExportUtils {
               }
             }
           });
+          htmlString += '<br>';
         });
         htmlString += '</td>';
       });

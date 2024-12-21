@@ -11,26 +11,25 @@
   </div>
 
   <div class="ms-2">
-    @if (question.subQuestions![0]) {
+    @let subQuestions = question.subQuestions;
+    @if (subQuestions && subQuestions[0]) {
       <div class="d-flex">
         <table>
           <tr>
             <th></th>
-            @for (choice of question.subQuestions![0].choices; track $index) {
+            @for (choice of subQuestions[0].choices; track $index) {
               <th>{{ choiceIndex[$index] }}</th>
             }
           </tr>
-          @for (question of question.subQuestions;
-            track $index;
-            let questionIndex = $index) {
+          @for (question of question.subQuestions; track $index; ) {
+            @let questionIndex = $index;
             <tr>
               <td class="d-flex align-items-center">
                 <input matInput type="text" [(ngModel)]="question.content" />
                 <mat-icon class="icon" color="warn" (click)="onRemoveRow(questionIndex)">delete</mat-icon>
               </td>
-              @for (choice of question.choices;
-                track $index;
-                let choiceIndex = $index) {
+              @for (choice of question.choices; track $index; ) {
+                @let choiceIndex = $index;
                 <td
                   (click)="onSelectCorrectAnswer(questionIndex, choiceIndex)"
                 >

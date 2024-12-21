@@ -7,6 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FillInTheGapEditingComponent } from '../fill-in-the-gap-editing/fill-in-the-gap-editing.component';
 import { toArray } from 'lodash-es';
 import { NgClass } from "@angular/common";
+import { ExtractIdPipe } from "../../../../pipes/extract-id.pipe";
 
 @Component({
   selector: 'app-fill-in-the-gap-testing',
@@ -19,6 +20,7 @@ import { NgClass } from "@angular/common";
     ReactiveFormsModule,
     FormsModule,
     NgClass,
+    ExtractIdPipe,
   ],
   templateUrl: './fill-in-the-gap-testing.component.html',
   styleUrl: './fill-in-the-gap-testing.component.scss',

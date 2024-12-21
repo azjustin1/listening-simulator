@@ -3,22 +3,25 @@
     <span class="reading-content" [innerHTML]="question.content"></span>
   </div>
   <div class="ms-2">
-    @if (question && question.subQuestions) {
+    @let subQuestions = question.subQuestions;
+    @if (subQuestions && subQuestions[0]) {
       <table>
         <tr>
           <th></th>
-          @for (choice of question.subQuestions![0].choices; track $index) {
+          @for (choice of subQuestions[0].choices; track $index) {
             <th>{{ choiceIndex[$index] }}</th>
           }
         </tr>
-        @for (question of question.subQuestions; track $index; let questionIndex = $index) {
+        @for (question of subQuestions; track $index; ) {
+          @let questionIndex = $index;
           <tr>
             <td class="p-2">
               {{ question.content }}
             </td>
-            @for (choice of question.choices; track $index; let choiceIndex = $index) {
+            @for (choice of question.choices; track $index; ) {
+              @let choiceIndex = $index;
               <td class="align-items-center"
-                (click)="onSelectAnswer(questionIndex, choiceIndex)"
+                  (click)="onSelectAnswer(questionIndex, choiceIndex)"
               >
                 @if (question.answer.includes(choice.id)) {
                   <mat-icon class="icon" color="primary">check</mat-icon>

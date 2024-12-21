@@ -100,7 +100,6 @@ export class DragAndDropAnswerTestingComponent extends FillInTheGapTestingCompon
       this.question.choices,
       (choice) => !isEmpty(choice.answer),
     ).map((choice) => choice.answer);
-    console.log(answeredChoices);
     this.answers = sortBy(
       filter(
         this.question.answers,

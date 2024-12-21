@@ -16,16 +16,19 @@
                      [ngClass]="{'justify-content-center': row.key === 'tr0' || column.key === 'td0'}">
                   @for (line of column.value; track $index; ) {
                     <div class="d-flex flex-row align-items-center">
-                      @for (content of line; track $index; let lineIndex = $index) {
+                      @for (content of line; track $index; ) {
                         <div class="mx-1">
-                          @if ((content | isInput) && mapChoiceById[content | extractId]) {
-                            <input
-                              [id]="content.match(inputPattern)![1]"
-                              [(ngModel)]="mapChoiceById[content.match(inputPattern)![1]].answer"
-                              [ngClass]="{'bg-white': selectedId() === content.match(inputPattern)![1]}"
-                              (click)="onAnswerChoice.emit(mapChoiceById[content.match(inputPattern)![1]])"
-                              (ngModelChange)="onInputAnswer($event, content.match(inputPattern)![1])"
-                              [(ngModel)]="mapChoiceById[content.match(inputPattern)![1]].answer" />
+                          @if ((content | isInput)) {
+                            @let choiceId = content | extractId;
+                            @if (mapChoiceById[choiceId]) {
+                              <input
+                                [id]="choiceId"
+                                [(ngModel)]="mapChoiceById[choiceId].answer"
+                                [ngClass]="{'bg-white': selectedId() === choiceId}"
+                                (click)="onAnswerChoice.emit(mapChoiceById[choiceId])"
+                                (ngModelChange)="onInputAnswer($event, choiceId)"
+                                [(ngModel)]="mapChoiceById[choiceId].answer" />
+                            }
                           } @else {
                             @if (row.key === 'tr0' || column.key === 'td0') {
                               <b>

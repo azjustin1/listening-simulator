@@ -3,15 +3,16 @@
     <b><span class="reading-content" [innerHTML]="question.content"></span></b>
   </div>
   <div>
-    @if (question.subQuestions![0]) {
+    @let subQuestions = question.subQuestions;
+    @if (subQuestions && subQuestions[0]) {
       <table class="table">
         <tr>
           <th></th>
-          @for (choice of question.subQuestions![0].choices; track $index) {
+          @for (choice of subQuestions[0].choices; track $index) {
             <th>{{ choiceIndex[$index] }}</th>
           }
         </tr>
-        @for (question of question.subQuestions; track $index; ) {
+        @for (question of subQuestions; track $index; ) {
           <tr>
             <td>
               {{ question.content }}

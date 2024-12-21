@@ -7,15 +7,18 @@
           @for (content of line; track $index) {
             <div class="d-flex align-items-center">
               @if (content | isInput) {
-                <input
-                  [id]="content.match(inputPattern)![1]"
-                  [ngClass]="{'bg-white': selectedId() === content.match(inputPattern)![1]}"
-                  [autofocus]="true"
-                  class="answer-input mx-1"
-                  (click)="onAnswerChoice.emit(mapChoiceById[content.match(inputPattern)![1]])"
-                  (ngModelChange)="onInputAnswer($event, content.match(inputPattern)![1])"
-                  [(ngModel)]="mapChoiceById[content.match(inputPattern)![1]].answer"
-                />
+                @let choiceId = content | extractId;
+                @if (mapChoiceById[choiceId]) {
+                  <input
+                    [id]="choiceId"
+                    [ngClass]="{'bg-white': selectedId() === choiceId}"
+                    [autofocus]="true"
+                    class="answer-input mx-1"
+                    (click)="onAnswerChoice.emit(mapChoiceById[choiceId])"
+                    (ngModelChange)="onInputAnswer($event, choiceId)"
+                    [(ngModel)]="mapChoiceById[choiceId].answer"
+                  />
+                }
               } @else {
                 <div>{{ content }}</div>
               }
