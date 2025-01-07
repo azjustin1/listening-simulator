@@ -8,8 +8,8 @@
       @for (questionIndex of question.value; track questionIndex.index) {
         <div
           [ngClass]="{
-                'active': (selectedQuestionIndex() && questionIndex.index === selectedQuestionIndex()!.index) || selectedId() === questionIndex.id,
-                'answered': questionIndex.isAnswer || (selectedQuestionIndex() !== null && (questionIndex.id === selectedQuestionIndex()?.id && selectedQuestionIndex()?.isAnswer)),
+                'active': (selectedQuestionIndex() && questionIndex.index && questionIndex.index === selectedQuestionIndex()!.index) || (questionIndex.id && selectedId() && selectedId() === questionIndex.id),
+                'answered': questionIndex && questionIndex.isAnswer,
                 'rounded-circle': questionIndex.isReviewed
                 }"
           (click)="onClickQuestion(question.key, questionIndex)"

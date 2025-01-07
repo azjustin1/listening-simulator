@@ -12,8 +12,6 @@ import { Listening } from '../../shared/models/listening.model';
 import { FileService } from '../../file.service';
 import { QuestionComponent } from '../../modules/question/question.component';
 import { ListeningService } from './listening.service';
-import { MatAccordion } from '@angular/material/expansion';
-import { QuestionNavigationComponent } from '../../modules/question/question-navigation/question-navigation.component';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 
 @Component({
@@ -28,8 +26,6 @@ import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
     MatInputModule,
     QuestionComponent,
     MatIconModule,
-    MatAccordion,
-    QuestionNavigationComponent,
     AngularEditorModule,
   ],
   providers: [ListeningService, FileService],

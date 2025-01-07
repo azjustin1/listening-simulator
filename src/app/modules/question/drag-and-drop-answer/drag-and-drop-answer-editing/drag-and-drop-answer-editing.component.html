@@ -11,14 +11,15 @@
     <div class="d-flex flex-column">
       @for (line of question.arrayContent; track $index; ) {
         @let lineIndex = $index;
-        <div class="d-flex flex-wrap align-items-center">
+        <div class="d-flex flex-row flex-wrap align-items-center">
           @for (content of line; track $index; ) {
             @let contentIndex = $index;
             @let isShowActions = mapShowActionByIndex[lineIndex][contentIndex];
+            @let isSavedText = mapSaveTextByIndex[lineIndex][contentIndex];
             <div class="d-flex justify-content-center align-items-center mt-2">
               @if (content | isInput) {
                 @let choiceId = content | extractId;
-                <select class="ms-1"
+                <select class="ms-1 mt-1"
                         [(ngModel)]="mapChoiceById[choiceId].correctAnswer"
                 >
                   @for (answer of question.answers; track $index) {
@@ -36,14 +37,14 @@
                 </div>
               } @else {
                 <div class="d-flex justify-content-center align-items-center">
-                  @if (isShowActions) {
+                  @if (isSavedText) {
                     <div (click)="onEditText(lineIndex, contentIndex)">
                       {{
                         content === "" ? "..." : content
                       }}
                     </div>
                   } @else {
-                    <input [(ngModel)]="question.arrayContent[lineIndex][contentIndex]" />
+                    <input class="mt-1" [(ngModel)]="question.arrayContent[lineIndex][contentIndex]" />
                     @if (isShowActions) {
                       <div class="d-flex">
                         @if (mapSaveTextByIndex[lineIndex][contentIndex]) {

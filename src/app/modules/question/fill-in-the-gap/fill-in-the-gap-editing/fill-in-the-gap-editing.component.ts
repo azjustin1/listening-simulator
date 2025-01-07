@@ -79,6 +79,7 @@ export class FillInTheGapEditingComponent extends AbstractQuestionComponent {
       0: false,
     };
     this.mapShowActionByIndex[index + 1][0] = true;
+    console.log(this.mapShowActionByIndex[index + 1])
   }
 
   onDeleteLine(lineIndex: number) {

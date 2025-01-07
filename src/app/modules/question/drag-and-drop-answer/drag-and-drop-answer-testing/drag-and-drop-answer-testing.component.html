@@ -3,14 +3,14 @@
     <b><span [innerHTML]="question.content"></span></b>
     <div class="d-flex flex-column mt-2 ms-2">
       @for (line of question.arrayContent; track $index; ) {
-        <div class="d-flex flex-wrap align-items-center mb-4">
+        <div class="d-flex flex-row flex-wrap align-items-center mb-4">
           @for (content of line; track $index) {
             <div class="d-flex align-items-center">
               @if (content | isInput) {
                 @let choiceId = content | extractId;
                 @let choice = mapChoiceById[choiceId];
                 <div
-                  class="drop-container"
+                  class="mt-1 drop-container"
                   [ngClass]="{'active': selectedId() === content.match(inputPattern)![1]}"
                   [id]="choiceId"
                   [draggable]="true"

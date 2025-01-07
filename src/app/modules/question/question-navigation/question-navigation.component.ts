@@ -1,31 +1,15 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  model,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, model, Output } from '@angular/core';
 import { AbstractPart } from '../../../shared/models/abstract-part.model';
-import { JsonPipe, KeyValuePipe, NgClass } from '@angular/common';
+import { KeyValuePipe, NgClass } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { QuestionIndex } from '../../../pages/full-test/full-test.component';
-import {
-  each,
-  find,
-  flatMap,
-  forEach,
-  isEmpty,
-  mapValues,
-  sortBy,
-  toArray,
-} from 'lodash-es';
+import { each, forEach, isEmpty } from 'lodash-es';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-question-navigation',
   standalone: true,
-  imports: [KeyValuePipe, NgClass, MatIcon, JsonPipe, FormsModule],
+  imports: [KeyValuePipe, NgClass, MatIcon, FormsModule],
   templateUrl: './question-navigation.component.html',
   styleUrl: './question-navigation.component.scss',
 })
@@ -45,6 +29,8 @@ export class QuestionNavigationComponent {
     this.selectedQuestionIndex.set(questionIndex);
     this.selectedId.set(questionIndex.id!);
     this.onSelectQuestion.emit(questionId);
+    console.log(this.selectedId());
+    console.log(this.selectedQuestionIndex());
     this.scrollToQuestion(this.selectedQuestionIndex()!.id as string);
   }
 

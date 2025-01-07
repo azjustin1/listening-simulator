@@ -22,17 +22,17 @@
             @for (column of row.value | keyvalue; track $index; ) {
               @let editingCell = this.mapEditingByCell[row.key + '' + column.key];
               <td class="m-1">
-                <div class="d-flex flex-wrap align-items-center m-2"
+                <div class="d-flex m-2"
                      [ngClass]="{'justify-content-center': row.key === 'tr0' || column.key === 'td0'}">
                   <div class="d-flex flex-column">
                     @for (line of column.value; track $index; let lineIndex = $index) {
-                      <div class="d-flex flex-row">
+                      <div class="d-flex flex-row flex-wrap">
                         @for (content of line; track $index; let contentIndex = $index) {
                           @if ((content | isInput)) {
                             @let choiceId = (content | extractId);
                             @let choice = mapChoiceById[choiceId];
                             @if (choice) {
-                              <div class="d-flex mx-1">
+                              <div class="d-flex mx-1 mt-1">
                                 <select class="ms-1"
                                         [(ngModel)]="mapChoiceById[choiceId].correctAnswer"
                                         (ngModelChange)="updateQuestionChoices()"
@@ -43,7 +43,7 @@
                                     </option>F
                                   }
                                 </select>
-                                @if (editingCell[lineIndex][contentIndex]) {
+                                @if (editingCell && !line[contentIndex + 1]) {
                                   <div class="d-flex align-items-center">
                                     <mat-icon color="warn"
                                               (click)="deleteColumnInput(row.key, column.key, lineIndex, contentIndex)">

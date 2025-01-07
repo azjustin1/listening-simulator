@@ -26,7 +26,7 @@
                      [ngClass]="{'justify-content-center': row.key === 'tr0' || column.key === 'td0'}">
                   <div class="d-flex flex-column">
                     @for (line of column.value; track $index; let lineIndex = $index) {
-                      <div class="d-flex flex-row">
+                      <div class="d-flex flex-row flex-wrap">
                         @for (content of line; track $index; let contentIndex = $index) {
                           <div class="d-flex flex-row">
                             @if ((content | isInput)) {
@@ -34,7 +34,7 @@
                               @let choice = mapChoiceById[choiceId];
                               @if (choice) {
                                 <div class="d-flex mx-1">
-                                  <input [(ngModel)]="mapChoiceById[choiceId].correctAnswer"
+                                  <input class="mt-1" [(ngModel)]="mapChoiceById[choiceId].correctAnswer"
                                          (click)="editColumnInput(row.key, column.key, lineIndex, contentIndex)" />
                                   @if (editingCell[lineIndex][contentIndex]) {
                                     <div class="d-flex align-items-center">
@@ -57,8 +57,8 @@
                               }
                             } @else {
                               @if (editingCell && editingCell[lineIndex] && editingCell[lineIndex][contentIndex]) {
-                                <input
-                                  [(ngModel)]="question.tableContent[row.key][column.key][lineIndex][contentIndex]" />
+                                <input class="mt-1"
+                                       [(ngModel)]="question.tableContent[row.key][column.key][lineIndex][contentIndex]" />
                                 <mat-icon color="primary"
                                           (click)="saveColumnText(row.key, column.key, lineIndex, contentIndex)">
                                   check
@@ -69,21 +69,25 @@
                                     delete
                                   </mat-icon>
                                 }
-                                <button class="d-flex align-items-center ms-1"
-                                        (click)="addColumnInput(row.key, column.key, lineIndex, contentIndex)">
-                                  <mat-icon color="primary">add</mat-icon>
-                                  Input
-                                </button>
+                                @if (row.key !== 'tr0' && column.key !== 'td0') {
+                                  <button class="d-flex align-items-center ms-1"
+                                          (click)="addColumnInput(row.key, column.key, lineIndex, contentIndex)">
+                                    <mat-icon color="primary">add</mat-icon>
+                                    Input
+                                  </button>
+                                }
                               } @else {
-                                @if (row.key === 'tr0' || column.key === 'td0') {
-                                  <b>
+                                <div class="d-flex flex-row">
+                                  @if (row.key === 'tr0' || column.key === 'td0') {
+                                    <b>
+                                      <p class="my-2"
+                                         (click)="editColumnText(row.key, column.key, lineIndex, contentIndex)">{{ content === '' ? '...' : content }}</p>
+                                    </b>
+                                  } @else {
                                     <p class="my-2"
                                        (click)="editColumnText(row.key, column.key, lineIndex, contentIndex)">{{ content === '' ? '...' : content }}</p>
-                                  </b>
-                                } @else {
-                                  <p class="my-2"
-                                     (click)="editColumnText(row.key, column.key, lineIndex, contentIndex)">{{ content === '' ? '...' : content }}</p>
-                                }
+                                  }
+                                </div>
                               }
                             }
                           </div>

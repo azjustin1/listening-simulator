@@ -3,7 +3,7 @@
     <b><span [innerHTML]="question.content"></span></b>
     <div class="d-flex flex-column mt-2 ms-2">
       @for (line of question.arrayContent; track $index; ) {
-        <div class="d-flex flex-wrap align-items-center mb-4">
+        <div class="d-flex flex-row flex-wrap align-items-center mb-4">
           @for (content of line; track $index) {
             <div class="d-flex align-items-center">
               @if (content | isInput) {
@@ -13,7 +13,7 @@
                     [id]="choiceId"
                     [ngClass]="{'bg-white': selectedId() === choiceId}"
                     [autofocus]="true"
-                    class="answer-input mx-1"
+                    class="mx-1 mt-1"
                     (click)="onAnswerChoice.emit(mapChoiceById[choiceId])"
                     (ngModelChange)="onInputAnswer($event, choiceId)"
                     [(ngModel)]="mapChoiceById[choiceId].answer"

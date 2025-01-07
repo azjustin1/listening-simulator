@@ -4,7 +4,7 @@
   <div class="d-flex flex-column mt-3 ms-2">
     @for (line of question.arrayContent;
       track $index; ) {
-      <div class="d-flex flex-wrap align-items-center">
+      <div class="d-flex flex-row flex-wrap align-items-center">
         @for (content of line; track $index; ) {
           <div class="d-flex mb-4">
             @if (content | isInput) {
@@ -34,7 +34,7 @@
                       }}</span>
                   }
                 } @else {
-                  <input disabled [value]="mapAnswerById[choice.correctAnswer!].content">
+                  <input class="mt-1" disabled [value]="mapAnswerById[choice.correctAnswer!].content">
                 }
               </div>
             } @else {
