@@ -6,16 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { IsInputPipe } from '../../fill-in-the-gap/is-input.pipe';
 import { MatIcon } from '@angular/material/icon';
 import { KeyValuePipe, NgClass } from '@angular/common';
-import {
-  each,
-  keys,
-  mapValues,
-  omit,
-  toArray,
-  filter,
-  isObject,
-  isArray,
-} from 'lodash-es';
+import { each, filter, keys, mapValues, omit, toArray } from 'lodash-es';
 import { INPUT_PATTERN } from '../../../../utils/constant';
 import { CommonUtils } from '../../../../utils/common-utils';
 import { MatButton } from '@angular/material/button';
@@ -159,7 +150,7 @@ export class FillInTheTableEditingComponent extends FillInTheGapEditingComponent
     this.enableEdit(rowKey, columnKey, lineIndex, contentIndex + 1);
   }
 
-  editColumnText(
+  editText(
     rowKey: string,
     columnKey: string,
     lineIndex: number,
@@ -205,7 +196,6 @@ export class FillInTheTableEditingComponent extends FillInTheGapEditingComponent
     lineIndex: number,
     contentIndex: number,
   ) {
-    this.enableEdit(rowKey, columnKey, lineIndex, contentIndex);
     const foundContent = this.mapEditingByCell[`${rowKey}${columnKey}`];
     if (foundContent) {
       const newChoice = {
@@ -222,20 +212,14 @@ export class FillInTheTableEditingComponent extends FillInTheGapEditingComponent
           `<${newChoice.id}>`,
         ) as string[]),
       ];
+      this.saveOthersEditing();
+      this.mapEditingByCell[`${rowKey}${columnKey}`][lineIndex][
+        contentIndex + 1
+      ] = true;
     }
   }
 
-  editColumnInput(
-    rowKey: string,
-    columnKey: string,
-    lineIndex: number,
-    contentIndex: number,
-  ) {
-    this.mapEditingByCell[`${rowKey}${columnKey}`][lineIndex][contentIndex] =
-      true;
-  }
-
-  saveColumnInput(rowKey: string, columnKey: string, index: number) {
+  saveColumnInput() {
     this.question.choices = toArray(this.mapChoiceById);
     this.saveOthersEditing();
   }
@@ -248,7 +232,7 @@ export class FillInTheTableEditingComponent extends FillInTheGapEditingComponent
   ) {
     const content =
       this.question.tableContent![rowKey][columnKey][lineIndex][contentIndex];
-    this.question.tableContent![rowKey][columnKey][contentIndex].splice(
+    this.question.tableContent![rowKey][columnKey][lineIndex].splice(
       contentIndex,
       1,
     );
@@ -338,10 +322,8 @@ export class FillInTheTableEditingComponent extends FillInTheGapEditingComponent
     this.removeAssociatedChoice(
       this.question.tableContent![rowIndex][columnIndex][lineIndex],
     );
-    this.question.tableContent![rowIndex][columnIndex][lineIndex].splice(
-      lineIndex,
-      1,
-    );
+    this.question.tableContent![rowIndex][columnIndex].splice(lineIndex, 1);
+    console.log(this.question.tableContent![rowIndex][columnIndex][lineIndex]);
     this.initMapSaveText();
   }
 }

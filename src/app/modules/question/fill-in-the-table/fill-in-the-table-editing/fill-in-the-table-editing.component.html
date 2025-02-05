@@ -35,11 +35,11 @@
                               @if (choice) {
                                 <div class="d-flex mx-1">
                                   <input class="mt-1" [(ngModel)]="mapChoiceById[choiceId].correctAnswer"
-                                         (click)="editColumnInput(row.key, column.key, lineIndex, contentIndex)" />
+                                         (click)="editText(row.key, column.key, lineIndex, contentIndex)" />
                                   @if (editingCell[lineIndex][contentIndex]) {
                                     <div class="d-flex align-items-center">
                                       <mat-icon color="primary"
-                                                (click)="saveColumnInput(row.key, column.key, contentIndex)">
+                                                (click)="saveColumnInput()">
                                         check
                                       </mat-icon>
                                       <mat-icon color="warn"
@@ -57,35 +57,37 @@
                               }
                             } @else {
                               @if (editingCell && editingCell[lineIndex] && editingCell[lineIndex][contentIndex]) {
-                                <input class="mt-1"
-                                       [(ngModel)]="question.tableContent[row.key][column.key][lineIndex][contentIndex]" />
-                                <mat-icon color="primary"
-                                          (click)="saveColumnText(row.key, column.key, lineIndex, contentIndex)">
-                                  check
-                                </mat-icon>
-                                @if (contentIndex !== 0) {
-                                  <mat-icon color="warn"
-                                            (click)="deleteColumnText(row.key, column.key, lineIndex, contentIndex)">
-                                    delete
+                                <div class="d-flex align-items-center">
+                                  <input class="mt-1"
+                                         [(ngModel)]="question.tableContent[row.key][column.key][lineIndex][contentIndex]" />
+                                  <mat-icon color="primary"
+                                            (click)="saveColumnText(row.key, column.key, lineIndex, contentIndex)">
+                                    check
                                   </mat-icon>
-                                }
-                                @if (row.key !== 'tr0' && column.key !== 'td0') {
-                                  <button class="d-flex align-items-center ms-1"
-                                          (click)="addColumnInput(row.key, column.key, lineIndex, contentIndex)">
-                                    <mat-icon color="primary">add</mat-icon>
-                                    Input
-                                  </button>
-                                }
+                                  @if (contentIndex !== 0) {
+                                    <mat-icon color="warn"
+                                              (click)="deleteColumnText(row.key, column.key, lineIndex, contentIndex)">
+                                      delete
+                                    </mat-icon>
+                                  }
+                                  @if (row.key !== 'tr0' && column.key !== 'td0') {
+                                    <button class="d-flex align-items-center ms-1"
+                                            (click)="addColumnInput(row.key, column.key, lineIndex, contentIndex)">
+                                      <mat-icon color="primary">add</mat-icon>
+                                      Input
+                                    </button>
+                                  }
+                                </div>
                               } @else {
                                 <div class="d-flex flex-row">
                                   @if (row.key === 'tr0' || column.key === 'td0') {
                                     <b>
                                       <p class="my-2"
-                                         (click)="editColumnText(row.key, column.key, lineIndex, contentIndex)">{{ content === '' ? '...' : content }}</p>
+                                         (click)="editText(row.key, column.key, lineIndex, contentIndex)">{{ content === '' ? '...' : content }}</p>
                                     </b>
                                   } @else {
                                     <p class="my-2"
-                                       (click)="editColumnText(row.key, column.key, lineIndex, contentIndex)">{{ content === '' ? '...' : content }}</p>
+                                       (click)="editText(row.key, column.key, lineIndex, contentIndex)">{{ content === '' ? '...' : content }}</p>
                                   }
                                 </div>
                               }
