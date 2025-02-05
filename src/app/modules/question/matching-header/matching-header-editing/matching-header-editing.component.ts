@@ -1,10 +1,8 @@
 import { Component, SimpleChanges } from '@angular/core';
-import { AbstractQuestionComponent } from '../../../../shared/abstract/abstract-question.component';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
-import { ChoiceContentPipe } from '../choice-content.pipe';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
-import { MatCard, MatCardModule } from '@angular/material/card';
+import { MatCardModule } from '@angular/material/card';
 import { AbstractQuizPartComponent } from '../../../../shared/abstract/abstract-quiz-part.component';
 import { Reading } from '../../../../shared/models/reading.model';
 import { MatIcon } from '@angular/material/icon';
@@ -13,19 +11,19 @@ import { Question } from '../../../../shared/models/question.model';
 import { QuestionType } from '../../../../shared/enums/question-type.enum';
 import { each, isUndefined, mapValues, omit } from 'lodash-es';
 import { Choice } from '../../../../shared/models/choice.model';
-import { NgClass } from '@angular/common';
+import { JsonPipe, NgClass } from "@angular/common";
 
 @Component({
   selector: 'app-matching-header-editing',
   standalone: true,
   imports: [
     AngularEditorModule,
-    ChoiceContentPipe,
     FormsModule,
     MatButton,
     MatCardModule,
     MatIcon,
     NgClass,
+    JsonPipe,
   ],
   templateUrl: './matching-header-editing.component.html',
   styleUrl: './matching-header-editing.component.scss',
@@ -90,6 +88,7 @@ export class MatchingHeaderEditingComponent extends AbstractQuizPartComponent<Re
       content: '',
     };
     this.data.answers?.push(newAnswer);
+    console.log(this.data.answers)
     this.mapEditingById[id] = true;
   }
 

@@ -2,12 +2,12 @@
   <div class="container--left col-6">
     @for (question of data.questions; track $index) {
       <div class="paragraph">
-        <div class="input-answer">
+        <div class="input-answer mb-1">
           <select
             [disabled]="!mapEditingById[question.id]"
             [(ngModel)]="question.correctAnswer"
           >
-            @for (answer of question.answers; track $index) {
+            @for (answer of data.answers; track $index) {
               <option [value]="answer.id">
                 {{ answer.content }}
               </option>

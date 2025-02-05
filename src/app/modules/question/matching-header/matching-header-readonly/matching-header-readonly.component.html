@@ -4,9 +4,9 @@
       <div class="paragraph my-4">
         <div class="mb-2 border border-black w-50 p-1">
           @if (isSaved) {
-            <span>
-              {{ (question.correctAnswer | choiceContent: question.answers!)?.content ?? "" }}
-            </span>
+            <b>
+              {{ (question.correctAnswer | choiceContent: data.answers!)?.content ?? "" }}
+            </b>
           } @else {
             <span
               [ngClass]="{
