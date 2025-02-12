@@ -1,14 +1,22 @@
 <div class="my-3" [id]="question.id">
   <span [innerHTML]="question.content"> </span>
-  @for (choice of question.choices; track $index) {
-    <div (click)="onSelectAnswer(choice.id)" class="d-flex align-items-center mt-2">
-      <input
-        [checked]="selectedChoice === choice.id"
-        type="radio"
-      >
-      <div class="ms-2">
-        {{ choice.content }}
-      </div>
-    </div>
-  }
+  <div>
+
+    <select [(ngModel)]="question.answer">
+      @for (choice of question.choices; track $index) {
+        <!--      <div (click)="onSelectAnswer(choice.id)" class="d-flex align-items-center mt-2">-->
+          <!--        <input-->
+          <!--          [checked]="selectedChoice === choice.id"-->
+          <!--          type="radio"-->
+          <!--        >-->
+          <!--        <div class="ms-2">-->
+          <!--          {{ choice.content }}-->
+          <!--        </div>-->
+          <!--      </div>-->
+        <option [value]="choice.id">
+          {{ choice.content }}
+        </option>
+      }
+    </select>
+  </div>
 </div>

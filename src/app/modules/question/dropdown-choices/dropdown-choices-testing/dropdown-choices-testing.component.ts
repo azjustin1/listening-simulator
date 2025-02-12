@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { DropdownChoicesEditingComponent } from '../dropdown-choices-editing/dropdown-choices-editing.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { isEmpty } from 'lodash-es';
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 @Component({
   selector: 'app-dropdown-choices-testing',
   standalone: true,
-  imports: [MatExpansionModule],
+  imports: [MatExpansionModule, ReactiveFormsModule, FormsModule],
   templateUrl: './dropdown-choices-testing.component.html',
   styleUrl: './dropdown-choices-testing.component.scss',
 })

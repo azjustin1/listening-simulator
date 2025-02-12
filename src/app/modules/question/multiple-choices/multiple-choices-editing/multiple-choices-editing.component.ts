@@ -15,7 +15,6 @@ import { MatButton } from '@angular/material/button';
 })
 export class MultipleChoicesEditingComponent extends AbstractQuestionComponent {
   selectedOption: string | null = '';
-  mapSelectedChoice: Record<number, boolean> = {};
 
   override ngOnInit() {
     if (!isEmpty(this.question.correctAnswer)) {
