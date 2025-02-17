@@ -31,12 +31,11 @@ export class QuestionNavigationComponent implements OnChanges {
   selectedQuestionIndex = model<QuestionIndex | null>();
 
   ngOnChanges(changes: SimpleChanges) {
-    if (
-      changes['partIndex'] &&
-      !isUndefined(this.selectedQuestionIndex()) &&
-      !isNull(this.selectedQuestionIndex())
-    ) {
-      this.scrollToQuestion(this.selectedQuestionIndex()!.id as string);
+    if (changes['partIndex'] && this.selectedQuestionIndex()) {
+      const timeout = setTimeout(() => {
+        this.scrollToQuestion(this.selectedQuestionIndex()!.id as string);
+        clearTimeout(timeout);
+      }, 500);
     }
   }
 
@@ -55,6 +54,7 @@ export class QuestionNavigationComponent implements OnChanges {
     const element = document.getElementById(id);
     const container = document.getElementById('quiz-container');
     if (element && container) {
+      console.log(element);
       element.scrollIntoView({ inline: 'start' });
     }
   }
