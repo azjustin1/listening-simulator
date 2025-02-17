@@ -43,10 +43,12 @@ export class MultipleChoicesTestingComponent extends AbstractQuestionComponent {
         isAnswer: true,
       };
     }
+    this.selectedId.set(this.question.id);
     this.onAnswer.emit(this.question);
   }
 
   onSelectMultipleAnswer(event: MouseEvent, choiceId: string) {
+    this.selectedId.set(null);
     if (
       !this.question.answer.includes(choiceId) &&
       this.isReachedMaxAnswers(this.question.answer.length)

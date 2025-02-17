@@ -22,6 +22,7 @@
         [isEditing]="isEditing"
         [isTesting]="isTesting"
         [(selectedId)]="selectedId"
+        [(selectedQuestionIndex)]="selectedQuestionIndex"
         (onSave)="onSaveQuestion()"
         (onAnswer)="onAnswer.emit($event)"
       ></app-dropdown-choices>

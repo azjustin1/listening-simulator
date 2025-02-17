@@ -633,33 +633,12 @@ export class FullTestComponent implements OnDestroy {
           });
           break;
         case QuestionType.MULTIPLE_CHOICE:
+          this.updateSelectedForMultipleChoice(question);
+          this.updateQuestionForMultipleChoice(question);
+          break;
         case QuestionType.DROPDOWN_ANSWER:
         case QuestionType.MATCHING_HEADER:
-          each(this.mapAnsweredQuestionId[question.id], (questionIndex) => {
-            questionIndex.answer = question.answer as string[];
-          });
-          const questionIndexes = this.mapAnsweredQuestionId[question.id].map(
-            (questionIndex) => {
-              questionIndex = {
-                ...questionIndex,
-                answer: question.answer as string[],
-                isAnswer: false,
-              };
-              return questionIndex;
-            },
-          );
-          for (let i = 0; i < question.answer.length; i++) {
-            questionIndexes[i].isAnswer = true;
-          }
-          this.mapAnsweredQuestionId[question.id] = questionIndexes;
-          if (
-            !isEmpty(questionIndexes) &&
-            !isEmpty(questionIndexes[0].answer)
-          ) {
-            this.selectedQuestionIndex.set(
-              questionIndexes[questionIndexes[0].answer.length - 1],
-            );
-          }
+          this.updateSelectedForMultipleChoice(question);
           break;
         case QuestionType.LABEL_ON_MAP:
           const mapAnsweredBySubQuestionId: Record<string, boolean> = {};
@@ -705,6 +684,47 @@ export class FullTestComponent implements OnDestroy {
       each(questionIndexes, (questionIndex) => {
         if (questionIndex.id === reviewedQuestionIndex.id) {
           questionIndex.isReviewed = reviewedQuestionIndex.isReviewed;
+        }
+      });
+    });
+  }
+
+  updateSelectedForMultipleChoice(question: Question) {
+    each(this.mapAnsweredQuestionId[question.id], (questionIndex) => {
+      questionIndex.answer = question.answer as string[];
+    });
+    const questionIndexes = this.mapAnsweredQuestionId[question.id].map(
+      (questionIndex) => {
+        questionIndex = {
+          ...questionIndex,
+          id: question.id,
+          answer: question.answer as string[],
+          isAnswer: false,
+        };
+        return questionIndex;
+      },
+    );
+    for (let i = 0; i < question.answer.length; i++) {
+      questionIndexes[i].isAnswer = true;
+    }
+    this.mapAnsweredQuestionId[question.id] = questionIndexes;
+    this.selectedQuestionIndex.set(
+      questionIndexes[questionIndexes[0].answer.length - 1],
+    );
+  }
+
+  updateQuestionForMultipleChoice(question: Question) {
+    this.result.listeningParts.forEach((part) => {
+      part.questions.forEach((q) => {
+        if (q.id === question.id) {
+          q.answer = question.answer as string[];
+        }
+      });
+    });
+    this.result.readingParts.forEach((part) => {
+      part.questions.forEach((q) => {
+        if (q.id === question.id) {
+          q.answer = question.answer as string[];
         }
       });
     });

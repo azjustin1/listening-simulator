@@ -31,5 +31,4 @@ import { DropdownChoicesReadonlyComponent } from "./dropdown-choices-readonly/dr
   styleUrl: './dropdown-choices.component.scss',
 })
 export class DropdownChoicesComponent extends AbstractQuestionComponent {
-  protected readonly console = console;
 }

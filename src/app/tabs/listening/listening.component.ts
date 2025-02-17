@@ -6,7 +6,6 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { Subscription } from 'rxjs';
 import { AbstractQuizPartComponent } from '../../shared/abstract/abstract-quiz-part.component';
 import { Listening } from '../../shared/models/listening.model';
 import { FileService } from '../../file.service';

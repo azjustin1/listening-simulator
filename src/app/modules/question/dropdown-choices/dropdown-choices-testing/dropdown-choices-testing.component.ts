@@ -19,14 +19,7 @@ export class DropdownChoicesTestingComponent extends DropdownChoicesEditingCompo
     }
   }
 
-  onSelectAnswer(choiceId: string) {
-    if (this.question.answer.includes(choiceId)) {
-      this.question.answer = [];
-      this.selectedChoice = null;
-    } else {
-      this.question.answer = [choiceId];
-      this.selectedChoice = choiceId;
-    }
-    this.onAnswer.emit(this.question);
+  onSelectChoice() {
+    this.selectedId.set(this.question.id)
   }
 }
