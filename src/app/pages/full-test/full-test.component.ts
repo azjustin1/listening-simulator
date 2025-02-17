@@ -637,6 +637,8 @@ export class FullTestComponent implements OnDestroy {
           this.updateQuestionForMultipleChoice(question);
           break;
         case QuestionType.DROPDOWN_ANSWER:
+          this.updateSelectedForDropDownChoice(question);
+          break;
         case QuestionType.MATCHING_HEADER:
           this.updateSelectedForMultipleChoice(question);
           break;
@@ -687,6 +689,14 @@ export class FullTestComponent implements OnDestroy {
         }
       });
     });
+  }
+
+  updateSelectedForDropDownChoice(question: Question) {
+    const questionIndex = this.mapAnsweredQuestionId[question.id][0];
+    if (questionIndex) {
+      questionIndex.isAnswer = !isEmpty(question.answer);
+    }
+    this.selectedQuestionIndex.set(questionIndex);
   }
 
   updateSelectedForMultipleChoice(question: Question) {

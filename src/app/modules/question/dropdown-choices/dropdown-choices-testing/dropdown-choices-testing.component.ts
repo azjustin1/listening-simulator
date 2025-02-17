@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { DropdownChoicesEditingComponent } from '../dropdown-choices-editing/dropdown-choices-editing.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { isEmpty } from 'lodash-es';
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-dropdown-choices-testing',
@@ -19,7 +19,13 @@ export class DropdownChoicesTestingComponent extends DropdownChoicesEditingCompo
     }
   }
 
+  onChangeAnswer(answer: string) {
+    this.question.answer = answer;
+    this.onAnswer.emit(this.question);
+  }
+
   onSelectChoice() {
-    this.selectedId.set(this.question.id)
+    this.selectedQuestionIndex.set(null);
+    this.selectedId.set(this.question.id);
   }
 }

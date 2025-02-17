@@ -1,9 +1,17 @@
-import { Component, EventEmitter, Input, model, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  model,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { AbstractPart } from '../../../shared/models/abstract-part.model';
 import { KeyValuePipe, NgClass } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { QuestionIndex } from '../../../pages/full-test/full-test.component';
-import { each, forEach, isEmpty } from 'lodash-es';
+import { each, forEach, isEmpty, isNull, isUndefined } from 'lodash-es';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -13,13 +21,24 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './question-navigation.component.html',
   styleUrl: './question-navigation.component.scss',
 })
-export class QuestionNavigationComponent {
+export class QuestionNavigationComponent implements OnChanges {
   @Input() parts: AbstractPart[] = [];
+  @Input() partIndex: number = 0;
   @Input() mapAnsweredById: Record<string, QuestionIndex[]> = {};
   @Output() onSelectQuestion = new EventEmitter();
   @Output() onReviewQuestion = new EventEmitter();
   selectedId = model('');
   selectedQuestionIndex = model<QuestionIndex | null>();
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (
+      changes['partIndex'] &&
+      !isUndefined(this.selectedQuestionIndex()) &&
+      !isNull(this.selectedQuestionIndex())
+    ) {
+      this.scrollToQuestion(this.selectedQuestionIndex()!.id as string);
+    }
+  }
 
   returnZero() {
     return 0;
@@ -29,8 +48,6 @@ export class QuestionNavigationComponent {
     this.selectedQuestionIndex.set(questionIndex);
     this.selectedId.set(questionIndex.id!);
     this.onSelectQuestion.emit(questionId);
-    console.log(this.selectedId());
-    console.log(this.selectedQuestionIndex());
     this.scrollToQuestion(this.selectedQuestionIndex()!.id as string);
   }
 

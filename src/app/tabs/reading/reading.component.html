@@ -62,6 +62,7 @@
                   [isTesting]="isTesting"
                   [isExpandable]="true"
                   [(selectedId)]="selectedId"
+                  [(selectedQuestionIndex)]="selectedQuestionIndex"
                   (onSave)="onSaveClick()"
                   (onAnswer)="onPartAnswerQuestion.emit($event)"
                   (onAnswerChoice)="onPartAnswerChoice.emit($event)"

@@ -88,7 +88,6 @@ export class MatchingHeaderEditingComponent extends AbstractQuizPartComponent<Re
       content: '',
     };
     this.data.answers?.push(newAnswer);
-    console.log(this.data.answers)
     this.mapEditingById[id] = true;
   }
 

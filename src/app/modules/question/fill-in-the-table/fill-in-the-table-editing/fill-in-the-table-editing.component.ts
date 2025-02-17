@@ -323,7 +323,6 @@ export class FillInTheTableEditingComponent extends FillInTheGapEditingComponent
       this.question.tableContent![rowIndex][columnIndex][lineIndex],
     );
     this.question.tableContent![rowIndex][columnIndex].splice(lineIndex, 1);
-    console.log(this.question.tableContent![rowIndex][columnIndex][lineIndex]);
     this.initMapSaveText();
   }
 }
