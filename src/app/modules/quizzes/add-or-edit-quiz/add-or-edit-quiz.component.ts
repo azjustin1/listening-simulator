@@ -269,7 +269,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
       observer = this.quizService.create(quiz);
     }
     const sub = observer.subscribe();
-    this.subscriptions.add(sub);
+    sub.unsubscribe()
   }
 
   ngOnDestroy(): void {

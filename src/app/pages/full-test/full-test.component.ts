@@ -3,6 +3,7 @@ import {
   Component,
   ElementRef,
   HostListener,
+  OnDestroy,
   signal,
   ViewChild,
 } from '@angular/core';
@@ -11,7 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import {
   clone,
   each,
@@ -19,7 +20,6 @@ import {
   isEmpty,
   isUndefined,
   mapValues,
-  sortBy,
   toArray,
 } from 'lodash-es';
 import { interval, Subscription } from 'rxjs';
@@ -32,7 +32,6 @@ import { ConfirmDialogComponent } from '../../shared/dialogs/confirm-dialog/conf
 import { FileService } from '../../file.service';
 import { ListeningComponent } from '../../tabs/listening/listening.component';
 import { PartNavigationComponent } from '../../shared/components/part-navigation/part-navigation.component';
-import { AddOrEditQuizComponent } from '../../modules/quizzes/add-or-edit-quiz/add-or-edit-quiz.component';
 import { QuizService } from '../../modules/quizzes/quizzes.service';
 import { ReadingComponent } from '../../tabs/reading/reading.component';
 import { WritingComponent } from '../../tabs/writing/writing.component';
@@ -84,15 +83,24 @@ export interface QuestionIndex {
   templateUrl: './full-test.component.html',
   styleUrl: './full-test.component.scss',
 })
-export class FullTestComponent extends AddOrEditQuizComponent {
+export class FullTestComponent implements OnDestroy {
   @ViewChild('audioPlayer') audioPlayer!: ElementRef<HTMLAudioElement>;
 
   @HostListener('document:keydown.control.s', ['$event'])
-  override onKeydownHandler() {
+  onCtrlSaveHandler() {
     this.onCtrlSave();
   }
 
   tabs = Tab;
+  mapQuestionPart: Record<string, number> = {};
+  selectedListeningPart = 0;
+  selectedReadingPart = 0;
+  selectedWritingPart = 0;
+  mapSavedPart: Record<string, Record<number, boolean>> = {
+    listening: {},
+    reading: {},
+    writing: {},
+  };
   result: Result = {
     id: '',
     name: '',
@@ -141,16 +149,16 @@ export class FullTestComponent extends AddOrEditQuizComponent {
   selectedQuestionIndex = signal<QuestionIndex | null>(null);
   mapAnswerByChoiceId: { [key: string]: string } = {};
   selectedChoiceId = '';
+  subscriptions: Subscription = new Subscription();
+  saveQuestionSub: Subscription = new Subscription();
 
   constructor(
-    protected override quizService: QuizService,
-    protected override route: ActivatedRoute,
-    protected override router: Router,
-    protected override dialog: MatDialog,
-    protected override fileService: FileService,
+    private quizService: QuizService,
+    private router: Router,
+    private dialog: MatDialog,
+    private fileService: FileService,
     protected testService: FullTestService,
   ) {
-    super(quizService, fileService, route, router, dialog);
     const quizId = this.router.getCurrentNavigation()?.extras.state?.['quizId'];
     if (quizId) {
       this.quizService.getById(quizId).subscribe((quiz) => {
@@ -166,26 +174,27 @@ export class FullTestComponent extends AddOrEditQuizComponent {
     }
     const testId = this.router.getCurrentNavigation()?.extras.state?.['testId'];
     if (testId) {
-      this.testService.getResultById(testId).subscribe((result) => {
-        this.result = result;
-        this.totalSeconds = this.result.listeningTimeout! * 60;
-        this.audioPlayer.nativeElement.currentTime = this.result.audioTime!;
-        this.audioPlayer.nativeElement.load();
-        if (this.result.currentTab) {
-          this.currentTab = this.result.currentTab;
-          this.disableOthersTab();
-          this.mapDisablePart[this.currentTab] = false;
-        }
-        this.getTestTimeout();
-        this.generateMapAnswered();
-      });
+      this.subscriptions.add(
+        this.testService.getResultById(testId).subscribe((result) => {
+          this.result = result;
+          this.totalSeconds = this.result.listeningTimeout! * 60;
+          this.audioPlayer.nativeElement.currentTime = this.result.audioTime!;
+          this.audioPlayer.nativeElement.load();
+          if (this.result.currentTab) {
+            this.currentTab = this.result.currentTab;
+            this.disableOthersTab();
+            this.mapDisablePart[this.currentTab] = false;
+          }
+          this.getTestTimeout();
+          this.generateMapAnswered();
+        }),
+      );
       this.isReady = true;
       this.startAutoSave();
     }
   }
 
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
+  ngOnDestroy(): void {
     if (this.testTimeoutIntervalSub) {
       this.testTimeoutIntervalSub.unsubscribe();
     }
@@ -227,12 +236,15 @@ export class FullTestComponent extends AddOrEditQuizComponent {
   }
 
   onCtrlSave() {
+    if (this.saveQuestionSub != null) {
+      this.saveQuestionSub.unsubscribe();
+    }
     this.saveTimeout();
     this.result.testDate = CommonUtils.getCurrentDate();
     this.result.currentTab = this.currentTab;
-    this.subscriptions.add(
-      this.testService.saveCurrentTest(this.result).subscribe(),
-    );
+    this.saveQuestionSub = this.testService
+      .saveCurrentTest(this.result)
+      .subscribe();
   }
 
   saveTimeout() {
@@ -352,9 +364,9 @@ export class FullTestComponent extends AddOrEditQuizComponent {
       this.testTimeoutIntervalSub.unsubscribe();
     }
     this.result = { ...this.result, currentTab: this.currentTab };
-    this.subscriptions.add(
-      this.testService.saveCurrentTest(this.result).subscribe(),
-    );
+    this.saveQuestionSub = this.testService
+      .saveCurrentTest(this.result)
+      .subscribe();
   }
 
   onSubmitPartClick() {
@@ -576,6 +588,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
 
   generateMultipleChoiceIndex(question: Question, index: number) {
     this.mapAnsweredQuestionId[question.id].push({
+      id: question.id,
       index: index,
       answer: question.answer as string[],
       isAnswer: false,
@@ -592,6 +605,7 @@ export class FullTestComponent extends AddOrEditQuizComponent {
 
   private generateDropdownChoiceIndex(question: Question, index: number) {
     this.mapAnsweredQuestionId[question.id].push({
+      id: question.id,
       index: index,
       answer: question.answer as string[],
       isAnswer: !isEmpty(question.answer),
@@ -602,7 +616,6 @@ export class FullTestComponent extends AddOrEditQuizComponent {
   onMapAnsweredQuestion(question: Question) {
     if (this.mapAnsweredQuestionId[question.id]) {
       switch (question.type) {
-        case QuestionType.SHORT_ANSWER:
         case QuestionType.FILL_IN_THE_GAP:
         case QuestionType.FILL_IN_THE_TABLE:
         case QuestionType.DRAG_AND_DROP_ANSWER:
@@ -619,8 +632,8 @@ export class FullTestComponent extends AddOrEditQuizComponent {
               !isUndefined(this.mapAnswerByChoiceId[questionIndex.id!]);
           });
           break;
-        case QuestionType.DROPDOWN_ANSWER:
         case QuestionType.MULTIPLE_CHOICE:
+        case QuestionType.DROPDOWN_ANSWER:
         case QuestionType.MATCHING_HEADER:
           each(this.mapAnsweredQuestionId[question.id], (questionIndex) => {
             questionIndex.answer = question.answer as string[];
@@ -695,5 +708,9 @@ export class FullTestComponent extends AddOrEditQuizComponent {
         }
       });
     });
+  }
+
+  onTabChange(key: string, index: number) {
+    this.mapSavedPart[key][index] = true;
   }
 }

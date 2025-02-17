@@ -33,5 +33,4 @@ import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
   styleUrl: './listening.component.scss',
 })
 export class ListeningComponent extends AbstractQuizPartComponent<Listening> {
-  subscription: Subscription[] = [];
 }

@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { AbstractQuestionComponent } from '../../../../shared/abstract/abstract-question.component';
-import { MatIcon } from '@angular/material/icon';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { FormsModule } from '@angular/forms';
 import { filter, isEmpty, isNull } from 'lodash-es';
@@ -12,13 +11,7 @@ import {
 @Component({
   selector: 'app-multiple-choices-testing',
   standalone: true,
-  imports: [
-    MatIcon,
-    AngularEditorModule,
-    FormsModule,
-    MatExpansionPanel,
-    MatExpansionPanelHeader,
-  ],
+  imports: [AngularEditorModule, FormsModule],
   templateUrl: './multiple-choices-testing.component.html',
   styleUrl: './multiple-choices-testing.component.scss',
 })

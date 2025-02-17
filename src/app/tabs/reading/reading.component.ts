@@ -1,12 +1,13 @@
 import {
-  Component, EventEmitter,
+  Component,
+  EventEmitter,
   Input,
   OnInit,
   Output,
   signal,
   SimpleChanges,
-  WritableSignal
-} from "@angular/core";
+  WritableSignal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -18,16 +19,14 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { each } from 'lodash-es';
-import { Subscription } from 'rxjs';
 import { AbstractQuizPartComponent } from '../../shared/abstract/abstract-quiz-part.component';
 import { Choice } from '../../shared/models/choice.model';
 import { Reading } from '../../shared/models/reading.model';
 import { MatchingHeaderComponent } from '../../modules/question/matching-header/matching-header.component';
-import { MultipleQuestionComponent } from '../../modules/question/multiple-question/multiple-question.component';
 import { QuestionComponent } from '../../modules/question/question.component';
 import { ReadingService } from './reading.service';
 import { TextSelectionDirective } from './text-selection.directive';
-import { NgClass } from "@angular/common";
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-reading',
@@ -38,7 +37,6 @@ import { NgClass } from "@angular/common";
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    MultipleQuestionComponent,
     QuestionComponent,
     MatIconModule,
     MatExpansionModule,
@@ -47,7 +45,7 @@ import { NgClass } from "@angular/common";
     MatSlideToggleModule,
     MatchingHeaderComponent,
     TextSelectionDirective,
-    NgClass
+    NgClass,
   ],
   providers: [ReadingService],
   templateUrl: './reading.component.html',
@@ -61,8 +59,6 @@ export class ReadingComponent
   mapSavedQuestion: Record<string, boolean> = {};
   answers: WritableSignal<Choice[]> = signal([]);
   @Output() onMatchHeaderAnswer = new EventEmitter();
-
-  subscription: Subscription[] = [];
 
   ngOnInit(): void {
     if (this.data) {
