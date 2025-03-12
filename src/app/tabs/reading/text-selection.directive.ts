@@ -46,16 +46,6 @@ export class TextSelectionDirective {
     return selection!.toString();
   }
 
-  private isTextAlreadyHighlighted(selectedText: string): boolean {
-    const spans = this.el.nativeElement.querySelectorAll('span.highlighted');
-    for (let span of spans) {
-      if (span.textContent.includes(selectedText)) {
-        return true; // Text is already highlighted
-      }
-    }
-    return false;
-  }
-
   private highlightSelection(color: string) {
     const selection = window.getSelection();
     if (selection !== null && selection.rangeCount > 0) {

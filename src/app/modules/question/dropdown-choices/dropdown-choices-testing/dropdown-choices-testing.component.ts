@@ -3,11 +3,17 @@ import { DropdownChoicesEditingComponent } from '../dropdown-choices-editing/dro
 import { MatExpansionModule } from '@angular/material/expansion';
 import { isEmpty } from 'lodash-es';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TextSelectionDirective } from "../../../../tabs/reading/text-selection.directive";
 
 @Component({
   selector: 'app-dropdown-choices-testing',
   standalone: true,
-  imports: [MatExpansionModule, ReactiveFormsModule, FormsModule],
+  imports: [
+    MatExpansionModule,
+    ReactiveFormsModule,
+    FormsModule,
+    TextSelectionDirective,
+  ],
   templateUrl: './dropdown-choices-testing.component.html',
   styleUrl: './dropdown-choices-testing.component.scss',
 })

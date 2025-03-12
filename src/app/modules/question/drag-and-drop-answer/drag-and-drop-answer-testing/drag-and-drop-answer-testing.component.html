@@ -1,6 +1,6 @@
 @if (question.arrayContent) {
   <div class="d-flex flex-column" [id]="question.id">
-    <b><span [innerHTML]="question.content"></span></b>
+    <b><span textSelection [innerHTML]="question.content"></span></b>
     <div class="d-flex flex-column mt-2 ms-2">
       @for (line of question.arrayContent; track $index; ) {
         <div class="d-flex flex-row flex-wrap align-items-center mb-4">

@@ -1,6 +1,6 @@
 <div class="d-flex" [id]="question.id">
   <div class="col-6">
-    <span class="reading-content" [innerHTML]="question.content"></span>
+    <span class="reading-content" textSelection [innerHTML]="question.content"></span>
   </div>
   <div class="ms-2">
     @let subQuestions = question.subQuestions;
@@ -16,7 +16,7 @@
           @let questionIndex = $index;
           <tr>
             <td class="p-2">
-              {{ question.content }}
+              <span textSelection [innerHTML]="question.content"></span>
             </td>
             @for (choice of question.choices; track $index; ) {
               @let choiceIndex = $index;

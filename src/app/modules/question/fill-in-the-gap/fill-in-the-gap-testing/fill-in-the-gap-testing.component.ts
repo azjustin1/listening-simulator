@@ -8,6 +8,7 @@ import { FillInTheGapEditingComponent } from '../fill-in-the-gap-editing/fill-in
 import { toArray } from 'lodash-es';
 import { NgClass } from "@angular/common";
 import { ExtractIdPipe } from "../../../../pipes/extract-id.pipe";
+import { TextSelectionDirective } from "../../../../tabs/reading/text-selection.directive";
 
 @Component({
   selector: 'app-fill-in-the-gap-testing',
@@ -21,6 +22,7 @@ import { ExtractIdPipe } from "../../../../pipes/extract-id.pipe";
     FormsModule,
     NgClass,
     ExtractIdPipe,
+    TextSelectionDirective,
   ],
   templateUrl: './fill-in-the-gap-testing.component.html',
   styleUrl: './fill-in-the-gap-testing.component.scss',

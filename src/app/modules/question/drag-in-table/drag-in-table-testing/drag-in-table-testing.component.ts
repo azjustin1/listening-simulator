@@ -8,6 +8,7 @@ import { toArray } from 'lodash-es';
 import { MatCard } from '@angular/material/card';
 import { DragAndDropAnswerTestingComponent } from '../../drag-and-drop-answer/drag-and-drop-answer-testing/drag-and-drop-answer-testing.component';
 import { Choice } from '../../../../shared/models/choice.model';
+import { TextSelectionDirective } from "../../../../tabs/reading/text-selection.directive";
 
 @Component({
   selector: 'app-drag-in-table-testing',
@@ -20,6 +21,7 @@ import { Choice } from '../../../../shared/models/choice.model';
     FormsModule,
     NgClass,
     MatCard,
+    TextSelectionDirective,
   ],
   templateUrl: './drag-in-table-testing.component.html',
   styleUrl: './drag-in-table-testing.component.scss',

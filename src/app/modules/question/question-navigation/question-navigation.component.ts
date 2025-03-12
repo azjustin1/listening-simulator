@@ -11,7 +11,7 @@ import { AbstractPart } from '../../../shared/models/abstract-part.model';
 import { KeyValuePipe, NgClass } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { QuestionIndex } from '../../../pages/full-test/full-test.component';
-import { each, forEach, isEmpty, isNull, isUndefined } from 'lodash-es';
+import { each, forEach, isEmpty } from 'lodash-es';
 import { FormsModule } from '@angular/forms';
 
 @Component({

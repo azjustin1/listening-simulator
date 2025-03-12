@@ -18,6 +18,7 @@ import {
 import { NgClass } from '@angular/common';
 import { ChoiceContentPipe } from '../../matching-header/choice-content.pipe';
 import { MatCard } from '@angular/material/card';
+import { TextSelectionDirective } from "../../../../tabs/reading/text-selection.directive";
 
 const DATA_TRANSFER_KEY = 'answerId';
 const DROP_OVER_CLASS = 'drop-over';
@@ -34,6 +35,7 @@ const CONTAINER_RIGHT_ID = 'container-right';
     FormsModule,
     ExtractIdPipe,
     NgClass,
+    TextSelectionDirective,
   ],
   templateUrl: './drag-and-drop-answer-testing.component.html',
   styleUrl: './drag-and-drop-answer-testing.component.scss',

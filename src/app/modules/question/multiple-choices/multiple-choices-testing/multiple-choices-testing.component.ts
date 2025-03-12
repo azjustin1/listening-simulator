@@ -7,11 +7,12 @@ import {
   MatExpansionPanel,
   MatExpansionPanelHeader,
 } from '@angular/material/expansion';
+import { TextSelectionDirective } from "../../../../tabs/reading/text-selection.directive";
 
 @Component({
   selector: 'app-multiple-choices-testing',
   standalone: true,
-  imports: [AngularEditorModule, FormsModule],
+  imports: [AngularEditorModule, FormsModule, TextSelectionDirective],
   templateUrl: './multiple-choices-testing.component.html',
   styleUrl: './multiple-choices-testing.component.scss',
 })

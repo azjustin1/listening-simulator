@@ -11,6 +11,7 @@ import { each } from 'lodash-es';
 import { Choice } from '../../../../shared/models/choice.model';
 import { ChoiceContentPipe } from '../choice-content.pipe';
 import { AbstractQuestionComponent } from '../../../../shared/abstract/abstract-question.component';
+import { TextSelectionDirective } from "../../../../tabs/reading/text-selection.directive";
 
 @Component({
   selector: 'app-matching-header-readonly',
@@ -23,6 +24,7 @@ import { AbstractQuestionComponent } from '../../../../shared/abstract/abstract-
     MatCard,
     NgClass,
     ChoiceContentPipe,
+    TextSelectionDirective,
   ],
   templateUrl: './matching-header-readonly.component.html',
   styleUrl: './matching-header-readonly.component.scss',

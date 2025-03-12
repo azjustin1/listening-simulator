@@ -12,6 +12,7 @@ import { FileService } from '../../file.service';
 import { QuestionComponent } from '../../modules/question/question.component';
 import { ListeningService } from './listening.service';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
+import { TextSelectionDirective } from "../reading/text-selection.directive";
 
 @Component({
   selector: 'app-listening',
@@ -26,10 +27,10 @@ import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
     QuestionComponent,
     MatIconModule,
     AngularEditorModule,
+    TextSelectionDirective,
   ],
   providers: [ListeningService, FileService],
   templateUrl: './listening.component.html',
   styleUrl: './listening.component.scss',
 })
-export class ListeningComponent extends AbstractQuizPartComponent<Listening> {
-}
+export class ListeningComponent extends AbstractQuizPartComponent<Listening> {}

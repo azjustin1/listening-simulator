@@ -43,7 +43,7 @@
     [ngClass]="{ testing: isTesting }"
   >
     <div class="description">
-      <span [innerHTML]="data.content"></span>
+      <span textSelection [innerHTML]="data.content"></span>
     </div>
     @if (isSaved) {
       <div>

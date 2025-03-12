@@ -8,6 +8,7 @@ import { MatIcon } from '@angular/material/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FillInTheTableEditingComponent } from '../fill-in-the-table-editing/fill-in-the-table-editing.component';
 import { toArray } from 'lodash-es';
+import { TextSelectionDirective } from "../../../../tabs/reading/text-selection.directive";
 
 @Component({
   selector: 'app-fill-in-the-table-testing',
@@ -21,6 +22,7 @@ import { toArray } from 'lodash-es';
     ReactiveFormsModule,
     FormsModule,
     NgClass,
+    TextSelectionDirective,
   ],
   templateUrl: './fill-in-the-table-testing.component.html',
   styleUrl: './fill-in-the-table-testing.component.scss',

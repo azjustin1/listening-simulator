@@ -2,7 +2,7 @@
   @if (data) {
     <div class="form-group">
       @if (isSaved || isTesting || isReadOnly) {
-        <div [innerHTML]="data.name"></div>
+        <div textSelection [innerHTML]="data.name"></div>
       } @else {
         <angular-editor
           autocomplete="off"
