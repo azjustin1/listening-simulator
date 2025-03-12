@@ -10,7 +10,7 @@
           (ngModelChange)="onPaste($event)"
         ></angular-editor>
       } @else {
-        <span [innerHTML]="question.content"> </span>
+        <span textSelection [innerHTML]="question.content"> </span>
       }
       @if (isReadOnly && question.answer.length === 0) {
         ❌

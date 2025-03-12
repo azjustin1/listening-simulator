@@ -12,6 +12,7 @@ import { FileService } from '../file.service';
 import { isArray } from 'lodash-es';
 import { CHOICE_INDEX } from '../../utils/constant';
 import { CorrectChoicesPipe } from '../../common/pipes/correct-choices.pipe';
+import { TextSelectionDirective } from "../shared/directives/text-selection.directive";
 @Component({
   selector: 'app-multiple-choices',
   standalone: true,
@@ -25,6 +26,7 @@ import { CorrectChoicesPipe } from '../../common/pipes/correct-choices.pipe';
     MatIconModule,
     MatCardModule,
     CorrectChoicesPipe,
+    TextSelectionDirective,
   ],
   providers: [FileService],
   templateUrl: './multiple-choices.component.html',

@@ -20,6 +20,7 @@ import { INPUT_PATTERN } from '../../utils/constant';
 import { ArrayContentChoice } from './array-content.pipe';
 import { FitContentDirective } from './fit-content.directive';
 import { IsInputPipe } from './is-input.pipe';
+import { TextSelectionDirective } from "../shared/directives/text-selection.directive";
 
 @Component({
   selector: 'app-fill-in-the-gap',
@@ -29,10 +30,10 @@ import { IsInputPipe } from './is-input.pipe';
     FormsModule,
     AngularEditorModule,
     MatIconModule,
-    ArrayContentChoice,
     IsInputPipe,
     FitContentDirective,
     CorrectAnswerPipe,
+    TextSelectionDirective
   ],
   templateUrl: './fill-in-the-gap.component.html',
   styleUrl: './fill-in-the-gap.component.scss',

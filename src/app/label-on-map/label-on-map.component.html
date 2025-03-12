@@ -10,7 +10,7 @@
         [config]="config"
       ></angular-editor>
     } @else {
-      <span class="reading-content" [innerHTML]="question.content"></span>
+      <span class="reading-content" textSelection [innerHTML]="question.content"></span>
     }
   </div>
 

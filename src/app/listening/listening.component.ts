@@ -12,6 +12,7 @@ import { Listening } from '../../common/models/listening.model';
 import { FileService } from '../file.service';
 import { QuestionComponent } from '../question/question.component';
 import { ListeningService } from './listening.service';
+import { TextSelectionDirective } from "../shared/directives/text-selection.directive";
 
 @Component({
   selector: 'app-listening',
@@ -25,6 +26,7 @@ import { ListeningService } from './listening.service';
     MatInputModule,
     QuestionComponent,
     MatIconModule,
+    TextSelectionDirective,
   ],
   providers: [ListeningService, FileService],
   templateUrl: './listening.component.html',

@@ -27,7 +27,7 @@
               {{
                 !isTesting && !isReadOnly
                   ? (question.correctAnswer | choiceContent: data.answers!)!
-                      .content
+                    .content
                   : ""
               }}
               <div
@@ -47,7 +47,7 @@
                 >
                   {{
                     (question.answer | choiceContent: data.answers!)?.content ??
-                      ""
+                    ""
                   }}
                 </span>
 
@@ -78,7 +78,7 @@
             @if (data) {
               <span
                 class="reading-content"
-                [innerHTML]="question.content"
+                textSelection [innerHTML]="question.content"
               ></span>
             }
           }
@@ -107,7 +107,8 @@
     }
     @if (!isSaved && !isTesting && !isReadOnly) {
       <button mat-raised-button (click)="addParagraph()">
-        <mat-icon>add</mat-icon> Add Paragraph
+        <mat-icon>add</mat-icon>
+        Add Paragraph
       </button>
     }
   </div>
@@ -176,7 +177,8 @@
     }
     @if (!isSaved && !isTesting && !isReadOnly) {
       <button class="add-answer-button" mat-raised-button (click)="addAnswer()">
-        <mat-icon>add</mat-icon> Add Heading
+        <mat-icon>add</mat-icon>
+        Add Heading
       </button>
     }
   </div>

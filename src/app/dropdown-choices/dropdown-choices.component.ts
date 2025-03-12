@@ -13,6 +13,7 @@ import { AbstractQuestionComponent } from '../../common/abstract-question.compon
 import { CorrectAnswerChoicePipe } from '../../common/pipes/correct-answer-choice.pipe';
 import { CorrectDropdownPipe } from '../../common/pipes/correct-dropdown.pipe';
 import { AnswerChoicePipe } from '../../common/pipes/answer-choice.pipe';
+import { TextSelectionDirective } from "../shared/directives/text-selection.directive";
 @Component({
   selector: 'app-dropdown-choices',
   standalone: true,
@@ -30,6 +31,7 @@ import { AnswerChoicePipe } from '../../common/pipes/answer-choice.pipe';
     AnswerChoicePipe,
     CorrectAnswerChoicePipe,
     CorrectDropdownPipe,
+    TextSelectionDirective
   ],
   templateUrl: './dropdown-choices.component.html',
   styleUrl: './dropdown-choices.component.scss',

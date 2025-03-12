@@ -10,6 +10,7 @@ import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { AbstractQuestionComponent } from '../../common/abstract-question.component';
 import { FileService } from '../file.service';
 import { CorrectAnswerPipe } from '../../common/pipes/correct-answer.pipe';
+import { TextSelectionDirective } from "../shared/directives/text-selection.directive";
 
 @Component({
   selector: 'app-short-answer',
@@ -24,6 +25,7 @@ import { CorrectAnswerPipe } from '../../common/pipes/correct-answer.pipe';
     MatIconModule,
     MatCardModule,
     CorrectAnswerPipe,
+    TextSelectionDirective
   ],
   providers: [FileService],
   templateUrl: './short-answer.component.html',

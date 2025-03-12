@@ -23,9 +23,8 @@ import { Choice } from '../../common/models/choice.model';
 import { Reading } from '../../common/models/reading.model';
 import { MatchingHeaderComponent } from '../matching-header/matching-header.component';
 import { MultipleQuestionComponent } from '../multiple-question/multiple-question.component';
-import { QuestionComponent } from '../question/question.component';
 import { ReadingService } from './reading.service';
-import { TextSelectionDirective } from "./text-selection.directive";
+import { TextSelectionDirective } from '../shared/directives/text-selection.directive';
 
 @Component({
   selector: 'app-reading',
@@ -37,7 +36,6 @@ import { TextSelectionDirective } from "./text-selection.directive";
     MatFormFieldModule,
     MatInputModule,
     MultipleQuestionComponent,
-    QuestionComponent,
     MatIconModule,
     MatExpansionModule,
     AngularEditorModule,

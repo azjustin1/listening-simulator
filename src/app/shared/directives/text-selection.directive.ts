@@ -12,33 +12,25 @@ export class TextSelectionDirective {
   @HostListener('mouseup') onMouseUp() {
     const selectedText = this.getSelectedText();
     if (selectedText) {
-      if (this.isTextAlreadyHighlighted(selectedText)) {
-        console.log('Highlighted');
-        // this.removeHighlight(selectedText);
-      } else {
-        this.highlightSelection(this.appTextSelection);
-      }
+      this.highlightSelection(this.appTextSelection);
     }
   }
 
   @HostListener('click', ['$event'])
   onClick(event: MouseEvent): void {
     const target = event.target as HTMLElement;
-
     // Check if the clicked target is a highlighted text (span element)
     if (
       target.tagName === 'SPAN' &&
       target.style.backgroundColor === 'yellow'
     ) {
       const parent = target.parentNode;
-
       if (parent) {
         // Remove the input field if it exists
         const nextSibling = target.nextSibling;
         if (nextSibling) {
           parent.removeChild(nextSibling);
         }
-
         // Replace the span with its text content to remove the highlight
         const selectedText = target.textContent;
         if (selectedText) {
@@ -54,16 +46,6 @@ export class TextSelectionDirective {
     return selection!.toString();
   }
 
-  private isTextAlreadyHighlighted(selectedText: string): boolean {
-    const spans = this.el.nativeElement.querySelectorAll('span.highlighted');
-    for (let span of spans) {
-      if (span.textContent.includes(selectedText)) {
-        return true; // Text is already highlighted
-      }
-    }
-    return false;
-  }
-
   private highlightSelection(color: string) {
     const selection = window.getSelection();
     if (selection !== null && selection.rangeCount > 0) {
@@ -74,17 +56,10 @@ export class TextSelectionDirective {
       const input = document.createElement('input');
       const button = document.createElement('div');
       button.textContent = '❌';
-      input.onchange = (event: Event) => {
-        console.log(event);
-      };
       range.surroundContents(span);
       range.collapse(false);
       range.insertNode(input);
       selection.removeAllRanges(); // Clear selection
     }
-  }
-
-  clickOn() {
-    alert('You just clicked');
   }
 }
