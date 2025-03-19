@@ -8,19 +8,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
-import { each, isEmpty, last } from 'lodash-es';
-import { AbstractQuestionComponent } from '../../../shared/abstract/abstract-question.component';
-import { Choice } from '../../../shared/models/choice.model';
-import { CorrectChoicesPipe } from '../../../pipes/correct-choices.pipe';
-import { CommonUtils } from '../../../utils/common-utils';
-import { CHOICE_INDEX } from '../../../utils/constant';
-import { IsCheckCellPipe } from './is-check-cell.pipe';
-import { ShortAnswerEditingComponent } from '../short-answer/short-answer-editing/short-answer-editing.component';
-import { ShortAnswerReadonlyComponent } from '../short-answer/short-answer-readonly/short-answer-readonly.component';
-import { ShortAnswerTestingComponent } from '../short-answer/short-answer-testing/short-answer-testing.component';
 import { LabelOnMapEditingComponent } from './label-on-map-editing/label-on-map-editing.component';
 import { LabelOnMapTestingComponent } from './label-on-map-testing/label-on-map-testing.component';
 import { LabelOnMapReadonlyComponent } from './label-on-map-readonly/label-on-map-readonly.component';
+import { QuestionComponent } from '../question.component';
+import { AbstractQuestionComponent } from '../../../shared/abstract/abstract-question.component';
 
 @Component({
   selector: 'app-label-on-map',
@@ -35,11 +27,6 @@ import { LabelOnMapReadonlyComponent } from './label-on-map-readonly/label-on-ma
     MatIconModule,
     MatCardModule,
     MatTableModule,
-    CorrectChoicesPipe,
-    IsCheckCellPipe,
-    ShortAnswerEditingComponent,
-    ShortAnswerReadonlyComponent,
-    ShortAnswerTestingComponent,
     LabelOnMapEditingComponent,
     LabelOnMapTestingComponent,
     LabelOnMapReadonlyComponent,

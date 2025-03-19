@@ -52,13 +52,12 @@ export class AddOrEditWritingComponent {
     isReadOnly: false,
   };
   data: Writing = {
-    id: '',
+    _id: '',
     name: '',
     content: '',
     answer: '',
     timeout: 0,
     wordCount: 0,
-    questions: [],
     parts: [],
     testDate: '',
   };
@@ -171,7 +170,7 @@ export class AddOrEditWritingComponent {
 
   onStart() {
     if (!this.result) {
-      this.result = { ...this.data, id: CommonUtils.generateRandomId() };
+      this.result = { ...this.data, _id: CommonUtils.generateRandomId() };
       this.writingService.submit(this.result).subscribe();
     }
     this.isReady = true;
@@ -208,12 +207,12 @@ export class AddOrEditWritingComponent {
 
   saveOrEdit(writing: Writing) {
     let observer;
-    if (writing.id) {
+    if (writing._id) {
       observer = this.writingService.edit(writing);
     } else {
       observer = this.writingService.create({
         ...writing,
-        id: CommonUtils.generateRandomId(),
+        _id: CommonUtils.generateRandomId(),
       });
     }
     const sub = observer.subscribe();
@@ -246,8 +245,8 @@ export class AddOrEditWritingComponent {
   public buildDownloadFile(): void {
     let htmlString = `<h1>${this.result.name}</h1><br><h2>Name: ${this.result.studentName}</h2><br><h2>Date: ${CommonUtils.getCurrentDate()}</h2>`;
     each(this.result.parts, (part) => {
-      htmlString =
-        htmlString + part.content + '<br>' + part.answer + '<hr><br>';
+      // htmlString =
+      //   htmlString + part.content + '<br>' + part.answer + '<hr><br>';
     });
 
     asBlob(htmlString).then((data: any) => {
@@ -265,15 +264,16 @@ export class AddOrEditWritingComponent {
   onAddPart() {
     const id = CommonUtils.generateRandomId();
     const newWritingParagraph: Writing = {
-      id: id,
+      _id: id,
+      name: '',
       content: '',
-      timeout: undefined,
-      questions: [],
+      timeout: 0,
+      parts: [],
       answer: '',
       wordCount: 0,
       testDate: '',
     };
-    this.data.parts?.push(newWritingParagraph);
+    // this.data.parts?.push(newWritingParagraph);
   }
 
   onSavePart(index: number) {

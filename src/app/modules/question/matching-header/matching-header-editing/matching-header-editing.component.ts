@@ -3,7 +3,7 @@ import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { AbstractQuizPartComponent } from '../../../../shared/abstract/abstract-quiz-part.component';
+import { AbstractQuizSectionComponent } from '../../../../shared/abstract/abstract-quiz-section.component';
 import { Reading } from '../../../../shared/models/reading.model';
 import { MatIcon } from '@angular/material/icon';
 import { CommonUtils } from '../../../../utils/common-utils';
@@ -28,7 +28,7 @@ import { JsonPipe, NgClass } from "@angular/common";
   templateUrl: './matching-header-editing.component.html',
   styleUrl: './matching-header-editing.component.scss',
 })
-export class MatchingHeaderEditingComponent extends AbstractQuizPartComponent<Reading> {
+export class MatchingHeaderEditingComponent extends AbstractQuizSectionComponent<Reading> {
   mapEditingById: Record<string, boolean> = {};
   mapAnswerById: Record<string, Choice> = {};
 
@@ -56,7 +56,7 @@ export class MatchingHeaderEditingComponent extends AbstractQuizPartComponent<Re
     const id = CommonUtils.generateRandomId();
     const newQuestion: Question = {
       id: id,
-      content: '',
+      description: '',
       type: QuestionType.MATCHING_HEADER,
       choices: [],
       answer: [],

@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { AbstractQuestionComponent } from '../../../../shared/abstract/abstract-question.component';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { MatButton } from '@angular/material/button';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { FormsModule } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
 import { isEmpty } from 'lodash-es';
+import { AbstractEditQuestionComponent } from '../../../../shared/abstract/abstract-edit-question.component';
 
 @Component({
   selector: 'app-dropdown-choices-editing',
@@ -20,7 +20,7 @@ import { isEmpty } from 'lodash-es';
   templateUrl: './dropdown-choices-editing.component.html',
   styleUrl: './dropdown-choices-editing.component.scss',
 })
-export class DropdownChoicesEditingComponent extends AbstractQuestionComponent {
+export class DropdownChoicesEditingComponent extends AbstractEditQuestionComponent {
   selectedChoice: string | null = null;
 
   override ngOnInit() {

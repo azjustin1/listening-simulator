@@ -7,12 +7,13 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { AbstractPart } from '../../../shared/models/abstract-part.model';
+import { AbstractSection } from '../../../shared/models/abstract-section.model';
 import { KeyValuePipe, NgClass } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { QuestionIndex } from '../../../pages/full-test/full-test.component';
 import { each, forEach, isEmpty } from 'lodash-es';
 import { FormsModule } from '@angular/forms';
+import { Part } from "../../../shared/models/part.model";
 
 @Component({
   selector: 'app-question-navigation',
@@ -22,7 +23,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './question-navigation.component.scss',
 })
 export class QuestionNavigationComponent implements OnChanges {
-  @Input() parts: AbstractPart[] = [];
+  @Input() parts: Part[] = [];
   @Input() partIndex: number = 0;
   @Input() mapAnsweredById: Record<string, QuestionIndex[]> = {};
   @Output() onSelectQuestion = new EventEmitter();

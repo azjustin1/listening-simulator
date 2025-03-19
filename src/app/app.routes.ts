@@ -26,7 +26,6 @@ export const routes: Routes = [
     loadChildren: () =>
       import('./modules/quizzes/quizzes.routes').then((m) => m.routes),
   },
-  { path: 'add-quiz', component: AddOrEditQuizComponent },
   { path: 'edit-quiz/:quizId', component: AddOrEditQuizComponent },
   { path: 'test/:resultId', component: FullTestComponent },
   { path: 'continue-test/:testId', component: FullTestComponent },

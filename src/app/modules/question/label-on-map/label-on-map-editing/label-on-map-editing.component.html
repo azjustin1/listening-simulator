@@ -3,8 +3,8 @@
     <angular-editor
       class="editor"
       name="questionContent"
-      [id]="question.id"
-      [(ngModel)]="question.content"
+      [id]="question._id!"
+      [(ngModel)]="question.description"
       (ngModelChange)="onPaste($event)"
       [config]="config"
     ></angular-editor>
@@ -25,7 +25,7 @@
             @let questionIndex = $index;
             <tr>
               <td class="d-flex align-items-center">
-                <input matInput type="text" [(ngModel)]="question.content" />
+                <input matInput type="text" [(ngModel)]="question.description" />
                 <mat-icon class="icon" color="warn" (click)="onRemoveRow(questionIndex)">delete</mat-icon>
               </td>
               @for (choice of question.choices; track $index; ) {
@@ -33,7 +33,7 @@
                 <td
                   (click)="onSelectCorrectAnswer(questionIndex, choiceIndex)"
                 >
-                  @if (question.correctAnswer.includes(choice.id)) {
+                  @if (question.correctAnswer.includes(choice._id!)) {
                     <mat-icon class="icon" color="primary">check</mat-icon>
                   }
                 </td>
@@ -58,7 +58,7 @@
         mat-button
         color="primary"
         type="button"
-        (click)="addQuestion(1)"
+        (click)="addQuestion(questionType.SHORT_ANSWER)"
       >
         <mat-icon class="icon">add</mat-icon>
         option

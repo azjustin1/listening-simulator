@@ -4,14 +4,14 @@
       <angular-editor
         name="reading-question"
         class="editor"
-        [id]="data.id"
+        [id]="data!._id!"
         [config]="config"
-        [(ngModel)]="data.content"
+        [(ngModel)]="data!.content"
         (ngModelChange)="onPaste($event)"
       ></angular-editor>
     } @else {
-      <span [innerHTML]="data.content" class="writing-description">
-        {{ data.content }}
+      <span [innerHTML]="data!.content" class="writing-description">
+        {{ data!.content }}
       </span>
     }
   </div>
@@ -20,10 +20,10 @@
       <angular-editor
         class="student-input"
         [config]="testEditorConfig"
-        [(ngModel)]="data.answer"
+        [(ngModel)]="data!.answer"
         (ngModelChange)="onWritingChange($event)"
       ></angular-editor>
-      <div>Word count: {{ data.wordCount }}</div>
+      <div>Word count: {{ data!.wordCount }}</div>
     </div>
   }
   @if (isReadOnly) {
@@ -32,10 +32,10 @@
         disabled="true"
         class="student-input"
         [config]="testEditorConfig"
-        [(ngModel)]="data.answer"
+        [(ngModel)]="data!.answer"
         (ngModelChange)="onWritingChange($event)"
       ></angular-editor>
-      <div>Word count: {{ data.wordCount }}</div>
+      <div>Word count: {{ data!.wordCount }}</div>
     </div>
   }
 </div>

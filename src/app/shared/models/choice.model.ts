@@ -1,7 +1,8 @@
 export interface Choice {
-  id: string;
-  content: string;
+  _id?: string;
+  content?: string;
   index?: string;
   answer?: string;
   correctAnswer?: string;
+  questionId?: string;
 }

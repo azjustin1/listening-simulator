@@ -1,17 +1,19 @@
 import { Choice } from './choice.model';
+import { QuestionType } from '../enums/question-type.enum';
 
 export interface Question {
-  id: string;
+  _id?: string;
   name?: string;
-  content?: string;
+  description?: string;
   arrayContent?: string[][];
   tableContent?: Record<string, Record<string, string[][]>>;
-  type?: number | null;
+  type: QuestionType;
   answer: string[] | string;
   correctAnswer: string[];
   choices: Choice[];
   subQuestions?: Question[];
   numberOfChoices?: number;
   isAnswer?: boolean;
-  answers?: Choice[]
+  answers?: Choice[];
+  partId?: string;
 }

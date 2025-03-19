@@ -2,6 +2,7 @@
   <app-multiple-choices-editing
     [question]="question"
     [isEditing]="isEditing"
+    (isInvalid)="isInvalid.emit($event)"
   ></app-multiple-choices-editing>
 }
 

@@ -5,10 +5,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Result } from '../../../shared/models/result.model';
 import { ListeningComponent } from '../../../tabs/listening/listening.component';
-import { MultipleChoicesComponent } from '../../question/multiple-choices/multiple-choices.component';
 import { PartNavigationComponent } from '../../../shared/components/part-navigation/part-navigation.component';
 import { ReadingComponent } from '../../../tabs/reading/reading.component';
-import { ShortAnswerComponent } from '../../question/short-answer/short-answer.component';
 import { WritingComponent } from '../../../tabs/writing/writing.component';
 import { BandScorePipe } from '../band-score.pipe';
 import { ResultService } from '../result.service';
@@ -20,15 +18,13 @@ import {
 import { ExportUtils } from '../../../utils/export.utils';
 import { forkJoin } from 'rxjs';
 import { FeedbackDialog } from '../../../shared/dialogs/feedback-dialog/feedback-dialog.component';
-import { FileService } from "../../../file.service";
-import { ConfirmDialogComponent } from "../../../shared/dialogs/confirm-dialog/confirm-dialog.component";
+import { FileService } from '../../../file.service';
+import { ConfirmDialogComponent } from '../../../shared/dialogs/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-result-detail',
   standalone: true,
   imports: [
-    MultipleChoicesComponent,
-    ShortAnswerComponent,
     MatCardModule,
     MatButtonModule,
     MatTabsModule,
@@ -44,21 +40,7 @@ import { ConfirmDialogComponent } from "../../../shared/dialogs/confirm-dialog/c
   templateUrl: './result-detail.component.html',
 })
 export class ResultDetailComponent {
-  result: Result = {
-    id: '',
-    name: '',
-    studentName: '',
-    listeningParts: [],
-    readingParts: [],
-    writingParts: [],
-    correctReadingPoint: 0,
-    totalReadingPoint: 0,
-    correctListeningPoint: 0,
-    totalListeningPoint: 0,
-    testDate: '',
-    quizId: '',
-    isSubmit: false,
-  };
+  result!: Result;
   correctListeningPoint = 0;
   totalListeningPoint = 0;
   selectedListeningPart = 0;

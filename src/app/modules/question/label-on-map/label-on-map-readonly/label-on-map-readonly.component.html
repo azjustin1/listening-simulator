@@ -1,6 +1,6 @@
 <div class="d-flex">
   <div class="col-6">
-    <b><span class="reading-content" [innerHTML]="question.content"></span></b>
+    <b><span class="reading-content" [innerHTML]="question.description"></span></b>
   </div>
   <div>
     @let subQuestions = question.subQuestions;
@@ -15,7 +15,7 @@
         @for (question of subQuestions; track $index; ) {
           <tr>
             <td>
-              {{ question.content }}
+              {{ question.description }}
               @if (isReadOnly && question.answer.length === 0) {
                 ❌
               }
@@ -24,17 +24,18 @@
               <td
                 class="choice-item"
               >
+                @let choiceId = choice._id!;
                 @if (isReadOnly) {
-                  @if (question.correctAnswer.includes(choice.id)) {
+                  @if (question.correctAnswer.includes(choiceId)) {
                     <mat-icon class="icon" color="primary">check</mat-icon>
                   }
 
-                  @if (question.answer.includes(choice.id) &&
-                  !question.correctAnswer.includes(choice.id)) {
+                  @if (question.answer.includes(choiceId) &&
+                  !question.correctAnswer.includes(choiceId)) {
                     <mat-icon class="icon" color="warn">clear</mat-icon>
                   }
                 } @else {
-                  @if (question.correctAnswer.includes(choice.id)) {
+                  @if (question.correctAnswer.includes(choiceId)) {
                     <mat-icon class="icon" color="primary">check</mat-icon>
                   }
                 }

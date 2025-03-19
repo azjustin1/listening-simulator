@@ -1,7 +1,7 @@
-import { AbstractPart } from './abstract-part.model';
+import { AbstractSection } from './abstract-section.model';
 import { Choice } from './choice.model';
 
-export interface Reading extends AbstractPart {
+export interface Reading extends AbstractSection {
   answers?: Choice[];
-  name: string;
+  isMatchHeader?: boolean;
 }

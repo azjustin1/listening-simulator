@@ -1,6 +1,7 @@
-import { AbstractPart } from './abstract-part.model';
+import { AbstractSection } from './abstract-section.model';
+import { Part } from './part.model';
 
-export interface Listening extends AbstractPart {
-  name: string;
+export interface Listening extends AbstractSection {
   audioName?: string;
+  parts: Part[];
 }

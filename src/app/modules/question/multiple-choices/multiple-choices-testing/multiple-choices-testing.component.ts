@@ -7,7 +7,8 @@ import {
   MatExpansionPanel,
   MatExpansionPanelHeader,
 } from '@angular/material/expansion';
-import { TextSelectionDirective } from "../../../../tabs/reading/text-selection.directive";
+import { TextSelectionDirective } from '../../../../tabs/reading/text-selection.directive';
+import { AbstractTestingQuestionComponent } from '../../../../shared/abstract/abstract-testing-question.component';
 
 @Component({
   selector: 'app-multiple-choices-testing',
@@ -16,7 +17,7 @@ import { TextSelectionDirective } from "../../../../tabs/reading/text-selection.
   templateUrl: './multiple-choices-testing.component.html',
   styleUrl: './multiple-choices-testing.component.scss',
 })
-export class MultipleChoicesTestingComponent extends AbstractQuestionComponent {
+export class MultipleChoicesTestingComponent extends AbstractTestingQuestionComponent {
   selectedOption: string | null = '';
 
   override ngOnInit() {
@@ -44,7 +45,7 @@ export class MultipleChoicesTestingComponent extends AbstractQuestionComponent {
         isAnswer: true,
       };
     }
-    this.selectedId.set(this.question.id);
+    this.selectedId.set(this.question._id);
     this.onAnswer.emit(this.question);
   }
 

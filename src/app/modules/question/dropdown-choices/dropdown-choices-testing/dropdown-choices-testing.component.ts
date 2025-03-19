@@ -3,7 +3,8 @@ import { DropdownChoicesEditingComponent } from '../dropdown-choices-editing/dro
 import { MatExpansionModule } from '@angular/material/expansion';
 import { isEmpty } from 'lodash-es';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TextSelectionDirective } from "../../../../tabs/reading/text-selection.directive";
+import { TextSelectionDirective } from '../../../../tabs/reading/text-selection.directive';
+import { AbstractTestingQuestionComponent } from '../../../../shared/abstract/abstract-testing-question.component';
 
 @Component({
   selector: 'app-dropdown-choices-testing',
@@ -17,7 +18,9 @@ import { TextSelectionDirective } from "../../../../tabs/reading/text-selection.
   templateUrl: './dropdown-choices-testing.component.html',
   styleUrl: './dropdown-choices-testing.component.scss',
 })
-export class DropdownChoicesTestingComponent extends DropdownChoicesEditingComponent {
+export class DropdownChoicesTestingComponent extends AbstractTestingQuestionComponent {
+  selectedChoice = '';
+
   override ngOnInit() {
     super.ngOnInit();
     if (!isEmpty(this.question.answer)) {
@@ -32,6 +35,6 @@ export class DropdownChoicesTestingComponent extends DropdownChoicesEditingCompo
 
   onSelectChoice() {
     this.selectedQuestionIndex.set(null);
-    this.selectedId.set(this.question.id);
+    this.selectedId.set(this.question._id);
   }
 }

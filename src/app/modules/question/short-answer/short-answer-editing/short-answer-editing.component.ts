@@ -5,6 +5,7 @@ import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { NgIf } from '@angular/common';
 import { AbstractQuestionComponent } from '../../../../shared/abstract/abstract-question.component';
+import { AbstractEditQuestionComponent } from '../../../../shared/abstract/abstract-edit-question.component';
 
 @Component({
   selector: 'app-short-answer-editing',
@@ -13,5 +14,4 @@ import { AbstractQuestionComponent } from '../../../../shared/abstract/abstract-
   templateUrl: './short-answer-editing.component.html',
   styleUrl: './short-answer-editing.component.scss',
 })
-export class ShortAnswerEditingComponent extends AbstractQuestionComponent {
-}
+export class ShortAnswerEditingComponent extends AbstractEditQuestionComponent {}

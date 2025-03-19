@@ -1,27 +1,28 @@
 <div class="question-group">
   <angular-editor
     name="questionContent"
-    [id]="question.id"
+    [id]="question._id!"
     [config]="config"
-    [(ngModel)]="question.content"
+    [(ngModel)]="question.description"
     (ngModelChange)="onPaste($event)"
   ></angular-editor>
   <div class="choice-group w-100">
     @for (choice of question.choices; track $index) {
+      @let choiceId = choice._id!;
       <div class="d-flex align-items-center w-100 mb-2">
-        <input [checked]="selectedChoice === choice.id" (click)="onSelectCorrectAnswer(choice.id)"
+        <input [checked]="selectedChoice === choiceId" (click)="onSelectCorrectAnswer(choiceId)"
                type="radio" />
         <div class="mt-2 ms-2 w-100">
                 <textarea
                   class="w-100"
                   autocomplete="off"
-                  [disabled]="isReadOnly"
-                  [name]="choice.id"
+                  [disabled]="!isEditing"
+                  [name]="choiceId"
                   type="text"
                   [(ngModel)]="choice.content"
                 ></textarea>
         </div>
-        <mat-icon (click)="removeChoice($index)" color="warn">delete</mat-icon>
+        <mat-icon (click)="deleteChoice(choiceId)" color="warn">delete</mat-icon>
       </div>
     }
   </div>

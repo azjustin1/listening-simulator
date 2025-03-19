@@ -44,11 +44,11 @@ export class WritingService {
   }
 
   edit(writing: Writing): Observable<any> {
-    return this.httpClient.put(`/writings/${writing.id}`, writing);
+    return this.httpClient.put(`/writings/${writing._id}`, writing);
   }
 
   editWritingResult(writing: Writing): Observable<any> {
-    return this.httpClient.put(`/writings-result/${writing.id}`, writing);
+    return this.httpClient.put(`/writings-result/${writing._id}`, writing);
   }
 
   delete(id: string): Observable<any> {

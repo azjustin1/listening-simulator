@@ -12,7 +12,7 @@ export class FullTestService {
   }
 
   saveCurrentTest(result: Result): Observable<any> {
-    return this.httpClient.put<any>(`/results/${result.id}`, result);
+    return this.httpClient.put<any>(`/results/${result._id}`, result);
   }
 
   submitTest(result: any): Observable<any> {

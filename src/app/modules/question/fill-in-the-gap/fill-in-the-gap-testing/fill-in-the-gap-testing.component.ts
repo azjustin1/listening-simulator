@@ -1,14 +1,13 @@
-import { Component, SimpleChanges } from "@angular/core";
+import { Component } from '@angular/core';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { IsInputPipe } from '../is-input.pipe';
-import { MatButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FillInTheGapEditingComponent } from '../fill-in-the-gap-editing/fill-in-the-gap-editing.component';
 import { toArray } from 'lodash-es';
-import { NgClass } from "@angular/common";
-import { ExtractIdPipe } from "../../../../pipes/extract-id.pipe";
-import { TextSelectionDirective } from "../../../../tabs/reading/text-selection.directive";
+import { NgClass } from '@angular/common';
+import { ExtractIdPipe } from '../../../../pipes/extract-id.pipe';
+import { TextSelectionDirective } from '../../../../tabs/reading/text-selection.directive';
+import { AbstractTestingQuestionComponent } from '../../../../shared/abstract/abstract-testing-question.component';
+import { INPUT_PATTERN } from "../../../../utils/constant";
 
 @Component({
   selector: 'app-fill-in-the-gap-testing',
@@ -16,8 +15,6 @@ import { TextSelectionDirective } from "../../../../tabs/reading/text-selection.
   imports: [
     AngularEditorModule,
     IsInputPipe,
-    MatButton,
-    MatIcon,
     ReactiveFormsModule,
     FormsModule,
     NgClass,
@@ -27,7 +24,7 @@ import { TextSelectionDirective } from "../../../../tabs/reading/text-selection.
   templateUrl: './fill-in-the-gap-testing.component.html',
   styleUrl: './fill-in-the-gap-testing.component.scss',
 })
-export class FillInTheGapTestingComponent extends FillInTheGapEditingComponent {
+export class FillInTheGapTestingComponent extends AbstractTestingQuestionComponent {
   onInputAnswer(answer: string, choiceId: string) {
     this.mapChoiceById[choiceId].answer = answer;
     this.onAnswer.emit({

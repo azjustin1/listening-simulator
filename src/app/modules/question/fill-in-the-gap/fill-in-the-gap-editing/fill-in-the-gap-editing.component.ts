@@ -18,6 +18,7 @@ import { INPUT_PATTERN } from '../../../../utils/constant';
 import { Choice } from '../../../../shared/models/choice.model';
 import { MatButton } from '@angular/material/button';
 import { ExtractIdPipe } from '../../../../pipes/extract-id.pipe';
+import { AbstractEditQuestionComponent } from '../../../../shared/abstract/abstract-edit-question.component';
 
 @Component({
   selector: 'app-fill-in-the-gap-editing',
@@ -34,8 +35,7 @@ import { ExtractIdPipe } from '../../../../pipes/extract-id.pipe';
   templateUrl: './fill-in-the-gap-editing.component.html',
   styleUrl: './fill-in-the-gap-editing.component.scss',
 })
-export class FillInTheGapEditingComponent extends AbstractQuestionComponent {
-  inputPattern = INPUT_PATTERN;
+export class FillInTheGapEditingComponent extends AbstractEditQuestionComponent {
   mapChoiceById: Record<string, Choice> = {};
   mapSaveTextByIndex: Record<number, Record<number, boolean>> = {};
   mapShowActionByIndex: Record<number, Record<number, boolean>> = {};
@@ -66,7 +66,7 @@ export class FillInTheGapEditingComponent extends AbstractQuestionComponent {
 
   initChoiceContent() {
     each(this.question.choices, (choice) => {
-      this.mapChoiceById[choice.id] = choice;
+      this.mapChoiceById[choice._id!] = choice;
     });
   }
 
@@ -86,7 +86,7 @@ export class FillInTheGapEditingComponent extends AbstractQuestionComponent {
     if (inputId) {
       this.question.choices = filter(
         this.question.choices,
-        (choice) => choice.id !== inputId,
+        (choice) => choice._id !== inputId,
       );
     }
     this.removeAssociatedChoice(this.question.arrayContent![lineIndex]);

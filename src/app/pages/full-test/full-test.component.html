@@ -65,7 +65,6 @@ result.studentName !== "") {
         @if (isStart) {
           <div id="question-group">
             <app-listening
-              [data]="result.listeningParts[selectedListeningPart]"
               [isTesting]="true"
               [isStart]="isStart"
               [(selectedId)]="selectedId"
@@ -76,7 +75,6 @@ result.studentName !== "") {
             ></app-listening>
           </div>
           <app-question-navigation
-            [parts]="result.listeningParts"
             [partIndex]="selectedListeningPart"
             [mapAnsweredById]="mapAnsweredQuestionId"
             [(selectedId)]="selectedId"
@@ -100,10 +98,9 @@ result.studentName !== "") {
 
     <mat-tab label="Reading" [disabled]="mapDisablePart[1]">
       <ng-template matTabContent>
-        @if (isStart) {
+        @if (isStart && result.reading.parts) {
           <div class="question-group">
             <app-reading
-              [data]="result.readingParts[selectedReadingPart]"
               [isTesting]="true"
               [isStart]="isStart"
               [(selectedId)]="selectedId"
@@ -111,11 +108,10 @@ result.studentName !== "") {
               (onStartChange)="onStartPart()"
               (onPartAnswerQuestion)="onMapAnsweredQuestion($event)"
               (onPartAnswerChoice)="onMapAnswerChoice($event)"
-              (onMatchHeaderAnswer)="onMapHeaderAnswered($event, result.readingParts[selectedReadingPart])"
             ></app-reading>
           </div>
           <app-question-navigation
-            [parts]="result.readingParts"
+            [parts]="result.reading.parts!"
             [partIndex]="selectedReadingPart"
             [mapAnsweredById]="mapAnsweredQuestionId"
             [(selectedId)]="selectedId"
@@ -139,10 +135,9 @@ result.studentName !== "") {
 
     <mat-tab label="Writing" [disabled]="mapDisablePart[2]">
       <ng-template matTabContent>
-        @if (isStart && result.writingParts[selectedWritingPart]) {
+        @if (isStart) {
           <div class="question-group">
             <app-writing
-              [data]="result.writingParts[selectedWritingPart]"
               [isTesting]="true"
               [isStart]="isStart"
               (onStartChange)="onStartPart()"
@@ -150,7 +145,7 @@ result.studentName !== "") {
           </div>
           <app-part-navigation
             [(selectedPart)]="selectedWritingPart"
-            [parts]="result.writingParts"
+            [parts]="result.writing!.parts"
             (onPartChange)="onTabChange('writing', $event)"
           ></app-part-navigation>
         }

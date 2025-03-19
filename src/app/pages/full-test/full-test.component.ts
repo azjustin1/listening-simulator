@@ -43,10 +43,11 @@ import {
 } from '../../shared/components/timer/timer.component';
 import { Tab } from '../../shared/enums/tab.enum';
 import { QuestionNavigationComponent } from '../../modules/question/question-navigation/question-navigation.component';
-import { AbstractPart } from '../../shared/models/abstract-part.model';
+import { AbstractSection } from '../../shared/models/abstract-section.model';
 import { Question } from '../../shared/models/question.model';
 import { QuestionType } from '../../shared/enums/question-type.enum';
 import { Choice } from '../../shared/models/choice.model';
+import { Part } from '../../shared/models/part.model';
 
 const SAVE_INTERVAL = 120000;
 const SECOND_INTERVAL = 1000;
@@ -101,32 +102,8 @@ export class FullTestComponent implements OnDestroy {
     reading: {},
     writing: {},
   };
-  result: Result = {
-    id: '',
-    name: '',
-    studentName: '',
-    correctReadingPoint: 0,
-    totalReadingPoint: 0,
-    correctListeningPoint: 0,
-    totalListeningPoint: 0,
-    testDate: '',
-    quizId: '',
-    listeningParts: [],
-    readingParts: [],
-    writingParts: [],
-    isSubmit: false,
-    feedback: {
-      rating: 0,
-      content: '',
-    },
-  };
-  quiz: Quiz = {
-    id: '',
-    name: '',
-    listeningParts: [],
-    readingParts: [],
-    writingParts: [],
-  };
+  result!: Result;
+  quiz!: Quiz;
   testTime: Time = {
     minutes: 0,
     seconds: 0,
@@ -231,7 +208,6 @@ export class FullTestComponent implements OnDestroy {
 
   onStartTest() {
     this.isReady = true;
-    this.result.id = CommonUtils.generateRandomId();
     this.testService.submitTest(this.result).subscribe();
   }
 
@@ -240,7 +216,6 @@ export class FullTestComponent implements OnDestroy {
       this.saveQuestionSub.unsubscribe();
     }
     this.saveTimeout();
-    this.result.testDate = CommonUtils.getCurrentDate();
     this.result.currentTab = this.currentTab;
     this.saveQuestionSub = this.testService
       .saveCurrentTest(this.result)
@@ -424,7 +399,7 @@ export class FullTestComponent implements OnDestroy {
   private calculateListeningPoint() {
     let correctPoint = 0;
     let totalPoint = 0;
-    each(this.result.listeningParts, (part) => {
+    each(this.result.listening!.parts, (part) => {
       each(part.questions, (question) => {
         const scoreResult = ScoreUtils.calculateQuestionPoint(question);
         correctPoint += scoreResult.correct;
@@ -438,51 +413,51 @@ export class FullTestComponent implements OnDestroy {
   private calculateReadingPoint() {
     let correctPoint = 0;
     let totalPoint = 0;
-    each(this.result.readingParts, (part) => {
-      if (part.isMatchHeader) {
-        each(part.questions, (question) => {
-          totalPoint++;
-          const score = ScoreUtils.forDropdown(question);
-          correctPoint += score.correct;
-        });
-      } else {
-        each(part.questions, (question) => {
-          each(question.subQuestions, (subQuestion) => {
-            const scoreResult = ScoreUtils.calculateQuestionPoint(subQuestion);
-            correctPoint += scoreResult.correct;
-            totalPoint += scoreResult.total;
-          });
-        });
-      }
-    });
+    // each(this.result.reading, (part) => {
+    //   if (part.isMatchHeader) {
+    //     each(part.questions, (question) => {
+    //       totalPoint++;
+    //       const score = ScoreUtils.forDropdown(question);
+    //       correctPoint += score.correct;
+    //     });
+    //   } else {
+    //     each(part.questions, (question) => {
+    //       each(question.subQuestions, (subQuestion) => {
+    //         const scoreResult = ScoreUtils.calculateQuestionPoint(subQuestion);
+    //         correctPoint += scoreResult.correct;
+    //         totalPoint += scoreResult.total;
+    //       });
+    //     });
+    //   }
+    // });
     this.result.correctReadingPoint = correctPoint;
     this.result.totalReadingPoint = totalPoint;
   }
 
   generateQuestionMap() {
-    let parts: AbstractPart[] = [];
+    let parts: Part[] | undefined = [];
     switch (this.currentTab) {
       case Tab.LISTENING:
-        parts = this.result.listeningParts;
+        parts = this.result.listening!.parts;
         break;
       case Tab.READING:
-        parts = this.result.readingParts;
+        parts = this.result.reading!.parts;
         break;
       case Tab.WRITING:
-        parts = this.result.writingParts;
+        parts = this.result.writing!.parts;
         break;
       default:
         break;
     }
-    each(parts, (part, index: number) => {
-      if (part.isMatchHeader) {
-        this.mapQuestionPart[part.id] = index;
-      } else {
-        each(part.questions, (question) => {
-          this.mapQuestionPart[question.id] = index;
-        });
-      }
-    });
+    // each(parts, (part, index: number) => {
+    //   if (part.isMatchHeader) {
+    //     this.mapQuestionPart[part._id!] = index;
+    //   } else {
+    //     each(part.questions, (question) => {
+    //       this.mapQuestionPart[question._id] = index;
+    //     });
+    //   }
+    // });
   }
 
   navigateToQuestion(id: string) {
@@ -508,24 +483,24 @@ export class FullTestComponent implements OnDestroy {
     this.generateQuestionMap();
     this.selectedQuestionIndex.set(null);
     if (this.currentTab === Tab.LISTENING) {
-      this.generatePartQuestionIndex(this.result.listeningParts);
+      this.generatePartQuestionIndex(this.result.listening!.parts);
     }
     if (this.currentTab === Tab.READING) {
-      this.generatePartQuestionIndex(this.result.readingParts);
+      this.generatePartQuestionIndex(this.result.reading!.parts);
     }
   }
 
-  private generatePartQuestionIndex(parts: AbstractPart[]) {
+  private generatePartQuestionIndex(parts: Part[]) {
     let index = 0;
     each(parts, (part) => {
       if (part.isMatchHeader) {
-        if (isUndefined(this.mapAnsweredQuestionId[part.id])) {
-          this.mapAnsweredQuestionId[part.id] = [];
+        if (isUndefined(this.mapAnsweredQuestionId[part._id!])) {
+          this.mapAnsweredQuestionId[part._id!] = [];
         }
         each(part.questions, (question) => {
-          this.mapAnsweredQuestionId[part.id].push({
+          this.mapAnsweredQuestionId[part._id!].push({
             index: index,
-            id: question.id,
+            id: question._id!,
             answer: [question.answer as string],
             isAnswer:
               !isEmpty(question.answer) && !isUndefined(question.answer),
@@ -535,34 +510,34 @@ export class FullTestComponent implements OnDestroy {
         });
       } else {
         each(part.questions, (question) => {
-          if (isUndefined(this.mapAnsweredQuestionId[question.id])) {
-            this.mapAnsweredQuestionId[question.id] = [];
+          if (isUndefined(this.mapAnsweredQuestionId[question._id!])) {
+            this.mapAnsweredQuestionId[question._id!] = [];
           }
           switch (question.type) {
             case QuestionType.SHORT_ANSWER:
             case QuestionType.DRAG_AND_DROP_ANSWER:
             case QuestionType.FILL_IN_THE_GAP:
-            case QuestionType.FILL_IN_THE_TABLE:
+            case QuestionType.FILL_IN_TABLE:
             case QuestionType.DRAG_IN_TABLE:
               each(question.choices, (choice) => {
-                this.mapAnsweredQuestionId[question.id].push({
+                this.mapAnsweredQuestionId[question._id!].push({
                   index: index,
-                  id: choice.id,
+                  id: choice._id,
                   answer: [choice.answer as string],
                   isAnswer:
                     !isEmpty(choice.answer) && !isUndefined(choice.answer),
                   isReviewed: false,
                 });
-                this.mapAnswerByChoiceId[choice.id] = '';
-                this.selectedChoiceId = choice.id;
+                this.mapAnswerByChoiceId[choice._id!] = '';
+                this.selectedChoiceId = choice._id!;
                 index++;
               });
               break;
             case QuestionType.LABEL_ON_MAP:
               each(question.subQuestions, (subQuestion) => {
-                this.mapAnsweredQuestionId[question.id].push({
+                this.mapAnsweredQuestionId[question._id!].push({
                   index: index,
-                  id: subQuestion.id,
+                  id: subQuestion._id!,
                   answer: [],
                   isAnswer: !isEmpty(subQuestion.answer),
                   isReviewed: false,
@@ -587,8 +562,8 @@ export class FullTestComponent implements OnDestroy {
   }
 
   generateMultipleChoiceIndex(question: Question, index: number) {
-    this.mapAnsweredQuestionId[question.id].push({
-      id: question.id,
+    this.mapAnsweredQuestionId[question._id!].push({
+      id: question._id,
       index: index,
       answer: question.answer as string[],
       isAnswer: false,
@@ -596,16 +571,16 @@ export class FullTestComponent implements OnDestroy {
     });
     if (!isEmpty(question.answer)) {
       for (let i = 0; i < question.answer.length; i++) {
-        if (this.mapAnsweredQuestionId[question.id][i]) {
-          this.mapAnsweredQuestionId[question.id][i].isAnswer = true;
+        if (this.mapAnsweredQuestionId[question._id!][i]) {
+          this.mapAnsweredQuestionId[question._id!][i].isAnswer = true;
         }
       }
     }
   }
 
   private generateDropdownChoiceIndex(question: Question, index: number) {
-    this.mapAnsweredQuestionId[question.id].push({
-      id: question.id,
+    this.mapAnsweredQuestionId[question._id!].push({
+      id: question._id!,
       index: index,
       answer: question.answer as string[],
       isAnswer: !isEmpty(question.answer),
@@ -614,16 +589,16 @@ export class FullTestComponent implements OnDestroy {
   }
 
   onMapAnsweredQuestion(question: Question) {
-    if (this.mapAnsweredQuestionId[question.id]) {
+    if (this.mapAnsweredQuestionId[question._id!]) {
       switch (question.type) {
         case QuestionType.FILL_IN_THE_GAP:
-        case QuestionType.FILL_IN_THE_TABLE:
+        case QuestionType.FILL_IN_TABLE:
         case QuestionType.DRAG_AND_DROP_ANSWER:
         case QuestionType.DRAG_IN_TABLE:
           each(question.choices, (choice) => {
-            this.mapAnswerByChoiceId[choice.id] = clone(choice.answer!);
+            this.mapAnswerByChoiceId[choice._id!] = clone(choice.answer!);
           });
-          each(this.mapAnsweredQuestionId[question.id], (questionIndex) => {
+          each(this.mapAnsweredQuestionId[question._id!], (questionIndex) => {
             questionIndex.answer = [
               this.mapAnswerByChoiceId[questionIndex.id as string],
             ];
@@ -645,11 +620,11 @@ export class FullTestComponent implements OnDestroy {
         case QuestionType.LABEL_ON_MAP:
           const mapAnsweredBySubQuestionId: Record<string, boolean> = {};
           each(question.subQuestions, (subQuestion) => {
-            mapAnsweredBySubQuestionId[subQuestion.id] = !isEmpty(
+            mapAnsweredBySubQuestionId[subQuestion._id!] = !isEmpty(
               subQuestion.answer,
             );
           });
-          each(this.mapAnsweredQuestionId[question.id], (questionIndex) => {
+          each(this.mapAnsweredQuestionId[question._id!], (questionIndex) => {
             questionIndex.isAnswer =
               mapAnsweredBySubQuestionId[questionIndex.id!];
           });
@@ -658,10 +633,10 @@ export class FullTestComponent implements OnDestroy {
     }
   }
 
-  onMapHeaderAnswered(question: Question, part: AbstractPart) {
-    this.selectedId.set(question.id);
-    each(this.mapAnsweredQuestionId[part.id], (questionIndex) => {
-      if (questionIndex.id === question.id) {
+  onMapHeaderAnswered(question: Question, part: AbstractSection) {
+    this.selectedId.set(question._id!);
+    each(this.mapAnsweredQuestionId[part._id!], (questionIndex) => {
+      if (questionIndex.id === question._id!) {
         questionIndex.answer = [question.answer as string];
         questionIndex.isAnswer = !isEmpty(question.answer);
         this.selectedQuestionIndex.set(questionIndex);
@@ -672,10 +647,10 @@ export class FullTestComponent implements OnDestroy {
 
   onMapAnswerChoice(choice: Choice) {
     if (choice) {
-      this.selectedId.set(choice.id);
+      this.selectedId.set(choice._id!);
       this.selectedQuestionIndex.set(
         flatMap(toArray(this.mapAnsweredQuestionId)).find(
-          (questionIndex) => questionIndex.id && questionIndex.id === choice.id,
+          (questionIndex) => questionIndex.id && questionIndex.id === choice._id,
         )!,
       );
     }
@@ -692,7 +667,7 @@ export class FullTestComponent implements OnDestroy {
   }
 
   updateSelectedForDropDownChoice(question: Question) {
-    const questionIndex = this.mapAnsweredQuestionId[question.id][0];
+    const questionIndex = this.mapAnsweredQuestionId[question._id!][0];
     if (questionIndex) {
       questionIndex.isAnswer = !isEmpty(question.answer);
     }
@@ -700,14 +675,14 @@ export class FullTestComponent implements OnDestroy {
   }
 
   updateSelectedForMultipleChoice(question: Question) {
-    each(this.mapAnsweredQuestionId[question.id], (questionIndex) => {
+    each(this.mapAnsweredQuestionId[question._id!], (questionIndex) => {
       questionIndex.answer = question.answer as string[];
     });
-    const questionIndexes = this.mapAnsweredQuestionId[question.id].map(
-      (questionIndex) => {
+    const questionIndexes = this.mapAnsweredQuestionId[question._id!].map(
+      (questionIndex: QuestionIndex) => {
         questionIndex = {
           ...questionIndex,
-          id: question.id,
+          id: question._id,
           answer: question.answer as string[],
           isAnswer: false,
         };
@@ -717,23 +692,23 @@ export class FullTestComponent implements OnDestroy {
     for (let i = 0; i < question.answer.length; i++) {
       questionIndexes[i].isAnswer = true;
     }
-    this.mapAnsweredQuestionId[question.id] = questionIndexes;
+    this.mapAnsweredQuestionId[question._id!] = questionIndexes;
     this.selectedQuestionIndex.set(
       questionIndexes[questionIndexes[0].answer.length - 1],
     );
   }
 
   updateQuestionForMultipleChoice(question: Question) {
-    this.result.listeningParts.forEach((part) => {
+    this.result.listening!.parts.forEach((part) => {
       part.questions.forEach((q) => {
-        if (q.id === question.id) {
+        if (q._id === question._id) {
           q.answer = question.answer as string[];
         }
       });
     });
-    this.result.readingParts.forEach((part) => {
+    this.result.reading!.parts.forEach((part) => {
       part.questions.forEach((q) => {
-        if (q.id === question.id) {
+        if (q._id === question._id) {
           q.answer = question.answer as string[];
         }
       });

@@ -49,10 +49,10 @@ export class DragAndDropAnswerTestingComponent extends FillInTheGapTestingCompon
     const answerIds = this.question.choices.map((choice) => choice.answer);
     this.answers =
       this.question.answers?.filter(
-        (answer) => !answerIds.includes(answer.id),
+        (answer) => !answerIds.includes(answer._id!),
       ) ?? [];
     each(this.question.answers, (answer) => {
-      this.mapAnswerById[answer.id] = answer;
+      this.mapAnswerById[answer._id!] = answer;
     });
   }
 
@@ -77,20 +77,20 @@ export class DragAndDropAnswerTestingComponent extends FillInTheGapTestingCompon
     const answer =
       this.mapAnswerById[event.dataTransfer!.getData(DATA_TRANSFER_KEY)];
     this.clearPreviousAnswer(answer);
-    if (this.mapChoiceById[choice.id]) {
-      this.mapChoiceById[choice.id].answer = answer.id;
+    if (this.mapChoiceById[choice._id!]) {
+      this.mapChoiceById[choice._id!].answer = answer._id!;
     }
     // this.answers = filter(this.answers, (a) => a.id !== choice.id);
     this.updateAnswersList();
-    this.removeDropOverClass(choice.id);
+    this.removeDropOverClass(choice._id!);
     this.onAnswerChoice.emit(choice);
     this.onAnswer.emit(this.question);
   }
 
   private clearPreviousAnswer(dropChoice: Choice) {
     each(this.question.choices, (choice) => {
-      if (choice.id !== dropChoice.id) {
-        if (choice.answer === dropChoice.id) {
+      if (choice._id !== dropChoice._id) {
+        if (choice.answer === dropChoice._id) {
           choice.answer = '';
         }
       }
@@ -105,7 +105,7 @@ export class DragAndDropAnswerTestingComponent extends FillInTheGapTestingCompon
     this.answers = sortBy(
       filter(
         this.question.answers,
-        (answer) => !answeredChoices.includes(answer.id),
+        (answer) => !answeredChoices.includes(answer._id),
       ),
       'id',
     );
@@ -120,13 +120,13 @@ export class DragAndDropAnswerTestingComponent extends FillInTheGapTestingCompon
     let answerChoice;
     if (answer) {
       each(this.question.choices, (choice) => {
-        if (choice.answer === answer.id) {
+        if (choice.answer === answer._id) {
           choice.answer = '';
           answerChoice = choice;
         }
       });
       this.onAnswerChoice.emit(answerChoice);
-      if (!map(this.answers, (answer) => answer.id).includes(answer.id)) {
+      if (!map(this.answers, (answer) => answer._id).includes(answer._id)) {
         this.answers.push(answer);
         this.answers = sortBy(this.answers, ['id']);
       }

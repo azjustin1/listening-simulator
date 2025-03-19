@@ -25,49 +25,45 @@
       <mat-tab-group animationDuration="0ms">
         <mat-tab label="Listening" style="margin-top: 16px">
           <ng-template matTabContent>
-            @if (result.listeningParts[selectedListeningPart]) {
+<!--            @if (result.listening?.parts[selectedListeningPart]) {-->
               <div class="question-group">
                 <app-listening
-                  [data]="result.listeningParts[selectedListeningPart]"
                   [isReadOnly]="true"
                 ></app-listening>
               </div>
-            }
+<!--            }-->
             <app-part-navigation
               [(selectedPart)]="selectedListeningPart"
-              [parts]="result.listeningParts"
+              [parts]="result.listening.parts!"
             ></app-part-navigation>
           </ng-template>
         </mat-tab>
         <mat-tab label="Reading">
           <ng-template matTabContent>
-            @if (result.readingParts[selectedReadingPart]) {
+<!--            @if (result.reading?.parts[selectedReadingPart]) {-->
               <div class="question-group">
                 <app-reading
-                  [data]="result.readingParts[selectedReadingPart]"
                   [isReadOnly]="true"
                 ></app-reading>
               </div>
-            }
+<!--            }-->
             <app-part-navigation
               [(selectedPart)]="selectedReadingPart"
-              [parts]="result.readingParts"
+              [parts]="result.reading.parts!"
             ></app-part-navigation>
           </ng-template>
         </mat-tab>
         <mat-tab label="Writing">
           <ng-template matTabContent>
-            @if (result.writingParts[selectedWritingPart]) {
+<!--            @if (result.writing?.parts[selectedWritingPart]) {-->
               <div class="question-group">
                 <app-writing
-                  [data]="result.writingParts[selectedWritingPart]"
                   [isReadOnly]="true"
                 ></app-writing>
               </div>
-            }
+<!--            }-->
             <app-part-navigation
               [(selectedPart)]="selectedWritingPart"
-              [parts]="result.writingParts"
             ></app-part-navigation>
           </ng-template>
         </mat-tab>

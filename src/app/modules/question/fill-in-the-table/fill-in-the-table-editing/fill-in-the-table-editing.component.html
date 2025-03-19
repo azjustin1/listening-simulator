@@ -2,9 +2,9 @@
   <div class="d-flex flex-column mt-2">
     <div class="description">
       <angular-editor
-        [name]="question.id"
+        [name]="question._id!"
         [config]="config"
-        [(ngModel)]="question.content"
+        [(ngModel)]="question.description"
         (ngModelChange)="onPaste($event)"
       ></angular-editor>
     </div>

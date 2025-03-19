@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { AbstractQuestionComponent } from '../../../../shared/abstract/abstract-question.component';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
-import { IsCheckCellPipe } from '../is-check-cell.pipe';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
@@ -10,13 +9,14 @@ import { CHOICE_INDEX } from '../../../../utils/constant';
 import { each, isEmpty, last } from 'lodash-es';
 import { Choice } from '../../../../shared/models/choice.model';
 import { CommonUtils } from '../../../../utils/common-utils';
+import { QuestionType } from "../../../../shared/enums/question-type.enum";
+import { AbstractEditQuestionComponent } from "../../../../shared/abstract/abstract-edit-question.component";
 
 @Component({
   selector: 'app-label-on-map-editing',
   standalone: true,
   imports: [
     AngularEditorModule,
-    IsCheckCellPipe,
     MatButton,
     MatIcon,
     MatInput,
@@ -26,18 +26,18 @@ import { CommonUtils } from '../../../../utils/common-utils';
   templateUrl: './label-on-map-editing.component.html',
   styleUrl: '../label-on-map.component.scss',
 })
-export class LabelOnMapEditingComponent extends AbstractQuestionComponent {
+export class LabelOnMapEditingComponent extends AbstractEditQuestionComponent {
   choiceIndex = CHOICE_INDEX;
+  questionType = QuestionType;
 
-  addQuestion(questionType: number): void {
+  addQuestion(questionType: QuestionType): void {
     const lastQuestion = last(this.question.subQuestions);
     let choices: Choice[] = [];
     if (lastQuestion) {
       choices = [...lastQuestion.choices];
     }
     this.question.subQuestions?.push({
-      id: CommonUtils.generateRandomId(),
-      content: '',
+      description: '',
       type: questionType,
       choices: choices,
       answer: [],
@@ -47,13 +47,13 @@ export class LabelOnMapEditingComponent extends AbstractQuestionComponent {
 
   onSelectCorrectAnswer(questionIndex: number, choiceIndex: number) {
     const choiceId =
-      this.question.subQuestions![questionIndex].choices[choiceIndex].id;
+      this.question.subQuestions![questionIndex].choices[choiceIndex]._id;
     const correctAnswer =
       this.question.subQuestions![questionIndex].correctAnswer;
-    if (!isEmpty(correctAnswer) && correctAnswer.includes(choiceId)) {
+    if (!isEmpty(correctAnswer) && correctAnswer.includes(choiceId!)) {
       this.question.subQuestions![questionIndex].correctAnswer = [];
     } else {
-      this.question.subQuestions![questionIndex].correctAnswer = [choiceId];
+      this.question.subQuestions![questionIndex].correctAnswer = [choiceId!];
     }
   }
 

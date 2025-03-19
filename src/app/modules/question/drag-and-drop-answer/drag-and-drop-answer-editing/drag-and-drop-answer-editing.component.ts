@@ -35,7 +35,6 @@ export class DragAndDropAnswerEditingComponent extends FillInTheGapEditingCompon
     }
     const id = CommonUtils.generateRandomId();
     const newAnswer: Choice = {
-      id: id,
       content: '',
       correctAnswer: '',
     };

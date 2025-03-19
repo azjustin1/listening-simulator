@@ -37,7 +37,6 @@ export class DragInTableEditingComponent extends FillInTheTableEditingComponent 
     }
     const id = CommonUtils.generateRandomId();
     const newAnswer: Choice = {
-      id: id,
       content: '',
       correctAnswer: '',
     };

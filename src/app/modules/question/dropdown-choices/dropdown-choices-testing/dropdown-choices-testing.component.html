@@ -1,9 +1,9 @@
-<div class="my-3" [id]="question.id">
-  <span textSelection [innerHTML]="question.content"> </span>
+<div class="my-3" [id]="question._id">
+  <span textSelection [innerHTML]="question.description"> </span>
   <div>
     <select [(ngModel)]="question.answer" (ngModelChange)="onChangeAnswer($event)" (click)="onSelectChoice()">
       @for (choice of question.choices; track $index) {
-        <option [value]="choice.id">
+        <option [value]="choice._id">
           {{ choice.content }}
         </option>
       }

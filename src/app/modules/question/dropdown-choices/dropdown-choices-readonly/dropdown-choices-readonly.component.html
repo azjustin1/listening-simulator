@@ -1,4 +1,4 @@
-<b><span [innerHTML]="question.content"></span></b>
+<b><span [innerHTML]="question.description"></span></b>
 @if (isReadOnly && question.answer.length === 0) {
   <span>❌</span>
 }
@@ -19,13 +19,15 @@
       <span>{{ correctAnswer.content }} ✅</span>
     }
   } @else {
-    <div class="d-flex flex-column">
-      <select disabled>
-        <option>
-          {{ correctAnswer.content }}
-        </option>
-      </select>
-    </div>
+    @if (correctAnswer) {
+      <div class="d-flex flex-column">
+        <select disabled>
+          <option>
+            {{ correctAnswer.content }}
+          </option>
+        </select>
+      </div>
+    }
   }
 
 

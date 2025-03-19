@@ -1,6 +1,6 @@
 <div class="question-group">
   <div class="form-group">
-    <b><span [innerHTML]="question.content"> </span></b>
+    <b><span [innerHTML]="question.description | sanitizeHtml"> </span></b>
     @if (isReadOnly && question.answer.length === 0) {
       ❌
     }
@@ -9,15 +9,15 @@
     @for (choice of question.choices; track $index) {
       <div class="mt-2 d-flex align-baseline">
         @if (question.numberOfChoices! > 1) {
-          @if (isTesting || isReadOnly) {
-            <input disabled [checked]="question.answer.includes(choice.id)" type="checkbox"
+          @if (isReadOnly) {
+            <input disabled [checked]="question.answer.includes(choice._id!)" type="checkbox"
             />
           } @else {
-            <input disabled [checked]="question.correctAnswer.includes(choice.id)" type="checkbox"
+            <input disabled [checked]="question.correctAnswer.includes(choice._id!)" type="checkbox"
             />
           }
         } @else {
-          <input disabled [checked]="selectedOption === choice.id" type="radio"
+          <input disabled [checked]="selectedOption === choice._id!" type="radio"
           />
         }
         <div class="ms-2">{{ choice.content }}</div>
@@ -25,30 +25,30 @@
           <div class="ms-2">
             @if (question.numberOfChoices! > 1) {
               <!-- Correct answer -->
-              @if (question.correctAnswer.includes(choice.id)) {
+              @if (question.correctAnswer.includes(choice._id!)) {
                 ✅
               }
 
               <!-- Incorrect answer -->
-              @if (question.answer.includes(choice.id) && !question.correctAnswer.includes(choice.id)) {
+              @if (question.answer.includes(choice._id!) && !question.correctAnswer.includes(choice._id!)) {
                 ❌
               }
             } @else {
-              @if (question.answer.length === 0 && question.correctAnswer.includes(choice.id)) {
+              @if (question.answer.length === 0 && question.correctAnswer.includes(choice._id!)) {
                 ✅
               } @else {
                 <!-- Correct answer -->
-                @if (!question.answer.includes(choice.id) && question.correctAnswer.includes(choice.id)) {
+                @if (!question.answer.includes(choice._id!) && question.correctAnswer.includes(choice._id!)) {
                   ✅
                 }
 
                 <!-- Student correct answer -->
-                @if (question.answer.includes(choice.id) && question.correctAnswer.includes(choice.id)) {
+                @if (question.answer.includes(choice._id!) && question.correctAnswer.includes(choice._id!)) {
                   ✅
                 }
 
                 <!-- Student incorrect answer -->
-                @if (question.answer.includes(choice.id) && !question.correctAnswer.includes(choice.id)) {
+                @if (question.answer.includes(choice._id!) && !question.correctAnswer.includes(choice._id!)) {
                   ❌
                 }
               }

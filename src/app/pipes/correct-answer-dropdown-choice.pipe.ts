@@ -8,6 +8,6 @@ import { Choice } from "../shared/models/choice.model";
 })
 export class CorrectDropDownAnswerPipe implements PipeTransform {
   transform(question: Question): Choice {
-    return question.choices.find(choice => choice.id === question.correctAnswer[0])!;
+    return question.choices.find(choice => choice._id === question.correctAnswer[0])!;
   }
 }

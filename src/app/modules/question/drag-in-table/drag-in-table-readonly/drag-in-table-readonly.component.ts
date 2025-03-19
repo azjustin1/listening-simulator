@@ -6,6 +6,7 @@ import { ExtractIdPipe } from '../../../../pipes/extract-id.pipe';
 import { CorrectAnswerPipe } from '../../../../pipes/correct-answer.pipe';
 import { Choice } from '../../../../shared/models/choice.model';
 import { each } from 'lodash-es';
+import { AbstractReadonlyQuestionComponent } from '../../../../shared/abstract/abstract-readonly-question.component';
 
 @Component({
   selector: 'app-drag-in-table-readonly',
@@ -20,13 +21,13 @@ import { each } from 'lodash-es';
   templateUrl: './drag-in-table-readonly.component.html',
   styleUrl: './drag-in-table-readonly.component.scss',
 })
-export class DragInTableReadonlyComponent extends DragInTableEditingComponent {
+export class DragInTableReadonlyComponent extends AbstractReadonlyQuestionComponent {
   mapAnswerById: Record<string, Choice> = {};
 
   override ngOnInit() {
     super.ngOnInit();
     each(this.question.answers, (answer) => {
-      this.mapAnswerById[answer.id] = answer;
+      this.mapAnswerById[answer._id!] = answer;
     });
   }
 }

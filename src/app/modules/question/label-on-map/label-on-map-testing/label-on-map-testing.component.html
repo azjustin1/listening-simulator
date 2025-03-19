@@ -1,6 +1,6 @@
-<div class="d-flex" [id]="question.id">
+<div class="d-flex" [id]="question._id">
   <div class="col-6">
-    <span class="reading-content" textSelection [innerHTML]="question.content"></span>
+    <span class="reading-content" textSelection [innerHTML]="question.description"></span>
   </div>
   <div class="ms-2">
     @let subQuestions = question.subQuestions;
@@ -16,14 +16,14 @@
           @let questionIndex = $index;
           <tr>
             <td class="p-2">
-              <span textSelection [innerHTML]="question.content"></span>
+              <span textSelection [innerHTML]="question.description"></span>
             </td>
             @for (choice of question.choices; track $index; ) {
               @let choiceIndex = $index;
               <td class="align-items-center"
                   (click)="onSelectAnswer(questionIndex, choiceIndex)"
               >
-                @if (question.answer.includes(choice.id)) {
+                @if (question.answer.includes(choice._id!)) {
                   <mat-icon class="icon" color="primary">check</mat-icon>
                 }
               </td>

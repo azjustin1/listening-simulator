@@ -6,12 +6,22 @@ import {
   Input,
   model,
   OnChanges,
-  OnDestroy, OnInit,
+  OnDestroy,
+  OnInit,
   Output,
-  SimpleChanges
-} from "@angular/core";
+  signal,
+  SimpleChanges,
+} from '@angular/core';
 import { AngularEditorConfig, UploadResponse } from '@wfpena/angular-wysiwyg';
-import { clone, cloneDeep, debounce, each, isNull, mapValues } from 'lodash-es';
+import {
+  clone,
+  cloneDeep,
+  debounce,
+  each,
+  isEmpty,
+  isNull,
+  mapValues,
+} from 'lodash-es';
 import { map, Subscription } from 'rxjs';
 import { FileService } from '../../file.service';
 import { environment } from '../../../environments/environment';
@@ -24,18 +34,18 @@ import { ExtractIdPipe } from '../../pipes/extract-id.pipe';
 import { IsInputPipe } from '../../modules/question/fill-in-the-gap/is-input.pipe';
 import { QuizService } from '../../modules/quizzes/quizzes.service';
 import { SectionType } from '../enums/section-type.enum';
+import { Choice } from '../models/choice.model';
+import { QuestionService } from '../../modules/question/question.service';
 
 @Component({
   template: '',
 })
-export abstract class AbstractQuizPartComponent<T extends AbstractSection>
+export abstract class AbstractQuizSectionComponent<T extends AbstractSection>
   implements OnInit, OnChanges, OnDestroy
 {
-  @Input({
-    transform: (value: AbstractSection): AbstractSection[] =>
-      [] as AbstractSection[],
-  })
-  data: T | undefined;
+  @Input() data!: T;
+  @Input() quizId!: string;
+  @Input() selectedTab = 0;
   @Input() isTesting: boolean = false;
   @Input() isEditing: boolean = false;
   @Input() isReadOnly: boolean = false;
@@ -50,11 +60,15 @@ export abstract class AbstractQuizPartComponent<T extends AbstractSection>
   @Output() onAddQuestion = new EventEmitter();
   @Output() onPartAnswerQuestion = new EventEmitter();
   @Output() onPartAnswerChoice = new EventEmitter();
+
+  abstract getSectionType(): SectionType;
+
   quizService = inject(QuizService);
+  questionService = inject(QuestionService);
   sectionType = SectionType;
   questionType = QuestionType;
   currentQuestion: Question = {
-    content: '',
+    description: '',
     type: QuestionType.DEFAULT,
     choices: [],
     answer: [],
@@ -62,11 +76,13 @@ export abstract class AbstractQuizPartComponent<T extends AbstractSection>
   };
   selectedPart = 0;
   mapQuestionEditing: Record<string, boolean> = {};
+  mapChoiceEditingByQuestionId: Record<string, Record<string, boolean>> = {};
   subscriptions: Subscription[] = [];
   onPaste = debounce((event) => this.uploadQuestionBase64Images(event), 1000);
+  isQuestionInvalid = signal(false);
   config: AngularEditorConfig = {
     editable: true,
-    sanitize: true,
+    sanitize: false,
     toolbarHiddenButtons: [
       [
         'backgroundColor',
@@ -98,9 +114,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractSection>
   wordCount: number = 0;
   fileService = inject(FileService);
 
-  ngOnInit() {
-    console.log(this.data)
-  }
+  ngOnInit() {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isSaved']?.currentValue) {
@@ -118,11 +132,10 @@ export abstract class AbstractQuizPartComponent<T extends AbstractSection>
     // this.data!.wordCount = value.trim().split(/\s+/).length;
   }
 
-  defaultChoices(numberOfChocies: number) {
+  defaultChoices(numberOfChoices: number) {
     const choices = [];
-    for (let i = 0; i < numberOfChocies; i++) {
+    for (let i = 0; i < numberOfChoices; i++) {
       const choice = {
-        id: CommonUtils.generateRandomId(),
         content: '',
       };
       choices.push(choice);
@@ -134,7 +147,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractSection>
     switch (questionType) {
       case QuestionType.MULTIPLE_CHOICE:
         this.currentQuestion = {
-          content: '',
+          description: '',
           type: questionType,
           choices: this.defaultChoices(4),
           answer: [],
@@ -144,7 +157,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractSection>
         break;
       case QuestionType.SHORT_ANSWER:
         this.currentQuestion = {
-          content: '',
+          description: '',
           type: questionType,
           choices: [],
           answer: [],
@@ -153,7 +166,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractSection>
         break;
       case QuestionType.MULTIPLE_QUESTIONS:
         this.currentQuestion = {
-          content: '',
+          description: '',
           type: questionType,
           choices: [],
           answer: [],
@@ -163,7 +176,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractSection>
         break;
       case QuestionType.DROPDOWN_ANSWER:
         this.currentQuestion = {
-          content: '',
+          description: '',
           type: questionType,
           choices: this.defaultChoices(3),
           answer: [],
@@ -173,7 +186,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractSection>
         break;
       case QuestionType.LABEL_ON_MAP:
         this.currentQuestion = {
-          content: '',
+          description: '',
           type: questionType,
           choices: this.defaultChoices(4),
           answer: [],
@@ -185,7 +198,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractSection>
       case QuestionType.MATCHING_HEADER:
       case QuestionType.DRAG_AND_DROP_ANSWER:
         this.currentQuestion = {
-          content: '',
+          description: '',
           arrayContent: [],
           type: questionType,
           choices: [],
@@ -197,7 +210,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractSection>
       case QuestionType.FILL_IN_TABLE:
       case QuestionType.DRAG_IN_TABLE:
         this.currentQuestion = {
-          content: '',
+          description: '',
           name: 'Table title',
           tableContent: {
             tr0: {
@@ -223,41 +236,63 @@ export abstract class AbstractQuizPartComponent<T extends AbstractSection>
       default:
         break;
     }
-    if (!this.data?.parts) {
-      this.data = {
-        ...this.data!,
-        parts: [
-          {
-            questions: [],
-          },
-        ],
-      };
+    switch (this.selectedTab) {
+      case 0:
+      default:
+        break;
     }
-    console.log(this.data);
     this.quizService
-      .addNewQuestion(
-        this.data.quizId!,
-        this.data._id!,
-        sectionType,
-        this.currentQuestion,
-      )
+      .addNewQuestion({
+        ...this.currentQuestion,
+        partId: this.data.parts[this.selectedTab]._id!,
+      })
       .subscribe((newQuestion) => {
+        this.currentQuestion = newQuestion;
         this.data?.parts[this.selectedPart].questions.push({
           ...this.currentQuestion,
         });
         this.onAddQuestion.emit(this.currentQuestion);
-        this.onEditQuestion(newQuestion._id!);
+        this.onEditQuestion(newQuestion);
       });
   }
 
-  onSaveQuestion(id: string) {
-    this.mapQuestionEditing[id] = false;
-    this.onSave.emit();
+  saveQuestion(question: Question) {
+    // this.extractAllInputFromContent(question);
+    this.subscriptions.push(
+      this.questionService
+        .updateQuestion(question)
+        .subscribe((updatedQuestion) => {
+          this.mapQuestionEditing[updatedQuestion._id!] = false;
+        }),
+    );
   }
 
-  onEditQuestion(id: string) {
+  extractAllInputFromContent(question: Question) {
+    if (question.description && !isEmpty(question.description)) {
+      const answers = question.description.match(/{\s*[^>]*}/g);
+      if (answers) {
+        const newChoices: Choice[] = [];
+        answers.forEach((answer) => {
+          const newChoice: Choice = {
+            content: answer.replace(/{|}/g, ''),
+          };
+          newChoices.push(newChoice);
+        });
+        question.choices = [...question.choices, ...newChoices];
+        this.quizService.updateQuestion(question).subscribe((newQuestion) => {
+          this.onSave.emit(newQuestion);
+        });
+      }
+    }
+  }
+
+  convertToInputTag(content: string, answer: string[]) {}
+
+  onEditQuestion(question: Question) {
     this.saveOthersEditting();
-    this.mapQuestionEditing[id] = true;
+    if (question && question._id) {
+      this.mapQuestionEditing[question._id] = true;
+    }
   }
 
   moveQuestionUp(index: number) {
@@ -278,7 +313,7 @@ export abstract class AbstractQuizPartComponent<T extends AbstractSection>
     let cloneQuestion = cloneDeep(question);
     cloneQuestion = {
       ...cloneQuestion,
-      content: `Copy of ${cloneQuestion.content}`,
+      description: `Copy of ${cloneQuestion.description}`,
     };
     this.changeChoiceId(cloneQuestion);
     // this.data.questions.push(cloneQuestion);
@@ -300,22 +335,22 @@ export abstract class AbstractQuizPartComponent<T extends AbstractSection>
       }
       each(question.choices, (choice) => {
         const newChoiceId = CommonUtils.generateRandomId();
-        if (correctAnswers.includes(choice.id)) {
+        if (correctAnswers.includes(choice._id!)) {
           question.correctAnswer.push(newChoiceId);
         }
         if (
           question.type === QuestionType.FILL_IN_THE_GAP ||
           question.type === QuestionType.DRAG_AND_DROP_ANSWER
         ) {
-          this.changeIdLineFillInTheGap(question, choice.id, newChoiceId);
+          this.changeIdLineFillInTheGap(question, choice._id!, newChoiceId);
         }
         if (
           question.type === QuestionType.DRAG_IN_TABLE ||
           question.type === QuestionType.FILL_IN_TABLE
         ) {
-          this.changeIdInLine(question, choice.id, newChoiceId);
+          this.changeIdInLine(question, choice._id!, newChoiceId);
         }
-        choice.id = newChoiceId;
+        choice._id = newChoiceId;
       });
     }
   }
@@ -375,8 +410,20 @@ export abstract class AbstractQuizPartComponent<T extends AbstractSection>
     }
   }
 
-  removeQuestion(questionIdex: number) {
-    // this.data.questions.splice(questionIdex, 1);
+  deleteQuestion(questionId: string) {
+    this.subscriptions.push(
+      this.questionService.deleteQuestion(questionId).subscribe((isDeleted) => {
+        if (isDeleted) {
+          switch (this.getSectionType()) {
+            case SectionType.Listening:
+              this.data.parts[this.selectedPart].questions = this.data.parts[
+                this.selectedPart
+              ].questions.filter((question) => question._id !== questionId);
+              break;
+          }
+        }
+      }),
+    );
   }
 
   saveOthersEditting() {

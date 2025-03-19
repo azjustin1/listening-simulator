@@ -20,7 +20,7 @@
   @for (result of results; track $index) {
     <mat-card class="card">
       <mat-card-title class="card-title"
-      ><h1 class="mat-display-2" (click)="view(result.id)">
+      ><h1 class="mat-display-2" (click)="view(result._id)">
         &nbsp;{{ result.studentName }}
         @if (!result.isSubmit) {
           🔸
@@ -32,19 +32,19 @@
           </button>
           <mat-menu #menu="matMenu">
             @if (result.isSubmit) {
-              <button mat-menu-item (click)="view(result.id)">View</button>
+              <button mat-menu-item (click)="view(result._id)">View</button>
             } @else {
-              <button mat-menu-item (click)="continue(result.id)">
+              <button mat-menu-item (click)="continue(result._id)">
                 Continue
               </button>
             }
-            <button mat-menu-item (click)="onDeleteResultClick(result.id)">
+            <button mat-menu-item (click)="onDeleteResultClick(result._id)">
               Delete
             </button>
           </mat-menu>
         </mat-card-actions>
       </mat-card-title>
-      <mat-card-content class="card-content" (click)="view(result.id)">
+      <mat-card-content class="card-content" (click)="view(result._id)">
         <span>
           <b>Listening:</b> {{ result.correctListeningPoint }}/{{
             result.totalListeningPoint

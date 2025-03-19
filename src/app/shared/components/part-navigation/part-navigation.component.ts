@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { AbstractPart } from '../../models/abstract-part.model';
+import { AbstractSection } from '../../models/abstract-section.model';
 import { CommonModule } from '@angular/common';
+import { Part } from '../../models/part.model';
 
 @Component({
   selector: 'app-part-navigation',
@@ -12,7 +13,7 @@ import { CommonModule } from '@angular/common';
 export class PartNavigationComponent {
   @Input() selectedPart = 1;
   @Output() selectedPartChange = new EventEmitter();
-  @Input() parts: AbstractPart[] = [];
+  @Input() parts: Part[] = [];
   @Output() onPartChange = new EventEmitter();
 
   onPartClick(index: number) {

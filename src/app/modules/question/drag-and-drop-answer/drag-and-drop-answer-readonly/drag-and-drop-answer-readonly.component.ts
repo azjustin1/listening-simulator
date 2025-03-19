@@ -2,12 +2,11 @@ import { Component } from '@angular/core';
 import { CorrectAnswerPipe } from '../../../../pipes/correct-answer.pipe';
 import { IsInputPipe } from '../../fill-in-the-gap/is-input.pipe';
 import { FillInTheGapReadonlyComponent } from '../../fill-in-the-gap/fill-in-the-gap-readonly/fill-in-the-gap-readonly.component';
-import { JsonPipe, NgClass } from '@angular/common';
-import { MatCard } from '@angular/material/card';
+import { NgClass } from '@angular/common';
 import { ExtractIdPipe } from '../../../../pipes/extract-id.pipe';
 import { Choice } from '../../../../shared/models/choice.model';
 import { each } from 'lodash-es';
-import { ChoiceContentPipe } from "../../matching-header/choice-content.pipe";
+import { ChoiceContentPipe } from '../../matching-header/choice-content.pipe';
 
 @Component({
   selector: 'app-drag-and-drop-answer-readonly',
@@ -16,9 +15,7 @@ import { ChoiceContentPipe } from "../../matching-header/choice-content.pipe";
     CorrectAnswerPipe,
     IsInputPipe,
     NgClass,
-    MatCard,
     ExtractIdPipe,
-    JsonPipe,
     ChoiceContentPipe,
   ],
   templateUrl: './drag-and-drop-answer-readonly.component.html',
@@ -30,7 +27,7 @@ export class DragAndDropAnswerReadonlyComponent extends FillInTheGapReadonlyComp
   override ngOnInit() {
     super.ngOnInit();
     each(this.question.answers, (answer) => {
-      this.mapAnswerById[answer.id] = answer;
+      this.mapAnswerById[answer._id!] = answer;
     });
   }
 }

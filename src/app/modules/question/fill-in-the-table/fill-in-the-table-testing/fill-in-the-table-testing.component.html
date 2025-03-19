@@ -1,6 +1,6 @@
 @if (question.tableContent) {
-  <div class="d-flex flex-column" [id]="question.id">
-    <b><span textSelection [innerHTML]="question.content"></span></b>
+  <div class="d-flex flex-column" [id]="question._id">
+    <b><span textSelection [innerHTML]="question.description"></span></b>
     <div class="d-flex flex-column mt-3">
       <table>
         <th [colSpan]="headerColSpan">

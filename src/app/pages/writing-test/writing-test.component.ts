@@ -103,7 +103,7 @@ export class WritingTestComponent implements OnDestroy {
     let cloneQuiz = cloneDeep(writing);
     cloneQuiz = {
       ...cloneQuiz,
-      id: CommonUtils.generateRandomId(),
+      _id: CommonUtils.generateRandomId(),
     };
     this.writingService.create(cloneQuiz).subscribe(() => {
       this.writings.push(cloneQuiz);
@@ -133,10 +133,10 @@ export class WritingTestComponent implements OnDestroy {
     dialogRef.componentInstance.message = 'Confirm to delete this?';
     dialogRef.afterClosed().subscribe((isConfirm) => {
       if (isConfirm) {
-        this.writingService.deleteResult(result.id).subscribe(() => {
+        this.writingService.deleteResult(result._id!).subscribe(() => {
           this.writingResults = filter(
             this.writingResults,
-            (r) => result.id !== r.id,
+            (r) => result._id !== r._id,
           );
         });
       }
@@ -144,8 +144,8 @@ export class WritingTestComponent implements OnDestroy {
   }
 
   deleteQuiz(writing: Writing) {
-    this.writingService.delete(writing.id).subscribe(() => {
-      this.writings = filter(this.writings, (item) => writing.id !== item.id);
+    this.writingService.delete(writing._id!).subscribe(() => {
+      this.writings = filter(this.writings, (item) => writing._id !== item._id!);
     });
   }
 

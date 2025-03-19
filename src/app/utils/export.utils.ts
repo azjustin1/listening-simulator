@@ -76,7 +76,7 @@ export class ExportUtils {
 
   static exportQuestion(question: Question): string {
     let htmlString = '';
-    htmlString += `<p><b>${question.content ? question.content : ''}</b></p>`;
+    htmlString += `<p><b>${question.description ? question.description : ''}</b></p>`;
     switch (question.type) {
       case QuestionType.MULTIPLE_CHOICE:
         htmlString += this.exportMultipleChoices(question);
@@ -96,7 +96,7 @@ export class ExportUtils {
       case QuestionType.DRAG_AND_DROP_ANSWER:
         htmlString += this.exportDragAndDrop(question);
         break;
-      case QuestionType.FILL_IN_THE_TABLE:
+      case QuestionType.FILL_IN_TABLE:
         htmlString += this.exportFillInTheTable(question);
         break;
       case QuestionType.DRAG_IN_TABLE:
@@ -110,11 +110,11 @@ export class ExportUtils {
 
   static exportListening(result: Result) {
     let htmlString = `${this.startHTML()}<h1>${result.name} - Listening</h1><h2>Name: ${result.studentName}</h2><h2>Point: </h2>`;
-    each(result.listeningParts, (part, index) => {
+    each(result.listening, (part, index) => {
       htmlString += `<h3>Part ${index + 1}</h3>`;
-      each(part.questions, (question) => {
-        htmlString += this.exportQuestion(question);
-      });
+      // each(part.questions, (question) => {
+      //   htmlString += this.exportQuestion(question);
+      // });
       htmlString += '<hr>';
     });
     return (htmlString += this.endHTML());
@@ -122,39 +122,39 @@ export class ExportUtils {
 
   static exportReading(result: Result) {
     let htmlString = `${this.startHTML()}<h1>${result.name} - Reading</h1><h2>Name: ${result.studentName}</h2><h2>Point: </h2>`;
-    each(result.readingParts, (part, index) => {
-      htmlString += `<h3>Part ${index + 1}</h3>`;
-      if (part.isMatchHeader) {
-        each(part.questions, (question) => {
-          if (isEmpty(question.answer)) {
-            htmlString += `<h2>❌</h2> ${question.content}`;
-          } else {
-            htmlString += `<h2>${
-              ChoiceContentPipe.prototype.transform(
-                question.answer,
-                part.answers!,
-              )?.content
-            }</h2> ${question.content}`;
-          }
-        });
-      } else {
-        htmlString += `<p>${part.content}</p>`;
-        each(part.questions, (question) => {
-          htmlString += `<b>${question.name ? question.name : ''}</b>`;
-          each(question.subQuestions, (subQuestion) => {
-            htmlString += this.exportQuestion(subQuestion);
-          });
-          htmlString += '<hr>';
-        });
-      }
-    });
+    // each(result.readingParts, (part, index) => {
+    //   htmlString += `<h3>Part ${index + 1}</h3>`;
+    //   if (part.isMatchHeader) {
+    //     each(part.questions, (question) => {
+    //       if (isEmpty(question.answer)) {
+    //         htmlString += `<h2>❌</h2> ${question.content}`;
+    //       } else {
+    //         htmlString += `<h2>${
+    //           ChoiceContentPipe.prototype.transform(
+    //             question.answer,
+    //             part.answers!,
+    //           )?.content
+    //         }</h2> ${question.content}`;
+    //       }
+    //     });
+    //   } else {
+    //     htmlString += `<p>${part.content}</p>`;
+    //     each(part.questions, (question) => {
+    //       htmlString += `<b>${question.name ? question.name : ''}</b>`;
+    //       each(question.subQuestions, (subQuestion) => {
+    //         htmlString += this.exportQuestion(subQuestion);
+    //       });
+    //       htmlString += '<hr>';
+    //     });
+    //   }
+    // });
     return (htmlString += this.endHTML());
   }
 
   static exportWriting(result: Result) {
     let htmlString = `<h1>${result.name} - Writing</h1><h2>Name: ${result.studentName}</h2><h2>Point: </h2>`;
-    each(result.writingParts, (part) => {
-      htmlString += `<div>${part.content}</div> <div>${part.answer}</div><hr><br>`;
+    each(result.writing, (part) => {
+      // htmlString += `<div>${part.content}</div> <div>${part.answer}</div><hr><br>`;
     });
     return (htmlString += this.endHTML());
   }
@@ -168,11 +168,11 @@ export class ExportUtils {
     htmlString += '</tr>';
     each(question.subQuestions, (question) => {
       htmlString += `<tr>
-        <td>${question.content}</td>
+        <td>${question.description}</td>
       `;
       each(question.choices, (choice) => {
         htmlString += `
-          <td>${question.answer.includes(choice.id) ? '✅' : ''}</td>
+          <td>${question.answer.includes(choice._id!) ? '✅' : ''}</td>
         `;
       });
       htmlString += '</tr>';
@@ -184,7 +184,7 @@ export class ExportUtils {
   static exportMultipleChoices(question: Question) {
     let htmlString = '';
     each(question.choices, (choice, index) => {
-      if (question.answer?.includes(choice.id!)) {
+      if (question.answer?.includes(choice._id!)) {
         htmlString += `
         <div class="choice">
           <div class="choice-index selected">
@@ -235,7 +235,7 @@ export class ExportUtils {
       each(line, (content) => {
         if (IsInputPipe.prototype.transform(content)) {
           const answer = question.choices.find(
-            (choice) => choice.id! === inputPattern.exec(content)![1],
+            (choice) => choice._id! === inputPattern.exec(content)![1],
           )?.answer;
           htmlString += `
             <span class="answer-input">${answer ?? ''}</span>
@@ -257,11 +257,11 @@ export class ExportUtils {
       each(line, (content) => {
         if (IsInputPipe.prototype.transform(content)) {
           const choice = question.choices.find(
-            (choice) => choice.id! === inputPattern.exec(content)![1],
+            (choice) => choice._id! === inputPattern.exec(content)![1],
           );
           if (choice) {
             const answer = question.answers!.find(
-              (answer) => answer.id === choice.answer,
+              (answer) => answer._id === choice.answer,
             );
             htmlString += `
             <span class="answer-input">${answer?.content ?? ''}</span>
@@ -291,7 +291,7 @@ export class ExportUtils {
             } else {
               if (IsInputPipe.prototype.transform(content)) {
                 const answer = question.choices.find(
-                  (choice) => choice.id! === inputPattern.exec(content)![1],
+                  (choice) => choice._id! === inputPattern.exec(content)![1],
                 )?.answer;
                 htmlString += ` <span class="table-input">${answer ? answer : '❌'}</span>`;
               } else {
@@ -324,11 +324,11 @@ export class ExportUtils {
             } else {
               if (IsInputPipe.prototype.transform(content)) {
                 const choice = question.choices.find(
-                  (choice) => choice.id! === inputPattern.exec(content)![1],
+                  (choice) => choice._id! === inputPattern.exec(content)![1],
                 );
                 if (choice) {
                   const answer = question.answers!.find(
-                    (answer) => answer.id === choice.answer,
+                    (answer) => answer._id === choice.answer,
                   );
                   htmlString += ` <span class="table-input">${answer ? answer.content : '❌'}</span>`;
                 }

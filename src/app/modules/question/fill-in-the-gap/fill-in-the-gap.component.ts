@@ -17,6 +17,4 @@ import { FillInTheGapReadonlyComponent } from './fill-in-the-gap-readonly/fill-i
   templateUrl: './fill-in-the-gap.component.html',
   styleUrl: './fill-in-the-gap.component.scss',
 })
-export class FillInTheGapComponent extends AbstractQuestionComponent {
-  protected readonly console = console;
-}
+export class FillInTheGapComponent extends AbstractQuestionComponent {}

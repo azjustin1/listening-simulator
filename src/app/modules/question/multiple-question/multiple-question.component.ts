@@ -57,7 +57,7 @@ export class MultipleQuestionComponent
     const id = CommonUtils.generateRandomId();
     let newQuestion: Question = {
       id: id,
-      content: '',
+      description: '',
       type: null,
       choices: [],
       answer: [],
@@ -67,7 +67,7 @@ export class MultipleQuestionComponent
       case QuestionType.MULTIPLE_CHOICE:
         newQuestion = {
           id: id,
-          content: '',
+          description: '',
           type: questionType,
           choices: this.defaultChoices(4),
           answer: [],
@@ -77,7 +77,7 @@ export class MultipleQuestionComponent
       case QuestionType.SHORT_ANSWER:
         newQuestion = {
           id: id,
-          content: '',
+          description: '',
           type: questionType,
           choices: [],
           answer: [],
@@ -87,7 +87,7 @@ export class MultipleQuestionComponent
       case QuestionType.DROPDOWN_ANSWER:
         newQuestion = {
           id: id,
-          content: '',
+          description: '',
           type: questionType,
           choices: this.defaultChoices(3),
           answer: [],
@@ -97,7 +97,7 @@ export class MultipleQuestionComponent
       case QuestionType.FILL_IN_THE_GAP:
         newQuestion = {
           id: id,
-          content: '',
+          description: '',
           arrayContent: [],
           type: questionType,
           choices: [],
@@ -140,7 +140,7 @@ export class MultipleQuestionComponent
     cloneQuestion = {
       ...cloneQuestion,
       id: CommonUtils.generateRandomId(),
-      content: `Copy of ${cloneQuestion.content}`,
+      description: `Copy of ${cloneQuestion.description}`,
     };
     this.question.subQuestions!.push(cloneQuestion);
   }

@@ -316,7 +316,7 @@ export class FillInTheTableEditingComponent extends FillInTheGapEditingComponent
     if (inputId) {
       this.question.choices = filter(
         this.question.choices,
-        (choice) => inputId !== choice.id,
+        (choice) => inputId !== choice._id,
       );
     }
     this.removeAssociatedChoice(

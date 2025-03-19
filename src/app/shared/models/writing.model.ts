@@ -1,9 +1,9 @@
-import { AbstractPart } from './abstract-part.model';
+import { AbstractSection } from './abstract-section.model';
 
-export interface Writing extends AbstractPart {
-  name?: string;
+export interface Writing extends AbstractSection {
   studentName?: string;
   answer: string;
-  parts?: Writing[];
   isSubmit?: boolean;
+  wordCount: number;
+  testDate?: string;
 }

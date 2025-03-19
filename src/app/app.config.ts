@@ -5,6 +5,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { routes } from './app.routes';
 import { apiInterceptor } from './interceptors/api.interceptor';
+import { FroalaEditorModule, FroalaViewModule } from 'angular-froala-wysiwyg';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -13,6 +14,8 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([apiInterceptor])),
     importProvidersFrom(
       NgxSpinnerModule.forRoot({ type: 'ball-clip-rotate' }),
+      FroalaEditorModule.forRoot(),
+      FroalaViewModule.forRoot(),
     ),
   ],
 };

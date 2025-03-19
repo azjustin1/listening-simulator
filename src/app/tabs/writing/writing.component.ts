@@ -7,10 +7,9 @@ import {
   AngularEditorConfig,
   AngularEditorModule,
 } from '@wfpena/angular-wysiwyg';
-import { AbstractQuizPartComponent } from '../../shared/abstract/abstract-quiz-part.component';
+import { AbstractQuizSectionComponent } from '../../shared/abstract/abstract-quiz-section.component';
 import { Writing } from '../../shared/models/writing.model';
-import { MultipleChoicesComponent } from '../../modules/question/multiple-choices/multiple-choices.component';
-import { ShortAnswerComponent } from '../../modules/question/short-answer/short-answer.component';
+import { SectionType } from '../../shared/enums/section-type.enum';
 
 @Component({
   selector: 'app-writing',
@@ -19,8 +18,6 @@ import { ShortAnswerComponent } from '../../modules/question/short-answer/short-
     FormsModule,
     MatCardModule,
     MatButtonModule,
-    MultipleChoicesComponent,
-    ShortAnswerComponent,
     MatIconModule,
     AngularEditorModule,
   ],
@@ -28,11 +25,17 @@ import { ShortAnswerComponent } from '../../modules/question/short-answer/short-
   styleUrl: './writing.component.scss',
 })
 export class WritingComponent
-  extends AbstractQuizPartComponent<Writing>
+  extends AbstractQuizSectionComponent<Writing>
   implements OnInit
 {
+  override getSectionType(): SectionType {
+    return SectionType.Writing;
+  }
+
   testEditorConfig: AngularEditorConfig = {};
-  ngOnInit(): void {
+
+  override ngOnInit(): void {
+    super.ngOnInit();
     this.testEditorConfig = {
       ...this.config,
       editable: !this.isReadOnly,

@@ -18,15 +18,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
-import { each } from 'lodash-es';
-import { AbstractQuizPartComponent } from '../../shared/abstract/abstract-quiz-part.component';
+import { AbstractQuizSectionComponent } from '../../shared/abstract/abstract-quiz-section.component';
 import { Choice } from '../../shared/models/choice.model';
 import { Reading } from '../../shared/models/reading.model';
-import { MatchingHeaderComponent } from '../../modules/question/matching-header/matching-header.component';
-import { QuestionComponent } from '../../modules/question/question.component';
 import { ReadingService } from './reading.service';
-import { TextSelectionDirective } from './text-selection.directive';
-import { NgClass } from '@angular/common';
+import { Question } from '../../shared/models/question.model';
+import { SectionType } from '../../shared/enums/section-type.enum';
 
 @Component({
   selector: 'app-reading',
@@ -37,34 +34,35 @@ import { NgClass } from '@angular/common';
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    QuestionComponent,
     MatIconModule,
     MatExpansionModule,
     AngularEditorModule,
     MatSelectModule,
     MatSlideToggleModule,
-    MatchingHeaderComponent,
-    TextSelectionDirective,
-    NgClass,
   ],
   providers: [ReadingService],
   templateUrl: './reading.component.html',
   styleUrl: './reading.component.scss',
 })
 export class ReadingComponent
-  extends AbstractQuizPartComponent<Reading>
+  extends AbstractQuizSectionComponent<Reading>
   implements OnInit
 {
   @Input() isMatchingHeader = false;
+  @Output() onMatchHeaderAnswer = new EventEmitter();
   mapSavedQuestion: Record<string, boolean> = {};
   answers: WritableSignal<Choice[]> = signal([]);
-  @Output() onMatchHeaderAnswer = new EventEmitter();
 
-  ngOnInit(): void {
+  override getSectionType(): SectionType {
+    return SectionType.Reading;
+  }
+
+  override ngOnInit(): void {
+    super.ngOnInit();
     if (this.data) {
-      each(this.data.questions, (question) => {
-        this.mapSavedQuestion[question.id] = true;
-      });
+      // each(this.data.reading, (question) => {
+      //   this.mapSavedQuestion[question.id] = true;
+      // });
     }
   }
 
@@ -75,13 +73,13 @@ export class ReadingComponent
     }
   }
 
-  override onSaveQuestion(id: string): void {
-    super.onSaveQuestion(id);
-    this.mapSavedQuestion[id] = true;
+  override saveQuestion(question: Question): void {
+    super.saveQuestion(question);
+    this.mapSavedQuestion[question._id!] = true;
   }
 
-  override onEditQuestion(id: string): void {
-    super.onEditQuestion(id);
-    this.mapSavedQuestion[id] = false;
+  override onEditQuestion(question: Question): void {
+    super.onEditQuestion(question);
+    this.mapSavedQuestion[question._id!] = false;
   }
 }

@@ -8,7 +8,8 @@ import { MatIcon } from '@angular/material/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FillInTheTableEditingComponent } from '../fill-in-the-table-editing/fill-in-the-table-editing.component';
 import { toArray } from 'lodash-es';
-import { TextSelectionDirective } from "../../../../tabs/reading/text-selection.directive";
+import { TextSelectionDirective } from '../../../../tabs/reading/text-selection.directive';
+import { AbstractTestingQuestionComponent } from '../../../../shared/abstract/abstract-testing-question.component';
 
 @Component({
   selector: 'app-fill-in-the-table-testing',
@@ -27,7 +28,9 @@ import { TextSelectionDirective } from "../../../../tabs/reading/text-selection.
   templateUrl: './fill-in-the-table-testing.component.html',
   styleUrl: './fill-in-the-table-testing.component.scss',
 })
-export class FillInTheTableTestingComponent extends FillInTheTableEditingComponent {
+export class FillInTheTableTestingComponent extends AbstractTestingQuestionComponent {
+  headerColSpan = 1;
+
   onInputAnswer(answer: string, choiceId: string) {
     this.mapChoiceById[choiceId].answer = answer;
     this.onAnswer.emit({

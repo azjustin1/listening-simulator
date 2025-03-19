@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -9,7 +9,6 @@ import { MatInputModule } from '@angular/material/input';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { AbstractQuestionComponent } from '../../../shared/abstract/abstract-question.component';
 import { FileService } from '../../../file.service';
-import { CorrectAnswerPipe } from '../../../pipes/correct-answer.pipe';
 import { ShortAnswerReadonlyComponent } from './short-answer-readonly/short-answer-readonly.component';
 import { ShortAnswerTestingComponent } from './short-answer-testing/short-answer-testing.component';
 import { ShortAnswerEditingComponent } from './short-answer-editing/short-answer-editing.component';
@@ -26,7 +25,6 @@ import { ShortAnswerEditingComponent } from './short-answer-editing/short-answer
     AngularEditorModule,
     MatIconModule,
     MatCardModule,
-    CorrectAnswerPipe,
     ShortAnswerReadonlyComponent,
     ShortAnswerTestingComponent,
     ShortAnswerEditingComponent,

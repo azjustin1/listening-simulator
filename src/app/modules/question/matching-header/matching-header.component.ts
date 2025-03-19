@@ -10,7 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
-import { AbstractQuizPartComponent } from '../../../shared/abstract/abstract-quiz-part.component';
+import { AbstractQuizSectionComponent } from '../../../shared/abstract/abstract-quiz-section.component';
 import { Choice } from '../../../shared/models/choice.model';
 import { Reading } from '../../../shared/models/reading.model';
 import { MultipleQuestionComponent } from '../multiple-question/multiple-question.component';
@@ -43,7 +43,7 @@ import { MatchingHeaderEditingComponent } from './matching-header-editing/matchi
   templateUrl: './matching-header.component.html',
   styleUrl: './matching-header.component.scss',
 })
-export class MatchingHeaderComponent extends AbstractQuizPartComponent<Reading> {
+export class MatchingHeaderComponent extends AbstractQuizSectionComponent<Reading> {
   @Input() answers: Choice[] = [];
   @Output() onAnswer = new EventEmitter();
   results: string[] = [];

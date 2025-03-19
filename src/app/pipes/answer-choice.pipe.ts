@@ -8,10 +8,10 @@ import { Question } from '../shared/models/question.model';
 export class AnswerChoicePipe implements PipeTransform {
   transform(question: Question): string {
     const selectedChoice = question.choices.find((choice) =>
-      question.answer.includes(choice.id),
+      question.answer.includes(choice._id!),
     );
     if (selectedChoice) {
-      return selectedChoice.content;
+      return selectedChoice.content ?? '';
     }
     return '';
   }

@@ -2,9 +2,9 @@
   <div class="d-flex flex-column">
     <div class="description">
       <angular-editor
-        [name]="question.id"
+        [name]="question._id!"
         [config]="config"
-        [(ngModel)]="question.content"
+        [(ngModel)]="question.description"
         (ngModelChange)="onPaste($event)"
       ></angular-editor>
     </div>
@@ -23,7 +23,7 @@
                         [(ngModel)]="mapChoiceById[choiceId].correctAnswer"
                 >
                   @for (answer of question.answers; track $index) {
-                    <option [value]="answer.id">
+                    <option [value]="answer._id">
                       {{ answer.content }}
                     </option>F
                   }

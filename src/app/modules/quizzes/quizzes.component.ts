@@ -70,9 +70,6 @@ export class QuizzesComponent implements OnDestroy {
   isEmptySelectedQuiz = computed(() => {
     return this.selectedQuizzes().length === 0;
   });
-
-  onSearch = debounce(() => this.search(), 500);
-
   subscription: Subscription[] = [];
   isMultipleSelection = false;
 
@@ -109,7 +106,7 @@ export class QuizzesComponent implements OnDestroy {
     moveItemInArray(this.quizzes, event.previousIndex, event.currentIndex);
     setTimeout(() => {
       this.quizService
-        .updateIndex(this.quizzes.map((quiz) => quiz.id))
+        .updateIndex(this.quizzes.map((quiz) => quiz._id!))
         .subscribe();
     }, 500);
   }
@@ -120,16 +117,20 @@ export class QuizzesComponent implements OnDestroy {
     });
   }
 
-  test(id: string) {
-    const newResult = {
-      id: CommonUtils.generateRandomId(),
-      quizId: id,
-    };
-    this.router.navigate(['/test', newResult.id], { state: newResult });
+  test(id?: string) {
+    if (id) {
+      const newResult = {
+        id: CommonUtils.generateRandomId(),
+        quizId: id,
+      };
+      this.router.navigate(['/test', newResult.id], { state: newResult });
+    }
   }
 
   addNewQuiz() {
-    this.router.navigate(['add-quiz']);
+    this.quizService.create({} as Quiz).subscribe((quiz) => {
+      this.router.navigate(['edit-quiz', quiz._id]);
+    });
   }
 
   onAddFolderClick() {
@@ -154,7 +155,7 @@ export class QuizzesComponent implements OnDestroy {
       this.selectedQuizzes.update((quizzes) => [...quizzes, selectedQuiz]);
     } else {
       this.selectedQuizzes.update((quizzes) =>
-        quizzes.filter((quiz) => quiz.id !== selectedQuiz.id),
+        quizzes.filter((quiz) => quiz._id !== selectedQuiz._id),
       );
     }
   }
@@ -191,11 +192,10 @@ export class QuizzesComponent implements OnDestroy {
       disableClose: true,
     });
     dialogRef.componentInstance.folderId = this.folderId;
-
     dialogRef.afterClosed().subscribe((folder: Folder) => {
       if (!isUndefined(folder)) {
         this.moveQuizToFolder(
-          quizzes.map((quiz) => quiz.id),
+          quizzes.map((quiz) => quiz._id!),
           folder.id ?? '',
         );
       }
@@ -209,7 +209,7 @@ export class QuizzesComponent implements OnDestroy {
       .moveToFolder(movedQuizzes, folderId)
       .subscribe((quizzes) => {
         this.quizzes = this.quizzes.filter(
-          (quiz) => !quizzes.map((q) => q.id).includes(quiz.id),
+          (quiz) => !quizzes.map((q) => q._id).includes(quiz._id),
         );
       });
   }
@@ -218,7 +218,6 @@ export class QuizzesComponent implements OnDestroy {
     let cloneQuiz = cloneDeep(quiz);
     cloneQuiz = {
       ...cloneQuiz,
-      id: CommonUtils.generateRandomId(),
       name: `Copy of ${cloneQuiz.name}`,
     };
     this.quizService.create(cloneQuiz).subscribe(() => {
@@ -230,7 +229,6 @@ export class QuizzesComponent implements OnDestroy {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       hasBackdrop: true,
     });
-
     dialogRef.componentInstance.title = 'Warning';
     dialogRef.componentInstance.message = 'Confirm to delete this?';
     dialogRef.afterClosed().subscribe((isConfirm) => {
@@ -241,8 +239,8 @@ export class QuizzesComponent implements OnDestroy {
   }
 
   deleteQuiz(deleteQuiz: Quiz) {
-    this.quizService.delete(deleteQuiz.id).subscribe(() => {
-      this.quizzes = this.quizzes.filter((quiz) => quiz.id !== deleteQuiz.id);
+    this.quizService.delete(deleteQuiz._id).subscribe(() => {
+      this.quizzes = this.quizzes.filter((quiz) => quiz._id !== deleteQuiz._id);
     });
   }
 
