@@ -22,21 +22,26 @@ router.post("/", async (req, res) => {
   try {
     const { description, type, choices, partId } = req.body;
     let newChoices = [];
-    let savedChoices;
-    if (choices.length > 0) {
-      for (const choice of choices) {
-        const newChoice = new Choice(choice);
-        newChoices.push(newChoice);
-      }
-      savedChoices = await Choice.insertMany(newChoices);
-    }
     const newQuestion = new Question({
       description: description,
       type: type,
       partId: partId,
-      choices: savedChoices ? savedChoices.map((choice) => choice._id) : [],
+      choices: [],
     });
     await newQuestion.save();
+    let savedChoices;
+    if (choices.length > 0) {
+      for (const choice of choices) {
+        const newChoice = new Choice({
+          content: choice.content,
+          questionId: newQuestion._id,
+        });
+        newChoices.push(newChoice);
+      }
+      savedChoices = await Choice.insertMany(newChoices);
+      newQuestion.choices = savedChoices.map((choice) => choice._id);
+      await newQuestion.save();
+    }
     const response = await Question.populate(newQuestion, { path: "choices" });
     res.status(200).json(response);
   } catch (error) {
@@ -57,11 +62,15 @@ router.put("/:questionId", async (req, res) => {
 });
 router.delete("/:questionId", async (req, res) => {
   const questionId = req.params.questionId;
-  const deletedQuestion = await Question.findByIdAndDelete(questionId).exec();
-  if (deletedQuestion) {
-    res.status(200).send(true);
-  } else {
-    res.status(404).send(false);
+  const existedQuestion = await Question.findById(questionId);
+  if (!existedQuestion) {
+    return res.status(404).send(false);
   }
+  await Part.findByIdAndUpdate(existedQuestion.partId, {
+    $pull: { questions: questionId },
+  }).exec();
+  await Choice.deleteMany({ questionId: questionId }).exec();
+  await existedQuestion.deleteOne();
+  res.status(200).send(true);
 });
 module.exports = router;

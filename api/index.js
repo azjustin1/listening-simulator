@@ -14,13 +14,15 @@ const questionRoutes = require("./routes/QuestionRoute");
 const choiceRoutes = require("./routes/ChoiceRoute");
 const listeningRoute = require("./routes/ListeningRoute");
 const readingRoute = require("./routes/ReadingRoute");
+const partRoute = require("./routes/PartRoute");
 const sectionRoute = require("./routes/SectionRoute");
 app.use("/api/quizzes", quizRoutes);
 app.use("/api/questions", questionRoutes);
 app.use("/api/choices", choiceRoutes);
-app.use("/listening", listeningRoute);
-app.use("/reading", readingRoute);
-app.use("/api/quizzes/:quizId/section", sectionRoute);
+app.use("/api/listening", listeningRoute);
+app.use("/api/reading", readingRoute);
+app.use("/api/parts", partRoute);
+app.use("/api/sections", sectionRoute);
 connectDB().catch((error) => {
   return process.exit(1);
 });

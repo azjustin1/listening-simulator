@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Part = require("./Part");
+const Choice = require("./Choice");
 const Schema = mongoose.Schema;
 const questionSchema = new Schema(
   {
@@ -19,13 +19,13 @@ const questionSchema = new Schema(
         "drag-in-table",
       ],
     },
-    choices: [{ type: Schema.Types.ObjectId, ref: "Choice" }],
     partId: { type: Schema.Types.ObjectId, ref: "Part" },
+    choices: [{ type: Schema.Types.ObjectId, ref: "Choice" }],
   },
   {
     timestamps: true,
     validate: {
-      validator: function () {
+    validator: function () {
         if (this.type === "short-answer") {
           return !this.choices || this.choices.length === 0;
         }
@@ -42,23 +42,16 @@ questionSchema.post("save", async function (doc) {
   const questionId = doc._id;
   const partId = doc.partId; // The Part this Question belongs to
   if (!partId) return; // Skip if no Part is associated
-  try {
-    await Part.updateOne(
-      { _id: partId },
-      { $addToSet: { questions: questionId } }, // Use $addToSet to avoid duplicates
-    );
-  } catch (error) {
-    console.error(`Failed to update Part ${partId}:`, error.message);
-    // Optionally, rethrow the error if you want to handle it upstream
-  }
+  const PartModel = this.model("Part");
+
+  await PartModel.findByIdAndUpdate(
+    partId,
+    { $addToSet: { questions: questionId } },
+  ).exec();
 });
 questionSchema.post("findOneAndDelete", async function (doc) {
   if (!doc) return;
   const questionId = doc._id;
-  await Part.updateOne(
-    { questions: questionId },
-    { $pull: { questions: questionId } },
-  );
-  console.log(`Removed question ${questionId} from its Part`);
+  await Choice.deleteMany({ questionId: questionId }).exec();
 });
 module.exports = mongoose.model("Question", questionSchema);
