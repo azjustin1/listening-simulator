@@ -1,10 +1,11 @@
-import { Part } from "./part.model";
+import { Part } from './part.model';
 
 export interface AbstractSection {
   _id?: string;
+  description?: string;
   name?: string;
   content: string;
   timeout: number;
-  parts: Part[],
+  parts: Part[];
   quizId?: string;
 }

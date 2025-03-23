@@ -1,8 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, SimpleChanges } from '@angular/core';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  AbstractControl,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
-import { filter, isEmpty, isNull } from 'lodash-es';
+import { isEmpty } from 'lodash-es';
 import { MatButton } from '@angular/material/button';
 import { SanitizeHtmlPipe } from '../../../../pipes/sanitize-html.pipe';
 import { AbstractEditQuestionComponent } from '../../../../shared/abstract/abstract-edit-question.component';
@@ -23,11 +27,7 @@ import { AbstractEditQuestionComponent } from '../../../../shared/abstract/abstr
 })
 export class MultipleChoicesEditingComponent extends AbstractEditQuestionComponent {
   selectedOption: string | null = '';
-
-  constructor() {
-    super();
-    console.log('construct', this.mapChoiceEditingById);
-  }
+  isMultipleAnswers = false;
 
   override ngOnInit() {
     super.ngOnInit();
@@ -36,35 +36,25 @@ export class MultipleChoicesEditingComponent extends AbstractEditQuestionCompone
     }
   }
 
-  onSelectSingleCorrectAnswer(option: string) {
-    this.selectedOption = this.selectedOption === option ? null : option;
-    if (isNull(this.selectedOption)) {
-      this.question.correctAnswer = [];
-    } else {
-      this.question.correctAnswer = [option];
+  override ngOnChanges(changes: SimpleChanges) {
+    super.ngOnChanges(changes);
+    if (changes['isEditing'] && changes['isEditing'].currentValue) {
+      this.isMultipleAnswers =
+        this.question.choices.filter((choice) => choice.isCorrect).length > 1;
     }
   }
 
-  onSelectMultipleCorrectAnswer(event: MouseEvent, choiceId: string) {
-    if (
-      !this.question.correctAnswer.includes(choiceId) &&
-      this.isReachedMaxAnswers(this.question.correctAnswer.length)
-    ) {
-      event.preventDefault();
-      event.stopPropagation();
-      return;
-    }
-    if (this.question.correctAnswer.includes(choiceId)) {
-      this.question.correctAnswer = filter(
-        this.question.correctAnswer,
-        (ans) => ans !== choiceId,
-      );
-    } else {
-      this.question.correctAnswer.push(choiceId);
-    }
+  markCorrectAnswer(choice: AbstractControl) {
+    const updateChoice = {
+      ...choice.value,
+      isCorrect: !choice.value.isCorrect,
+    };
+    this.subscriptions.add(
+      this.choiceService.updateChoice(updateChoice).subscribe(),
+    );
   }
 
-  private isReachedMaxAnswers(numberOfSelectdChoice: number) {
-    return Number(this.question.numberOfChoices) === numberOfSelectdChoice;
+  checkIsMultipleAnswer() {
+    console.log(this.questionForm.controls['choices']);
   }
 }

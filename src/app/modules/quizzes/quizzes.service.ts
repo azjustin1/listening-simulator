@@ -62,29 +62,16 @@ export class QuizService {
     return this.httpClient.delete(`/quizzes/${quizId}`);
   }
 
-  updateSection(quizId: string, sectionType: SectionType): Observable<string> {
+  updateSection(
+    quizId: string,
+    sectionType: SectionType,
+  ): Observable<AbstractSection> {
     const requestBody = {
       quizId: quizId,
       sectionType: sectionType,
     };
-    return this.httpClient.post<string>(
+    return this.httpClient.post<AbstractSection>(
       `/quizzes/${quizId}/section`,
-      requestBody,
-    );
-  }
-
-  addNewPart(
-    quizId: string,
-    sectionId: string,
-    sectionType: SectionType,
-    partData: Part,
-  ): Observable<Part> {
-    const requestBody = {
-      ...partData,
-      sectionType: sectionType,
-    };
-    return this.httpClient.post<Part>(
-      `/quizzes/${quizId}/section/${sectionId}/parts`,
       requestBody,
     );
   }

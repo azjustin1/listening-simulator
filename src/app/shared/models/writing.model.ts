@@ -2,8 +2,8 @@ import { AbstractSection } from './abstract-section.model';
 
 export interface Writing extends AbstractSection {
   studentName?: string;
-  answer: string;
+  answer?: string;
   isSubmit?: boolean;
-  wordCount: number;
+  wordCount?: number;
   testDate?: string;
 }

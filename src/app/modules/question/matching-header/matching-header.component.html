@@ -1,13 +1,13 @@
 @if (!isSaved && !isTesting && !isReadOnly) {
   <app-matching-header-editing
-    [data]="data"
+    [section]="section"
     [isEditing]="!isSaved"
   ></app-matching-header-editing>
 }
 
 @if (isTesting) {
   <app-matching-header-testing
-    [data]="data"
+    [section]="section"
     [isTesting]="isTesting"
     [(selectedId)]="selectedId"
     (onAnswer)="onAnswer.emit($event)"
@@ -17,7 +17,7 @@
 
 @if (isSaved || isReadOnly) {
   <app-matching-header-readonly
-    [data]="data"
+    [section]="section"
     [isReadOnly]="isReadOnly"
     [isSaved]="isSaved"
   ></app-matching-header-readonly>

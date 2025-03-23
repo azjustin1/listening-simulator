@@ -55,4 +55,9 @@ export class QuestionComponent {
   onSaveQuestion() {
     this.onSave.emit();
   }
+
+  testInvalid($event: boolean) {
+    console.log($event)
+
+  }
 }

@@ -1,256 +1,205 @@
 <h1>Create Quiz</h1>
-@if (currentQuiz) {
-  <input
-    placeholder="Quiz Name"
-    autocomplete="off"
-    name="quizName"
-    type="text"
-    id="quizName"
-    [(ngModel)]="currentQuiz.name"
-    required
-  />
+@if (quizForm) {
+  <form [formGroup]="quizForm">
+    @if (quiz) {
+      <input
+        placeholder="Quiz Name"
+        autocomplete="off"
+        name="quizName"
+        type="text"
+        id="quizName"
+        formControlName="name"
+        required
+      />
+      @if (quizForm.invalid) {
+        <span class="text-danger ms-2">Required</span>
+      }
+      <div>
+        <mat-tab-group dynamicHeight animationDuration="0ms" (selectedTabChange)="onChangeTab($event)">
+          <!-- Listening -->
+          <mat-tab label="Listening">
+            <ng-template matTabContent>
+              @let listeningId = quiz.listening._id!;
+              @if (quiz.listening) {
+                <app-listening
+                  [section]="quiz.listening"
+                  [selectedPart]="selectedListeningPart"
+                  [isSaved]="mapSavedSection()[listeningId]!"
+                  (onSave)="saveOrEditQuiz(quiz)"
+                  (onAddQuestion)="addQuestionMap($event, selectedListeningPart)"
+                ></app-listening>
+              }
 
-  <div>
-    <mat-tab-group dynamicHeight animationDuration="0ms" (selectedTabChange)="onChangeTab($event)">
-      <!-- Listening -->
-      <mat-tab label="Listening">
-        <ng-template matTabContent>
-          <!--        <div class="mt-2">-->
-          <!--          @if (mapSavedPart["listening"]) {-->
-          <!--            <input-->
-          <!--              autocomplete="off"-->
-          <!--              placeholder="Minute"-->
-          <!--              name="timeout"-->
-          <!--              type="number"-->
-          <!--              id="listening-timeout"-->
-          <!--              [(ngModel)]="currentQuiz.listening.timeout"-->
-          <!--              required-->
-          <!--            />-->
-          <!--          }-->
+              <div class="d-flex align-items-center mt-3">
+                @if (mapSavedSection()[listeningId]) {
+                  <button
+                    mat-button
+                    color="primary"
+                    type="button"
+                    (click)="editSection(listeningId)"
+                  >
+                    <mat-icon>edit</mat-icon>
+                    Edit part
+                  </button>
+                } @else {
+                  <button
+                    mat-button
+                    color="primary"
+                    type="button"
+                    (click)="saveSection(sectionType.Listening)"
+                  >
+                    <mat-icon>save</mat-icon>
+                    Save
+                  </button>
+                }
+                <button
+                  mat-button
+                  color="warn"
+                  type="button"
+                  (click)="removePart(quiz.listening.parts[selectedListeningPart]._id!, sectionType.Listening)"
+                >
+                  <mat-icon>delete</mat-icon>
+                  Remove part
+                </button>
+              </div>
 
-          <!--          <div class="form-group">-->
-          <!--            <div class="mt-2">-->
-          <!--              <button-->
-          <!--                type="button"-->
-          <!--                mat-raised-button-->
-          <!--                (click)="fileInput.click()"-->
-          <!--              >-->
-          <!--                Audio File-->
-          <!--                <mat-icon>upload</mat-icon>-->
-          <!--              </button>-->
-          <!--              <input-->
-          <!--                autocomplete="off"-->
-          <!--                hidden-->
-          <!--                (change)="onFileSelected($event)"-->
-          <!--                #fileInput-->
-          <!--                type="file"-->
-          <!--                id="file"-->
-          <!--              />-->
-          <!--              <span class="file-name">&nbsp;{{ currentQuiz.audioName }}</span>-->
-          <!--            </div>-->
-          <!--          </div>-->
-          <!--        </div>-->
-
-          @if (currentQuiz.listening) {
-            <app-listening
-              [data]="currentQuiz.listening"
-              [quizId]="currentQuiz._id!"
-              [selectedTab]="selectedTab"
-              [isSaved]="mapSavedPart['listening'][selectedListeningPart]!"
-              (onSave)="saveOrEditQuiz(currentQuiz)"
-              (onAddQuestion)="addQuestionMap($event, selectedListeningPart)"
-            ></app-listening>
-          }
-
-          <div class="d-flex align-items-center mt-3">
-            @if (mapSavedPart["listening"][selectedListeningPart]) {
+              <app-part-navigation
+                [parts]="quiz.listening.parts"
+                [(selectedPart)]="selectedListeningPart"
+                (onPartChange)="onTabChange(sectionType.Listening, $event)"
+              ></app-part-navigation>
               <button
-                mat-button
-                color="primary"
-                type="button"
-                (click)="onEditClick('listening', selectedListeningPart)"
+                mat-raised-button
+                color="black"
+                (click)="addPart(sectionType.Listening)"
               >
-                <mat-icon>edit</mat-icon>
-                Edit part
+                <mat-icon>add</mat-icon>
+                Part
               </button>
-            } @else {
-              <button
-                mat-button
-                color="primary"
-                type="button"
-                (click)="onSavePart(sectionType.Listening, selectedListeningPart)"
-              >
-                <mat-icon>save</mat-icon>
-                Save
-              </button>
-            }
-            <button
-              mat-button
-              color="warn"
-              type="button"
-              (click)="removeListeningPart(selectedListeningPart)"
-            >
-              <mat-icon>delete</mat-icon>
-              Remove part
-            </button>
-          </div>
+            </ng-template>
+          </mat-tab>
+          <!-- Reading -->
+          <mat-tab label="Reading">
+            <ng-template matTabContent>
+              @let readingId = quiz.reading._id!;
+              <app-reading
+                [selectedPart]="selectedTab"
+                (onSave)="saveOrEditQuiz(quiz)"
+                (onAddQuestion)="addQuestionMap($event, selectedReadingPart)"
+                [isSaved]="mapSavedSection()[readingId]!"
+              ></app-reading>
+              <div class="d-flex align-items-center mt-1">
+                @if (mapSavedSection()[readingId]) {
+                  <button
+                    mat-button
+                    color="primary"
+                    type="button"
+                    (click)="editSection(readingId)"
+                  >
+                    <mat-icon>edit</mat-icon>
+                    Edit part
+                  </button>
+                } @else {
+                  <button
+                    mat-button
+                    color="primary"
+                    type="button"
+                    (click)="saveSection(sectionType.Reading)"
+                  >
+                    <mat-icon>save</mat-icon>
+                    Save
+                  </button>
+                }
+                <button
+                  mat-button
+                  color="warn"
+                  type="button"
+                  (click)="removeReadingPart(selectedReadingPart)"
+                >
+                  <mat-icon>delete</mat-icon>
+                  Remove part
+                </button>
+              </div>
 
-          <app-part-navigation
-            [(selectedPart)]="selectedListeningPart"
-            (onPartChange)="onTabChange('listening', $event)"
-          ></app-part-navigation>
-          <button
-            mat-raised-button
-            color="black"
-            (click)="addListeningPart()"
-          >
-            <mat-icon>add</mat-icon>
-            Part
-          </button>
-        </ng-template>
-      </mat-tab>
-      <!-- Reading -->
-      <mat-tab label="Reading">
-        <ng-template matTabContent>
-          @if (mapSavedPart["reading"]) {
-            <input
-              class="mt-2"
-              autocomplete="off"
-              placeholder="Minute"
-              name="timeout"
-              type="number"
-              id="reading-timeout"
-              [(ngModel)]="currentQuiz.readingTimeout"
-              required
-            />
-          }
-          <app-reading
-            [selectedTab]="selectedTab"
-            (onSave)="saveOrEditQuiz(currentQuiz)"
-            (onAddQuestion)="addQuestionMap($event, selectedReadingPart)"
-            [isSaved]="mapSavedPart['reading'][selectedReadingPart]!"
-          ></app-reading>
-          <div class="d-flex align-items-center mt-1">
-            @if (mapSavedPart["reading"][selectedReadingPart]) {
-              <button
-                mat-button
-                color="primary"
-                type="button"
-                (click)="onEditClick('reading', selectedReadingPart)"
-              >
-                <mat-icon>edit</mat-icon>
-                Edit part
+              <app-part-navigation
+                [(selectedPart)]="selectedReadingPart"
+                [parts]="quiz.reading.parts!"
+                (onPartChange)="onTabChange(sectionType.Reading, $event)"
+              ></app-part-navigation>
+              <button mat-raised-button (click)="addPart(sectionType.Reading)">
+                <mat-icon>add</mat-icon>
+                Part
               </button>
-            } @else {
-              <button
-                mat-button
-                color="primary"
-                type="button"
-                (click)="onSavePart(sectionType.Reading, selectedReadingPart)"
-              >
-                <mat-icon>save</mat-icon>
-                Save
+              <button class="ms-2" mat-raised-button (click)="addPart(sectionType.Reading)">
+                <mat-icon>add</mat-icon>
+                Matching Headings
               </button>
-            }
-            <button
-              mat-button
-              color="warn"
-              type="button"
-              (click)="removeReadingPart(selectedReadingPart)"
-            >
-              <mat-icon>delete</mat-icon>
-              Remove part
-            </button>
-          </div>
+            </ng-template>
+          </mat-tab>
 
-          <app-part-navigation
-            [(selectedPart)]="selectedReadingPart"
-            [parts]="currentQuiz.reading.parts!"
-            (onPartChange)="onTabChange('reading', $event)"
-          ></app-part-navigation>
-          <button mat-raised-button (click)="onAddReadingParagraph(false)">
-            <mat-icon>add</mat-icon>
-            Part
-          </button>
-          <button class="ms-2" mat-raised-button (click)="onAddReadingParagraph(true)">
-            <mat-icon>add</mat-icon>
-            Matching Headings
-          </button>
-        </ng-template>
-      </mat-tab>
+          <!-- Writing -->
+          <mat-tab label="Writing">
+            <ng-template matTabContent>
+              @let writingId = quiz.writing._id!;
+              <div class="timeout">
+              </div>
+              <app-writing
+                [selectedPart]="selectedTab"
+                [isSaved]="mapSavedSection()[writingId]"
+              ></app-writing>
+              <div class="actions">
+                @if (mapSavedSection()[writingId]) {
+                  <button
+                    mat-button
+                    color="primary"
+                    type="button"
+                    (click)="editSection(writingId)"
+                  >
+                    <mat-icon>edit</mat-icon>
+                    Edit part
+                  </button>
+                } @else {
+                  <button
+                    mat-button
+                    color="primary"
+                    type="button"
+                    (click)="saveSection(sectionType.Writing)"
+                  >
+                    <mat-icon>save</mat-icon>
+                    Save part
+                  </button>
+                }
+                <button
+                  mat-button
+                  color="warn"
+                  type="button"
+                  (click)="removeWritingPart(selectedWritingPart)"
+                >
+                  <mat-icon>delete</mat-icon>
+                  Remove part
+                </button>
+              </div>
 
-      <!-- Writing -->
-      <mat-tab label="Writing">
-        <ng-template matTabContent>
-          <div class="timeout">
-            @if (mapSavedPart["listening"]) {
-              <input
-                autocomplete="off"
-                placeholder="Minute"
-                matInput
-                name="timeout"
-                type="number"
-                id="writing-timeout"
-                [(ngModel)]="currentQuiz.writingTimeout"
-                required
-              />
-            }
-          </div>
-          <app-writing
-            [selectedTab]="selectedTab"
-            [isSaved]="mapSavedPart['writing'][selectedWritingPart]!"
-          ></app-writing>
-          <div class="actions">
-            @if (mapSavedPart["writing"][selectedWritingPart]) {
-              <button
-                mat-button
-                color="primary"
-                type="button"
-                (click)="onEditClick('writing', selectedWritingPart)"
-              >
-                <mat-icon>edit</mat-icon>
-                Edit part
+              <app-part-navigation
+                [(selectedPart)]="selectedWritingPart"
+                [parts]="quiz.writing.parts!"
+                (onPartChange)="onTabChange(sectionType.Writing, $event)"
+              ></app-part-navigation>
+
+              <button [disabled]="isUnsavedSection()" mat-raised-button (click)="addPart(sectionType.Writing)">
+                <mat-icon>add</mat-icon>
+                Part
               </button>
-            } @else {
-              <button
-                mat-button
-                color="primary"
-                type="button"
-                (click)="onSavePart(sectionType.Writing, selectedWritingPart)"
-              >
-                <mat-icon>save</mat-icon>
-                Save part
-              </button>
-            }
-            <button
-              mat-button
-              color="warn"
-              type="button"
-              (click)="removeWritingPart(selectedWritingPart)"
-            >
-              <mat-icon>delete</mat-icon>
-              Remove part
-            </button>
-          </div>
-
-          <app-part-navigation
-            [(selectedPart)]="selectedWritingPart"
-            [parts]="currentQuiz.writing.parts!"
-            (onPartChange)="onTabChange('writing', $event)"
-          ></app-part-navigation>
-
-          <button mat-raised-button (click)="onAddWritingParagraph()">
-            <mat-icon>add</mat-icon>
-            Part
-          </button>
-        </ng-template>
-      </mat-tab>
-    </mat-tab-group>
-  </div>
+            </ng-template>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+    }
+    <button
+      [disabled]="(quizForm['dirty'] && quizForm.invalid) || isUnsavedSection()"
+      class="mt-2" mat-raised-button color="primary"
+      (click)="onSaveClick()">
+      Save and Quit
+    </button>
+  </form>
 }
-
-<button class="mt-2" mat-raised-button color="primary" (click)="onSaveClick()">
-  Save and Quit
-</button>
-
-

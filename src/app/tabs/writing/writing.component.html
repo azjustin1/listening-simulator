@@ -1,17 +1,26 @@
 <div class="d-flex writing-container mt-3">
+  <input
+    autocomplete="off"
+    placeholder="Minute"
+    matInput
+    name="timeout"
+    type="number"
+    id="writing-timeout"
+    required
+  />
   <div class="question-group">
     @if (!isSaved && !isReadOnly && !isTesting) {
       <angular-editor
         name="reading-question"
         class="editor"
-        [id]="data!._id!"
+        [id]="section!._id!"
         [config]="config"
-        [(ngModel)]="data!.content"
+        [(ngModel)]="section!.content"
         (ngModelChange)="onPaste($event)"
       ></angular-editor>
     } @else {
-      <span [innerHTML]="data!.content" class="writing-description">
-        {{ data!.content }}
+      <span [innerHTML]="section!.content" class="writing-description">
+        {{ section!.content }}
       </span>
     }
   </div>
@@ -20,10 +29,10 @@
       <angular-editor
         class="student-input"
         [config]="testEditorConfig"
-        [(ngModel)]="data!.answer"
+        [(ngModel)]="section!.answer"
         (ngModelChange)="onWritingChange($event)"
       ></angular-editor>
-      <div>Word count: {{ data!.wordCount }}</div>
+      <div>Word count: {{ section!.wordCount }}</div>
     </div>
   }
   @if (isReadOnly) {
@@ -32,10 +41,10 @@
         disabled="true"
         class="student-input"
         [config]="testEditorConfig"
-        [(ngModel)]="data!.answer"
+        [(ngModel)]="section!.answer"
         (ngModelChange)="onWritingChange($event)"
       ></angular-editor>
-      <div>Word count: {{ data!.wordCount }}</div>
+      <div>Word count: {{ section!.wordCount }}</div>
     </div>
   }
 </div>

@@ -1,157 +1,193 @@
-<div id="quiz-container" class="mt-3">
-  @if (data) {
-    <div class="form-group">
-      @if (isSaved || isTesting || isReadOnly) {
-        <div textSelection [innerHTML]="data.name"></div>
-      } @else {
-        <!--        <angular-editor-->
-          <!--          autocomplete="off"-->
-          <!--          name="part"-->
-          <!--          type="text"-->
-          <!--          id="part"-->
-          <!--          [(ngModel)]="data.name"-->
-          <!--          [config]="config"-->
-          <!--          required-->
-          <!--        ></angular-editor>-->
-          <!--        <div [froalaEditor] [(froalaModel)]="froalaText" (froalaModelChange)="onEditorChange($event)" )></div>-->
-      }
-    </div>
+<form [formGroup]="sectionForm">
+  <div class="mt-2">
+    <input
+      formControlName="timeout"
+      autocomplete="off"
+      placeholder="Minute"
+      name="timeout"
+      type="number"
+      id="listening-timeout"
+      required
+    />
 
-    <div
-      class="d-flex"
-      [ngClass]="{ 'un-clickable': isTesting && !isStart }"
-    >
-      <div class="w-100">
-        @if (data.parts && data.parts[selectedPart]) {
-          @for (question of data.parts[selectedPart].questions; track $index) {
-            <div class="question">
-              <app-question
-                [question]="question"
-                [isSaved]="isSaved"
-                [isEditing]="mapQuestionEditing[question._id!]"
-                [isReadOnly]="isReadOnly"
-                [isTesting]="isTesting"
-                [(selectedId)]="selectedId"
-                [(selectedQuestionIndex)]="selectedQuestionIndex"
-                (onSave)="onSaveClick()"
-                (onAnswer)="onPartAnswerQuestion.emit($event)"
-                (onAnswerChoice)="onPartAnswerChoice.emit($event)"
-                (isInvalid)="isQuestionInvalid.set($event)"
-              ></app-question>
-              <div class="actions">
-                @if (!isSaved && !isTesting && !isReadOnly) {
-                  @if (question._id && mapQuestionEditing[question._id]) {
-                    <button
-                      [disabled]="isQuestionInvalid()"
-                      mat-button
-                      color="primary"
-                      type="button"
-                      (click)="saveQuestion(question)"
-                    >
-                      <mat-icon>save</mat-icon>
-                    </button>
-                  } @else {
-                    <button
-                      mat-button
-                      color="primary"
-                      type="button"
-                      (click)="onEditQuestion(question)"
-                    >
-                      <mat-icon>edit</mat-icon>
-                    </button>
-                  }
-                  <button
-                    mat-button
-                    type="button"
-                    (click)="duplicateQuestion(question)"
-                  >
-                    <mat-icon>content_copy</mat-icon>
-                  </button>
-                  <button
-                    mat-button
-                    color="warn"
-                    type="button"
-                    (click)="deleteQuestion(question._id!)"
-                  >
-                    <mat-icon>delete</mat-icon>
-                  </button>
-                  @if ($index !== 0) {
-                    <button
-                      mat-button
-                      type="button"
-                      (click)="moveQuestionUp($index)"
-                    >
-                      <mat-icon>arrow_upward</mat-icon>
-                    </button>
-                  }
-                }
-              </div>
-            </div>
-          }
+    <div class="form-group">
+      <div class="mt-2">
+        <button
+          type="button"
+          mat-raised-button
+          (click)="fileInput.click()"
+        >
+          Audio File
+          <mat-icon>upload</mat-icon>
+        </button>
+        <input
+          autocomplete="off"
+          hidden
+          (change)="onFileSelected($event)"
+          #fileInput
+          type="file"
+          id="file"
+        />
+        <span class="file-name">&nbsp;{{ section.audioName }}</span>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="quiz-container" class="mt-3">
+    @if (section) {
+      <div class="form-group">
+        @if (isSaved || isTesting || isReadOnly) {
+          <div textSelection [innerHTML]="section.description | sanitizeHtml"></div>
+        } @else {
+          <angular-editor
+            formControlName="description"
+            autocomplete="off"
+            name="part"
+            type="text"
+            id="part"
+            [config]="config"
+            required
+          ></angular-editor>
         }
       </div>
 
-    </div>
+      <div
+        class="d-flex"
+        [ngClass]="{ 'un-clickable': isTesting && !isStart }"
+      >
+        <div class="w-100">
+          @if (section.parts && section.parts[selectedPart]) {
+            @for (question of section.parts[selectedPart].questions; track $index) {
+              <div class="question">
+                <app-question
+                  [question]="question"
+                  [isSaved]="isSaved"
+                  [isEditing]="mapQuestionEditing[question._id!]"
+                  [isReadOnly]="isReadOnly"
+                  [isTesting]="isTesting"
+                  [(selectedId)]="selectedId"
+                  [(selectedQuestionIndex)]="selectedQuestionIndex"
+                  (onSave)="onSaveClick()"
+                  (onAnswer)="onPartAnswerQuestion.emit($event)"
+                  (onAnswerChoice)="onPartAnswerChoice.emit($event)"
+                  (isInvalid)="isQuestionInvalid.set($event)"
+                ></app-question>
+                <div class="actions">
+                  @if (!isSaved && !isTesting && !isReadOnly) {
+                    @if (question._id && mapQuestionEditing[question._id]) {
+                      <button
+                        [disabled]="isQuestionInvalid()"
+                        mat-button
+                        color="primary"
+                        type="button"
+                        (click)="saveQuestion(question)"
+                      >
+                        <mat-icon>save</mat-icon>
+                      </button>
+                    } @else {
+                      <button
+                        mat-button
+                        color="primary"
+                        type="button"
+                        (click)="onEditQuestion(question)"
+                      >
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                    }
+                    <button
+                      mat-button
+                      type="button"
+                      (click)="duplicateQuestion(question)"
+                    >
+                      <mat-icon>content_copy</mat-icon>
+                    </button>
+                    <button
+                      mat-button
+                      color="warn"
+                      type="button"
+                      (click)="deleteQuestion(question._id!)"
+                    >
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                    @if ($index !== 0) {
+                      <button
+                        mat-button
+                        type="button"
+                        (click)="moveQuestionUp($index)"
+                      >
+                        <mat-icon>arrow_upward</mat-icon>
+                      </button>
+                    }
+                  }
+                </div>
+              </div>
+            }
+          }
+        </div>
 
-  }
-  @if (!isSaved && !isTesting && !isReadOnly) {
-    <div class="d-flex mt-2">
-      <button
-        mat-raised-button
-        (click)="addQuestion(sectionType.Listening, questionType.MULTIPLE_CHOICE)"
-      >
-        Multiple Choices
-      </button>
-      <button
-        class="ms-1"
-        mat-raised-button
-        (click)="addQuestion(sectionType.Listening, questionType.SHORT_ANSWER)"
-      >
-        <mat-icon>add</mat-icon>
-        Short Answer
-      </button>
-      <button
-        class="ms-1"
-        mat-raised-button
-        (click)="addQuestion(sectionType.Listening, questionType.DROPDOWN_ANSWER)"
-      >
-        Dropdown Choices
-      </button>
-      <button
-        class="ms-1"
-        mat-raised-button
-        (click)="addQuestion(sectionType.Listening, questionType.LABEL_ON_MAP)"
-      >
-        Label On Map
-      </button>
-      <button
-        class="ms-1"
-        mat-raised-button
-        (click)="addQuestion(sectionType.Listening, questionType.FILL_IN_THE_GAP)"
-      >
-        Fill In The Gap
-      </button>
-      <button
-        class="ms-1"
-        mat-raised-button
-        (click)="addQuestion(sectionType.Listening, questionType.DRAG_AND_DROP_ANSWER)"
-      >
-        Drag And Drop
-      </button>
-      <button
-        class="ms-1"
-        mat-raised-button
-        (click)="addQuestion(sectionType.Listening, questionType.FILL_IN_TABLE)"
-      >
-        Fill In The Table
-      </button>
-      <button
-        class="ms-1"
-        mat-raised-button
-        (click)="addQuestion(sectionType.Listening, questionType.DRAG_IN_TABLE)"
-      >
-        Drag In The Table
-      </button>
-    </div>
-  }
-</div>
+      </div>
+
+    }
+    @if (!isSaved && !isTesting && !isReadOnly) {
+      <div class="d-flex mt-2">
+        <button
+          mat-raised-button
+          (click)="addQuestion(questionType.MULTIPLE_CHOICE)"
+        >
+          Multiple Choices
+        </button>
+        <button
+          class="ms-1"
+          mat-raised-button
+          (click)="addQuestion(questionType.SHORT_ANSWER)"
+        >
+          <mat-icon>add</mat-icon>
+          Short Answer
+        </button>
+        <button
+          class="ms-1"
+          mat-raised-button
+          (click)="addQuestion(questionType.DROPDOWN_ANSWER)"
+        >
+          Dropdown Choices
+        </button>
+        <button
+          class="ms-1"
+          mat-raised-button
+          (click)="addQuestion(questionType.LABEL_ON_MAP)"
+        >
+          Label On Map
+        </button>
+        <button
+          class="ms-1"
+          mat-raised-button
+          (click)="addQuestion(questionType.FILL_IN_THE_GAP)"
+        >
+          Fill In The Gap
+        </button>
+        <button
+          class="ms-1"
+          mat-raised-button
+          (click)="addQuestion(questionType.DRAG_AND_DROP_ANSWER)"
+        >
+          Drag And Drop
+        </button>
+        <button
+          class="ms-1"
+          mat-raised-button
+          (click)="addQuestion(questionType.FILL_IN_TABLE)"
+        >
+          Fill In The Table
+        </button>
+        <button
+          class="ms-1"
+          mat-raised-button
+          (click)="addQuestion(questionType.DRAG_IN_TABLE)"
+        >
+          Drag In The Table
+        </button>
+      </div>
+    }
+  </div>
+</form>

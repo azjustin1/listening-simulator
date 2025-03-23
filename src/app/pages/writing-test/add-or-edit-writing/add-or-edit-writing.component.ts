@@ -263,16 +263,16 @@ export class AddOrEditWritingComponent {
 
   onAddPart() {
     const id = CommonUtils.generateRandomId();
-    const newWritingParagraph: Writing = {
-      _id: id,
-      name: '',
-      content: '',
-      timeout: 0,
-      parts: [],
-      answer: '',
-      wordCount: 0,
-      testDate: '',
-    };
+    // const newWritingParagraph: Writing = {
+    //   _id: id,
+    //   name: '',
+    //   content: '',
+    //   timeout: 0,
+    //   parts: [],
+    //   answer: '',
+    //   wordCount: 0,
+    //   testDate: '',
+    // };
     // this.data.parts?.push(newWritingParagraph);
   }
 

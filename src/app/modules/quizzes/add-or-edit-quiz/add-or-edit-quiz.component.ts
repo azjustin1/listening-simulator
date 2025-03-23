@@ -1,5 +1,19 @@
-import { Component, HostListener, OnDestroy } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import {
+  Component,
+  computed,
+  HostListener,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
@@ -8,14 +22,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { size } from 'lodash-es';
-import { Subscription } from 'rxjs';
-import { Listening } from '../../../shared/models/listening.model';
+import { filter, mapValues, size, some } from 'lodash-es';
+import { pipe, Subscription } from 'rxjs';
 import { Quiz } from '../../../shared/models/quiz.model';
-import { Reading } from '../../../shared/models/reading.model';
-import { Writing } from '../../../shared/models/writing.model';
-import { environment } from '../../../../environments/environment';
-import { CommonUtils } from '../../../utils/common-utils';
 import { ConfirmDialogComponent } from '../../../shared/dialogs/confirm-dialog/confirm-dialog.component';
 import { FileService } from '../../../file.service';
 import { ListeningComponent } from '../../../tabs/listening/listening.component';
@@ -28,6 +37,8 @@ import { Part } from '../../../shared/models/part.model';
 import { SectionType } from '../../../shared/enums/section-type.enum';
 import { QuestionService } from '../../question/question.service';
 import { ChoiceService } from '../../../shared/services/choice.service';
+import { PartService } from '../../../shared/services/part.service';
+import { SectionService } from '../../../shared/services/section.service';
 
 @Component({
   selector: 'app-add-or-edit-quiz',
@@ -44,19 +55,26 @@ import { ChoiceService } from '../../../shared/services/choice.service';
     ReadingComponent,
     WritingComponent,
     PartNavigationComponent,
+    ReactiveFormsModule,
   ],
-  providers: [QuizService, QuestionService, ChoiceService, FileService],
+  providers: [
+    QuizService,
+    SectionService,
+    PartService,
+    QuestionService,
+    ChoiceService,
+    FileService,
+  ],
   templateUrl: './add-or-edit-quiz.component.html',
   styleUrl: './add-or-edit-quiz.component.scss',
 })
-export class AddOrEditQuizComponent implements OnDestroy {
-  selectedFile!: File;
-  currentQuiz!: Quiz;
-  mapSavedPart: Record<string, Record<number, boolean>> = {
-    listening: {},
-    reading: {},
-    writing: {},
-  };
+export class AddOrEditQuizComponent implements OnInit, OnDestroy {
+  quiz!: Quiz;
+  quizForm!: FormGroup;
+  mapSavedSection = signal<Record<string, boolean>>({});
+  isUnsavedSection = computed(() =>
+    some(this.mapSavedSection(), (isSaved) => !isSaved),
+  );
   mapQuestionPart: Record<string, number> = {};
   selectedListeningPart = 0;
   selectedReadingPart = 0;
@@ -64,15 +82,17 @@ export class AddOrEditQuizComponent implements OnDestroy {
   subscriptions: Subscription = new Subscription();
   selectedTab: number = 0;
   sectionType = SectionType;
+  quizService = inject(QuizService);
+  partService = inject(PartService);
+  sectionService = inject(SectionService);
+  fb = inject(FormBuilder);
 
   @HostListener('document:keydown.control.s', ['$event'])
   onKeydownHandler() {
-    this.saveOrEditQuiz(this.currentQuiz);
+    this.saveOrEditQuiz(this.quiz);
   }
 
   constructor(
-    protected quizService: QuizService,
-    protected fileService: FileService,
     protected route: ActivatedRoute,
     protected router: Router,
     protected dialog: MatDialog,
@@ -82,152 +102,168 @@ export class AddOrEditQuizComponent implements OnDestroy {
       if (quizId) {
         this.subscriptions.add(
           this.quizService.getById(quizId).subscribe((quiz: any) => {
-            this.generateListeningEditingPartMap(quiz.listeningParts);
-            this.generateReadingEditingPartMap(quiz.readingParts);
-            this.generateWritingEditingPartMap(quiz.writingParts);
-            this.currentQuiz = quiz;
+            this.quiz = quiz;
+            this.generateSavedSection();
+            this.quizForm = this.fb.group({
+              name: [this.quiz.name, Validators.required],
+            });
           }),
         );
       }
     });
   }
 
-  deleteFile(fileName: string) {
-    const deleteSub = this.fileService.deleteFile(fileName).subscribe();
-    this.subscriptions.add(deleteSub);
+  ngOnInit() {}
+
+  generateSavedSection() {
+    const savedSection: Record<string, boolean> = {};
+    savedSection[this.quiz.listening._id!] = true;
+    savedSection[this.quiz.reading._id!] = true;
+    savedSection[this.quiz.writing._id!] = true;
+    this.mapSavedSection.set(savedSection);
   }
 
-  uploadFile() {
-    const uploadSub = this.fileService
-      .uploadFile(this.selectedFile)
-      .subscribe((res) => {
-        this.subscriptions.add(uploadSub);
-        if (res) {
-          this.currentQuiz.audioName = res.fileName;
-          this.currentQuiz.audioUrl = `${environment.api}/upload/${res.fileName}`;
+  addPart(sectionType: SectionType) {
+    switch (sectionType) {
+      case SectionType.Listening:
+        const listeningPart: Part = {
+          questions: [],
+          sectionId: this.quiz.listening._id!,
+        };
+        this.subscriptions.add(
+          this.partService.createPart(listeningPart).subscribe((savedPart) => {
+            this.quiz.listening?.parts.push(savedPart);
+            this.selectedListeningPart = size(this.quiz.listening.parts) - 1;
+          }),
+        );
+        break;
+      case SectionType.Reading:
+        const readingPart: Part = {
+          questions: [],
+          sectionId: this.quiz.reading._id!,
+        };
+        this.subscriptions.add(
+          this.partService.createPart(readingPart).subscribe((savedPart) => {
+            this.quiz.reading?.parts.push(savedPart);
+            this.selectedReadingPart = size(this.quiz.listening.parts) - 1;
+          }),
+        );
+        break;
+      case SectionType.Writing:
+        const writingPart: Part = {
+          questions: [],
+          sectionId: this.quiz.writing._id!,
+        };
+        this.subscriptions.add(
+          this.partService.createPart(writingPart).subscribe((savedPart) => {
+            this.quiz.writing?.parts.push(savedPart);
+            this.selectedWritingPart = size(this.quiz.listening.parts) - 1;
+          }),
+        );
+        break;
+      default:
+        break;
+    }
+  }
+
+  onTabChange(sectionType: SectionType, index: number) {
+    console.log(index);
+  }
+
+  saveSection(sectionType: SectionType) {
+    switch (sectionType) {
+      case SectionType.Listening:
+        this.subscriptions.add(
+          this.sectionService
+            .updateSection(this.quiz.listening)
+            .subscribe((savedSection) => {
+              this.quiz.listening = {
+                ...this.quiz.listening,
+                ...savedSection,
+              };
+              this.mapSavedSection.update((current) => ({
+                ...current,
+                [savedSection._id!]: true,
+              }));
+            }),
+        );
+        break;
+      case SectionType.Reading:
+        this.subscriptions.add(
+          this.sectionService
+            .updateSection(this.quiz.reading)
+            .subscribe((savedSection) => {
+              this.quiz.reading = {
+                ...this.quiz.listening,
+                ...savedSection,
+              };
+              this.mapSavedSection()[savedSection._id!] = true;
+            }),
+        );
+        break;
+      case SectionType.Writing:
+        this.subscriptions.add(
+          this.sectionService
+            .updateSection(this.quiz.writing)
+            .subscribe((savedSection) => {
+              this.mapSavedSection()[savedSection._id!] = true;
+              this.quiz.writing = {
+                ...this.quiz.listening,
+                ...savedSection,
+              };
+            }),
+        );
+        break;
+      default:
+        break;
+    }
+  }
+
+  editSection(id: string) {
+    if (this.mapSavedSection()[id] !== undefined) {
+      this.saveAllEditingPart();
+    }
+    this.mapSavedSection()[id] = false;
+  }
+
+  saveAllEditingPart() {
+    this.mapSavedSection.set({
+      ...mapValues(this.mapSavedSection(), () => true),
+    });
+  }
+
+  removePart(partId: string, sectionType: SectionType) {
+    // this.currentQuiz.listening?.parts.splice(index, 1);
+    this.partService.deletePart(partId).subscribe((isDeleted) => {
+      if (isDeleted) {
+        switch (sectionType) {
+          case SectionType.Listening:
+            this.quiz.listening.parts = filter(
+              this.quiz.listening.parts,
+              (part) => part._id !== partId,
+            );
+            break;
+          case SectionType.Writing:
+            break;
+          case SectionType.Reading:
+            break;
+          default:
+            break;
         }
-      });
-    this.subscriptions.add(uploadSub);
-  }
-
-  generateListeningEditingPartMap(listeningParts: Listening[]) {
-    // if (listeningParts.length === 0) {
-    //   this.mapSavedPart['listening'][0] = true;
-    // }
-    // each(listeningParts, (_part, index: number) => {
-    //   this.mapSavedPart['listening'][index] = true;
-    //   each(_part.questions, (question) => {
-    //     this.mapQuestionPart[question.id] = index;
-    //   });
-    // });
-  }
-
-  generateReadingEditingPartMap(readingParts: Reading[]) {
-    // if (readingParts.length === 0) {
-    //   this.mapSavedPart['reading'][0] = true;
-    // }
-    // each(readingParts, (_part, index: number) => {
-    //   this.mapSavedPart['reading'][index] = true;
-    // });
-  }
-
-  generateWritingEditingPartMap(writingParts: Writing[]) {
-    // if (writingParts.length === 0) {
-    //   this.mapSavedPart['writing'][0] = true;
-    // }
-    // each(writingParts, (_part, index: number) => {
-    //   this.mapSavedPart['writing'][index] = true;
-    // });
-  }
-
-  addListeningPart() {
-    const newListeningPart: Part = {
-      questions: [],
-    };
-    this.mapSavedPart['listening'][size(this.mapSavedPart['listening'])] =
-      false;
-    const newPart: Part = {
-      questions: [],
-    };
-    this.quizService
-      .addNewPart(
-        this.currentQuiz._id!,
-        this.currentQuiz.listening!._id!,
-        SectionType.Listening,
-        newPart,
-      )
-      .subscribe((savedPart) => {
-        this.currentQuiz.listening?.parts.push(savedPart);
-      });
-  }
-
-  onAddReadingParagraph(isMatchHeader: boolean) {
-    const id = CommonUtils.generateRandomId();
-    const newReadingParagraph: Part = {
-      questions: [],
-    };
-    this.mapSavedPart['reading'][size(this.mapSavedPart['reading'])] = false;
-    this.currentQuiz.reading?.parts.push(newReadingParagraph);
-    // this.selectedReadingPart = this.currentQuiz.reading.length - 1;
-  }
-
-  onAddWritingParagraph() {
-    const id = CommonUtils.generateRandomId();
-    const newWritingParagraph: Part = {
-      questions: [],
-    };
-    this.mapSavedPart['writing'][size(this.mapSavedPart['writing'])] = false;
-    // if (!this.currentQuiz.writing) {
-    //   this.currentQuiz = { ...this.currentQuiz, writing: [] };
-    // }
-    this.currentQuiz.writing?.parts.push(newWritingParagraph);
-    // this.selectedWritingPart = this.currentQuiz.writing.length - 1;
-  }
-
-  onTabChange(key: string, index: number) {
-    this.mapSavedPart[key][index] = true;
-  }
-
-  onSavePart(sectionType: SectionType, index: number) {
-    // this.subscriptions.add(
-    //   this.quizService
-    //     .updateSection(this.currentQuiz._id!, sectionType)
-    //     .subscribe(() => {
-    //       this.saveAllEditingPart(sectionType);
-    //       if (this.mapSavedPart[sectionType] !== undefined) {
-    //         this.mapSavedPart[sectionType][index] = true;
-    //       }
-    //     }),
-    // );
-  }
-
-  onEditClick(key: string, index: number) {
-    if (this.mapSavedPart[key] !== undefined) {
-      this.saveAllEditingPart(key);
-      this.mapSavedPart[key][index] = false;
-    }
-  }
-
-  saveAllEditingPart(key: string) {
-    for (const index in this.mapSavedPart[key]) {
-      this.mapSavedPart[key][index] = true;
-    }
-  }
-
-  removeListeningPart(index: number) {
-    this.currentQuiz.listening?.parts.splice(index, 1);
+      }
+    });
   }
 
   removeReadingPart(index: number) {
-    this.currentQuiz.reading?.parts.splice(index, 1);
+    this.quiz.reading?.parts.splice(index, 1);
   }
 
   removeWritingPart(index: number) {
-    this.currentQuiz.writing?.parts.splice(index, 1);
+    this.quiz.writing?.parts.splice(index, 1);
   }
 
   onSaveClick() {
-    if (this.currentQuiz.name == '') {
+    if (this.quiz.name == '') {
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
         hasBackdrop: true,
       });
@@ -235,7 +271,7 @@ export class AddOrEditQuizComponent implements OnDestroy {
       dialogRef.componentInstance.message = 'You are missing some fields?';
       dialogRef.componentInstance.isWarning = true;
     } else {
-      this.saveOrEditQuiz(this.currentQuiz);
+      this.saveOrEditQuiz(this.quiz);
       this.router.navigate(['/mock-test']).then(() => {});
     }
   }
@@ -262,4 +298,6 @@ export class AddOrEditQuizComponent implements OnDestroy {
   onChangeTab($event: MatTabChangeEvent) {
     this.selectedTab = $event.index;
   }
+
+  protected readonly pipe = pipe;
 }

@@ -40,13 +40,8 @@ export abstract class AbstractQuestionComponent implements OnDestroy {
   @Output() onEdit = new EventEmitter();
   @Output() onAnswer = new EventEmitter();
   @Output() onAnswerChoice = new EventEmitter();
-  @Output() isInvalid = new EventEmitter();
+  @Output() isInvalid = new EventEmitter<boolean>();
   mapEditingQuestion: Record<string, boolean> = {};
-  mapChoiceEditingById: Record<string, boolean> = {};
-  fileService = inject(FileService);
-  questionService = inject(QuestionService);
-  choiceService = inject(ChoiceService);
-  fb = inject(FormBuilder);
   subscriptions: Subscription = new Subscription();
 
   ngOnInit(): void {

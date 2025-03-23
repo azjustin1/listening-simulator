@@ -1,11 +1,11 @@
 <div class="d-flex">
   <div class="col-6 container--left">
-    @for (question of data.questions; track $index) {
+    @for (question of section.questions; track $index) {
       <div class="paragraph my-4">
         <div class="mb-2 border border-black w-50 p-1">
           @if (isSaved) {
             <b>
-              {{ (question.correctAnswer | choiceContent: data.answers!)?.content ?? "" }}
+              {{ (question.correctAnswer | choiceContent: section.answers!)?.content ?? "" }}
             </b>
           } @else {
             <span
@@ -15,13 +15,13 @@
               incorrect:
                 isReadOnly && question.answer !== question.correctAnswer,
             }">
-            {{ (question.answer | choiceContent: data.answers!)?.content ?? "" }}
+            {{ (question.answer | choiceContent: section.answers!)?.content ?? "" }}
               @if (isReadOnly && question.answer.length === 0) {
                 ❌
               }
               @if (isReadOnly && question.answer !== question.correctAnswer) {
                 <span class="correct">
-                | {{ (question.correctAnswer | choiceContent: data.answers!)?.content ?? "" }}
+                | {{ (question.correctAnswer | choiceContent: section.answers!)?.content ?? "" }}
                 </span>
               }
             </span>
@@ -43,11 +43,11 @@
     [ngClass]="{ testing: isTesting }"
   >
     <div class="description">
-      <span textSelection [innerHTML]="data.content"></span>
+      <span textSelection [innerHTML]="section.content"></span>
     </div>
     @if (isSaved) {
       <div>
-        @for (answer of data.answers; track $index) {
+        @for (answer of section.answers; track $index) {
           <mat-card class="p-3 m-2">
             {{ answer.content }}
           </mat-card>

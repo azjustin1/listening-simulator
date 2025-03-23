@@ -59,7 +59,7 @@ export class ReadingComponent
 
   override ngOnInit(): void {
     super.ngOnInit();
-    if (this.data) {
+    if (this.section) {
       // each(this.data.reading, (question) => {
       //   this.mapSavedQuestion[question.id] = true;
       // });
@@ -68,8 +68,8 @@ export class ReadingComponent
 
   override ngOnChanges(changes: SimpleChanges): void {
     super.ngOnChanges(changes);
-    if (changes['data'] && this.data) {
-      this.answers.set(this.data.answers!);
+    if (changes['data'] && this.section) {
+      this.answers.set(this.section.answers!);
     }
   }
 

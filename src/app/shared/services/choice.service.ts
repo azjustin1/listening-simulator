@@ -12,7 +12,6 @@ export class ChoiceService {
   }
 
   updateChoice(choice: Choice): Observable<Choice> {
-    console.log(choice);
     return this.httpClient.put<Choice>(`/choices/${choice._id}`, choice);
   }
 

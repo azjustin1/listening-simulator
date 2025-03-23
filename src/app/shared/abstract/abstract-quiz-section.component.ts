@@ -36,6 +36,8 @@ import { QuizService } from '../../modules/quizzes/quizzes.service';
 import { SectionType } from '../enums/section-type.enum';
 import { Choice } from '../models/choice.model';
 import { QuestionService } from '../../modules/question/question.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { toSignal } from "@angular/core/rxjs-interop";
 
 @Component({
   template: '',
@@ -43,16 +45,13 @@ import { QuestionService } from '../../modules/question/question.service';
 export abstract class AbstractQuizSectionComponent<T extends AbstractSection>
   implements OnInit, OnChanges, OnDestroy
 {
-  @Input() data!: T;
-  @Input() quizId!: string;
-  @Input() selectedTab = 0;
+  @Input() section!: T;
+  @Input() selectedPart = 0;
   @Input() isTesting: boolean = false;
   @Input() isEditing: boolean = false;
   @Input() isReadOnly: boolean = false;
   @Input() isSaved: boolean = false;
   @Input() isStart: boolean = false;
-  selectedId = model('');
-  selectedQuestionIndex = model();
   @Output() onStartChange = new EventEmitter();
   @Output() onTimeout = new EventEmitter();
   @Output() onSave = new EventEmitter();
@@ -60,24 +59,20 @@ export abstract class AbstractQuizSectionComponent<T extends AbstractSection>
   @Output() onAddQuestion = new EventEmitter();
   @Output() onPartAnswerQuestion = new EventEmitter();
   @Output() onPartAnswerChoice = new EventEmitter();
+  selectedId = model('');
+  selectedQuestionIndex = model();
 
   abstract getSectionType(): SectionType;
 
+  fb = inject(FormBuilder);
   quizService = inject(QuizService);
   questionService = inject(QuestionService);
+  sectionForm!: FormGroup;
   sectionType = SectionType;
   questionType = QuestionType;
-  currentQuestion: Question = {
-    description: '',
-    type: QuestionType.DEFAULT,
-    choices: [],
-    answer: [],
-    correctAnswer: [],
-  };
-  selectedPart = 0;
+  currentQuestion!: Question;
   mapQuestionEditing: Record<string, boolean> = {};
-  mapChoiceEditingByQuestionId: Record<string, Record<string, boolean>> = {};
-  subscriptions: Subscription[] = [];
+  subscriptions: Subscription = new Subscription();
   onPaste = debounce((event) => this.uploadQuestionBase64Images(event), 1000);
   isQuestionInvalid = signal(false);
   config: AngularEditorConfig = {
@@ -114,7 +109,12 @@ export abstract class AbstractQuizSectionComponent<T extends AbstractSection>
   wordCount: number = 0;
   fileService = inject(FileService);
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.sectionForm = this.fb.group({
+      description: [this.section.description, Validators.required],
+      timeout: [this.section.timeout, Validators.required],
+    });
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isSaved']?.currentValue) {
@@ -123,9 +123,7 @@ export abstract class AbstractQuizSectionComponent<T extends AbstractSection>
   }
 
   ngOnDestroy(): void {
-    each(this.subscriptions, (sub) => {
-      sub.unsubscribe();
-    });
+    this.subscriptions.unsubscribe();
   }
 
   onWritingChange(value: string) {
@@ -143,7 +141,7 @@ export abstract class AbstractQuizSectionComponent<T extends AbstractSection>
     return choices;
   }
 
-  addQuestion(sectionType: SectionType, questionType: QuestionType) {
+  addQuestion(questionType: QuestionType) {
     switch (questionType) {
       case QuestionType.MULTIPLE_CHOICE:
         this.currentQuestion = {
@@ -236,7 +234,7 @@ export abstract class AbstractQuizSectionComponent<T extends AbstractSection>
       default:
         break;
     }
-    switch (this.selectedTab) {
+    switch (this.selectedPart) {
       case 0:
       default:
         break;
@@ -244,11 +242,11 @@ export abstract class AbstractQuizSectionComponent<T extends AbstractSection>
     this.quizService
       .addNewQuestion({
         ...this.currentQuestion,
-        partId: this.data.parts[this.selectedTab]._id!,
+        partId: this.section.parts[this.selectedPart]._id!,
       })
       .subscribe((newQuestion) => {
         this.currentQuestion = newQuestion;
-        this.data?.parts[this.selectedPart].questions.push({
+        this.section?.parts[this.selectedPart].questions.push({
           ...this.currentQuestion,
         });
         this.onAddQuestion.emit(this.currentQuestion);
@@ -257,8 +255,7 @@ export abstract class AbstractQuizSectionComponent<T extends AbstractSection>
   }
 
   saveQuestion(question: Question) {
-    // this.extractAllInputFromContent(question);
-    this.subscriptions.push(
+    this.subscriptions.add(
       this.questionService
         .updateQuestion(question)
         .subscribe((updatedQuestion) => {
@@ -411,14 +408,15 @@ export abstract class AbstractQuizSectionComponent<T extends AbstractSection>
   }
 
   deleteQuestion(questionId: string) {
-    this.subscriptions.push(
+    this.subscriptions.add(
       this.questionService.deleteQuestion(questionId).subscribe((isDeleted) => {
         if (isDeleted) {
           switch (this.getSectionType()) {
             case SectionType.Listening:
-              this.data.parts[this.selectedPart].questions = this.data.parts[
-                this.selectedPart
-              ].questions.filter((question) => question._id !== questionId);
+              this.section.parts[this.selectedPart].questions =
+                this.section.parts[this.selectedPart].questions.filter(
+                  (question) => question._id !== questionId,
+                );
               break;
           }
         }
@@ -440,10 +438,10 @@ export abstract class AbstractQuizSectionComponent<T extends AbstractSection>
     const base64Image = this.extractBase64Image(content);
     if (!isNull(base64Image) && base64Image[1].startsWith('data')) {
       const imageSrc = base64Image[1];
-      const fileName = `${this.data!._id}_${new Date().getMilliseconds()}.png`;
+      const fileName = `${this.section!._id}_${new Date().getMilliseconds()}.png`;
       const imageFile: File = CommonUtils.base64ToFile(imageSrc, fileName);
       this.fileService.uploadFile(imageFile).subscribe((response) => {
-        this.data!.content = this.data!.content?.replace(
+        this.section!.content = this.section!.content?.replace(
           `"${imageSrc}"`,
           `"${environment.api}/upload/${response.fileName}" width="100%"`,
         );

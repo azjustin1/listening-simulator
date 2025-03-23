@@ -43,11 +43,11 @@ export class MatchingHeaderEditingComponent extends AbstractQuizSectionComponent
   }
 
   initMapEditAnswer() {
-    each(this.data.answers, (answer) => {
+    each(this.section.answers, (answer) => {
       this.mapEditingById[answer.id] = false;
       this.mapAnswerById[answer.id] = answer;
     });
-    each(this.data.questions, (question) => {
+    each(this.section.questions, (question) => {
       this.mapEditingById[question.id] = false;
     });
   }
@@ -62,7 +62,7 @@ export class MatchingHeaderEditingComponent extends AbstractQuizSectionComponent
       answer: [],
       correctAnswer: [],
     };
-    this.data.questions.push(newQuestion);
+    this.section.questions.push(newQuestion);
     this.mapEditingById[id] = true;
   }
 
@@ -74,26 +74,26 @@ export class MatchingHeaderEditingComponent extends AbstractQuizSectionComponent
   }
 
   removeParagraph(index: number) {
-    this.removeMapEditingId(this.data.questions[index].id);
-    this.data.questions.splice(index, 1);
+    this.removeMapEditingId(this.section.questions[index].id);
+    this.section.questions.splice(index, 1);
   }
 
   addAnswer() {
-    if (isUndefined(this.data.answers)) {
-      this.data.answers = [];
+    if (isUndefined(this.section.answers)) {
+      this.section.answers = [];
     }
     const id = CommonUtils.generateRandomId();
     const newAnswer: Choice = {
       id: id,
       content: '',
     };
-    this.data.answers?.push(newAnswer);
+    this.section.answers?.push(newAnswer);
     this.mapEditingById[id] = true;
   }
 
   removeAnswer(index: number) {
-    this.removeMapEditingId(this.data.answers![index].id);
-    this.data.answers?.splice(index, 1);
+    this.removeMapEditingId(this.section.answers![index].id);
+    this.section.answers?.splice(index, 1);
   }
 
   private removeMapEditingId(id: string) {

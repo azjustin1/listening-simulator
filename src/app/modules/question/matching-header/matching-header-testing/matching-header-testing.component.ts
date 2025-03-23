@@ -43,8 +43,8 @@ export class MatchingHeaderTestingComponent
   @Output() onAnswer = new EventEmitter();
 
   ngOnInit(): void {
-    const answeredIds = this.data.questions.map((question) => question.answer);
-    this.answers = this.data.answers!.filter(
+    const answeredIds = this.section.questions.map((question) => question.answer);
+    this.answers = this.section.answers!.filter(
       (answer) => !answeredIds.includes(answer.id),
     );
     this.initMapEditAnswer();
@@ -54,7 +54,7 @@ export class MatchingHeaderTestingComponent
   }
 
   remapDroppedAnswers() {
-    const answerIds = map(this.data.questions, (question) => question.answer);
+    const answerIds = map(this.section.questions, (question) => question.answer);
     this.answers = sortBy(
       filter(this.answers, (answer) => !answerIds.includes(answer.id)),
     );
@@ -74,16 +74,16 @@ export class MatchingHeaderTestingComponent
     event.preventDefault();
     const choice = ChoiceContentPipe.prototype.transform(
       event.dataTransfer!.getData(DATA_TRANSFER_KEY),
-      this.data.answers!,
+      this.section.answers!,
     );
     if (choice) {
       this.removeDuplicateChoiceInOthers(choice);
-      each(this.data.questions, (dataQuestion) => {
+      each(this.section.questions, (dataQuestion) => {
         if (dataQuestion.id === question.id) {
           dataQuestion.answer = choice.id;
         }
       });
-      this.answers = filter(this.data.answers, (a) => a.id !== choice.id);
+      this.answers = filter(this.section.answers, (a) => a.id !== choice.id);
       this.removeDropOverClass(question.id);
       this.remapDroppedAnswers();
       this.onAnswer.emit(question);
@@ -91,7 +91,7 @@ export class MatchingHeaderTestingComponent
   }
 
   removeDuplicateChoiceInOthers(choice: Choice) {
-    each(this.data.questions, (question) => {
+    each(this.section.questions, (question) => {
       if (question.answer && question.answer === choice.id) {
         question.answer = '';
       }
@@ -118,10 +118,10 @@ export class MatchingHeaderTestingComponent
     event.preventDefault();
     const answer = ChoiceContentPipe.prototype.transform(
       event.dataTransfer!.getData(DATA_TRANSFER_KEY),
-      this.data.answers!,
+      this.section.answers!,
     );
     if (answer) {
-      each(this.data.questions, (question) => {
+      each(this.section.questions, (question) => {
         if (question.answer === answer.id) {
           question.answer = '';
           this.onAnswer.emit(question);

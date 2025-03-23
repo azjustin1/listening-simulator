@@ -1,5 +1,6 @@
 import {
   Component,
+  computed,
   EventEmitter,
   inject,
   Input,
@@ -7,14 +8,21 @@ import {
   OnDestroy,
   OnInit,
   Output,
+  signal,
   SimpleChanges,
 } from '@angular/core';
 import { Question } from '../models/question.model';
 import { Choice } from '../models/choice.model';
 import { map, Subscription } from 'rxjs';
 import { ChoiceService } from '../services/choice.service';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { debounce, isEmpty, isNull } from 'lodash-es';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
+import { debounce, isEmpty, isNull, some, toArray } from 'lodash-es';
 import { AngularEditorConfig, UploadResponse } from '@wfpena/angular-wysiwyg';
 import { environment } from '../../../environments/environment';
 import { HttpResponse } from '@angular/common/http';
@@ -34,7 +42,10 @@ export abstract class AbstractEditQuestionComponent
   @Output() isInvalid = new EventEmitter<boolean>();
   onPaste = debounce((event) => this.uploadQuestionBase64Images(event), 1000);
   subscriptions: Subscription = new Subscription();
-  mapChoiceEditingById: Record<string, boolean> = {};
+  mapSavedChoiceById = signal<Record<string, boolean>>({});
+  isUnsavedChoice = computed(() =>
+    some(this.mapSavedChoiceById(), (isSaved) => !isSaved),
+  );
   choiceService = inject(ChoiceService);
   fileService = inject(FileService);
   fb = inject(FormBuilder);
@@ -76,16 +87,29 @@ export abstract class AbstractEditQuestionComponent
   }
 
   ngOnInit(): void {
+    this.initMapSavedChoice();
     this.questionForm = this.fb.group({
-      description: ['', Validators.required],
+      description: [this.question.description, Validators.required],
       choices: this.fb.array(this.initChoicesControl(), Validators.required),
     });
     this.subscriptions.add(
-      this.questionForm.statusChanges.subscribe((status) => {
-        this.isInvalid.emit(this.questionForm.touched && status === 'INVALID');
+      this.questionForm.valueChanges.subscribe((value) => {
+        if (value.description) {
+          this.question.description = value.description;
+        }
       }),
     );
-    this.generateEditingChoiceMap();
+    this.subscriptions.add(
+      this.questionForm.statusChanges.subscribe((status) => {
+        const dirtyForm = some(
+          this.questionForm.controls,
+          (control) => control.dirty,
+        );
+        this.isInvalid.emit(
+          this.isUnsavedChoice() || (dirtyForm && status === 'INVALID'),
+        );
+      }),
+    );
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -98,11 +122,14 @@ export abstract class AbstractEditQuestionComponent
     this.subscriptions.unsubscribe();
   }
 
-  generateEditingChoiceMap() {
+  initMapSavedChoice() {
     if (!isEmpty(this.question.choices)) {
       this.question.choices.forEach((choice) => {
         if (choice._id) {
-          this.mapChoiceEditingById[choice._id] = true;
+          this.mapSavedChoiceById.update((current) => ({
+            ...current,
+            [choice._id!]: true,
+          }));
         }
       });
     }
@@ -113,7 +140,10 @@ export abstract class AbstractEditQuestionComponent
       const choiceControls: FormGroup[] = [];
       this.question.choices.forEach((choice) => {
         if (choice._id) {
-          this.mapChoiceEditingById[choice._id] = false;
+          this.mapSavedChoiceById.update((current) => ({
+            ...current,
+            [choice._id!]: true,
+          }));
           choiceControls.push(this.generateChoiceControl(choice));
         }
       });
@@ -126,6 +156,7 @@ export abstract class AbstractEditQuestionComponent
     return this.fb.group({
       _id: [choice._id],
       content: [choice.content, Validators.required],
+      isCorrect: [choice.isCorrect ?? false],
     });
   }
 
@@ -138,20 +169,41 @@ export abstract class AbstractEditQuestionComponent
     this.subscriptions.add(
       this.choiceService.createChoice(newChoice).subscribe((savedChoice) => {
         this.question.choices.push(savedChoice);
-        console.log(this.question.choices);
-        this.mapChoiceEditingById[savedChoice._id!] = true;
+        this.mapSavedChoiceById.update((current) => ({
+          ...current,
+          [savedChoice._id!]: false,
+        }));
       }),
     );
   }
 
-  saveChoice(choice: Choice) {
-    this.choiceService.updateChoice(choice).subscribe((savedChoice) => {
-      this.mapChoiceEditingById[savedChoice._id!] = false;
-    });
+  saveChoice(choiceControl: AbstractControl): void {
+    if (choiceControl.touched) {
+      this.choiceService
+        .updateChoice(choiceControl.value)
+        .subscribe((savedChoice) => {
+          this.mapSavedChoiceById.update((current) => ({
+            ...current,
+            [savedChoice._id!]: true,
+          }));
+          console.log(this.mapSavedChoiceById);
+          this.questionForm.updateValueAndValidity();
+        });
+    } else {
+      console.log(choiceControl.value._id);
+      this.mapSavedChoiceById.update((current) => ({
+        ...current,
+        [choiceControl.value._id!]: true,
+      }));
+      console.log(this.mapSavedChoiceById);
+    }
   }
 
   editChoice(choiceId: string) {
-    this.mapChoiceEditingById[choiceId] = true;
+    this.mapSavedChoiceById.update((current) => ({
+      ...current,
+      [choiceId]: false,
+    }));
   }
 
   deleteChoice(choiceId: string) {

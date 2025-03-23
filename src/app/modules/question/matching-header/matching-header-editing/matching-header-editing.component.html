@@ -1,13 +1,13 @@
 <div class="d-flex">
   <div class="container--left col-6">
-    @for (question of data.questions; track $index) {
+    @for (question of section.questions; track $index) {
       <div class="paragraph">
         <div class="input-answer mb-1">
           <select
             [disabled]="!mapEditingById[question.id]"
             [(ngModel)]="question.correctAnswer"
           >
-            @for (answer of data.answers; track $index) {
+            @for (answer of section.answers; track $index) {
               <option [value]="answer.id">
                 {{ answer.content }}
               </option>
@@ -66,10 +66,10 @@
   >
     <angular-editor
       [config]="config"
-      [(ngModel)]="data.content"
+      [(ngModel)]="section.content"
     ></angular-editor>
     <div>
-      @for (answer of data.answers; track $index) {
+      @for (answer of section.answers; track $index) {
         <div class="d-flex align-items-center mt-2">
           <textarea class="w-100" [(ngModel)]="answer.content"></textarea>
           <div class="question-actions">
