@@ -46,3 +46,8 @@ Thumbs.db
 **/results/
 
 **/*.log
+
+**/node_modules
+
+**/images
+**/audios
