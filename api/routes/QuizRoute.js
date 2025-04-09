@@ -7,13 +7,16 @@ const Choice = require("../models/Choice");
 const Listening = require("../models/Listening");
 const Reading = require("../models/Reading");
 const Writing = require("../models/Writing");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs").promises;
 const populatePart = {
   path: "parts",
   populate: { path: "questions", populate: "choices" },
 };
 const findQuiz = async (req, res, next) => {
   try {
-    const quiz = await Quiz.findById(req.params.quizId);
+    const quiz = await Quiz.findById(req.params.quizId).exec();
     if (!quiz) {
       return res.status(404).json({ message: "Quiz not found" });
     }
@@ -198,9 +201,6 @@ router.get("/", async (req, res) => {
         populate: { path: "choices" },
       },
     });
-    if (!quizzes || quizzes.length === 0) {
-      return res.status(404).json({ message: "No quizzes found" });
-    }
     res.status(200).json(quizzes);
   } catch (error) {
     res
@@ -265,6 +265,70 @@ router.post("/:quizId/submit", async (req, res) => {
     res
       .status(500)
       .json({ message: "Error submitting quiz", error: error.message });
+  }
+});
+const audioStorage = multer.diskStorage({
+  destination: async (req, file, cb) => {
+    let uploadDir = path.join(__dirname, "../uploads/audios");
+    try {
+      await fs.access(uploadDir);
+      cb(null, uploadDir);
+    } catch (error) {
+      if (error.code === "ENOENT") {
+        await fs.mkdir(uploadDir, { recursive: true });
+      } else {
+        cb(error);
+      }
+    }
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname.replace(/\s/g, ""));
+  },
+});
+const uploadAudio = multer({ storage: audioStorage });
+router.post(
+  "/:sectionId/upload-audio",
+  uploadAudio.single("file"),
+  async (req, res) => {
+    if (!req.file) {
+      return res.status(400).json({ success: 0, message: "No file uploaded" });
+    }
+    const sectionId = req.params.sectionId;
+    const fileName = req.file.filename;
+    const fileUrl = `http://localhost:3000/uploads/audios/${fileName}`;
+    await Listening.findByIdAndUpdate(sectionId, {
+      audioUrl: fileUrl,
+      audioName: fileName,
+    }).exec();
+    res.json({
+      success: 1,
+      file: {
+        fileName: fileName,
+        fileUrl: fileUrl,
+      },
+    });
+  },
+);
+router.delete("/:sectionId/remove-audio", async (req, res) => {
+  try {
+    const sectionId = req.params.sectionId;
+    const section = await Listening.findById(sectionId);
+    if (!section) {
+      res.status(404).json({ message: "No section found" });
+    }
+    const filename = section.audioName;
+    const filePath = path.join(__dirname, `../uploads/audios/${filename}`);
+    await fs.unlink(filePath);
+    await Listening.findByIdAndUpdate(sectionId, {
+      audioUrl: "",
+      audioName: "",
+    }).exec();
+    res.status(200).send(true);
+  } catch (err) {
+    if (err.code === "ENOENT") {
+      return res.status(404).json({ message: "File not found" });
+    }
+    res.status(500).json({ error: err.message });
   }
 });
 router.post("/:quizId/section", findQuiz, async (req, res) => {
@@ -333,35 +397,14 @@ router.post("/:quizId/section/:sectionId/parts", findQuiz, async (req, res) => {
       .json({ message: "Error submitting quiz", error: error.message });
   }
 });
-router.post(
-  "/:quizId/section/:sectionId/parts/:partId/questions",
-  findQuiz,
-  findPart,
-  async (req, res) => {
-    const questionData = req.body;
-    try {
-      switch (questionData.sectionType) {
-        case "listening":
-          await findListeningSection(req, res);
-          break;
-        case "reading":
-          await findReadingSection(req, res);
-          break;
-        case "writing":
-          await findWritingSection(req, res);
-          break;
-        default:
-          res.status(400).json({ message: "Invalid section" });
-      }
-      await addOrUpdateQuestion(req, res, questionData);
-    } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Error submitting quiz", error: error.message });
-    }
-  },
-);
-
+router.delete("/:quizId", findQuiz, async (req, res) => {
+  try {
+    await Quiz.findByIdAndDelete(req.params.quizId);
+    res.status(200).send(true);
+  } catch (error) {
+    res.status(500).send(false);
+  }
+});
 const findListeningSection = async (req, res, sessionId) => {
   const sectionId = req.params.sectionId;
   const listening = await Listening.findById(sectionId);
@@ -396,13 +439,12 @@ const addOrUpdateQuestion = async (req, res, questionData) => {
       res.status(200).json(updateQuestion);
     } else {
       const part = await Part.findById(req.params.partId);
-      console.log(part);
       if (!part) {
         res.status(404).json({ message: "No Part with ID" });
       }
       const newQuestion = await Question.create({
         type: questionData.type,
-        partId: part._id
+        partId: part._id,
       });
       await newQuestion.save();
       part.questions.push(newQuestion);

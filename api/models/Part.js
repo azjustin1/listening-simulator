@@ -1,8 +1,4 @@
 const mongoose = require("mongoose");
-const Listening = require("./Listening");
-const Reading = require("./Reading");
-const Writing = require("./Writing");
-const Question = require("./Question");
 const Schema = mongoose.Schema;
 const PartSchema = new Schema(
   {

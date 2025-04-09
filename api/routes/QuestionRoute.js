@@ -6,30 +6,31 @@ const router = express.Router();
 const findQuestion = async (req, res) => {
   try {
     const question = await Question.findById(req.params.questionId);
+    console.log(question);
     if (!question) {
       res.status(404).json({ message: "Question not found." });
+    } else {
+      res.status(200).json(question);
     }
-    return question;
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
-router.get("/:id", async (req, res) => {
-  const question = findQuestion(req, res);
-  res.status(200).json(question);
+router.get("/:questionId", async (req, res) => {
+  await findQuestion(req, res);
 });
 router.post("/", async (req, res) => {
   try {
     const { description, type, choices, partId } = req.body;
+    console.log(req.body);
     const newQuestion = new Question({
-      description: description,
+      description: JSON.stringify(description),
       type: type,
       partId: partId,
-      choices: [],
     });
     await newQuestion.save();
     if (choices.length > 0) {
-      saveQuestionChoice(newQuestion, choices);
+      await saveQuestionChoice(newQuestion, choices);
     }
     const response = await Question.populate(newQuestion, { path: "choices" });
     res.status(200).json(response);
@@ -47,7 +48,7 @@ router.put("/:questionId", async (req, res) => {
       { description: updateQuestionData.description },
     ).exec();
     if (choices.length > 0) {
-      console.log(await saveQuestionChoice(updatedQuestion, choices));
+      await Choice.deleteMany({ questionId: updatedQuestion._id });
       res.status(200).json(await saveQuestionChoice(updatedQuestion, choices));
     } else {
       res.status(200).json(updatedQuestion);
@@ -76,6 +77,7 @@ const saveQuestionChoice = async (newQuestion, choices) => {
     const newChoice = new Choice({
       content: choice.content,
       questionId: newQuestion._id,
+      isCorrect: choice.isCorrect,
     });
     newChoices.push(newChoice);
   }

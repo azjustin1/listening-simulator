@@ -6,6 +6,7 @@ const router = express.Router();
 router.put("/:sectionId", async (req, res) => {
   const sectionId = req.params.sectionId;
   try {
+    console.log(req.body)
     const savedListening = await Listening.findByIdAndUpdate(
       sectionId,
       req.body,
