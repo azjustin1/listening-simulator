@@ -52,10 +52,6 @@ export class QuestionComponent {
   selectedQuestionIndex = model();
   questionType = QuestionType;
 
-  onSaveQuestion() {
-    this.onSave.emit();
-  }
-
   testInvalid($event: boolean) {
     console.log($event)
 

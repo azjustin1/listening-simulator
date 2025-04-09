@@ -1,25 +1,25 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Result } from '../../shared/models/result.model';
+import { Test } from '../../shared/models/test.model';
 
 @Injectable({ providedIn: 'root' })
 export class ResultService {
   constructor(private httpClient: HttpClient) {}
 
-  getAll(): Observable<Result[]> {
-    return this.httpClient.get<Result[]>(`/results`);
+  getAll(): Observable<Test[]> {
+    return this.httpClient.get<Test[]>(`/results`);
   }
 
-  getById(id: string): Observable<Result> {
-    return this.httpClient.get<Result>(`/results/${id}`);
+  getById(id: string): Observable<Test> {
+    return this.httpClient.get<Test>(`/results/${id}`);
   }
 
-  getByStudentName(name: string): Observable<Result[]> {
-    return this.httpClient.get<Result[]>(`/results?name_like=${name}`);
+  getByStudentName(name: string): Observable<Test[]> {
+    return this.httpClient.get<Test[]>(`/results?name_like=${name}`);
   }
 
-  deleteById(id: string): Observable<Result> {
-    return this.httpClient.delete<Result>(`/results/${id}`);
+  deleteById(id: string): Observable<Test> {
+    return this.httpClient.delete<Test>(`/results/${id}`);
   }
 }

@@ -2,6 +2,7 @@
   <app-short-answer-editing
     [question]="question"
     [isEditing]="isEditing"
+    (isInvalid)="isInvalid.emit($event)"
   ></app-short-answer-editing>
 }
 @if (isTesting) {
@@ -12,9 +13,10 @@
   ></app-short-answer-testing>
 }
 
-@if (isReadOnly || (!isEditing && !isTesting)) {
+@if (isReadOnly || isSaved) {
   <app-short-answer-readonly
     [question]="question"
+    [isSaved]="isSaved"
     [isReadOnly]="isReadOnly"
   ></app-short-answer-readonly>
 }

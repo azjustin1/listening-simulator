@@ -1,17 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { AbstractQuizSectionComponent } from '../../../../shared/abstract/abstract-quiz-section.component';
 import { Reading } from '../../../../shared/models/reading.model';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { FormsModule } from '@angular/forms';
-import { MatButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
 import { NgClass } from '@angular/common';
 import { MatCard } from '@angular/material/card';
-import { each } from 'lodash-es';
-import { Choice } from '../../../../shared/models/choice.model';
 import { ChoiceContentPipe } from '../choice-content.pipe';
-import { AbstractQuestionComponent } from '../../../../shared/abstract/abstract-question.component';
-import { TextSelectionDirective } from "../../../../tabs/reading/text-selection.directive";
+import { TextSelectionDirective } from '../../../../tabs/reading/text-selection.directive';
+import { SectionType } from '../../../../shared/enums/section-type.enum';
 
 @Component({
   selector: 'app-matching-header-readonly',
@@ -19,8 +15,6 @@ import { TextSelectionDirective } from "../../../../tabs/reading/text-selection.
   imports: [
     AngularEditorModule,
     FormsModule,
-    MatButton,
-    MatIcon,
     MatCard,
     NgClass,
     ChoiceContentPipe,
@@ -29,4 +23,8 @@ import { TextSelectionDirective } from "../../../../tabs/reading/text-selection.
   templateUrl: './matching-header-readonly.component.html',
   styleUrl: './matching-header-readonly.component.scss',
 })
-export class MatchingHeaderReadonlyComponent extends AbstractQuizSectionComponent<Reading> {}
+export class MatchingHeaderReadonlyComponent extends AbstractQuizSectionComponent<Reading> {
+  getSectionType(): SectionType {
+    return SectionType.Reading;
+  }
+}

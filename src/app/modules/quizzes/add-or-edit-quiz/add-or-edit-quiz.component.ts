@@ -23,7 +23,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { filter, mapValues, size, some } from 'lodash-es';
-import { pipe, Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Quiz } from '../../../shared/models/quiz.model';
 import { ConfirmDialogComponent } from '../../../shared/dialogs/confirm-dialog/confirm-dialog.component';
 import { FileService } from '../../../file.service';
@@ -32,13 +32,12 @@ import { PartNavigationComponent } from '../../../shared/components/part-navigat
 import { ReadingComponent } from '../../../tabs/reading/reading.component';
 import { WritingComponent } from '../../../tabs/writing/writing.component';
 import { QuizService } from '../quizzes.service';
-import { Question } from '../../../shared/models/question.model';
 import { Part } from '../../../shared/models/part.model';
 import { SectionType } from '../../../shared/enums/section-type.enum';
 import { QuestionService } from '../../question/question.service';
-import { ChoiceService } from '../../../shared/services/choice.service';
 import { PartService } from '../../../shared/services/part.service';
 import { SectionService } from '../../../shared/services/section.service';
+import { Listening } from '../../../shared/models/listening.model';
 
 @Component({
   selector: 'app-add-or-edit-quiz',
@@ -62,7 +61,6 @@ import { SectionService } from '../../../shared/services/section.service';
     SectionService,
     PartService,
     QuestionService,
-    ChoiceService,
     FileService,
   ],
   templateUrl: './add-or-edit-quiz.component.html',
@@ -75,7 +73,7 @@ export class AddOrEditQuizComponent implements OnInit, OnDestroy {
   isUnsavedSection = computed(() =>
     some(this.mapSavedSection(), (isSaved) => !isSaved),
   );
-  mapQuestionPart: Record<string, number> = {};
+  isValidSection = signal(false);
   selectedListeningPart = 0;
   selectedReadingPart = 0;
   selectedWritingPart = 0;
@@ -106,6 +104,9 @@ export class AddOrEditQuizComponent implements OnInit, OnDestroy {
             this.generateSavedSection();
             this.quizForm = this.fb.group({
               name: [this.quiz.name, Validators.required],
+            });
+            this.quizForm.valueChanges.subscribe((value) => {
+              this.quiz.name = value.name;
             });
           }),
         );
@@ -173,6 +174,7 @@ export class AddOrEditQuizComponent implements OnInit, OnDestroy {
   saveSection(sectionType: SectionType) {
     switch (sectionType) {
       case SectionType.Listening:
+        console.log(this.quiz.listening);
         this.subscriptions.add(
           this.sectionService
             .updateSection(this.quiz.listening)
@@ -276,12 +278,13 @@ export class AddOrEditQuizComponent implements OnInit, OnDestroy {
     }
   }
 
-  addQuestionMap(question: Question, partIndex: number) {
-    this.mapQuestionPart[question._id!] = partIndex;
+  listeningSectionChange(listening: Listening) {
+    this.quiz.listening = Object.assign(this.quiz.listening, listening);
+    console.log(this.quiz.listening);
   }
 
   saveOrEditQuiz(quiz: Quiz) {
-    let observer;
+    let observer: Observable<Quiz>;
     if (quiz._id) {
       observer = this.quizService.edit(quiz);
     } else {
@@ -298,6 +301,4 @@ export class AddOrEditQuizComponent implements OnInit, OnDestroy {
   onChangeTab($event: MatTabChangeEvent) {
     this.selectedTab = $event.index;
   }
-
-  protected readonly pipe = pipe;
 }

@@ -5,29 +5,43 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { MatIcon } from '@angular/material/icon';
 import { isEmpty } from 'lodash-es';
-import { MatButton } from '@angular/material/button';
 import { SanitizeHtmlPipe } from '../../../../pipes/sanitize-html.pipe';
-import { AbstractEditQuestionComponent } from '../../../../shared/abstract/abstract-edit-question.component';
+import {
+  AbstractEditQuestionComponent,
+  EditorJsTools,
+} from '../../../../shared/abstract/abstract-edit-question.component';
+import Checklist from '@editorjs/checklist';
+import { QuestionType } from '../../../../shared/enums/question-type.enum';
+import { EditorComponent } from '../../../../shared/components/editor/editor.component';
 
 @Component({
-  selector: 'app-multiple-choices-editing',
-  standalone: true,
   imports: [
     AngularEditorModule,
     FormsModule,
-    MatIcon,
-    MatButton,
     SanitizeHtmlPipe,
     ReactiveFormsModule,
+    EditorComponent,
   ],
-  templateUrl: './multiple-choices-editing.component.html',
+  standalone: true,
+  selector: 'app-multiple-choices-editing',
   styleUrl: './multiple-choices-editing.component.scss',
+  templateUrl: './multiple-choices-editing.component.html',
 })
 export class MultipleChoicesEditingComponent extends AbstractEditQuestionComponent {
   selectedOption: string | null = '';
   isMultipleAnswers = false;
+
+  override getHolder(): string {
+    return QuestionType.MULTIPLE_CHOICE;
+  }
+
+  override getTools(): EditorJsTools {
+    return {
+      ...this.tools,
+      checklist: Checklist,
+    };
+  }
 
   override ngOnInit() {
     super.ngOnInit();
@@ -49,9 +63,6 @@ export class MultipleChoicesEditingComponent extends AbstractEditQuestionCompone
       ...choice.value,
       isCorrect: !choice.value.isCorrect,
     };
-    this.subscriptions.add(
-      this.choiceService.updateChoice(updateChoice).subscribe(),
-    );
   }
 
   checkIsMultipleAnswer() {

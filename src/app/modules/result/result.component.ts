@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -8,12 +8,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { ActivatedRoute, Router } from '@angular/router';
 import { debounce, filter } from 'lodash-es';
-import { Result } from '../../shared/models/result.model';
+import { Test } from '../../shared/models/test.model';
 import { ConfirmDialogComponent } from '../../shared/dialogs/confirm-dialog/confirm-dialog.component';
 import { QuizService } from '../quizzes/quizzes.service';
 import { BandScorePipe } from './band-score.pipe';
 import { ResultService } from './result.service';
 import { InputPasswordDialogComponent } from '../../shared/dialogs/input-password-dialog/input-password-dialog.component';
+import { TestService } from '../../pages/full-test/test.service';
 
 @Component({
   selector: 'app-result',
@@ -32,18 +33,18 @@ import { InputPasswordDialogComponent } from '../../shared/dialogs/input-passwor
   styleUrl: './result.component.scss',
 })
 export class ResultComponent {
-  results: Result[] = [];
+  results: Test[] = [];
   searchString: string = '';
   onSearchChange = debounce(() => this.search(), 500);
+  testService = inject(TestService);
 
   constructor(
-    private route: ActivatedRoute,
     private resultService: ResultService,
     private router: Router,
     private dialog: MatDialog,
   ) {
-    this.resultService.getAll().subscribe((results) => {
-      this.results = results;
+    this.testService.getAllTests().subscribe((tests) => {
+      this.results = tests;
     });
   }
 
@@ -64,12 +65,12 @@ export class ResultComponent {
     });
   }
 
-  continue(id?: string) {
+  continue(testId?: string) {
     const test = {
-      testId: id,
+      testId: testId,
     };
-    if (id) {
-      this.router.navigate(['continue-test', id], { state: test });
+    if (testId) {
+      this.router.navigate(['tests', testId]);
     }
   }
 
@@ -88,9 +89,14 @@ export class ResultComponent {
     });
   }
 
-  deleteResult(resultId: string) {
-    this.resultService.deleteById(resultId).subscribe(() => {
-      this.results = filter(this.results, (result) => result._id !== resultId);
+  deleteResult(testId: string) {
+    this.testService.delete(testId).subscribe((isDeleted) => {
+      if (isDeleted) {
+        this.results = filter(
+          this.results,
+          (result) => result.quizId !== testId,
+        );
+      }
     });
   }
 

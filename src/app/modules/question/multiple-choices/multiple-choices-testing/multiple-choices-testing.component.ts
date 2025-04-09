@@ -1,19 +1,15 @@
-import { Component, EventEmitter, Output } from '@angular/core';
-import { AbstractQuestionComponent } from '../../../../shared/abstract/abstract-question.component';
+import { Component, inject } from '@angular/core';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { FormsModule } from '@angular/forms';
 import { filter, isEmpty, isNull } from 'lodash-es';
-import {
-  MatExpansionPanel,
-  MatExpansionPanelHeader,
-} from '@angular/material/expansion';
-import { TextSelectionDirective } from '../../../../tabs/reading/text-selection.directive';
 import { AbstractTestingQuestionComponent } from '../../../../shared/abstract/abstract-testing-question.component';
+import { EditorTestingRendererComponent } from '../../../../shared/components/editor/editor-renderer/editor-testing-renderer.component';
+import { TestService } from '../../../../pages/full-test/test.service';
 
 @Component({
   selector: 'app-multiple-choices-testing',
   standalone: true,
-  imports: [AngularEditorModule, FormsModule, TextSelectionDirective],
+  imports: [AngularEditorModule, FormsModule, EditorTestingRendererComponent],
   templateUrl: './multiple-choices-testing.component.html',
   styleUrl: './multiple-choices-testing.component.scss',
 })

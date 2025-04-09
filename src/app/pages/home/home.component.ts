@@ -3,7 +3,7 @@ import { MatCardModule } from '@angular/material/card';
 import { RouterModule } from '@angular/router';
 import { QuizService } from '../../modules/quizzes/quizzes.service';
 import { ReadingService } from '../../tabs/reading/reading.service';
-import { FullTestService } from '../full-test/full-test.service';
+import { TestService } from '../full-test/test.service';
 
 enum Tab {
   tests,
@@ -18,7 +18,7 @@ enum Tab {
     MatCardModule,
 
   ],
-  providers: [QuizService, FullTestService, ReadingService],
+  providers: [QuizService, TestService, ReadingService],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })

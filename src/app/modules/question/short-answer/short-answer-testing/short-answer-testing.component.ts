@@ -1,17 +1,14 @@
-import { Component, EventEmitter, Output } from '@angular/core';
-import { AbstractQuestionComponent } from '../../../../shared/abstract/abstract-question.component';
+import { Component } from '@angular/core';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { FormsModule } from '@angular/forms';
-import { MatButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
-import { NgIf } from '@angular/common';
-import { isEmpty } from 'lodash-es';
+import { EditorTestingRendererComponent } from '../../../../shared/components/editor/editor-renderer/editor-testing-renderer.component';
+import { AbstractTestingQuestionComponent } from '../../../../shared/abstract/abstract-testing-question.component';
 
 @Component({
   selector: 'app-short-answer-testing',
   standalone: true,
-  imports: [AngularEditorModule, FormsModule, MatButton, MatIcon, NgIf],
+  imports: [AngularEditorModule, FormsModule, EditorTestingRendererComponent],
   templateUrl: './short-answer-testing.component.html',
   styleUrl: './short-answer-testing.component.scss',
 })
-export class ShortAnswerTestingComponent extends AbstractQuestionComponent {}
+export class ShortAnswerTestingComponent extends AbstractTestingQuestionComponent {}

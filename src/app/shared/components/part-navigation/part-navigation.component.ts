@@ -11,18 +11,17 @@ import { Part } from '../../models/part.model';
   styleUrl: './part-navigation.component.scss',
 })
 export class PartNavigationComponent {
+  @Input() isUnsavedSection: boolean = false;
   @Input() selectedPart = 1;
   @Output() selectedPartChange = new EventEmitter();
   @Input() parts: Part[] = [];
   @Output() onPartChange = new EventEmitter();
 
   onPartClick(index: number) {
+    if (this.isUnsavedSection) {
+      return;
+    }
     this.selectedPart = index;
     this.selectedPartChange.emit(this.selectedPart);
-    this.scrollToTop();
-  }
-
-  scrollToTop() {
-    window.scroll({ top: 0, behavior: 'instant' });
   }
 }

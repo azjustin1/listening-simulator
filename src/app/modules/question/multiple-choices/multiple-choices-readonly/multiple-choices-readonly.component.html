@@ -1,21 +1,20 @@
 <div class="question-group">
   <div class="form-group">
-    <b><span [innerHTML]="question.description | sanitizeHtml"> </span></b>
-    @if (isReadOnly && question.answer.length === 0) {
-      ❌
+    @if (isSaved) {
+      <app-editor-readonly-renderer [blocks]="blocks"></app-editor-readonly-renderer>
+    }
+    @if (isReadOnly) {
+      <app-editor-result-renderer [questionId]="question._id!" [blocks]="blocks"></app-editor-result-renderer>
     }
   </div>
   <div class="choice-group">
     @for (choice of question.choices; track $index) {
-      <div class="mt-2 d-flex align-items-center">
+      <div class="d-flex align-items-center">
         @if (isReadOnly) {
           <input disabled [checked]="choice.isCorrect" type="checkbox"
           />
-        } @else {
-          <input disabled [checked]="choice.isCorrect" type="checkbox"
-          />
+          <div class="ms-2">{{ choice.content }}</div>
         }
-        <div class="ms-2">{{ choice.content }}</div>
         @if (isReadOnly) {
           <div class="ms-2">
             @if (question.numberOfChoices! > 1) {

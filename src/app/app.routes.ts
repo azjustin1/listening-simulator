@@ -27,7 +27,7 @@ export const routes: Routes = [
       import('./modules/quizzes/quizzes.routes').then((m) => m.routes),
   },
   { path: 'edit-quiz/:quizId', component: AddOrEditQuizComponent },
-  { path: 'test/:resultId', component: FullTestComponent },
+  { path: 'tests/:testId', component: FullTestComponent },
   { path: 'continue-test/:testId', component: FullTestComponent },
   { path: 'add-reading', component: ReadingComponent },
   { path: 'edit-reading/:quizId', component: ReadingComponent },

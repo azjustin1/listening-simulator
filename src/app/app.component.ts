@@ -13,8 +13,6 @@ import { NgxSpinnerModule } from 'ngx-spinner';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  title = 'listening-simulator';
-
   quizService: QuizService = inject(QuizService);
 
   constructor() {

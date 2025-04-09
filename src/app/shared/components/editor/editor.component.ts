@@ -1,0 +1,141 @@
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
+import { CustomInputTool } from '../../editorjs/custom-input-tool';
+import { CustomTextTool } from '../../editorjs/custom-text-tool';
+import List from '@editorjs/list';
+import ImageTool from '@editorjs/image';
+import EditorJS, { OutputBlockData } from '@editorjs/editorjs';
+import { CustomRadioTool } from '../../editorjs/custom-radio-tool';
+import { CheckboxTool } from '../../editorjs/custom-checkbox-tool';
+
+@Component({
+  selector: 'app-editor',
+  standalone: true,
+  templateUrl: './editor.component.html',
+  styles: [
+    `
+      #editorjs {
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      .cdx-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .cdx-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+      }
+
+      .cdx-input {
+        width: 100px;
+        padding: 4px;
+        margin: 0 4px;
+        border: none;
+        outline: none;
+      }
+
+      .table-controls {
+        margin-top: 10px;
+      }
+
+      .table-controls button {
+        margin-right: 10px;
+      }
+
+      .cell-editor {
+        min-height: 30px;
+      }
+
+      .custom-text {
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+      }
+
+      .text-content {
+        padding: 8px;
+        min-height: 30px;
+        display: inline-block;
+        white-space: pre-wrap;
+      }
+
+      button {
+        padding: 2px 6px;
+        font-size: 12px;
+        vertical-align: middle;
+      }
+    `,
+  ],
+})
+export class EditorComponent implements OnInit, OnDestroy {
+  @Input() holder: string = '';
+  @Input() blocks: OutputBlockData[] = [];
+  @Input() isReadOnly: boolean = false;
+  @Output() onEditorChange: EventEmitter<string> = new EventEmitter();
+  private editor!: EditorJS;
+
+  ngOnInit() {
+    this.editor = new EditorJS({
+      holder: this.holder,
+      tools: {
+        image: {
+          class: ImageTool,
+          config: {
+            endpoints: {
+              byFile: 'http://localhost:3000/file/upload', // Your backend file uploader endpoint
+              byUrl: 'http://localhost:3000/uploads/images', // Your endpoint that provides uploading by Url
+            },
+          },
+        },
+        list: List,
+        radio: CustomRadioTool,
+        checkbox: CheckboxTool,
+        input: {
+          class: CustomInputTool,
+          config: {
+            placeholder: 'Type your input here...',
+          },
+        },
+        text: {
+          class: CustomTextTool,
+          config: {
+            tools: {
+              input: {
+                class: CustomInputTool,
+                config: {
+                  placeholder: 'Type in text...',
+                },
+              },
+            },
+          },
+        },
+      },
+      data: {
+        blocks: this.blocks,
+      },
+      readOnly: this.isReadOnly,
+      onChange: async () => {
+        const data = await this.editor.save();
+        if (data && data.blocks) {
+          this.onEditorChange.emit(JSON.stringify(data.blocks));
+        }
+      },
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.editor) {
+      this.editor.destroy();
+    }
+  }
+}

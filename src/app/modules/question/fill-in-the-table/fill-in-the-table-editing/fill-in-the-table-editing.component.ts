@@ -10,6 +10,7 @@ import { each, filter, keys, mapValues, omit, toArray } from 'lodash-es';
 import { INPUT_PATTERN } from '../../../../utils/constant';
 import { CommonUtils } from '../../../../utils/common-utils';
 import { MatButton } from '@angular/material/button';
+import { EditorJsTools } from "../../../../shared/abstract/abstract-edit-question.component";
 
 @Component({
   selector: 'app-fill-in-the-table-editing',
@@ -35,6 +36,14 @@ export class FillInTheTableEditingComponent extends FillInTheGapEditingComponent
       1: { 0: false },
     },
   };
+
+  override getHolder(): string {
+    return '';
+  }
+
+  override getTools(): EditorJsTools {
+    return {};
+  }
 
   override ngOnInit() {
     super.ngOnInit();

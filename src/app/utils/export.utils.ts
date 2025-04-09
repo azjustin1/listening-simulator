@@ -1,7 +1,7 @@
 import { each, isEmpty } from 'lodash-es';
 import { QuestionType } from '../shared/enums/question-type.enum';
 import { Question } from '../shared/models/question.model';
-import { Result } from '../shared/models/result.model';
+import { Test } from '../shared/models/test.model';
 import { AnswerChoicePipe } from '../pipes/answer-choice.pipe';
 import { CHOICE_INDEX, INPUT_PATTERN } from './constant';
 import { IsInputPipe } from '../modules/question/fill-in-the-gap/is-input.pipe';
@@ -108,8 +108,8 @@ export class ExportUtils {
     return htmlString;
   }
 
-  static exportListening(result: Result) {
-    let htmlString = `${this.startHTML()}<h1>${result.name} - Listening</h1><h2>Name: ${result.studentName}</h2><h2>Point: </h2>`;
+  static exportListening(result: Test) {
+    let htmlString = `${this.startHTML()}<h1>${result.quizName} - Listening</h1><h2>Name: ${result.studentName}</h2><h2>Point: </h2>`;
     each(result.listening, (part, index) => {
       htmlString += `<h3>Part ${index + 1}</h3>`;
       // each(part.questions, (question) => {
@@ -120,8 +120,8 @@ export class ExportUtils {
     return (htmlString += this.endHTML());
   }
 
-  static exportReading(result: Result) {
-    let htmlString = `${this.startHTML()}<h1>${result.name} - Reading</h1><h2>Name: ${result.studentName}</h2><h2>Point: </h2>`;
+  static exportReading(result: Test) {
+    let htmlString = `${this.startHTML()}<h1>${result.quizName} - Reading</h1><h2>Name: ${result.studentName}</h2><h2>Point: </h2>`;
     // each(result.readingParts, (part, index) => {
     //   htmlString += `<h3>Part ${index + 1}</h3>`;
     //   if (part.isMatchHeader) {
@@ -151,8 +151,8 @@ export class ExportUtils {
     return (htmlString += this.endHTML());
   }
 
-  static exportWriting(result: Result) {
-    let htmlString = `<h1>${result.name} - Writing</h1><h2>Name: ${result.studentName}</h2><h2>Point: </h2>`;
+  static exportWriting(result: Test) {
+    let htmlString = `<h1>${result.quizName} - Writing</h1><h2>Name: ${result.studentName}</h2><h2>Point: </h2>`;
     each(result.writing, (part) => {
       // htmlString += `<div>${part.content}</div> <div>${part.answer}</div><hr><br>`;
     });
@@ -347,7 +347,7 @@ export class ExportUtils {
     return htmlString;
   }
 
-  static exportFeedback(result: Result) {
+  static exportFeedback(result: Test) {
     let htmlString = `
       <h1>Bảng đánh giá</h1>
       <div>

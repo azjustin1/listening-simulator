@@ -12,6 +12,9 @@ import { FileService } from '../../../file.service';
 import { ShortAnswerReadonlyComponent } from './short-answer-readonly/short-answer-readonly.component';
 import { ShortAnswerTestingComponent } from './short-answer-testing/short-answer-testing.component';
 import { ShortAnswerEditingComponent } from './short-answer-editing/short-answer-editing.component';
+import {
+  MultipleChoicesEditingComponent
+} from "../multiple-choices/multiple-choices-editing/multiple-choices-editing.component";
 
 @Component({
   selector: 'app-short-answer',
@@ -28,6 +31,7 @@ import { ShortAnswerEditingComponent } from './short-answer-editing/short-answer
     ShortAnswerReadonlyComponent,
     ShortAnswerTestingComponent,
     ShortAnswerEditingComponent,
+    MultipleChoicesEditingComponent,
   ],
   providers: [FileService],
   templateUrl: './short-answer.component.html',

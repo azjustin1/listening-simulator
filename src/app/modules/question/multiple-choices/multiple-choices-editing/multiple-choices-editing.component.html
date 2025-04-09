@@ -2,71 +2,15 @@
   <div class="question-group">
     <div class="form-group">
       @if (isEditing) {
-        <angular-editor
-          name="questionContent"
-          [id]="question._id!"
-          [config]="config"
-          formControlName="description"
-        ></angular-editor>
+        <app-editor [holder]="'multiple-choices-editing'"
+                    [blocks]="blocks"
+                    [isReadOnly]="false"
+                    (onEditorChange)="onQuestionDescriptionChange($event)"></app-editor>
       } @else {
+
         <span [innerHTML]="question.description! | sanitizeHtml"> </span>
       }
     </div>
-
-    <div class="choice-group" formArrayName="choices">
-      @for (choice of choices.controls; track $index) {
-        @let choiceId = choice.value._id;
-        <div [formGroupName]="$index" class="mt-2 d-flex align-items-baseline">
-          <input formControlName="isCorrect" [checked]="choice.value.isCorrect"
-                 type="checkbox"
-                 (click)="markCorrectAnswer(choice)" />
-          @if (mapSavedChoiceById()[choiceId]) {
-            <div class="d-flex flex-column">
-              <textarea class="w-100 ms-2" autocomplete="off" formControlName="content"></textarea>
-              <div class="d-flex flex-row">
-                <button [disabled]="choice.get('content')?.invalid" mat-button color="primary"
-                        (click)="saveChoice(choice)">
-                  <mat-icon>save</mat-icon>
-                </button>
-                <button
-                  mat-button
-                  color="warn"
-                  (click)="deleteChoice(choiceId)"
-                >
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </div>
-            </div>
-          } @else {
-            <div class="d-flex flex-column">
-              <p class="ms-2">{{ choice.value.content }}</p>
-              <div class="d-flex flex-row">
-                <button mat-button color="primary" class="ms-s" (click)="editChoice(choiceId)">
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button
-                  mat-button
-                  color="warn"
-                  (click)="deleteChoice(choiceId)"
-                >
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </div>
-
-            </div>
-          }
-        </div>
-      }
-
-    </div>
-    <button
-      mat-raised-button
-      class="d-flex justify-content-center align-items-center mt-2 mb-2"
-      (click)="addChoice()"
-    >
-      <mat-icon>add</mat-icon>
-      Answer
-    </button>
     @if (questionForm['touched'] && questionForm.invalid) {
       <span class="text-danger ms-2">Required</span>
     }

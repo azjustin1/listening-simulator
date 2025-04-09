@@ -5,7 +5,7 @@ import { of } from 'rxjs';
 import { FullTestComponent } from './full-test.component';
 import { importProvidersFrom } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { Result } from '../../shared/models/result.model';
+import { Test } from '../../shared/models/test.model';
 
 const mockRoute = {
   paramMap: of({ quizId: '1' }),
@@ -38,13 +38,13 @@ fdescribe('TestComponent', () => {
   });
 
   it('calculatePoint should return correct', () => {
-    component.result = mockResult;
+    component.test = mockResult;
     component.submit();
-    expect(component.result.correctListeningPoint).toEqual(9);
-    expect(component.result.totalListeningPoint).toEqual(14);
+    expect(component.test.correctListeningPoint).toEqual(9);
+    expect(component.test.totalListeningPoint).toEqual(14);
 
-    expect(component.result.correctReadingPoint).toEqual(5);
-    expect(component.result.totalReadingPoint).toEqual(12);
+    expect(component.test.correctReadingPoint).toEqual(5);
+    expect(component.test.totalReadingPoint).toEqual(12);
   });
 });
 
@@ -550,4 +550,4 @@ const mockResult = {
   totalReadingPoint: 13,
   isSubmit: true,
   writingTimeout: null,
-} as unknown as Result;
+} as unknown as Test;

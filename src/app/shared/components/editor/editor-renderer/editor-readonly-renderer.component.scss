@@ -1,0 +1,132 @@
+.editor-renderer {
+  padding: 20px;
+}
+
+.text-block {
+  margin-bottom: 20px;
+  display: inline-block;
+  white-space: pre-wrap;
+}
+
+.cdx-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.cdx-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.cdx-input {
+  width: 100px;
+  padding: 4px;
+  margin: 0 4px;
+  border: none;
+  outline: none;
+  background: #f5f5f5;
+  color: #666;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.input-wrapper {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.paragraph {
+  margin-bottom: 16px;
+}
+
+.header-1 {
+  font-size: 2em;
+  margin-bottom: 16px;
+}
+
+.header-2 {
+  font-size: 1.5em;
+  margin-bottom: 14px;
+}
+
+.header-3 {
+  font-size: 1.17em;
+  margin-bottom: 12px;
+}
+
+.header-4 {
+  font-size: 1em;
+  margin-bottom: 10px;
+}
+
+.header-5 {
+  font-size: 0.83em;
+  margin-bottom: 8px;
+}
+
+.header-6 {
+  font-size: 0.67em;
+  margin-bottom: 6px;
+}
+
+.list {
+  margin-bottom: 16px;
+  padding-left: 20px;
+}
+
+.list li {
+  margin-bottom: 8px;
+}
+
+.image-block {
+  margin-bottom: 20px;
+}
+
+.image-block img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.image-block.with-border {
+  border: 1px solid #ddd;
+  padding: 4px;
+}
+
+.image-block.stretched {
+  width: 100%;
+}
+
+.image-block.with-background {
+  background: #f5f5f5;
+  padding: 8px;
+}
+
+.caption {
+  text-align: center;
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 4px;
+}
+
+.quote {
+  margin-bottom: 20px;
+  padding: 10px;
+  border-left: 4px solid #ccc;
+}
+
+.quote.center {
+  text-align: center;
+  border-left: none;
+}
+
+.quote p {
+  margin: 0 0 8px 0;
+}
+
+.quote cite {
+  display: block;
+  font-style: italic;
+  color: #666;
+}

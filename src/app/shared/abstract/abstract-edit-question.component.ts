@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   computed,
   EventEmitter,
@@ -14,7 +15,6 @@ import {
 import { Question } from '../models/question.model';
 import { Choice } from '../models/choice.model';
 import { map, Subscription } from 'rxjs';
-import { ChoiceService } from '../services/choice.service';
 import {
   AbstractControl,
   FormArray,
@@ -22,34 +22,92 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { debounce, isEmpty, isNull, some, toArray } from 'lodash-es';
+import { debounce, isEmpty, isNull, some } from 'lodash-es';
 import { AngularEditorConfig, UploadResponse } from '@wfpena/angular-wysiwyg';
 import { environment } from '../../../environments/environment';
 import { HttpResponse } from '@angular/common/http';
 import { FileService } from '../../file.service';
 import { CommonUtils } from '../../utils/common-utils';
-import { BASE64_IMAGE_REGEX, INPUT_PATTERN } from '../../utils/constant';
+import { BASE64_IMAGE_REGEX } from '../../utils/constant';
+import Header from '@editorjs/header';
+import List from '@editorjs/list';
+import ImageTool from '@editorjs/image';
+import EditorJS, {
+  OutputBlockData,
+  ToolConstructable,
+  ToolSettings,
+} from '@editorjs/editorjs';
+import { QuestionType } from '../enums/question-type.enum';
+import { CustomInputTool } from '../editorjs/custom-input-tool';
+import { CustomTextTool } from '../editorjs/custom-text-tool';
+
+export interface EditorJsTools {
+  [p: string]: ToolConstructable | ToolSettings;
+}
 
 @Component({
   template: '',
 })
 export abstract class AbstractEditQuestionComponent
-  implements OnInit, OnChanges, OnDestroy
+  implements OnInit, AfterViewInit, OnChanges, OnDestroy
 {
   @Input() question!: Question;
   @Input() isEditing: boolean = false;
   @Output() onSave = new EventEmitter();
   @Output() isInvalid = new EventEmitter<boolean>();
   onPaste = debounce((event) => this.uploadQuestionBase64Images(event), 1000);
+  blocks: OutputBlockData[] = [];
   subscriptions: Subscription = new Subscription();
   mapSavedChoiceById = signal<Record<string, boolean>>({});
   isUnsavedChoice = computed(() =>
     some(this.mapSavedChoiceById(), (isSaved) => !isSaved),
   );
-  choiceService = inject(ChoiceService);
   fileService = inject(FileService);
   fb = inject(FormBuilder);
   questionForm!: FormGroup;
+  tools = {
+    input: {
+      class: CustomInputTool,
+      config: {
+        placeholder: 'Type your input here...',
+      },
+    },
+    text: {
+      class: CustomTextTool,
+      config: {
+        tools: {
+          input: {
+            class: CustomInputTool,
+            config: {
+              placeholder: 'Type in text...',
+            },
+          },
+        },
+      },
+    },
+    header: Header,
+    list: List,
+    image: {
+      header: Header,
+      list: List,
+      class: ImageTool,
+      config: {
+        endpoints: {
+          byFile: 'http://localhost:3000/file/upload', // Your backend file uploader endpoint
+          byUrl: 'http://localhost:3000/upload', // Your endpoint that provides uploading by Url
+        },
+      },
+    },
+  };
+  editor!: EditorJS;
+  questionType = QuestionType;
+
+  abstract getHolder(): string;
+
+  abstract getTools(): EditorJsTools;
+
+  constructor() {}
+
   config: AngularEditorConfig = {
     editable: true,
     sanitize: false,
@@ -87,6 +145,15 @@ export abstract class AbstractEditQuestionComponent
   }
 
   ngOnInit(): void {
+    if (!isEmpty(this.question.description)) {
+      this.blocks = JSON.parse(this.question.description!);
+    }
+    // onChange: async () => {
+    //     const data = await this.editor.save();
+    //     if (data && data.blocks) {
+    //       this.question.description = JSON.stringify(data.blocks);
+    //     }
+    //   },
     this.initMapSavedChoice();
     this.questionForm = this.fb.group({
       description: [this.question.description, Validators.required],
@@ -112,13 +179,15 @@ export abstract class AbstractEditQuestionComponent
     );
   }
 
+  ngAfterViewInit() {}
+
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['isSaved']?.currentValue) {
-      this.isEditing = false;
+    if (changes['isEditing']?.currentValue) {
+      this.isEditing = true;
     }
   }
 
-  ngOnDestroy() {
+  async ngOnDestroy() {
     this.subscriptions.unsubscribe();
   }
 
@@ -161,34 +230,38 @@ export abstract class AbstractEditQuestionComponent
   }
 
   addChoice() {
-    const newChoice: Choice = {
-      content: '',
-      index: '',
-      questionId: this.question._id,
-    };
-    this.subscriptions.add(
-      this.choiceService.createChoice(newChoice).subscribe((savedChoice) => {
-        this.question.choices.push(savedChoice);
-        this.mapSavedChoiceById.update((current) => ({
-          ...current,
-          [savedChoice._id!]: false,
-        }));
-      }),
-    );
+    // const newChoice: Choice = {
+    //   content: '',
+    //   index: '',
+    //   questionId: this.question._id,
+    // };
+    // this.subscriptions.add(
+    //   this.choiceService.createChoice(newChoice).subscribe((savedChoice) => {
+    //     this.question.choices.push(savedChoice);
+    //     this.mapSavedChoiceById.update((current) => ({
+    //       ...current,
+    //       [savedChoice._id!]: false,
+    //     }));
+    //   }),
+    // );
+  }
+
+  onQuestionDescriptionChange(description: string) {
+    this.question.description = description;
   }
 
   saveChoice(choiceControl: AbstractControl): void {
     if (choiceControl.touched) {
-      this.choiceService
-        .updateChoice(choiceControl.value)
-        .subscribe((savedChoice) => {
-          this.mapSavedChoiceById.update((current) => ({
-            ...current,
-            [savedChoice._id!]: true,
-          }));
-          console.log(this.mapSavedChoiceById);
-          this.questionForm.updateValueAndValidity();
-        });
+      // this.choiceService
+      //   .updateChoice(choiceControl.value)
+      //   .subscribe((savedChoice) => {
+      //     this.mapSavedChoiceById.update((current) => ({
+      //       ...current,
+      //       [savedChoice._id!]: true,
+      //     }));
+      //     console.log(this.mapSavedChoiceById);
+      //     this.questionForm.updateValueAndValidity();
+      //   });
     } else {
       console.log(choiceControl.value._id);
       this.mapSavedChoiceById.update((current) => ({
@@ -206,15 +279,7 @@ export abstract class AbstractEditQuestionComponent
     }));
   }
 
-  deleteChoice(choiceId: string) {
-    this.choiceService.deleteChoice(choiceId).subscribe({
-      next: () => {
-        this.question.choices = this.question.choices.filter(
-          (choice) => choice._id !== choiceId,
-        );
-      },
-    });
-  }
+  deleteChoice(choiceId: string) {}
 
   private uploadQuestionBase64Images(content: string) {
     const base64Image = this.extractBase64Image(content);

@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   computed,
+  inject,
   OnDestroy,
   signal,
   WritableSignal,
@@ -22,8 +23,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { ActivatedRoute, Router } from '@angular/router';
-import { cloneDeep, debounce, isEmpty, isUndefined } from 'lodash-es';
-import { Subscription } from 'rxjs';
+import { cloneDeep, isEmpty, isUndefined } from 'lodash-es';
+import { map, Subscription, switchAll } from 'rxjs';
 import { Folder } from '../../shared/models/folder.model';
 import { Quiz } from '../../shared/models/quiz.model';
 import { SelectedPipe } from '../../pipes/selected.pipe';
@@ -32,10 +33,10 @@ import { ConfirmDialogComponent } from '../../shared/dialogs/confirm-dialog/conf
 import { FileService } from '../../file.service';
 import { FolderComponent } from '../folder/folder.component';
 import { FolderService } from '../folder/folder.service';
-import { ListeningComponent } from '../../tabs/listening/listening.component';
 import { AddOrEditFolderDialog } from '../../shared/dialogs/add-or-edit-folder-dialog/add-or-edit-folder-dialog.component';
 import { MoveToFolderDialogComponent } from '../../shared/dialogs/move-to-folder-dialog/move-to-folder-dialog.component';
 import { QuizService } from './quizzes.service';
+import { TestService } from '../../pages/full-test/test.service';
 
 @Component({
   selector: 'app-quizzes',
@@ -47,7 +48,6 @@ import { QuizService } from './quizzes.service';
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    ListeningComponent,
     MatIconModule,
     MatMenuModule,
     MatDialogModule,
@@ -72,6 +72,7 @@ export class QuizzesComponent implements OnDestroy {
   });
   subscription: Subscription[] = [];
   isMultipleSelection = false;
+  testService = inject(TestService);
 
   constructor(
     private quizService: QuizService,
@@ -117,13 +118,17 @@ export class QuizzesComponent implements OnDestroy {
     });
   }
 
-  test(id?: string) {
-    if (id) {
-      const newResult = {
-        id: CommonUtils.generateRandomId(),
-        quizId: id,
-      };
-      this.router.navigate(['/test', newResult.id], { state: newResult });
+  test(quiz: Quiz) {
+    if (quiz) {
+      this.quizService
+        .getById(quiz._id!)
+        .pipe(
+          map((quiz) => this.testService.createNewTest(quiz)),
+          switchAll(),
+        )
+        .subscribe((newTest) => {
+          this.router.navigate(['/tests', newTest._id]);
+        });
     }
   }
 

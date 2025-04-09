@@ -18,7 +18,10 @@ import { INPUT_PATTERN } from '../../../../utils/constant';
 import { Choice } from '../../../../shared/models/choice.model';
 import { MatButton } from '@angular/material/button';
 import { ExtractIdPipe } from '../../../../pipes/extract-id.pipe';
-import { AbstractEditQuestionComponent } from '../../../../shared/abstract/abstract-edit-question.component';
+import {
+  AbstractEditQuestionComponent,
+  EditorJsTools
+} from "../../../../shared/abstract/abstract-edit-question.component";
 
 @Component({
   selector: 'app-fill-in-the-gap-editing',
@@ -39,6 +42,14 @@ export class FillInTheGapEditingComponent extends AbstractEditQuestionComponent 
   mapChoiceById: Record<string, Choice> = {};
   mapSaveTextByIndex: Record<number, Record<number, boolean>> = {};
   mapShowActionByIndex: Record<number, Record<number, boolean>> = {};
+
+  override getHolder(): string {
+    return '';
+  }
+
+  override getTools(): EditorJsTools {
+    return {};
+  }
 
   override ngOnInit(): void {
     super.ngOnInit();

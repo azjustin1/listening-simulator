@@ -19,4 +19,5 @@ import { MultipleChoicesReadonlyComponent } from './multiple-choices-readonly/mu
   templateUrl: './multiple-choices.component.html',
   styleUrl: './multiple-choices.component.scss',
 })
-export class MultipleChoicesComponent extends AbstractQuestionComponent {}
+export class MultipleChoicesComponent extends AbstractQuestionComponent {
+}

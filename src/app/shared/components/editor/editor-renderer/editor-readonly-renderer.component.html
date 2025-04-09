@@ -1,0 +1,110 @@
+<div class="editor-renderer">
+  @for (block of blocks; track block) {
+    @if (block.type === 'text') {
+      <div class="text-block">
+        @for (item of block | CustomTextBlock; track item) {
+          @if (item.type === 'text') {
+            <span>{{ item.value }}</span>
+          }
+          @if (item.type === 'input') {
+            <input
+              class="cdx-input"
+              [value]="item.data.text"
+              disabled
+            />
+          }
+        }
+      </div>
+    }
+    <!--    @if (block.type === 'table') {-->
+      <!--      <table class="cdx-table">-->
+      <!--        @if (isArray(block.data.content)) {-->
+      <!--          @for (row of block.data.content; track row) {-->
+      <!--            <tr>-->
+      <!--              @for (cell of row; track cell) {-->
+      <!--                <td>-->
+      <!--                  @if (isArray(cell.blocks)) {-->
+      <!--                    @for (cellBlock of cell.blocks; track cellBlock) {-->
+      <!--                      @if (cellBlock.type === 'input') {-->
+      <!--                        <span class="input-wrapper">-->
+      <!--                              <input-->
+      <!--                                class="cdx-input"-->
+      <!--                                [value]="cellBlock.data.text"-->
+      <!--                                disabled-->
+      <!--                              />-->
+      <!--                            </span>-->
+      <!--                      }-->
+      <!--                    }-->
+      <!--                  }-->
+      <!--                </td>-->
+      <!--              }-->
+      <!--            </tr>-->
+      <!--          }-->
+      <!--        }-->
+      <!--      </table>-->
+      <!--    }-->
+    @if (block.type === 'paragraph') {
+      <p class="paragraph" [innerHTML]="block.data.text"></p>
+    }
+    @if (block.type === 'header') {
+      <h1
+        [ngClass]="{
+              'header-1': block.data.level === 1,
+              'header-2': block.data.level === 2,
+              'header-3': block.data.level === 3,
+              'header-4': block.data.level === 4,
+              'header-5': block.data.level === 5,
+              'header-6': block.data.level === 6
+            }"
+      >
+        {{ block.data.text }}
+      </h1>
+    }
+    @if (block.type === 'list') {
+      @if (block.data.style === 'ordered') {
+        <ol class="list">
+          @for (item of block.data.items | ListBlock; track item) {
+            <li>{{ item }}</li>
+          }
+        </ol>
+      }
+      @if (block.data.style === 'checklist') {
+        @for (item of block.data.items | ListBlock; track item) {
+          <div class="d-flex flex-row align-items-center">
+            <input [disabled]="isReadOnly" type="checkbox" [checked]="item.meta['checked']">
+            <span class="ms-1">{{ item.content }}</span>
+          </div>
+        }
+      } @else {
+        <ul class="list">
+          @for (item of block.data.items | ListBlock; track item) {
+            <li>{{ item }}</li>
+          }
+        </ul>
+      }
+    }
+    @if (block.type === 'image') {
+      <div class="image-block" [ngClass]="{
+                  'with-border': block.data.withBorder,
+                  'stretched': block.data.stretched,
+                  'with-background': block.data.withBackground
+                }">
+        <img [src]="block.data.file.url" [alt]="block.data.caption || ''" />
+        @if (block.data.caption) {
+          <div class="caption">{{ block.data.caption }}</div>
+        }
+      </div>
+    }
+    @if (block.type === 'quote') {
+      <blockquote class="quote" [ngClass]="{'center': block.data.alignment === 'center'}">
+        <p>{{ block.data.text }}</p>
+        @if (block.data.caption) {
+          <cite>{{ block.data.caption }}</cite>
+        }
+      </blockquote>
+    }
+    @if (block.type === 'input') {
+
+    }
+  }
+</div>

@@ -3,6 +3,7 @@
     [question]="question"
     [isEditing]="isEditing"
     (isInvalid)="isInvalid.emit($event)"
+    (onSave)="onSave.emit($event)"
   ></app-multiple-choices-editing>
 }
 
@@ -15,9 +16,10 @@
   ></app-multiple-choices-testing>
 }
 
-@if (isReadOnly || (!isEditing && !isTesting)) {
+@if (isReadOnly || isSaved) {
   <app-multiple-choices-readonly
     [question]="question"
+    [isSaved]="isSaved"
     [isReadOnly]="isReadOnly"
   ></app-multiple-choices-readonly>
 }

@@ -40,8 +40,7 @@ export class MultipleQuestionComponent
     });
   }
 
-  override ngOnChanges(changes: SimpleChanges): void {
-    super.ngOnChanges(changes);
+  ngOnChanges(changes: SimpleChanges): void {
     if (changes['isSaved']?.currentValue) {
       mapValues(this.mapEditingQuestion, () => false);
     }
@@ -49,16 +48,15 @@ export class MultipleQuestionComponent
 
   override updateEditingQuestion(status: boolean) {
     each(this.question.subQuestions, (question) => {
-      this.mapEditingQuestion[question.id] = status;
+      this.mapEditingQuestion[question._id!] = status;
     });
   }
 
-  addQuestion(questionType: number) {
+  addQuestion(questionType: QuestionType) {
     const id = CommonUtils.generateRandomId();
     let newQuestion: Question = {
-      id: id,
       description: '',
-      type: null,
+      type: QuestionType.DEFAULT,
       choices: [],
       answer: [],
       correctAnswer: [],
@@ -66,7 +64,6 @@ export class MultipleQuestionComponent
     switch (questionType) {
       case QuestionType.MULTIPLE_CHOICE:
         newQuestion = {
-          id: id,
           description: '',
           type: questionType,
           choices: this.defaultChoices(4),
@@ -76,7 +73,6 @@ export class MultipleQuestionComponent
         break;
       case QuestionType.SHORT_ANSWER:
         newQuestion = {
-          id: id,
           description: '',
           type: questionType,
           choices: [],
@@ -86,7 +82,6 @@ export class MultipleQuestionComponent
         break;
       case QuestionType.DROPDOWN_ANSWER:
         newQuestion = {
-          id: id,
           description: '',
           type: questionType,
           choices: this.defaultChoices(3),
@@ -96,7 +91,6 @@ export class MultipleQuestionComponent
         break;
       case QuestionType.FILL_IN_THE_GAP:
         newQuestion = {
-          id: id,
           description: '',
           arrayContent: [],
           type: questionType,
@@ -139,7 +133,6 @@ export class MultipleQuestionComponent
     let cloneQuestion = cloneDeep(question);
     cloneQuestion = {
       ...cloneQuestion,
-      id: CommonUtils.generateRandomId(),
       description: `Copy of ${cloneQuestion.description}`,
     };
     this.question.subQuestions!.push(cloneQuestion);

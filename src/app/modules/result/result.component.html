@@ -22,7 +22,7 @@
       <mat-card-title class="card-title"
       ><h1 class="mat-display-2" (click)="view(result._id)">
         &nbsp;{{ result.studentName }}
-        @if (!result.isSubmit) {
+        @if (!result.isFinished) {
           🔸
         }
       </h1>
@@ -31,9 +31,9 @@
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
-            @if (result.isSubmit) {
-              <button mat-menu-item (click)="view(result._id)">View</button>
+            @if (result.isFinished) {
             } @else {
+              <button mat-menu-item (click)="view(result._id)">View</button>
               <button mat-menu-item (click)="continue(result._id)">
                 Continue
               </button>

@@ -4,6 +4,7 @@ import {
   ElementRef,
   HostListener,
   OnDestroy,
+  OnInit,
   signal,
   ViewChild,
 } from '@angular/core';
@@ -12,7 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   clone,
   each,
@@ -24,8 +25,7 @@ import {
 } from 'lodash-es';
 import { interval, Subscription } from 'rxjs';
 import { Quiz } from '../../shared/models/quiz.model';
-import { Result } from '../../shared/models/result.model';
-import { CommonUtils } from '../../utils/common-utils';
+import { Test } from '../../shared/models/test.model';
 import { ExportUtils } from '../../utils/export.utils';
 import { ScoreUtils } from '../../utils/score-utils';
 import { ConfirmDialogComponent } from '../../shared/dialogs/confirm-dialog/confirm-dialog.component';
@@ -35,7 +35,7 @@ import { PartNavigationComponent } from '../../shared/components/part-navigation
 import { QuizService } from '../../modules/quizzes/quizzes.service';
 import { ReadingComponent } from '../../tabs/reading/reading.component';
 import { WritingComponent } from '../../tabs/writing/writing.component';
-import { FullTestService } from './full-test.service';
+import { TestService } from './test.service';
 import { FeedbackDialog } from '../../shared/dialogs/feedback-dialog/feedback-dialog.component';
 import {
   Time,
@@ -48,6 +48,7 @@ import { Question } from '../../shared/models/question.model';
 import { QuestionType } from '../../shared/enums/question-type.enum';
 import { Choice } from '../../shared/models/choice.model';
 import { Part } from '../../shared/models/part.model';
+import { QuestionService } from '../../modules/question/question.service';
 
 const SAVE_INTERVAL = 120000;
 const SECOND_INTERVAL = 1000;
@@ -80,11 +81,11 @@ export interface QuestionIndex {
     TimerComponent,
     QuestionNavigationComponent,
   ],
-  providers: [QuizService, FullTestService],
+  providers: [QuizService, TestService, QuestionService],
   templateUrl: './full-test.component.html',
   styleUrl: './full-test.component.scss',
 })
-export class FullTestComponent implements OnDestroy {
+export class FullTestComponent implements OnInit, OnDestroy {
   @ViewChild('audioPlayer') audioPlayer!: ElementRef<HTMLAudioElement>;
 
   @HostListener('document:keydown.control.s', ['$event'])
@@ -102,8 +103,7 @@ export class FullTestComponent implements OnDestroy {
     reading: {},
     writing: {},
   };
-  result!: Result;
-  quiz!: Quiz;
+  test!: Test;
   testTime: Time = {
     minutes: 0,
     seconds: 0,
@@ -132,33 +132,28 @@ export class FullTestComponent implements OnDestroy {
   constructor(
     private quizService: QuizService,
     private router: Router,
+    private route: ActivatedRoute,
     private dialog: MatDialog,
     private fileService: FileService,
-    protected testService: FullTestService,
-  ) {
-    const quizId = this.router.getCurrentNavigation()?.extras.state?.['quizId'];
-    if (quizId) {
-      this.quizService.getById(quizId).subscribe((quiz) => {
-        quiz.audioTime = 0;
-        this.quiz = quiz;
-        this.result = { ...quiz };
-        this.totalSeconds = this.result.listeningTimeout! * 60;
-        this.audioPlayer.nativeElement.load();
-        this.getTestTimeout();
-        this.generateMapAnswered();
-      });
-      this.startAutoSave();
-    }
-    const testId = this.router.getCurrentNavigation()?.extras.state?.['testId'];
+    protected testService: TestService,
+  ) {}
+
+  ngOnInit() {
+    const testId = this.route.snapshot.params['testId'];
     if (testId) {
       this.subscriptions.add(
-        this.testService.getResultById(testId).subscribe((result) => {
-          this.result = result;
-          this.totalSeconds = this.result.listeningTimeout! * 60;
-          this.audioPlayer.nativeElement.currentTime = this.result.audioTime!;
-          this.audioPlayer.nativeElement.load();
-          if (this.result.currentTab) {
-            this.currentTab = this.result.currentTab;
+        this.testService.getById(testId).subscribe((test) => {
+          this.test = test;
+          this.generateAnswerMap(this.test);
+          this.isReady = !isEmpty(this.test.studentName);
+          this.totalSeconds = this.test.listening.timeout! * 60;
+          if (this.audioPlayer) {
+            this.audioPlayer.nativeElement.currentTime =
+              this.test.listening.audioTime ?? 0;
+            this.audioPlayer.nativeElement.load();
+          }
+          if (this.test.currentTab) {
+            this.currentTab = this.test.currentTab;
             this.disableOthersTab();
             this.mapDisablePart[this.currentTab] = false;
           }
@@ -166,7 +161,6 @@ export class FullTestComponent implements OnDestroy {
           this.generateMapAnswered();
         }),
       );
-      this.isReady = true;
       this.startAutoSave();
     }
   }
@@ -175,6 +169,22 @@ export class FullTestComponent implements OnDestroy {
     if (this.testTimeoutIntervalSub) {
       this.testTimeoutIntervalSub.unsubscribe();
     }
+  }
+
+  generateAnswerMap(test: Test): void {
+    test.listening.parts.forEach((part) => {
+      part.questions.forEach((question) => {
+        this.testService.answerQuestion(
+          question._id!,
+          this.test.answers![question._id!] ?? '',
+        );
+      });
+    });
+    test.reading.parts.forEach((part) => {
+      part.questions.forEach((question) => {
+        this.testService.answerQuestion(question._id!, ['']);
+      });
+    });
   }
 
   startAutoSave() {
@@ -192,13 +202,13 @@ export class FullTestComponent implements OnDestroy {
 
   getTestTimeout() {
     if (this.currentTab === this.tabs.LISTENING) {
-      this.totalSeconds = this.result.listeningTimeout! * 60;
+      this.totalSeconds = this.test.listening.timeout! * 60;
     }
     if (this.currentTab === this.tabs.READING) {
-      this.totalSeconds = this.result.readingTimeout! * 60;
+      this.totalSeconds = this.test.reading.timeout! * 60;
     }
     if (this.currentTab === this.tabs.WRITING) {
-      this.totalSeconds = this.result.writingTimeout! * 60;
+      this.totalSeconds = this.test.writing.timeout! * 60;
     }
     this.testTime = {
       minutes: Math.floor(this.totalSeconds / 60),
@@ -208,7 +218,9 @@ export class FullTestComponent implements OnDestroy {
 
   onStartTest() {
     this.isReady = true;
-    this.testService.submitTest(this.result).subscribe();
+    this.testService.saveCurrentTest(this.test).subscribe((savedTest) => {
+      this.test = savedTest;
+    });
   }
 
   onCtrlSave() {
@@ -216,22 +228,24 @@ export class FullTestComponent implements OnDestroy {
       this.saveQuestionSub.unsubscribe();
     }
     this.saveTimeout();
-    this.result.currentTab = this.currentTab;
+    this.test.currentTab = this.currentTab;
+    console.log(this.testService.getAnswers());
+    this.test.answers = this.testService.getAnswers();
     this.saveQuestionSub = this.testService
-      .saveCurrentTest(this.result)
+      .saveCurrentTest(this.test)
       .subscribe();
   }
 
   saveTimeout() {
     const timeout = this.testTime.minutes + this.testTime.seconds / 60;
     if (this.currentTab === this.tabs.LISTENING) {
-      this.result.listeningTimeout = timeout;
+      this.test.listening.timeout = timeout;
     }
     if (this.currentTab === this.tabs.READING) {
-      this.result.readingTimeout = timeout;
+      this.test.reading.timeout = timeout;
     }
     if (this.currentTab === this.tabs.WRITING) {
-      this.result.writingTimeout = timeout;
+      this.test.reading.timeout = timeout;
     }
   }
 
@@ -244,7 +258,13 @@ export class FullTestComponent implements OnDestroy {
     this.testTimeoutInterval = SECOND_INTERVAL;
     this.testTimeoutIntervalSub = interval(SECOND_INTERVAL).subscribe(() => {
       if (this.currentTab === 0) {
-        this.result.audioTime! += 1;
+        if (isEmpty(this.test.listening.audioTime)) {
+          this.test.listening = {
+            ...this.test.listening,
+            audioTime: 0,
+          };
+        }
+        this.test.listening.audioTime! += 1;
       }
     });
   }
@@ -294,42 +314,42 @@ export class FullTestComponent implements OnDestroy {
     let htmlString = '';
     if (this.currentTab === this.tabs.LISTENING + 1) {
       this.audioPlayer.nativeElement.pause();
-      htmlString += ExportUtils.exportListening(this.result);
+      htmlString += ExportUtils.exportListening(this.test);
       this.subscriptions.add(
         this.fileService
           .generatePdfFile(
             'Listening',
             htmlString,
-            this.result.studentName,
-            this.result.name,
+            this.test.studentName,
+            this.test.quizName,
           )
           .subscribe(),
       );
       this.generateMapAnswered();
     }
     if (this.currentTab === this.tabs.READING + 1) {
-      htmlString += ExportUtils.exportReading(this.result);
+      htmlString += ExportUtils.exportReading(this.test);
       this.subscriptions.add(
         this.fileService
           .generatePdfFile(
             'Reading',
             htmlString,
-            this.result.studentName,
-            this.result.name,
+            this.test.studentName,
+            this.test.quizName,
           )
           .subscribe(),
       );
       this.generateMapAnswered();
     }
     if (this.currentTab === this.tabs.WRITING + 1) {
-      htmlString += ExportUtils.exportWriting(this.result);
+      htmlString += ExportUtils.exportWriting(this.test);
       this.subscriptions.add(
         this.fileService
           .generatePdfFile(
             'Writing',
             htmlString,
-            this.result.studentName,
-            this.result.name,
+            this.test.studentName,
+            this.test.quizName,
           )
           .subscribe(),
       );
@@ -338,9 +358,9 @@ export class FullTestComponent implements OnDestroy {
     if (this.testTimeoutIntervalSub) {
       this.testTimeoutIntervalSub.unsubscribe();
     }
-    this.result = { ...this.result, currentTab: this.currentTab };
+    this.test = { ...this.test, currentTab: this.currentTab };
     this.saveQuestionSub = this.testService
-      .saveCurrentTest(this.result)
+      .saveCurrentTest(this.test)
       .subscribe();
   }
 
@@ -365,15 +385,15 @@ export class FullTestComponent implements OnDestroy {
       disableClose: true,
     });
     dialogRef.afterClosed().subscribe((feedback) => {
-      this.result.feedback = feedback;
-      let htmlString = ExportUtils.exportFeedback(this.result);
+      this.test.feedback = feedback;
+      let htmlString = ExportUtils.exportFeedback(this.test);
       this.subscriptions.add(
         this.fileService
           .generatePdfFile(
             'Feedback',
             htmlString,
-            this.result.studentName,
-            this.result.name,
+            this.test.studentName,
+            this.test.quizName,
           )
           .subscribe(),
       );
@@ -387,7 +407,7 @@ export class FullTestComponent implements OnDestroy {
     }
     this.calculateListeningPoint();
     this.calculateReadingPoint();
-    this.result.isSubmit = true;
+    this.test.isFinished = true;
     this.onCtrlSave();
     this.router.navigate(['mock-test']);
   }
@@ -399,15 +419,15 @@ export class FullTestComponent implements OnDestroy {
   private calculateListeningPoint() {
     let correctPoint = 0;
     let totalPoint = 0;
-    each(this.result.listening!.parts, (part) => {
+    each(this.test.listening!.parts, (part) => {
       each(part.questions, (question) => {
         const scoreResult = ScoreUtils.calculateQuestionPoint(question);
         correctPoint += scoreResult.correct;
         totalPoint += scoreResult.total;
       });
     });
-    this.result.correctListeningPoint = correctPoint;
-    this.result.totalListeningPoint = totalPoint;
+    this.test.correctListeningPoint = correctPoint;
+    this.test.totalListeningPoint = totalPoint;
   }
 
   private calculateReadingPoint() {
@@ -430,21 +450,21 @@ export class FullTestComponent implements OnDestroy {
     //     });
     //   }
     // });
-    this.result.correctReadingPoint = correctPoint;
-    this.result.totalReadingPoint = totalPoint;
+    this.test.correctReadingPoint = correctPoint;
+    this.test.totalReadingPoint = totalPoint;
   }
 
   generateQuestionMap() {
     let parts: Part[] | undefined = [];
     switch (this.currentTab) {
       case Tab.LISTENING:
-        parts = this.result.listening!.parts;
+        parts = this.test.listening!.parts;
         break;
       case Tab.READING:
-        parts = this.result.reading!.parts;
+        parts = this.test.reading!.parts;
         break;
       case Tab.WRITING:
-        parts = this.result.writing!.parts;
+        parts = this.test.writing!.parts;
         break;
       default:
         break;
@@ -483,10 +503,10 @@ export class FullTestComponent implements OnDestroy {
     this.generateQuestionMap();
     this.selectedQuestionIndex.set(null);
     if (this.currentTab === Tab.LISTENING) {
-      this.generatePartQuestionIndex(this.result.listening!.parts);
+      this.generatePartQuestionIndex(this.test.listening!.parts);
     }
     if (this.currentTab === Tab.READING) {
-      this.generatePartQuestionIndex(this.result.reading!.parts);
+      this.generatePartQuestionIndex(this.test.reading!.parts);
     }
   }
 
@@ -650,7 +670,8 @@ export class FullTestComponent implements OnDestroy {
       this.selectedId.set(choice._id!);
       this.selectedQuestionIndex.set(
         flatMap(toArray(this.mapAnsweredQuestionId)).find(
-          (questionIndex) => questionIndex.id && questionIndex.id === choice._id,
+          (questionIndex) =>
+            questionIndex.id && questionIndex.id === choice._id,
         )!,
       );
     }
@@ -699,14 +720,14 @@ export class FullTestComponent implements OnDestroy {
   }
 
   updateQuestionForMultipleChoice(question: Question) {
-    this.result.listening!.parts.forEach((part) => {
+    this.test.listening!.parts.forEach((part) => {
       part.questions.forEach((q) => {
         if (q._id === question._id) {
           q.answer = question.answer as string[];
         }
       });
     });
-    this.result.reading!.parts.forEach((part) => {
+    this.test.reading!.parts.forEach((part) => {
       part.questions.forEach((q) => {
         if (q._id === question._id) {
           q.answer = question.answer as string[];

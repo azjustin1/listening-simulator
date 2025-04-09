@@ -10,7 +10,10 @@ import { each, isEmpty, last } from 'lodash-es';
 import { Choice } from '../../../../shared/models/choice.model';
 import { CommonUtils } from '../../../../utils/common-utils';
 import { QuestionType } from "../../../../shared/enums/question-type.enum";
-import { AbstractEditQuestionComponent } from "../../../../shared/abstract/abstract-edit-question.component";
+import {
+  AbstractEditQuestionComponent,
+  EditorJsTools
+} from "../../../../shared/abstract/abstract-edit-question.component";
 
 @Component({
   selector: 'app-label-on-map-editing',
@@ -28,7 +31,14 @@ import { AbstractEditQuestionComponent } from "../../../../shared/abstract/abstr
 })
 export class LabelOnMapEditingComponent extends AbstractEditQuestionComponent {
   choiceIndex = CHOICE_INDEX;
-  questionType = QuestionType;
+
+  override getHolder(): string {
+    return '';
+  }
+
+  override getTools(): EditorJsTools {
+    return {};
+  }
 
   addQuestion(questionType: QuestionType): void {
     const lastQuestion = last(this.question.subQuestions);

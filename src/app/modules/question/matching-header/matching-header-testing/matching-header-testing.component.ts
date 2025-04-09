@@ -1,17 +1,16 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelect } from '@angular/material/select';
 import { ChoiceContentPipe } from '../choice-content.pipe';
 import { each, filter, map, sortBy } from 'lodash-es';
-import { MatchingHeaderEditingComponent } from '../matching-header-editing/matching-header-editing.component';
 import { Choice } from '../../../../shared/models/choice.model';
 import { FormsModule } from '@angular/forms';
-import { MatButton } from '@angular/material/button';
-import { MatCard, MatCardContent } from '@angular/material/card';
-import { MatIcon } from '@angular/material/icon';
+import { MatCard } from '@angular/material/card';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
 import { NgClass } from '@angular/common';
 import { Question } from '../../../../shared/models/question.model';
+import { AbstractQuizSectionComponent } from '../../../../shared/abstract/abstract-quiz-section.component';
+import { Reading } from '../../../../shared/models/reading.model';
+import { SectionType } from '../../../../shared/enums/section-type.enum';
 
 const DATA_TRANSFER_KEY = 'answerId';
 const DROP_OVER_CLASS = 'drop-over';
@@ -22,12 +21,8 @@ const CONTAINER_RIGHT_ID = 'container-right';
   standalone: true,
   imports: [
     MatFormFieldModule,
-    MatSelect,
     FormsModule,
-    MatButton,
     MatCard,
-    MatCardContent,
-    MatIcon,
     AngularEditorModule,
     NgClass,
     ChoiceContentPipe,
@@ -36,27 +31,31 @@ const CONTAINER_RIGHT_ID = 'container-right';
   styleUrl: './matching-header-testing.component.scss',
 })
 export class MatchingHeaderTestingComponent
-  extends MatchingHeaderEditingComponent
+  extends AbstractQuizSectionComponent<Reading>
   implements OnInit
 {
   answers: Choice[] = [];
   @Output() onAnswer = new EventEmitter();
 
-  ngOnInit(): void {
-    const answeredIds = this.section.questions.map((question) => question.answer);
-    this.answers = this.section.answers!.filter(
-      (answer) => !answeredIds.includes(answer.id),
+  override ngOnInit(): void {
+    const answeredIds = this.section.parts[this.selectedPart].questions.map(
+      (question) => question.answer,
     );
-    this.initMapEditAnswer();
+    this.answers = this.section.answers!.filter(
+      (answer) => !answeredIds.includes(answer._id!),
+    );
     if (this.isTesting) {
       this.remapDroppedAnswers();
     }
   }
 
   remapDroppedAnswers() {
-    const answerIds = map(this.section.questions, (question) => question.answer);
+    const answerIds = map(
+      this.section.parts[this.selectedPart].questions,
+      (question) => question.answer,
+    );
     this.answers = sortBy(
-      filter(this.answers, (answer) => !answerIds.includes(answer.id)),
+      filter(this.answers, (answer) => !answerIds.includes(answer._id!)),
     );
   }
 
@@ -78,21 +77,21 @@ export class MatchingHeaderTestingComponent
     );
     if (choice) {
       this.removeDuplicateChoiceInOthers(choice);
-      each(this.section.questions, (dataQuestion) => {
-        if (dataQuestion.id === question.id) {
-          dataQuestion.answer = choice.id;
+      each(this.section.parts[this.selectedPart].questions, (dataQuestion) => {
+        if (dataQuestion._id === question._id) {
+          dataQuestion.answer = choice._id!;
         }
       });
-      this.answers = filter(this.section.answers, (a) => a.id !== choice.id);
-      this.removeDropOverClass(question.id);
+      this.answers = filter(this.section.answers, (a) => a._id !== choice._id);
+      this.removeDropOverClass(question._id!);
       this.remapDroppedAnswers();
       this.onAnswer.emit(question);
     }
   }
 
   removeDuplicateChoiceInOthers(choice: Choice) {
-    each(this.section.questions, (question) => {
-      if (question.answer && question.answer === choice.id) {
+    each(this.section.parts[this.selectedPart].questions, (question) => {
+      if (question.answer && question.answer === choice._id) {
         question.answer = '';
       }
     });
@@ -121,13 +120,13 @@ export class MatchingHeaderTestingComponent
       this.section.answers!,
     );
     if (answer) {
-      each(this.section.questions, (question) => {
-        if (question.answer === answer.id) {
+      each(this.section.parts[this.selectedPart].questions, (question) => {
+        if (question.answer === answer._id) {
           question.answer = '';
           this.onAnswer.emit(question);
         }
       });
-      if (!map(this.answers, (answer) => answer.id).includes(answer.id)) {
+      if (!map(this.answers, (answer) => answer._id).includes(answer._id)) {
         this.answers.push(answer);
         this.answers = sortBy(this.answers, ['id']);
       }
@@ -143,5 +142,9 @@ export class MatchingHeaderTestingComponent
   removeDropOverClass(elementId: string) {
     const dropZone = document.getElementById(elementId) as HTMLElement;
     dropZone.classList.remove(DROP_OVER_CLASS);
+  }
+
+  getSectionType(): SectionType {
+    return SectionType.Reading;
   }
 }

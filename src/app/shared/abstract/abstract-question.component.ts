@@ -1,28 +1,15 @@
-import { HttpResponse } from '@angular/common/http';
 import {
   Component,
   EventEmitter,
-  inject,
-  input,
   Input,
   model,
-  OnChanges,
   OnDestroy,
   Output,
-  SimpleChanges,
 } from '@angular/core';
-import { AngularEditorConfig, UploadResponse } from '@wfpena/angular-wysiwyg';
-import { debounce, each, isEmpty, isNull, mapValues } from 'lodash-es';
-import { map, Subscription } from 'rxjs';
-import { FileService } from '../../file.service';
+import { each } from 'lodash-es';
+import { Subscription } from 'rxjs';
 import { Question } from '../models/question.model';
-import { CommonUtils } from '../../utils/common-utils';
-import { environment } from '../../../environments/environment';
-import { BASE64_IMAGE_REGEX } from '../../utils/constant';
 import { Choice } from '../models/choice.model';
-import { QuestionService } from '../../modules/question/question.service';
-import { ChoiceService } from '../services/choice.service';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   template: '',
@@ -53,10 +40,9 @@ export abstract class AbstractQuestionComponent implements OnDestroy {
   }
 
   defaultChoices(numberOfChoices: number) {
-    const choices = [];
+    const choices: Choice[] = [];
     for (let i = 0; i < numberOfChoices; i++) {
-      const choice = {
-        id: CommonUtils.generateRandomId(),
+      const choice: Choice = {
         content: '',
       };
       choices.push(choice);

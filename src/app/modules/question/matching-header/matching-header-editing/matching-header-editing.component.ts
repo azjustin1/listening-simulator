@@ -11,7 +11,8 @@ import { Question } from '../../../../shared/models/question.model';
 import { QuestionType } from '../../../../shared/enums/question-type.enum';
 import { each, isUndefined, mapValues, omit } from 'lodash-es';
 import { Choice } from '../../../../shared/models/choice.model';
-import { JsonPipe, NgClass } from "@angular/common";
+import { NgClass } from '@angular/common';
+import { SectionType } from '../../../../shared/enums/section-type.enum';
 
 @Component({
   selector: 'app-matching-header-editing',
@@ -23,7 +24,6 @@ import { JsonPipe, NgClass } from "@angular/common";
     MatCardModule,
     MatIcon,
     NgClass,
-    JsonPipe,
   ],
   templateUrl: './matching-header-editing.component.html',
   styleUrl: './matching-header-editing.component.scss',
@@ -44,25 +44,24 @@ export class MatchingHeaderEditingComponent extends AbstractQuizSectionComponent
 
   initMapEditAnswer() {
     each(this.section.answers, (answer) => {
-      this.mapEditingById[answer.id] = false;
-      this.mapAnswerById[answer.id] = answer;
+      this.mapEditingById[SectionType.Reading] = false;
+      // this.mapAnswerById[answer.id] = answer;
     });
-    each(this.section.questions, (question) => {
-      this.mapEditingById[question.id] = false;
+    each(this.section.parts[this.selectedPart].questions, (question) => {
+      this.mapEditingById[SectionType.Reading] = false;
     });
   }
 
   addParagraph() {
     const id = CommonUtils.generateRandomId();
     const newQuestion: Question = {
-      id: id,
       description: '',
       type: QuestionType.MATCHING_HEADER,
       choices: [],
       answer: [],
       correctAnswer: [],
     };
-    this.section.questions.push(newQuestion);
+    // this.section.p.questions.push(newQuestion);
     this.mapEditingById[id] = true;
   }
 
@@ -74,8 +73,8 @@ export class MatchingHeaderEditingComponent extends AbstractQuizSectionComponent
   }
 
   removeParagraph(index: number) {
-    this.removeMapEditingId(this.section.questions[index].id);
-    this.section.questions.splice(index, 1);
+    // this.removeMapEditingId(this.section.questions[index].id);
+    // this.section.questions.splice(index, 1);
   }
 
   addAnswer() {
@@ -84,7 +83,6 @@ export class MatchingHeaderEditingComponent extends AbstractQuizSectionComponent
     }
     const id = CommonUtils.generateRandomId();
     const newAnswer: Choice = {
-      id: id,
       content: '',
     };
     this.section.answers?.push(newAnswer);
@@ -92,7 +90,7 @@ export class MatchingHeaderEditingComponent extends AbstractQuizSectionComponent
   }
 
   removeAnswer(index: number) {
-    this.removeMapEditingId(this.section.answers![index].id);
+    this.removeMapEditingId(this.section.answers![index]._id!);
     this.section.answers?.splice(index, 1);
   }
 
@@ -102,5 +100,9 @@ export class MatchingHeaderEditingComponent extends AbstractQuizSectionComponent
 
   private saveAllEditing() {
     this.mapEditingById = mapValues(this.mapEditingById, () => false);
+  }
+
+  getSectionType(): SectionType {
+    return SectionType.Reading;
   }
 }

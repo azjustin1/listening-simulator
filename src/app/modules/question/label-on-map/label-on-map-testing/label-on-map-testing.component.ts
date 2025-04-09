@@ -20,7 +20,7 @@ import { AbstractTestingQuestionComponent } from '../../../../shared/abstract/ab
   styleUrl: '../label-on-map.component.scss',
 })
 export class LabelOnMapTestingComponent extends AbstractTestingQuestionComponent {
-  onSelectAnswer(questionIndex: number, choiceIndex: number) {
+  onSelectCell(questionIndex: number, choiceIndex: number) {
     const choiceId =
       this.question.subQuestions![questionIndex].choices[choiceIndex]._id;
     const correctAnswer =

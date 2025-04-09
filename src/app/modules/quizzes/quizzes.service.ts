@@ -12,8 +12,8 @@ import { Question } from '../../shared/models/question.model';
 export class QuizService {
   constructor(private httpClient: HttpClient) {}
 
-  getAll(): Observable<any> {
-    return this.httpClient.get(`/quizzes`);
+  getAll(): Observable<Quiz[]> {
+    return this.httpClient.get<Quiz[]>(`/quizzes`);
   }
 
   searchByName(name: string): Observable<any> {
@@ -28,8 +28,8 @@ export class QuizService {
     );
   }
 
-  getById(id: number): Observable<any> {
-    return this.httpClient.get(`/quizzes/${id}`);
+  getById(quizId: string): Observable<Quiz> {
+    return this.httpClient.get<Quiz>(`/quizzes/${quizId}`);
   }
 
   create(quiz: Quiz): Observable<Quiz> {
@@ -60,6 +60,19 @@ export class QuizService {
 
   delete(quizId?: string): Observable<any> {
     return this.httpClient.delete(`/quizzes/${quizId}`);
+  }
+
+  uploadAudioFile(sectionId: string, file: File): Observable<any> {
+    const formData: FormData = new FormData();
+    formData.append('file', file);
+    return this.httpClient.post<any>(
+      `/quizzes/${sectionId}/upload-audio`,
+      formData,
+    );
+  }
+
+  removeAudioFile(sectionId: string): Observable<any> {
+    return this.httpClient.delete(`/quizzes/${sectionId}/remove-audio`);
   }
 
   updateSection(

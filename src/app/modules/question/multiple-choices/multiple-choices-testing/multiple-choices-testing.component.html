@@ -1,25 +1,4 @@
 <div [id]="question._id" class="question-group my-3">
-  <div class="form-group">
-    <span textSelection [innerHTML]="question.description"> </span>
-  </div>
-
-  <div class="choice-group">
-    @for (choice of question.choices; track $index) {
-      <div class="mt-2 d-flex align-baseline">
-        @if (question.numberOfChoices! > 1) {
-          <div class="d-flex" (click)="onSelectMultipleAnswer($event, choice._id!)">
-            <input [checked]="question.answer.includes(choice._id!)" type="checkbox"
-            />
-            <div class="ms-2">{{ choice.content }}</div>
-          </div>
-        } @else {
-          <div class="d-flex" (click)="onSelectSingleAnswer(choice._id!)">
-            <input [checked]="selectedOption === choice._id" type="radio"
-            />
-            <div class="ms-2">{{ choice.content }}</div>
-          </div>
-        }
-      </div>
-    }
-  </div>
+  <app-editor-testing-renderer [questionId]="question._id!" [blocks]="blocks"
+                               (onValueChange)="onSelectAnswer($event)"></app-editor-testing-renderer>
 </div>

@@ -18,6 +18,8 @@ import { ChoiceContentPipe } from './choice-content.pipe';
 import { MatchingHeaderReadonlyComponent } from './matching-header-readonly/matching-header-readonly.component';
 import { MatchingHeaderTestingComponent } from './matching-header-testing/matching-header-testing.component';
 import { MatchingHeaderEditingComponent } from './matching-header-editing/matching-header-editing.component';
+import { SectionType } from '../../../shared/enums/section-type.enum';
+import { QuestionType } from '../../../shared/enums/question-type.enum';
 
 @Component({
   selector: 'app-matching-header',
@@ -47,4 +49,8 @@ export class MatchingHeaderComponent extends AbstractQuizSectionComponent<Readin
   @Input() answers: Choice[] = [];
   @Output() onAnswer = new EventEmitter();
   results: string[] = [];
+
+  getSectionType(): SectionType {
+    return SectionType.Reading;
+  }
 }

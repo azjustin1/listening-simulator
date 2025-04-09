@@ -72,14 +72,4 @@ export class ReadingComponent
       this.answers.set(this.section.answers!);
     }
   }
-
-  override saveQuestion(question: Question): void {
-    super.saveQuestion(question);
-    this.mapSavedQuestion[question._id!] = true;
-  }
-
-  override onEditQuestion(question: Question): void {
-    super.onEditQuestion(question);
-    this.mapSavedQuestion[question._id!] = false;
-  }
 }

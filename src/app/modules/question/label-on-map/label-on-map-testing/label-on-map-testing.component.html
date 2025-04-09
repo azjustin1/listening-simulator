@@ -21,7 +21,7 @@
             @for (choice of question.choices; track $index; ) {
               @let choiceIndex = $index;
               <td class="align-items-center"
-                  (click)="onSelectAnswer(questionIndex, choiceIndex)"
+                  (click)="onSelectCell(questionIndex, choiceIndex)"
               >
                 @if (question.answer.includes(choice._id!)) {
                   <mat-icon class="icon" color="primary">check</mat-icon>

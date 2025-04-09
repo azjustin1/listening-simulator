@@ -21,6 +21,7 @@ import {
   isEmpty,
   isNull,
   mapValues,
+  some,
 } from 'lodash-es';
 import { map, Subscription } from 'rxjs';
 import { FileService } from '../../file.service';
@@ -36,8 +37,15 @@ import { QuizService } from '../../modules/quizzes/quizzes.service';
 import { SectionType } from '../enums/section-type.enum';
 import { Choice } from '../models/choice.model';
 import { QuestionService } from '../../modules/question/question.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { toSignal } from "@angular/core/rxjs-interop";
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
+import { OutputBlockData } from '@editorjs/editorjs';
 
 @Component({
   template: '',
@@ -56,11 +64,13 @@ export abstract class AbstractQuizSectionComponent<T extends AbstractSection>
   @Output() onTimeout = new EventEmitter();
   @Output() onSave = new EventEmitter();
   @Output() dataChange = new EventEmitter();
+  @Output() validateChange = new EventEmitter<boolean>();
   @Output() onAddQuestion = new EventEmitter();
   @Output() onPartAnswerQuestion = new EventEmitter();
   @Output() onPartAnswerChoice = new EventEmitter();
   selectedId = model('');
   selectedQuestionIndex = model();
+  isValidSection = signal(true);
 
   abstract getSectionType(): SectionType;
 
@@ -71,7 +81,7 @@ export abstract class AbstractQuizSectionComponent<T extends AbstractSection>
   sectionType = SectionType;
   questionType = QuestionType;
   currentQuestion!: Question;
-  mapQuestionEditing: Record<string, boolean> = {};
+  mapSavedQuestionsByIndex: Record<number, boolean> = {};
   subscriptions: Subscription = new Subscription();
   onPaste = debounce((event) => this.uploadQuestionBase64Images(event), 1000);
   isQuestionInvalid = signal(false);
@@ -111,14 +121,36 @@ export abstract class AbstractQuizSectionComponent<T extends AbstractSection>
 
   ngOnInit() {
     this.sectionForm = this.fb.group({
-      description: [this.section.description, Validators.required],
-      timeout: [this.section.timeout, Validators.required],
+      timeout: [
+        this.section.timeout ?? 0,
+        [Validators.required, this.notAllowed(/^0/)],
+      ],
     });
+    this.sectionForm.valueChanges.subscribe((value) => {
+      this.dataChange.emit(value);
+    });
+    this.sectionForm.statusChanges.subscribe((status) => {
+      const dirtyForm = some(
+        this.sectionForm.controls,
+        (control) => control.dirty,
+      );
+      const invalidForm = dirtyForm && status === 'INVALID';
+      if (this.getSectionType() === SectionType.Listening) {
+        const notUploadAudioFile = isEmpty(this.section['audioName']);
+        this.validateChange.emit(invalidForm && notUploadAudioFile);
+      } else {
+        this.validateChange.emit(invalidForm);
+      }
+    });
+    if (this.isEditing) {
+      this.generateMapSavedQuestion();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isSaved']?.currentValue) {
-      mapValues(this.mapQuestionEditing, () => false);
+      mapValues(this.mapSavedQuestionsByIndex, () => false);
+      console.log(this.mapSavedQuestionsByIndex);
     }
   }
 
@@ -126,14 +158,29 @@ export abstract class AbstractQuizSectionComponent<T extends AbstractSection>
     this.subscriptions.unsubscribe();
   }
 
+  notAllowed(input: RegExp): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const forbidden = input.test(control.value);
+      return forbidden ? { notAllowed: { value: control.value } } : null;
+    };
+  }
+
+  generateMapSavedQuestion(): void {
+    this.section.parts[this.selectedPart].questions.forEach(
+      (_question: Question, index) => {
+        this.mapSavedQuestionsByIndex[index] = true;
+      },
+    );
+  }
+
   onWritingChange(value: string) {
     // this.data!.wordCount = value.trim().split(/\s+/).length;
   }
 
   defaultChoices(numberOfChoices: number) {
-    const choices = [];
+    const choices: Choice[] = [];
     for (let i = 0; i < numberOfChoices; i++) {
-      const choice = {
+      const choice: Choice = {
         content: '',
       };
       choices.push(choice);
@@ -147,7 +194,7 @@ export abstract class AbstractQuizSectionComponent<T extends AbstractSection>
         this.currentQuestion = {
           description: '',
           type: questionType,
-          choices: this.defaultChoices(4),
+          choices: [],
           answer: [],
           correctAnswer: [],
           numberOfChoices: 1,
@@ -166,7 +213,7 @@ export abstract class AbstractQuizSectionComponent<T extends AbstractSection>
         this.currentQuestion = {
           description: '',
           type: questionType,
-          choices: [],
+          choices: this.defaultChoices(4),
           answer: [],
           correctAnswer: [],
           subQuestions: [],
@@ -250,18 +297,23 @@ export abstract class AbstractQuizSectionComponent<T extends AbstractSection>
           ...this.currentQuestion,
         });
         this.onAddQuestion.emit(this.currentQuestion);
-        this.onEditQuestion(newQuestion);
       });
   }
 
-  saveQuestion(question: Question) {
-    this.subscriptions.add(
-      this.questionService
-        .updateQuestion(question)
-        .subscribe((updatedQuestion) => {
-          this.mapQuestionEditing[updatedQuestion._id!] = false;
-        }),
-    );
+  saveQuestion(index: number) {
+    const question = this.section.parts[this.selectedPart].questions[index];
+    if (question) {
+      const questionDescription = JSON.parse(
+        question.description!,
+      ) as OutputBlockData[];
+      if (questionDescription) {
+        this.subscriptions.add(
+          this.questionService.updateQuestion(question).subscribe(() => {
+            this.mapSavedQuestionsByIndex[index] = true;
+          }),
+        );
+      }
+    }
   }
 
   extractAllInputFromContent(question: Question) {
@@ -275,21 +327,21 @@ export abstract class AbstractQuizSectionComponent<T extends AbstractSection>
           };
           newChoices.push(newChoice);
         });
-        question.choices = [...question.choices, ...newChoices];
-        this.quizService.updateQuestion(question).subscribe((newQuestion) => {
-          this.onSave.emit(newQuestion);
-        });
+        question.choices = [...newChoices];
+        this.questionService
+          .updateQuestion(question)
+          .subscribe((newQuestion) => {
+            this.onSave.emit(newQuestion);
+          });
       }
     }
   }
 
   convertToInputTag(content: string, answer: string[]) {}
 
-  onEditQuestion(question: Question) {
-    this.saveOthersEditting();
-    if (question && question._id) {
-      this.mapQuestionEditing[question._id] = true;
-    }
+  onEditQuestion(index: number) {
+    // this.saveOthersEditting();
+    this.mapSavedQuestionsByIndex[index] = false;
   }
 
   moveQuestionUp(index: number) {
@@ -425,9 +477,9 @@ export abstract class AbstractQuizSectionComponent<T extends AbstractSection>
   }
 
   saveOthersEditting() {
-    for (const key in this.mapQuestionEditing) {
-      this.mapQuestionEditing[key] = false;
-    }
+    this.mapSavedQuestionsByIndex = {
+      ...mapValues(this.mapSavedQuestionsByIndex, () => true),
+    };
   }
 
   extractBase64Image(content: string) {
@@ -449,7 +501,7 @@ export abstract class AbstractQuizSectionComponent<T extends AbstractSection>
     }
   }
 
-  onSaveClick() {
-    this.onSave.emit();
+  onSaveClick(question: Question) {
+    console.log(question);
   }
 }

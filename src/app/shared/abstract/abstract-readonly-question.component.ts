@@ -1,6 +1,9 @@
-import { Component, Input, model, OnInit } from '@angular/core';
+import { Component, inject, Input, model, OnInit } from '@angular/core';
 import { Question } from '../models/question.model';
 import { Choice } from '../models/choice.model';
+import { OutputBlockData } from '@editorjs/editorjs';
+import { isEmpty } from 'lodash-es';
+import { TestService } from '../../pages/full-test/test.service';
 
 @Component({
   template: ``,
@@ -8,11 +11,18 @@ import { Choice } from '../models/choice.model';
 export abstract class AbstractReadonlyQuestionComponent implements OnInit {
   @Input() question!: Question;
   @Input() isEditing = false;
+  @Input() isSaved = false;
   @Input() isReadOnly = false;
+  testService = inject(TestService);
+  blocks: OutputBlockData[] = [];
   selectedId = model();
   selectedQuestionIndex = model();
   headerColSpan = 1;
   mapChoiceById: Record<string, Choice> = {};
 
-  ngOnInit() {}
+  ngOnInit() {
+    if (!isEmpty(this.question.description)) {
+      this.blocks = JSON.parse(this.question.description!);
+    }
+  }
 }
