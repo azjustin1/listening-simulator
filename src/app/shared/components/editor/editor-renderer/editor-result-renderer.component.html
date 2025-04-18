@@ -17,6 +17,14 @@
         }
       </div>
     }
+    @if (block.type === 'checkbox') {
+      @for (item of block.data.items | CheckBoxBlock; track item) {
+        <div class="d-flex flex-row align-items-center">
+          <input disabled type="checkbox" [checked]="item['checked']">
+          <span class="ms-1">{{ item['label'] }}</span>
+        </div>
+      }
+    }
     <!--    @if (block.type === 'table') {-->
       <!--      <table class="cdx-table">-->
       <!--        @if (isArray(block.data.content)) {-->

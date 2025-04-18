@@ -8,6 +8,7 @@ import { ResultComponent } from './modules/result/result.component';
 import { FullTestComponent } from './pages/full-test/full-test.component';
 import { WritingTestComponent } from './pages/writing-test/writing-test.component';
 import { AddOrEditWritingComponent } from './pages/writing-test/add-or-edit-writing/add-or-edit-writing.component';
+import { EditorComponent } from "./shared/components/editor/editor.component";
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -34,4 +35,5 @@ export const routes: Routes = [
   { path: 'reading/:quizId', component: ReadingComponent },
   { path: 'results', component: ResultComponent, outlet: 'home' },
   { path: 'result-detail/:resultId', component: ResultDetailComponent },
+  { path: 'editor', component: EditorComponent },
 ];

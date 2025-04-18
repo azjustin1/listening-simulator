@@ -6,13 +6,14 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { CustomInputTool } from '../../editorjs/custom-input-tool';
+import CustomInputTool from '../../editorjs/custom-input-tool';
 import { CustomTextTool } from '../../editorjs/custom-text-tool';
 import List from '@editorjs/list';
 import ImageTool from '@editorjs/image';
 import EditorJS, { OutputBlockData } from '@editorjs/editorjs';
 import { CustomRadioTool } from '../../editorjs/custom-radio-tool';
-import { CheckboxTool } from '../../editorjs/custom-checkbox-tool';
+import CheckBoxTool from '../../editorjs/custom-checkbox-tool';
+import EditableContentTool from '../../editorjs/editable-content-tool';
 
 @Component({
   selector: 'app-editor',
@@ -78,7 +79,7 @@ import { CheckboxTool } from '../../editorjs/custom-checkbox-tool';
   ],
 })
 export class EditorComponent implements OnInit, OnDestroy {
-  @Input() holder: string = '';
+  @Input() holder: string = 'editorjs';
   @Input() blocks: OutputBlockData[] = [];
   @Input() isReadOnly: boolean = false;
   @Output() onEditorChange: EventEmitter<string> = new EventEmitter();
@@ -99,13 +100,14 @@ export class EditorComponent implements OnInit, OnDestroy {
         },
         list: List,
         radio: CustomRadioTool,
-        checkbox: CheckboxTool,
+        checkbox: CheckBoxTool,
         input: {
           class: CustomInputTool,
           config: {
             placeholder: 'Type your input here...',
           },
         },
+        editableContent: EditableContentTool,
         text: {
           class: CustomTextTool,
           config: {
@@ -127,6 +129,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       onChange: async () => {
         const data = await this.editor.save();
         if (data && data.blocks) {
+          console.log(data.blocks);
           this.onEditorChange.emit(JSON.stringify(data.blocks));
         }
       },

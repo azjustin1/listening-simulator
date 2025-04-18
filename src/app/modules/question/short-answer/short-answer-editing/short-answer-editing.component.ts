@@ -5,9 +5,8 @@ import {
   AbstractEditQuestionComponent,
   EditorJsTools,
 } from '../../../../shared/abstract/abstract-edit-question.component';
-import Table from '@editorjs/table';
 import { QuestionType } from '../../../../shared/enums/question-type.enum';
-import { EditorComponent } from "../../../../shared/components/editor/editor.component";
+import { EditorComponent } from '../../../../shared/components/editor/editor.component';
 
 @Component({
   selector: 'app-short-answer-editing',
@@ -22,12 +21,6 @@ export class ShortAnswerEditingComponent extends AbstractEditQuestionComponent {
   }
 
   override getTools(): EditorJsTools {
-    return {
-      table: {
-        class: Table,
-        inlineToolbar: true,
-        shortcut: 'CMD+ALT+T',
-      },
-    };
+    return {};
   }
 }

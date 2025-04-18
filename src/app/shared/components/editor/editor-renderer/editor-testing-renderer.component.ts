@@ -12,12 +12,19 @@ import { NgClass } from '@angular/common';
 import { ListBlockPipe } from './list-block.pipe';
 import { TestService } from '../../../../pages/full-test/test.service';
 import { FormsModule } from '@angular/forms';
+import { CheckboxBlockPipe } from "./checkbox-block.pipe";
 
 @Component({
   selector: 'app-editor-testing-renderer',
   standalone: true,
   templateUrl: 'editor-testing-renderer.component.html',
-  imports: [CustomTextBlockPipe, ListBlockPipe, NgClass, FormsModule],
+  imports: [
+    CustomTextBlockPipe,
+    ListBlockPipe,
+    NgClass,
+    FormsModule,
+    CheckboxBlockPipe,
+  ],
 })
 export class EditorTestingRendererComponent implements OnInit {
   @Input() questionId = '';

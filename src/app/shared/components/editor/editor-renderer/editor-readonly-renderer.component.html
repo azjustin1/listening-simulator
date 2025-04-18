@@ -16,6 +16,28 @@
         }
       </div>
     }
+    @if (block.type === 'editableContent') {
+      @for (item of block.data; track $index) {
+        @if (item.type === 'paragraph') {
+          <span>{{ item.value }}</span>
+        }
+        @if (item.type === 'input') {
+          <input
+            class="cdx-input"
+            [value]="item.value"
+            disabled
+          />
+        }
+      }
+    }
+    @if (block.type === 'checkbox') {
+      @for (option of block.data.options | CheckBoxBlock; track option) {
+        <div class="d-flex flex-row align-items-center">
+          <input disabled type="checkbox" [checked]="option['checked']">
+          <span class="ms-1">{{ option['text'] }}</span>
+        </div>
+      }
+    }
     <!--    @if (block.type === 'table') {-->
       <!--      <table class="cdx-table">-->
       <!--        @if (isArray(block.data.content)) {-->

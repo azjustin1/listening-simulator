@@ -197,6 +197,54 @@ ql-editor {
   margin-bottom: 10px;
 }
 
+.editable-paragraph-component {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.toolbar {
+  margin-bottom: 10px;
+}
+
+.add-input-button {
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.add-input-button:hover {
+  background-color: #e5e5e5;
+}
+
+.paragraph-container {
+  border: 1px solid #ddd;
+  padding: 10px;
+  min-height: 100px;
+  border-radius: 3px;
+}
+
+.text-segment {
+  display: inline;
+  outline: none;
+}
+
+.input-segment {
+  display: inline-block;
+  position: relative;
+  margin: 0 2px;
+}
+
+.embedded-input {
+  border: 1px solid #007bff;
+  background-color: #f0f8ff;
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: inherit;
+  min-width: 60px;
+}
+
 @media (min-width: 651px) {
   .ce-block__content {
     max-width: calc(100% - 120px) !important;

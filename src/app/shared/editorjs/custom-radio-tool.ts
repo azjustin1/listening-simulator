@@ -37,7 +37,6 @@ export class CustomRadioTool implements BlockTool {
               },
             ],
     };
-    console.log(this.data)
     this.api = api;
     this.wrapper = null;
     this.blockId = `radio-${Math.random().toString(36).substring(2, 9)}`;

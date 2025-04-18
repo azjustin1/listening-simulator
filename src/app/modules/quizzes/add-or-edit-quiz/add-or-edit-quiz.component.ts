@@ -38,6 +38,8 @@ import { QuestionService } from '../../question/question.service';
 import { PartService } from '../../../shared/services/part.service';
 import { SectionService } from '../../../shared/services/section.service';
 import { Listening } from '../../../shared/models/listening.model';
+import { Reading } from '../../../shared/models/reading.model';
+import { Writing } from '../../../shared/models/writing.model';
 
 @Component({
   selector: 'app-add-or-edit-quiz',
@@ -67,7 +69,12 @@ import { Listening } from '../../../shared/models/listening.model';
   styleUrl: './add-or-edit-quiz.component.scss',
 })
 export class AddOrEditQuizComponent implements OnInit, OnDestroy {
-  quiz!: Quiz;
+  quiz = signal({
+    name: '',
+    listening: {} as Listening,
+    reading: {} as Reading,
+    writing: {} as Writing,
+  });
   quizForm!: FormGroup;
   mapSavedSection = signal<Record<string, boolean>>({});
   isUnsavedSection = computed(() =>
@@ -87,7 +94,7 @@ export class AddOrEditQuizComponent implements OnInit, OnDestroy {
 
   @HostListener('document:keydown.control.s', ['$event'])
   onKeydownHandler() {
-    this.saveOrEditQuiz(this.quiz);
+    this.saveOrEditQuiz(this.quiz());
   }
 
   constructor(
@@ -100,27 +107,30 @@ export class AddOrEditQuizComponent implements OnInit, OnDestroy {
       if (quizId) {
         this.subscriptions.add(
           this.quizService.getById(quizId).subscribe((quiz: any) => {
-            this.quiz = quiz;
+            this.quiz.set(quiz);
             this.generateSavedSection();
-            this.quizForm = this.fb.group({
-              name: [this.quiz.name, Validators.required],
-            });
-            this.quizForm.valueChanges.subscribe((value) => {
-              this.quiz.name = value.name;
-            });
           }),
         );
       }
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.quizForm = this.fb.group({
+      name: ['', Validators.required],
+    });
+    this.quizForm.valueChanges.subscribe((value) => {
+      if (this.quiz) {
+        this.quiz.update((prev) => ({ ...prev, name: value.name }));
+      }
+    });
+  }
 
   generateSavedSection() {
     const savedSection: Record<string, boolean> = {};
-    savedSection[this.quiz.listening._id!] = true;
-    savedSection[this.quiz.reading._id!] = true;
-    savedSection[this.quiz.writing._id!] = true;
+    savedSection[this.quiz().listening._id!] = true;
+    savedSection[this.quiz().reading._id!] = true;
+    savedSection[this.quiz().writing._id!] = true;
     this.mapSavedSection.set(savedSection);
   }
 
@@ -129,36 +139,51 @@ export class AddOrEditQuizComponent implements OnInit, OnDestroy {
       case SectionType.Listening:
         const listeningPart: Part = {
           questions: [],
-          sectionId: this.quiz.listening._id!,
+          sectionId: this.quiz().listening._id!,
         };
         this.subscriptions.add(
           this.partService.createPart(listeningPart).subscribe((savedPart) => {
-            this.quiz.listening?.parts.push(savedPart);
-            this.selectedListeningPart = size(this.quiz.listening.parts) - 1;
+            this.quiz.update((prev) => {
+              prev.listening.parts.push(savedPart);
+              return {
+                ...prev,
+              };
+            });
+            this.selectedListeningPart = size(this.quiz().listening.parts) - 1;
           }),
         );
         break;
       case SectionType.Reading:
         const readingPart: Part = {
           questions: [],
-          sectionId: this.quiz.reading._id!,
+          sectionId: this.quiz().reading._id!,
         };
         this.subscriptions.add(
           this.partService.createPart(readingPart).subscribe((savedPart) => {
-            this.quiz.reading?.parts.push(savedPart);
-            this.selectedReadingPart = size(this.quiz.listening.parts) - 1;
+            this.quiz.update((prev) => {
+              prev.reading.parts.push(savedPart);
+              return {
+                ...prev,
+              };
+            });
+            this.selectedReadingPart = size(this.quiz().listening.parts) - 1;
           }),
         );
         break;
       case SectionType.Writing:
         const writingPart: Part = {
           questions: [],
-          sectionId: this.quiz.writing._id!,
+          sectionId: this.quiz().writing._id!,
         };
         this.subscriptions.add(
           this.partService.createPart(writingPart).subscribe((savedPart) => {
-            this.quiz.writing?.parts.push(savedPart);
-            this.selectedWritingPart = size(this.quiz.listening.parts) - 1;
+            this.quiz.update((prev) => {
+              prev.writing.parts.push(savedPart);
+              return {
+                ...prev,
+              };
+            });
+            this.selectedWritingPart = size(this.quiz().writing.parts) - 1;
           }),
         );
         break;
@@ -174,13 +199,12 @@ export class AddOrEditQuizComponent implements OnInit, OnDestroy {
   saveSection(sectionType: SectionType) {
     switch (sectionType) {
       case SectionType.Listening:
-        console.log(this.quiz.listening);
         this.subscriptions.add(
           this.sectionService
-            .updateSection(this.quiz.listening)
+            .updateSection(this.quiz().listening)
             .subscribe((savedSection) => {
-              this.quiz.listening = {
-                ...this.quiz.listening,
+              this.quiz().listening = {
+                ...this.quiz().listening,
                 ...savedSection,
               };
               this.mapSavedSection.update((current) => ({
@@ -193,10 +217,10 @@ export class AddOrEditQuizComponent implements OnInit, OnDestroy {
       case SectionType.Reading:
         this.subscriptions.add(
           this.sectionService
-            .updateSection(this.quiz.reading)
+            .updateSection(this.quiz().reading)
             .subscribe((savedSection) => {
-              this.quiz.reading = {
-                ...this.quiz.listening,
+              this.quiz().reading = {
+                ...this.quiz().listening,
                 ...savedSection,
               };
               this.mapSavedSection()[savedSection._id!] = true;
@@ -206,11 +230,11 @@ export class AddOrEditQuizComponent implements OnInit, OnDestroy {
       case SectionType.Writing:
         this.subscriptions.add(
           this.sectionService
-            .updateSection(this.quiz.writing)
+            .updateSection(this.quiz().writing)
             .subscribe((savedSection) => {
               this.mapSavedSection()[savedSection._id!] = true;
-              this.quiz.writing = {
-                ...this.quiz.listening,
+              this.quiz().writing = {
+                ...this.quiz().listening,
                 ...savedSection,
               };
             }),
@@ -240,8 +264,8 @@ export class AddOrEditQuizComponent implements OnInit, OnDestroy {
       if (isDeleted) {
         switch (sectionType) {
           case SectionType.Listening:
-            this.quiz.listening.parts = filter(
-              this.quiz.listening.parts,
+            this.quiz().listening.parts = filter(
+              this.quiz().listening.parts,
               (part) => part._id !== partId,
             );
             break;
@@ -257,11 +281,11 @@ export class AddOrEditQuizComponent implements OnInit, OnDestroy {
   }
 
   removeReadingPart(index: number) {
-    this.quiz.reading?.parts.splice(index, 1);
+    this.quiz().reading?.parts.splice(index, 1);
   }
 
   removeWritingPart(index: number) {
-    this.quiz.writing?.parts.splice(index, 1);
+    this.quiz().writing?.parts.splice(index, 1);
   }
 
   onSaveClick() {
@@ -273,14 +297,13 @@ export class AddOrEditQuizComponent implements OnInit, OnDestroy {
       dialogRef.componentInstance.message = 'You are missing some fields?';
       dialogRef.componentInstance.isWarning = true;
     } else {
-      this.saveOrEditQuiz(this.quiz);
+      this.saveOrEditQuiz(this.quiz());
       this.router.navigate(['/mock-test']).then(() => {});
     }
   }
 
   listeningSectionChange(listening: Listening) {
-    this.quiz.listening = Object.assign(this.quiz.listening, listening);
-    console.log(this.quiz.listening);
+    this.quiz().listening = Object.assign(this.quiz().listening, listening);
   }
 
   saveOrEditQuiz(quiz: Quiz) {

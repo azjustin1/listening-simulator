@@ -38,8 +38,9 @@ import EditorJS, {
   ToolSettings,
 } from '@editorjs/editorjs';
 import { QuestionType } from '../enums/question-type.enum';
-import { CustomInputTool } from '../editorjs/custom-input-tool';
+import CustomInputTool from '../editorjs/custom-input-tool';
 import { CustomTextTool } from '../editorjs/custom-text-tool';
+import InputTool from "../editorjs/components/InputTool";
 
 export interface EditorJsTools {
   [p: string]: ToolConstructable | ToolSettings;

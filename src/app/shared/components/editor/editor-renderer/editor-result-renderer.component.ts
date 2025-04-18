@@ -13,12 +13,19 @@ import { ListBlockPipe } from './list-block.pipe';
 import { TestService } from '../../../../pages/full-test/test.service';
 import { FormsModule } from '@angular/forms';
 import { Test } from '../../../models/test.model';
+import { CheckboxBlockPipe } from "./checkbox-block.pipe";
 
 @Component({
   selector: 'app-editor-result-renderer',
   standalone: true,
   templateUrl: 'editor-result-renderer.component.html',
-  imports: [CustomTextBlockPipe, ListBlockPipe, NgClass, FormsModule],
+  imports: [
+    CustomTextBlockPipe,
+    ListBlockPipe,
+    NgClass,
+    FormsModule,
+    CheckboxBlockPipe,
+  ],
 })
 export class EditorResultRendererComponent implements OnInit {
   @Input() questionId = '';
