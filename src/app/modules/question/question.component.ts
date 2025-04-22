@@ -51,9 +51,4 @@ export class QuestionComponent {
   selectedId = model();
   selectedQuestionIndex = model();
   questionType = QuestionType;
-
-  testInvalid($event: boolean) {
-    console.log($event)
-
-  }
 }

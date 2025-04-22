@@ -1,6 +1,6 @@
 // src/app/editor-tools/custom-table-tool.ts
 import EditorJS from '@editorjs/editorjs';
-import { CustomInputTool } from './custom-input-tool'; // Import EditorJS directly
+
 export class CustomTableTool {
   private data: any;
   private wrapper: HTMLElement | null;
@@ -61,9 +61,6 @@ export class CustomTableTool {
     const editor = new EditorJS({
       // Use EditorJS directly
       holder: container,
-      tools: {
-        input: CustomInputTool, // Pass the CustomInputTool from config
-      },
       data:
         initialData && initialData.blocks
           ? initialData

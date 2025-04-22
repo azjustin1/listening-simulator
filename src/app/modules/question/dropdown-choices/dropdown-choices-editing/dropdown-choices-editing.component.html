@@ -1,38 +1,16 @@
 <div class="question-group">
-  <angular-editor
-    name="questionContent"
-    [id]="question._id!"
-    [config]="config"
-    [(ngModel)]="question.description"
-    (ngModelChange)="onPaste($event)"
-  ></angular-editor>
-  <div class="choice-group w-100">
-    @for (choice of question.choices; track $index) {
-      @let choiceId = choice._id!;
-      <div class="d-flex align-items-center w-100 mb-2">
-        <input [checked]="selectedChoice === choiceId" (click)="onSelectCorrectAnswer(choiceId)"
-               type="radio" />
-        <div class="mt-2 ms-2 w-100">
-                <textarea
-                  class="w-100"
-                  autocomplete="off"
-                  [disabled]="!isEditing"
-                  [name]="choiceId"
-                  type="text"
-                  [(ngModel)]="choice.content"
-                ></textarea>
-        </div>
-        <mat-icon (click)="deleteChoice(choiceId)" color="warn">delete</mat-icon>
-      </div>
+  <div class="form-group">
+    @if (isEditing) {
+      <app-editor [holder]="'dropdown-choices-editing'"
+                  [blocks]="blocks"
+                  [isReadOnly]="false"
+                  (onEditorChange)="onQuestionDescriptionChange($event)"></app-editor>
+    } @else {
+
+      <span [innerHTML]="question.description! | sanitizeHtml"> </span>
     }
   </div>
-  <button
-    mat-button
-    color="primary"
-    type="button"
-    (click)="addChoice()"
-  >
-    <mat-icon>add</mat-icon>
-    More option
-  </button>
+  @if (questionForm['touched'] && questionForm.invalid) {
+    <span class="text-danger ms-2">Required</span>
+  }
 </div>

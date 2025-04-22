@@ -39,8 +39,6 @@ import EditorJS, {
 } from '@editorjs/editorjs';
 import { QuestionType } from '../enums/question-type.enum';
 import CustomInputTool from '../editorjs/custom-input-tool';
-import { CustomTextTool } from '../editorjs/custom-text-tool';
-import InputTool from "../editorjs/components/InputTool";
 
 export interface EditorJsTools {
   [p: string]: ToolConstructable | ToolSettings;
@@ -73,21 +71,7 @@ export abstract class AbstractEditQuestionComponent
         placeholder: 'Type your input here...',
       },
     },
-    text: {
-      class: CustomTextTool,
-      config: {
-        tools: {
-          input: {
-            class: CustomInputTool,
-            config: {
-              placeholder: 'Type in text...',
-            },
-          },
-        },
-      },
-    },
     header: Header,
-    list: List,
     image: {
       header: Header,
       list: List,
@@ -249,6 +233,7 @@ export abstract class AbstractEditQuestionComponent
 
   onQuestionDescriptionChange(description: string) {
     this.question.description = description;
+    console.log(this.question.description);
   }
 
   saveChoice(choiceControl: AbstractControl): void {

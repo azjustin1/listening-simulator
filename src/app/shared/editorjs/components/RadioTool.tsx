@@ -1,35 +1,37 @@
 import React, {
-  useState,
-  useRef,
-  useEffect,
-  KeyboardEvent,
-  FC,
   ChangeEvent,
+  FC,
+  KeyboardEvent,
+  useEffect,
+  useRef,
+  useState,
 } from "react";
 import { CheckboxOption } from "../custom-checkbox-tool";
 import { CommonUtils } from "../../../utils/common-utils";
+import { RadioOption } from "../custom-radio-tool";
 
-interface CheckboxToolComponentProps {
-  data: CheckboxOption[];
-  onChange: (data: CheckboxOption[]) => void;
+interface RadioToolComponentProps {
+  data: RadioOption[];
+  onChange: (data: RadioOption[]) => void;
   readOnly?: boolean;
   onRemove?: () => void;
 }
 
-const CheckboxToolComponent: FC<CheckboxToolComponentProps> = ({
+const RadioToolComponent: FC<RadioToolComponentProps> = ({
   data,
   onChange,
   readOnly = false,
   onRemove,
 }) => {
   // Initialize with at least one empty option if none exist
+  const [selectedValue, setSelectedValue] = useState<string | null>(null);
   const [options, setOptions] = useState<CheckboxOption[]>(() => {
     if (data && data.length > 0) {
       return data;
     } else {
       return [
         {
-          id: `option-${Date.now()}`,
+          id: `${CommonUtils.generateRandomId()}`,
           value: "",
           checked: false,
         },
@@ -50,11 +52,17 @@ const CheckboxToolComponent: FC<CheckboxToolComponentProps> = ({
   }, [options.length, readOnly]);
   const handleCheckChange = (id: string) => {
     if (readOnly) return;
-    setOptions(
-      options.map((option) =>
-        option.id === id ? { ...option, checked: !option.checked } : option,
-      ),
-    );
+    if (selectedValue === id) {
+      setSelectedValue(null);
+      setOptions(options.map((option) => ({ ...option, checked: false })));
+    } else {
+      setSelectedValue(id);
+      setOptions(
+        options.map((option) =>
+          option.id === id ? { ...option, checked: !option.checked } : option,
+        ),
+      );
+    }
   };
   const handleTextChange = (id: string, text: string) => {
     if (readOnly) return;
@@ -100,9 +108,10 @@ const CheckboxToolComponent: FC<CheckboxToolComponentProps> = ({
           style={{ margin: "10px 0" }}
         >
           <input
-            type="checkbox"
-            checked={option.checked}
-            onChange={() => handleCheckChange(option.id)}
+            type="radio"
+            value={selectedValue as any}
+            checked={option.id === selectedValue}
+            onClick={() => handleCheckChange(option.id)}
             className="option-checkbox"
             disabled={readOnly}
           />
@@ -126,4 +135,4 @@ const CheckboxToolComponent: FC<CheckboxToolComponentProps> = ({
     </div>
   );
 };
-export default CheckboxToolComponent;
+export default RadioToolComponent;

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 interface EditableContentProps {
   data: any[];
@@ -10,6 +10,10 @@ const EditableContent: React.FC<EditableContentProps> = ({
   onChange,
 }) => {
   const editableRef = useRef<HTMLDivElement>(null);
+  const [menuPosition, setMenuPosition] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
   useEffect(() => {
     if (editableRef.current) {
       editableRef.current.innerHTML = "";
@@ -37,7 +41,6 @@ const EditableContent: React.FC<EditableContentProps> = ({
         if (parent) {
           const index = Array.prototype.indexOf.call(parent.children, input);
           parent.removeChild(input);
-          // Set cursor to the previous element or end of the parent
           const range = document.createRange();
           const selection: any = window.getSelection();
           if (index > 0) {
@@ -50,30 +53,50 @@ const EditableContent: React.FC<EditableContentProps> = ({
           selection.removeAllRanges();
           selection.addRange(range);
         }
-        handleInput();
       }
     });
   };
   const handleInput = () => {
-    console.log(editableRef.current!.childNodes);
     const newData = Array.from(editableRef.current!.childNodes).map((child) => {
       if (child.nodeName === "INPUT") {
         return { type: "input", value: (child as HTMLInputElement).value };
       }
-      return { type: "paragraph", value: child.nodeValue || "" };
+      return { type: "text", value: child.nodeValue || "" };
     });
     onChange(newData);
   };
-  const insertInput = () => {
+  const insertInputAtCursor = () => {
     const editableDiv = editableRef.current;
     if (editableDiv) {
       const input = document.createElement("input");
       input.type = "text";
       input.placeholder = "Type here...";
-      addInputEventListeners(input); // Add event listeners for the new input
+      addInputEventListeners(input);
+      const selection = window.getSelection();
+      if (selection && selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        range.deleteContents(); // Remove any selected text
+        range.insertNode(input); // Insert the input at the cursor position
+        range.setStartAfter(input); // Move the cursor after the newly inserted input
+        range.collapse(true);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        input.focus(); // Focus the new input
+      }
       editableDiv.appendChild(input);
-      input.focus();
+      setMenuPosition(null); // Close context menu after inserting
     }
+  };
+  const handleContextMenu = (event: React.MouseEvent) => {
+    event.preventDefault();
+    const { clientX, clientY } = event;
+    setMenuPosition({ x: clientX - 10, y: 0 });
+  };
+  const handleMenuClick = (action: string) => {
+    if (action === "insertInput") {
+      insertInputAtCursor();
+    }
+    setMenuPosition(null); // Close menu after action
   };
   return (
     <div>
@@ -81,14 +104,35 @@ const EditableContent: React.FC<EditableContentProps> = ({
         ref={editableRef}
         contentEditable
         onInput={handleInput}
+        onKeyDown={(event) => {
+          if (event.key === "Enter") {
+            event.stopPropagation();
+          }
+        }}
+        onContextMenu={handleContextMenu}
         style={{
-          border: "1px solid #ccc",
           padding: "10px",
-          minHeight: "100px",
+          minHeight: "50px",
           marginBottom: "10px",
         }}
       />
-      <button onClick={insertInput}>Insert Input</button>
+      {menuPosition && (
+        <div
+          style={{
+            position: "absolute",
+            left: menuPosition.x + 5, // Offset for better visibility
+            top: menuPosition.y + 5, // Offset for better visibility
+            background: "white",
+            border: "1px solid #ccc",
+            zIndex: 1000,
+            padding: "5px",
+          }}
+        >
+          <button onClick={() => handleMenuClick("insertInput")}>
+            Insert Input
+          </button>
+        </div>
+      )}
     </div>
   );
 };

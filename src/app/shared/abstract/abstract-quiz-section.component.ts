@@ -1,5 +1,6 @@
 import { HttpResponse } from '@angular/common/http';
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   inject,
@@ -20,7 +21,6 @@ import {
   each,
   isEmpty,
   isNull,
-  mapValues,
   some,
 } from 'lodash-es';
 import { map, Subscription } from 'rxjs';
@@ -74,6 +74,7 @@ export abstract class AbstractQuizSectionComponent<T extends AbstractSection>
 
   abstract getSectionType(): SectionType;
 
+  cdr = inject(ChangeDetectorRef);
   fb = inject(FormBuilder);
   quizService = inject(QuizService);
   questionService = inject(QuestionService);
@@ -81,7 +82,7 @@ export abstract class AbstractQuizSectionComponent<T extends AbstractSection>
   sectionType = SectionType;
   questionType = QuestionType;
   currentQuestion!: Question;
-  mapSavedQuestionsByIndex: Record<number, boolean> = {};
+  mapSavedQuestionsByIndex = signal<Record<number, boolean>>({});
   subscriptions: Subscription = new Subscription();
   onPaste = debounce((event) => this.uploadQuestionBase64Images(event), 1000);
   isQuestionInvalid = signal(false);
@@ -149,8 +150,7 @@ export abstract class AbstractQuizSectionComponent<T extends AbstractSection>
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isSaved']?.currentValue) {
-      mapValues(this.mapSavedQuestionsByIndex, () => false);
-      console.log(this.mapSavedQuestionsByIndex);
+      // mapValues(this.mapSavedQuestionsByIndex, () => false);
     }
   }
 
@@ -296,6 +296,7 @@ export abstract class AbstractQuizSectionComponent<T extends AbstractSection>
         this.section?.parts[this.selectedPart].questions.push({
           ...this.currentQuestion,
         });
+        this.cdr.markForCheck();
         this.onAddQuestion.emit(this.currentQuestion);
       });
   }
@@ -310,6 +311,7 @@ export abstract class AbstractQuizSectionComponent<T extends AbstractSection>
         this.subscriptions.add(
           this.questionService.updateQuestion(question).subscribe(() => {
             this.mapSavedQuestionsByIndex[index] = true;
+            this.cdr.markForCheck();
           }),
         );
       }
@@ -477,9 +479,9 @@ export abstract class AbstractQuizSectionComponent<T extends AbstractSection>
   }
 
   saveOthersEditting() {
-    this.mapSavedQuestionsByIndex = {
-      ...mapValues(this.mapSavedQuestionsByIndex, () => true),
-    };
+    // this.mapSavedQuestionsByIndex = {
+    //   ...mapValues(this.mapSavedQuestionsByIndex, () => true),
+    // };
   }
 
   extractBase64Image(content: string) {

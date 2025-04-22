@@ -1,34 +1,11 @@
-<b><span [innerHTML]="question.description"></span></b>
-@if (isReadOnly && question.answer.length === 0) {
-  <span>❌</span>
-}
-
-<div class="d-flex align-items-center mt-2">
-  @let isCorrectAnswer = question | isCorrectDropdown;
-  @let correctAnswer = question | correctDropdownAnswer;
-  @let answeredChoice = question | answerChoice;
-  @if (isReadOnly) {
-    @if (isReadOnly && isCorrectAnswer) {
-      <span>{{ answeredChoice }} ✅</span>
+<div class="question-group">
+  <div class="form-group">
+    @if (isSaved) {
+      <app-editor-readonly-renderer [blocks]="blocks"></app-editor-readonly-renderer>
     }
-    @if (isReadOnly && !isCorrectAnswer && !(question.answer.length === 0)) {
-      <span>{{ answeredChoice }} ❌</span>
+    @if (isReadOnly) {
+      <h1>Readonly {{ blocks | json }}</h1>
+      <app-editor-result-renderer [questionId]="question._id!" [blocks]="blocks"></app-editor-result-renderer>
     }
-
-    @if (question.answer.length === 0) {
-      <span>{{ correctAnswer.content }} ✅</span>
-    }
-  } @else {
-    @if (correctAnswer) {
-      <div class="d-flex flex-column">
-        <select disabled>
-          <option>
-            {{ correctAnswer.content }}
-          </option>
-        </select>
-      </div>
-    }
-  }
-
-
+  </div>
 </div>

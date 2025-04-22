@@ -4,19 +4,20 @@ import {
   API,
   BlockTool,
   BlockToolConstructorOptions,
-  EditorConfig,
 } from "@editorjs/editorjs";
-import { createRoot } from "react-dom/client";
+import { createRoot, Root } from "react-dom/client";
 import EditableContent from "./components/EditableContent";
+import { isEmpty } from "lodash-es";
 
 class EditableContentTool implements BlockTool {
   private data: any[];
   private api: API;
   private container: HTMLElement;
-  private reactRoot: any;
+  private reactRoot: Root;
 
   constructor({ api, data, config }: BlockToolConstructorOptions<any>) {
-    this.data = config.data ? config.data.data : [];
+    console.log(data)
+    this.data = isEmpty(data) ? [] : data;
     this.api = api;
     this.container = document.createElement("div");
     this.reactRoot = createRoot(this.container);
@@ -30,31 +31,21 @@ class EditableContentTool implements BlockTool {
   }
 
   saveData = (newData: any[]) => {
-    this.data = newData.filter((data) => data !== undefined);
+    this.data = newData.filter((item) => !isEmpty(item.value));
   };
 
   save(): any {
+    console.log("saveData", this.data);
     return this.data;
   }
 
-  renderSettings() {
-    const settingsContainer = document.createElement("div");
-    const addInputButton = document.createElement("button");
-    addInputButton.innerText = "Add Input Tool";
-    addInputButton.onclick = () => {
-      this.api.blocks.insert("inputTool", {
-        type: "text",
-        id: Date.now().toString(),
-        content: "",
-      });
-    };
-    settingsContainer.appendChild(addInputButton);
-    return settingsContainer;
+  validate(): boolean {
+    return true;
   }
 
   static get toolbox() {
     return {
-      title: "Editable Content",
+      title: "Short Answer",
       icon: `
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <rect x="2" y="4" width="20" height="16" rx="2" ry="2" />
@@ -63,6 +54,10 @@ class EditableContentTool implements BlockTool {
         </svg>
       `,
     };
+  }
+
+  static get isReadOnlySupported() {
+    return true;
   }
 }
 

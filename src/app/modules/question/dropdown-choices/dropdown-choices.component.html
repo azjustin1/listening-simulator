@@ -2,6 +2,8 @@
   <app-dropdown-choices-editing
     [question]="question"
     [isEditing]="isEditing"
+    (isInvalid)="isInvalid.emit($event)"
+    (onSave)="onSave.emit($event)"
   ></app-dropdown-choices-editing>
 }
 
@@ -10,14 +12,14 @@
     [question]="question"
     [isTesting]="isTesting"
     [(selectedId)]="selectedId"
-    [(selectedQuestionIndex)]="selectedQuestionIndex"
     (onAnswer)="onAnswer.emit($event)"
   ></app-dropdown-choices-testing>
 }
 
-@if (isReadOnly || (!isEditing && !isTesting)) {
+@if (isReadOnly || isSaved) {
   <app-dropdown-choices-readonly
     [question]="question"
+    [isSaved]="isSaved"
     [isReadOnly]="isReadOnly"
   ></app-dropdown-choices-readonly>
 }

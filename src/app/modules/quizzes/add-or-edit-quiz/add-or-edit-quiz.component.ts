@@ -102,20 +102,6 @@ export class AddOrEditQuizComponent implements OnInit, OnDestroy {
     protected router: Router,
     protected dialog: MatDialog,
   ) {
-    this.route.paramMap.subscribe((paramMap: any) => {
-      const quizId = paramMap.get('quizId');
-      if (quizId) {
-        this.subscriptions.add(
-          this.quizService.getById(quizId).subscribe((quiz: any) => {
-            this.quiz.set(quiz);
-            this.generateSavedSection();
-          }),
-        );
-      }
-    });
-  }
-
-  ngOnInit() {
     this.quizForm = this.fb.group({
       name: ['', Validators.required],
     });
@@ -124,7 +110,21 @@ export class AddOrEditQuizComponent implements OnInit, OnDestroy {
         this.quiz.update((prev) => ({ ...prev, name: value.name }));
       }
     });
+    this.route.paramMap.subscribe((paramMap: any) => {
+      const quizId = paramMap.get('quizId');
+      if (quizId) {
+        this.subscriptions.add(
+          this.quizService.getById(quizId).subscribe((quiz: any) => {
+            this.quiz.set(quiz);
+            this.quizForm.controls['name'].setValue(quiz.name);
+            this.generateSavedSection();
+          }),
+        );
+      }
+    });
   }
+
+  ngOnInit() {}
 
   generateSavedSection() {
     const savedSection: Record<string, boolean> = {};
@@ -259,7 +259,6 @@ export class AddOrEditQuizComponent implements OnInit, OnDestroy {
   }
 
   removePart(partId: string, sectionType: SectionType) {
-    // this.currentQuiz.listening?.parts.splice(index, 1);
     this.partService.deletePart(partId).subscribe((isDeleted) => {
       if (isDeleted) {
         switch (sectionType) {

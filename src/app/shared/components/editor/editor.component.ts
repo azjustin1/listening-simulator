@@ -7,13 +7,13 @@ import {
   Output,
 } from '@angular/core';
 import CustomInputTool from '../../editorjs/custom-input-tool';
-import { CustomTextTool } from '../../editorjs/custom-text-tool';
-import List from '@editorjs/list';
 import ImageTool from '@editorjs/image';
 import EditorJS, { OutputBlockData } from '@editorjs/editorjs';
-import { CustomRadioTool } from '../../editorjs/custom-radio-tool';
+import RadioTool from '../../editorjs/custom-radio-tool';
 import CheckBoxTool from '../../editorjs/custom-checkbox-tool';
 import EditableContentTool from '../../editorjs/editable-content-tool';
+import SelectTool from '../../editorjs/custom-select-tool';
+import FillInTableTool from '../../editorjs/components/fill-in-table-tool';
 
 @Component({
   selector: 'app-editor',
@@ -98,29 +98,11 @@ export class EditorComponent implements OnInit, OnDestroy {
             },
           },
         },
-        list: List,
-        radio: CustomRadioTool,
-        checkbox: CheckBoxTool,
-        input: {
-          class: CustomInputTool,
-          config: {
-            placeholder: 'Type your input here...',
-          },
-        },
-        editableContent: EditableContentTool,
-        text: {
-          class: CustomTextTool,
-          config: {
-            tools: {
-              input: {
-                class: CustomInputTool,
-                config: {
-                  placeholder: 'Type in text...',
-                },
-              },
-            },
-          },
-        },
+        selectOne: RadioTool,
+        selectMultiple: CheckBoxTool,
+        dropdown: SelectTool,
+        shortAnswer: EditableContentTool,
+        fillInTable: FillInTableTool,
       },
       data: {
         blocks: this.blocks,
@@ -140,5 +122,10 @@ export class EditorComponent implements OnInit, OnDestroy {
     if (this.editor) {
       this.editor.destroy();
     }
+  }
+
+  async preview() {
+    this.isReadOnly = !this.isReadOnly;
+    await this.editor.readOnly.toggle(this.isReadOnly);
   }
 }

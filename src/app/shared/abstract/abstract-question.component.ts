@@ -3,8 +3,11 @@ import {
   EventEmitter,
   Input,
   model,
+  OnChanges,
   OnDestroy,
+  OnInit,
   Output,
+  SimpleChanges,
 } from '@angular/core';
 import { each } from 'lodash-es';
 import { Subscription } from 'rxjs';
@@ -14,7 +17,9 @@ import { Choice } from '../models/choice.model';
 @Component({
   template: '',
 })
-export abstract class AbstractQuestionComponent implements OnDestroy {
+export abstract class AbstractQuestionComponent
+  implements OnInit, OnChanges, OnDestroy
+{
   selectedId = model();
   selectedQuestionIndex = model();
   @Input() question!: Question;
@@ -34,6 +39,8 @@ export abstract class AbstractQuestionComponent implements OnDestroy {
   ngOnInit(): void {
     this.mapEditingQuestion[this.question._id!] = false;
   }
+
+  ngOnChanges(changes: SimpleChanges) {}
 
   ngOnDestroy() {
     this.subscriptions.unsubscribe();

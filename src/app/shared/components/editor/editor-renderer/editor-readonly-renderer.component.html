@@ -16,27 +16,44 @@
         }
       </div>
     }
-    @if (block.type === 'editableContent') {
-      @for (item of block.data; track $index) {
-        @if (item.type === 'paragraph') {
-          <span>{{ item.value }}</span>
+    @if (block.type === 'shortAnswer') {
+      <div>
+        @for (item of block.data; track $index) {
+          @if (item.type === 'text') {
+            <span>{{ item.value }}</span>
+          }
+          @if (item.type === 'input') {
+            <input
+              class="cdx-input"
+              [value]="item.value"
+              disabled
+            />
+          }
         }
-        @if (item.type === 'input') {
-          <input
-            class="cdx-input"
-            [value]="item.value"
-            disabled
-          />
-        }
-      }
+      </div>
     }
-    @if (block.type === 'checkbox') {
-      @for (option of block.data.options | CheckBoxBlock; track option) {
+    @if (block.type === 'selectMultiple') {
+      @for (option of block.data; track $index) {
         <div class="d-flex flex-row align-items-center">
           <input disabled type="checkbox" [checked]="option['checked']">
-          <span class="ms-1">{{ option['text'] }}</span>
+          <span class="ms-1">{{ option['value'] }}</span>
         </div>
       }
+    }
+    @if (block.type === 'selectOne') {
+      @for (option of block.data; track $index) {
+        <div class="d-flex flex-row align-items-center">
+          <input disabled type="radio" [checked]="option['checked']">
+          <span class="ms-1">{{ option['value'] }}</span>
+        </div>
+      }
+    }
+    @if (block.type === 'dropdown') {
+      <select disabled>
+        @for (option of block.data; track option.id) {
+          <option [selected]="option.checked">{{ option.value }}</option>
+        }
+      </select>
     }
     <!--    @if (block.type === 'table') {-->
       <!--      <table class="cdx-table">-->

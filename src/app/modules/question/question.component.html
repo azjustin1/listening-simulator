@@ -31,21 +31,23 @@
       ></app-short-answer>
     </div>
   }
-  <!--  @case (questionType.DROPDOWN_ANSWER) {-->
-    <!--    <div class="question">-->
-    <!--      <app-dropdown-choices-->
-    <!--        [question]="question"-->
-    <!--        [isReadOnly]="isReadOnly"-->
-    <!--        [isEditing]="isEditing"-->
-    <!--        [isTesting]="isTesting"-->
-    <!--        [(selectedId)]="selectedId"-->
-    <!--        [(selectedQuestionIndex)]="selectedQuestionIndex"-->
-    <!--        (onSave)="onSaveQuestion()"-->
-    <!--        (onAnswer)="onAnswer.emit($event)"-->
-    <!--      ></app-dropdown-choices>-->
-    <!--    </div>-->
-    <!--  }-->
-    <!--  @case (questionType.LABEL_ON_MAP) {-->
+  @case (questionType.DROPDOWN_ANSWER) {
+    <div class="question">
+      <app-dropdown-choices
+        [question]="question"
+        [isEditing]="isEditing"
+        [isSaved]="isSaved"
+        [isReadOnly]="isReadOnly"
+        [isTesting]="isTesting"
+        [(selectedId)]="selectedId"
+        [(selectedQuestionIndex)]="selectedQuestionIndex"
+        (onSave)="onSave.emit($event)"
+        (onAnswer)="onAnswer.emit($event)"
+        (isInvalid)="isInvalid.emit($event)"
+      ></app-dropdown-choices>
+    </div>
+  }
+  <!--  @case (questionType.LABEL_ON_MAP) {-->
     <!--    <div class="question">-->
     <!--      <app-label-on-map-->
     <!--        [question]="question"-->

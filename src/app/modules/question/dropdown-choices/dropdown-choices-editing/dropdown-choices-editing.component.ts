@@ -1,25 +1,25 @@
 import { Component } from '@angular/core';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
-import { MatButton } from '@angular/material/button';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { FormsModule } from '@angular/forms';
-import { MatIcon } from '@angular/material/icon';
 import { isEmpty } from 'lodash-es';
 import {
   AbstractEditQuestionComponent,
   EditorJsTools,
 } from '../../../../shared/abstract/abstract-edit-question.component';
 import { QuestionType } from '../../../../shared/enums/question-type.enum';
+import { EditorComponent } from '../../../../shared/components/editor/editor.component';
+import { SanitizeHtmlPipe } from '../../../../pipes/sanitize-html.pipe';
 
 @Component({
   selector: 'app-dropdown-choices-editing',
   standalone: true,
   imports: [
     AngularEditorModule,
-    MatButton,
     MatExpansionModule,
     FormsModule,
-    MatIcon,
+    EditorComponent,
+    SanitizeHtmlPipe,
   ],
   templateUrl: './dropdown-choices-editing.component.html',
   styleUrl: './dropdown-choices-editing.component.scss',

@@ -1,18 +1,18 @@
-import { BlockTool } from "@editorjs/editorjs";
 import React from "react";
-import { createRoot } from "react-dom/client";
 import CheckboxToolComponent from "./components/CheckBox";
-import { isEmpty } from "lodash-es";
-import { CommonUtils } from "../../utils/common-utils";
+import { BlockTool } from "@editorjs/editorjs";
+import { createRoot } from "react-dom/client";
+import RadioToolComponent from "./components/RadioTool";
 
-export interface CheckboxOption {
+export interface RadioOption {
   id: string;
   value: string;
   checked: boolean;
 }
 
-class CheckBoxTool implements BlockTool {
-  private data: CheckboxOption[];
+class RadioTool implements BlockTool {
+  private data: RadioOption[];
+  private onChange: (data: RadioOption[]) => void;
   private readOnly: boolean;
   private api: any;
   private blockAPI: any;
@@ -43,7 +43,7 @@ class CheckBoxTool implements BlockTool {
     readOnly,
     block,
   }: {
-    data: CheckboxOption[];
+    data: RadioOption[];
     api: any;
     config: any;
     readOnly: boolean;
@@ -51,29 +51,19 @@ class CheckBoxTool implements BlockTool {
   }) {
     this.api = api;
     this.blockAPI = block; // Get Block API instance
-    this.data = !isEmpty(data) ? data : this.generateDefaultOption();
+    this.data = data;
+    this.onChange = (newData: RadioOption[]) => {
+      api.blocks.update(this.blockAPI.id, newData); // Save data
+    };
     this.readOnly = readOnly;
     this.container = document.createElement("div");
     this.container.className = "editable-checkbox-list-container";
     this.reactRoot = createRoot(this.container); // Use createRoo
   }
 
-  generateDefaultOption(): CheckboxOption[] {
-    let options: CheckboxOption[] = [];
-    for (let i = 0; i < 1; i++) {
-      const newOption = {
-        id: CommonUtils.generateRandomId(),
-        value: "",
-        checked: false,
-      };
-      options.push(newOption);
-    }
-    return options;
-  }
-
   render() {
     this.reactRoot.render(
-      <CheckboxToolComponent
+      <RadioToolComponent
         data={this.data}
         onChange={(data) => {
           this.data = data;
@@ -89,13 +79,12 @@ class CheckBoxTool implements BlockTool {
   }
 
   save() {
-    this.data = this.data.filter((data) => data.value !== "");
     return this.data;
   }
 
   static get toolbox() {
     return {
-      title: "Multiple Choice",
+      title: "One Choice",
       icon: '<svg width="17" height="15" viewBox="0 0 17 15"><rect x="2" y="4" width="13" height="8" rx="2" fill="currentColor"/></svg>',
     };
   }
@@ -128,7 +117,10 @@ class CheckBoxTool implements BlockTool {
     return "cdx-block";
   }
 
-  validate(savedData: CheckboxOption[]) {
+  validate(savedData: RadioOption[]) {
+    if (!savedData || savedData.length === 0) {
+      return false;
+    }
     return savedData.some((option) => option.value.trim() !== "");
   }
 
@@ -137,4 +129,4 @@ class CheckBoxTool implements BlockTool {
   }
 }
 
-export default CheckBoxTool;
+export default RadioTool;

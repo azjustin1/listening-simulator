@@ -7,49 +7,49 @@
       <app-editor-result-renderer [questionId]="question._id!" [blocks]="blocks"></app-editor-result-renderer>
     }
   </div>
-  <div class="choice-group">
-    @for (choice of question.choices; track $index) {
-      <div class="d-flex align-items-center">
-        @if (isReadOnly) {
-          <input disabled [checked]="choice.isCorrect" type="checkbox"
-          />
-          <div class="ms-2">{{ choice.content }}</div>
-        }
-        @if (isReadOnly) {
-          <div class="ms-2">
-            @if (question.numberOfChoices! > 1) {
-              <!-- Correct answer -->
-              @if (question.correctAnswer.includes(choice._id!)) {
-                ✅
-              }
+<!--  <div class="choice-group">-->
+<!--    @for (choice of question.choices; track $index) {-->
+<!--      <div class="d-flex align-items-center">-->
+<!--        @if (isReadOnly) {-->
+<!--          <input disabled [checked]="choice.isCorrect" type="checkbox"-->
+<!--          />-->
+<!--          <div class="ms-2">{{ choice.content }}</div>-->
+<!--        }-->
+<!--        @if (isReadOnly) {-->
+<!--          <div class="ms-2">-->
+<!--            @if (question.numberOfChoices! > 1) {-->
+<!--              &lt;!&ndash; Correct answer &ndash;&gt;-->
+<!--              @if (question.correctAnswer.includes(choice._id!)) {-->
+<!--                ✅-->
+<!--              }-->
 
-              <!-- Incorrect answer -->
-              @if (question.answer.includes(choice._id!) && !question.correctAnswer.includes(choice._id!)) {
-                ❌
-              }
-            } @else {
-              @if (question.answer.length === 0 && question.correctAnswer.includes(choice._id!)) {
-                ✅
-              } @else {
-                <!-- Correct answer -->
-                @if (!question.answer.includes(choice._id!) && question.correctAnswer.includes(choice._id!)) {
-                  ✅
-                }
+<!--              &lt;!&ndash; Incorrect answer &ndash;&gt;-->
+<!--              @if (question.answer.includes(choice._id!) && !question.correctAnswer.includes(choice._id!)) {-->
+<!--                ❌-->
+<!--              }-->
+<!--            } @else {-->
+<!--              @if (question.answer.length === 0 && question.correctAnswer.includes(choice._id!)) {-->
+<!--                ✅-->
+<!--              } @else {-->
+<!--                &lt;!&ndash; Correct answer &ndash;&gt;-->
+<!--                @if (!question.answer.includes(choice._id!) && question.correctAnswer.includes(choice._id!)) {-->
+<!--                  ✅-->
+<!--                }-->
 
-                <!-- Student correct answer -->
-                @if (question.answer.includes(choice._id!) && question.correctAnswer.includes(choice._id!)) {
-                  ✅
-                }
+<!--                &lt;!&ndash; Student correct answer &ndash;&gt;-->
+<!--                @if (question.answer.includes(choice._id!) && question.correctAnswer.includes(choice._id!)) {-->
+<!--                  ✅-->
+<!--                }-->
 
-                <!-- Student incorrect answer -->
-                @if (question.answer.includes(choice._id!) && !question.correctAnswer.includes(choice._id!)) {
-                  ❌
-                }
-              }
-            }
-          </div>
-        }
-      </div>
-    }
-  </div>
+<!--                &lt;!&ndash; Student incorrect answer &ndash;&gt;-->
+<!--                @if (question.answer.includes(choice._id!) && !question.correctAnswer.includes(choice._id!)) {-->
+<!--                  ❌-->
+<!--                }-->
+<!--              }-->
+<!--            }-->
+<!--          </div>-->
+<!--        }-->
+<!--      </div>-->
+<!--    }-->
+<!--  </div>-->
 </div>

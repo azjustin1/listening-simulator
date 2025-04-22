@@ -1,10 +1,6 @@
 import { Component, SimpleChanges } from '@angular/core';
 import { AngularEditorModule } from '@wfpena/angular-wysiwyg';
-import {
-  AbstractControl,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { isEmpty } from 'lodash-es';
 import { SanitizeHtmlPipe } from '../../../../pipes/sanitize-html.pipe';
 import {
@@ -56,16 +52,5 @@ export class MultipleChoicesEditingComponent extends AbstractEditQuestionCompone
       this.isMultipleAnswers =
         this.question.choices.filter((choice) => choice.isCorrect).length > 1;
     }
-  }
-
-  markCorrectAnswer(choice: AbstractControl) {
-    const updateChoice = {
-      ...choice.value,
-      isCorrect: !choice.value.isCorrect,
-    };
-  }
-
-  checkIsMultipleAnswer() {
-    console.log(this.questionForm.controls['choices']);
   }
 }

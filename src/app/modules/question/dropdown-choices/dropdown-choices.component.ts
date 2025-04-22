@@ -17,6 +17,12 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { DropdownChoicesEditingComponent } from "./dropdown-choices-editing/dropdown-choices-editing.component";
 import { DropdownChoicesTestingComponent } from "./dropdown-choices-testing/dropdown-choices-testing.component";
 import { DropdownChoicesReadonlyComponent } from "./dropdown-choices-readonly/dropdown-choices-readonly.component";
+import {
+  MultipleChoicesReadonlyComponent
+} from "../multiple-choices/multiple-choices-readonly/multiple-choices-readonly.component";
+import {
+  MultipleChoicesEditingComponent
+} from "../multiple-choices/multiple-choices-editing/multiple-choices-editing.component";
 
 @Component({
   selector: 'app-dropdown-choices',
@@ -26,9 +32,10 @@ import { DropdownChoicesReadonlyComponent } from "./dropdown-choices-readonly/dr
     DropdownChoicesEditingComponent,
     DropdownChoicesTestingComponent,
     DropdownChoicesReadonlyComponent,
+    MultipleChoicesReadonlyComponent,
+    MultipleChoicesEditingComponent,
   ],
   templateUrl: './dropdown-choices.component.html',
   styleUrl: './dropdown-choices.component.scss',
 })
-export class DropdownChoicesComponent extends AbstractQuestionComponent {
-}
+export class DropdownChoicesComponent extends AbstractQuestionComponent {}
