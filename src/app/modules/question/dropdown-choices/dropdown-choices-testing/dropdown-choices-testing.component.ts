@@ -5,6 +5,9 @@ import { isEmpty } from 'lodash-es';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TextSelectionDirective } from '../../../../tabs/reading/text-selection.directive';
 import { AbstractTestingQuestionComponent } from '../../../../shared/abstract/abstract-testing-question.component';
+import {
+  EditorTestingRendererComponent
+} from "../../../../shared/components/editor/editor-renderer/editor-testing-renderer.component";
 
 @Component({
   selector: 'app-dropdown-choices-testing',
@@ -14,6 +17,7 @@ import { AbstractTestingQuestionComponent } from '../../../../shared/abstract/ab
     ReactiveFormsModule,
     FormsModule,
     TextSelectionDirective,
+    EditorTestingRendererComponent,
   ],
   templateUrl: './dropdown-choices-testing.component.html',
   styleUrl: './dropdown-choices-testing.component.scss',

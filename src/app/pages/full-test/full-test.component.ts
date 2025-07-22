@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   HostListener,
+  inject,
   OnDestroy,
   OnInit,
   signal,
@@ -24,7 +26,6 @@ import {
   toArray,
 } from 'lodash-es';
 import { interval, Subscription } from 'rxjs';
-import { Quiz } from '../../shared/models/quiz.model';
 import { Test } from '../../shared/models/test.model';
 import { ExportUtils } from '../../utils/export.utils';
 import { ScoreUtils } from '../../utils/score-utils';
@@ -128,6 +129,7 @@ export class FullTestComponent implements OnInit, OnDestroy {
   selectedChoiceId = '';
   subscriptions: Subscription = new Subscription();
   saveQuestionSub: Subscription = new Subscription();
+  cdr = inject(ChangeDetectorRef);
 
   constructor(
     private quizService: QuizService,
@@ -159,6 +161,7 @@ export class FullTestComponent implements OnInit, OnDestroy {
           }
           this.getTestTimeout();
           this.generateMapAnswered();
+          this.cdr.markForCheck();
         }),
       );
       this.startAutoSave();

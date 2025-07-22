@@ -1,12 +1,6 @@
-<div class="my-3" [id]="question._id">
-  <span textSelection [innerHTML]="question.description"> </span>
-  <div>
-    <select [(ngModel)]="question.answer" (ngModelChange)="onChangeAnswer($event)" (click)="onSelectChoice()">
-      @for (choice of question.choices; track $index) {
-        <option [value]="choice._id">
-          {{ choice.content }}
-        </option>
-      }
-    </select>
+<div class="question-group">
+  <div class="form-group">
+    <app-editor-testing-renderer [questionId]="question._id!" [blocks]="blocks"
+                                 (onValueChange)="onSelectAnswer($event)"></app-editor-testing-renderer>
   </div>
 </div>

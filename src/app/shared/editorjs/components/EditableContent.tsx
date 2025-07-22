@@ -77,13 +77,12 @@ const EditableContent: React.FC<EditableContentProps> = ({
         const range = selection.getRangeAt(0);
         range.deleteContents(); // Remove any selected text
         range.insertNode(input); // Insert the input at the cursor position
-        range.setStartAfter(input); // Move the cursor after the newly inserted input
+        range.setStartAfter(input);
         range.collapse(true);
         selection.removeAllRanges();
         selection.addRange(range);
         input.focus(); // Focus the new input
       }
-      editableDiv.appendChild(input);
       setMenuPosition(null); // Close context menu after inserting
     }
   };
@@ -113,7 +112,7 @@ const EditableContent: React.FC<EditableContentProps> = ({
         style={{
           padding: "10px",
           minHeight: "50px",
-          marginBottom: "10px",
+          margin: "10px 0",
         }}
       />
       {menuPosition && (
@@ -123,7 +122,6 @@ const EditableContent: React.FC<EditableContentProps> = ({
             left: menuPosition.x + 5, // Offset for better visibility
             top: menuPosition.y + 5, // Offset for better visibility
             background: "white",
-            border: "1px solid #ccc",
             zIndex: 1000,
             padding: "5px",
           }}

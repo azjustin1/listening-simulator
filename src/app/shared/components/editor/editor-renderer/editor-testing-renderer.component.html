@@ -1,57 +1,6 @@
 <div class="editor-renderer">
-  @for (block of blocks; track block) {
-    @if (block.type === 'text') {
-      <div class="text-block">
-        @for (item of block | CustomTextBlock; track $index) {
-          @if (item.type === 'text') {
-            <span>{{ item.value }}</span>
-          }
-          @if (item.type === 'input') {
-            <input
-              [(ngModel)]="inputAnswer"
-              (ngModelChange)="onEnterAnswer($event)"
-              class="cdx-input"
-            />
-          }
-        }
-      </div>
-    }
-    @if (block.type === 'checkbox') {
-      @for (item of block.data.items | CheckBoxBlock; track $index) {
-        <div class="d-flex flex-row align-items-center">
-          <input type="checkbox" (change)="onSelectAnswer($event, item['value'])"
-                 [checked]="testService.getQuestionAnswer(questionId).includes(item['value'])">
-          <span class="ms-1">{{ item['label'] }}</span>
-        </div>
-      }
-    }
-    <!--    @if (block.type === 'table') {-->
-      <!--      <table class="cdx-table">-->
-      <!--        @if (isArray(block.data.content)) {-->
-      <!--          @for (row of block.data.content; track row) {-->
-      <!--            <tr>-->
-      <!--              @for (cell of row; track cell) {-->
-      <!--                <td>-->
-      <!--                  @if (isArray(cell.blocks)) {-->
-      <!--                    @for (cellBlock of cell.blocks; track cellBlock) {-->
-      <!--                      @if (cellBlock.type === 'input') {-->
-      <!--                        <span class="input-wrapper">-->
-      <!--                              <input-->
-      <!--                                class="cdx-input"-->
-      <!--                                [value]="cellBlock.data.text"-->
-      <!--                                disabled-->
-      <!--                              />-->
-      <!--                            </span>-->
-      <!--                      }-->
-      <!--                    }-->
-      <!--                  }-->
-      <!--                </td>-->
-      <!--              }-->
-      <!--            </tr>-->
-      <!--          }-->
-      <!--        }-->
-      <!--      </table>-->
-      <!--    }-->
+  @for (block of blocks; track $index) {
+    @let i = $index;
     @if (block.type === 'paragraph') {
       <p class="paragraph" [innerHTML]="block.data.text"></p>
     }
@@ -69,29 +18,54 @@
         {{ block.data.text }}
       </h1>
     }
-    @if (block.type === 'list') {
-      @if (block.data.style === 'ordered') {
-        <ol class="list">
-          @for (item of block.data.items | ListBlock; track item) {
-            <li>{{ item }}</li>
+    @if (block.type === 'shortAnswer') {
+      <div>
+        @for (item of block.data; track $index) {
+          @let j = $index;
+          @if (item.type === 'text') {
+            <span>{{ item.value }}</span>
           }
-        </ol>
-      }
-      @if (block.data.style === 'checklist') {
-        @for (item of block.data.items | ListBlock; track item) {
-          <div class="d-flex flex-row align-items-center">
-            <input type="checkbox" (change)="onSelectAnswer($event, item.content)"
-                   [checked]="testService.getQuestionAnswer(questionId).includes(item.content)">
-            <span class="ms-1">{{ item.content }}</span>
-          </div>
+          @if (item.type === 'input') {
+            <input
+              class="cdx-input"
+              [(ngModel)]="block.data[j].value"
+              (ngModelChange)="updateShortAnswerValue(block.questionId, block.data)"
+            />
+          }
         }
-      } @else {
-        <ul class="list">
-          @for (item of block.data.items | ListBlock; track item) {
-            <li>{{ item }}</li>
-          }
-        </ul>
+      </div>
+    }
+    @if (block.type === 'selectMultiple') {
+      @for (option of block.data; track $index) {
+        <div class="d-flex flex-row align-items-center">
+          <input type="checkbox" [(ngModel)]="option.checked"
+                 (ngModelChange)="updateSelectMultipleValue(block.data)">
+          <span class="ms-1">{{ option['value'] }}</span>
+        </div>
       }
+    }
+    @if (block.type === 'selectOne') {
+      @for (option of block.data; track $index) {
+        <div class="d-flex flex-row align-items-center">
+          <input type="radio"
+                 [name]="block.questionId"
+                 [(ngModel)]="block.selectedValue"
+                 [value]="option.value"
+                 (ngModelChange)="updateSelectOneValue(block.selectedValue)"
+          >
+          <span class="ms-1">{{ option['value'] }}</span>
+        </div>
+      }
+    }
+    @if (block.type === 'dropdown') {
+      <select
+        [(ngModel)]="block.selectedValue"
+        (ngModelChange)="updateDropdownValue(block.selectedValue)"
+      >
+        @for (option of block.data; track option.id) {
+          <option [selected]="option.checked" [value]="option.value">{{ option.value }}</option>
+        }
+      </select>
     }
     @if (block.type === 'image') {
       <div class="image-block" [ngClass]="{

@@ -8,7 +8,7 @@ interface SelectWithInputProps {
   readOnly?: boolean; // New readOnly prop
 }
 
-const SelectWithInput: React.FC<SelectWithInputProps> = ({
+const ListAnswerComponent: React.FC<SelectWithInputProps> = ({
   onChange,
   data = [],
   readOnly = false,
@@ -42,16 +42,6 @@ const SelectWithInput: React.FC<SelectWithInputProps> = ({
       inputRef.current.focus(); // Autofocus the input when the component mounts
     }
   }, []);
-  const toggleCheck = (id: string) => {
-    if (readOnly) return;
-    setOptions((prevOptions) =>
-      prevOptions.map((option) =>
-        option.id === id
-          ? { ...option, checked: true }
-          : { ...option, checked: false },
-      ),
-    );
-  };
   const deleteOption = (id: string) => {
     if (!readOnly) {
       setOptions((prevOptions) =>
@@ -71,16 +61,16 @@ const SelectWithInput: React.FC<SelectWithInputProps> = ({
         disabled={readOnly} // Disable input if readOnly
       />
       <div style={{ marginTop: "10px" }}>
-        <h2>Select an option</h2>
         {options.map((option) => (
           <div
             key={option.id}
             style={{
+              display: "flex",
+              alignItems: "center",
               padding: "5px",
               cursor: readOnly ? "not-allowed" : "pointer",
               backgroundColor: option.checked ? "#d1e7dd" : "#fff",
             }}
-            onClick={() => toggleCheck(option.id)}
           >
             <span
               style={{
@@ -113,4 +103,4 @@ const SelectWithInput: React.FC<SelectWithInputProps> = ({
     </div>
   );
 };
-export default SelectWithInput;
+export default ListAnswerComponent;

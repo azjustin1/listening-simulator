@@ -13,14 +13,11 @@ class EditableContentTool implements BlockTool {
   private data: any[];
   private api: API;
   private container: HTMLElement;
-  private reactRoot: Root;
 
   constructor({ api, data, config }: BlockToolConstructorOptions<any>) {
-    console.log(data)
     this.data = isEmpty(data) ? [] : data;
     this.api = api;
     this.container = document.createElement("div");
-    this.reactRoot = createRoot(this.container);
   }
 
   render() {
@@ -35,7 +32,6 @@ class EditableContentTool implements BlockTool {
   };
 
   save(): any {
-    console.log("saveData", this.data);
     return this.data;
   }
 

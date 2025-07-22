@@ -6,7 +6,6 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import CustomInputTool from '../../editorjs/custom-input-tool';
 import ImageTool from '@editorjs/image';
 import EditorJS, { OutputBlockData } from '@editorjs/editorjs';
 import RadioTool from '../../editorjs/custom-radio-tool';
@@ -14,6 +13,8 @@ import CheckBoxTool from '../../editorjs/custom-checkbox-tool';
 import EditableContentTool from '../../editorjs/editable-content-tool';
 import SelectTool from '../../editorjs/custom-select-tool';
 import FillInTableTool from '../../editorjs/components/fill-in-table-tool';
+import DragAndDropContentTool from '../../editorjs/drag-and-drop-content-tool';
+import ListAnswerTool from '../../editorjs/list-answer-tool';
 
 @Component({
   selector: 'app-editor',
@@ -84,6 +85,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   @Input() isReadOnly: boolean = false;
   @Output() onEditorChange: EventEmitter<string> = new EventEmitter();
   private editor!: EditorJS;
+  dragAndDropData: any[] = [];
 
   ngOnInit() {
     this.editor = new EditorJS({
@@ -103,6 +105,10 @@ export class EditorComponent implements OnInit, OnDestroy {
         dropdown: SelectTool,
         shortAnswer: EditableContentTool,
         fillInTable: FillInTableTool,
+        listAnswer: ListAnswerTool,
+        dragAndDrop: {
+          class: DragAndDropContentTool,
+        },
       },
       data: {
         blocks: this.blocks,
@@ -111,7 +117,6 @@ export class EditorComponent implements OnInit, OnDestroy {
       onChange: async () => {
         const data = await this.editor.save();
         if (data && data.blocks) {
-          console.log(data.blocks);
           this.onEditorChange.emit(JSON.stringify(data.blocks));
         }
       },
