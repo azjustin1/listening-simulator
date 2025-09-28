@@ -34,7 +34,7 @@ import {
 const SAVE_INTERVAL = 120000;
 const SECOND_INTERVAL = 1000;
 const DEFAULT_START_TIMEOUT = {
-  minutes: 5,
+  minutes: 1,
   seconds: 0,
 };
 
